@@ -11,7 +11,13 @@ interface LanguageContextType {
     t: typeof translations.en;
 }
 
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+const defaultContext: LanguageContextType = {
+    language: "sk",
+    setLanguage: () => { },
+    t: translations.sk,
+};
+
+const LanguageContext = createContext<LanguageContextType>(defaultContext);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
     const [language, setLanguage] = useState<Language>("sk"); // Default to Slovak
@@ -31,8 +37,6 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
 export function useLanguage() {
     const context = useContext(LanguageContext);
-    if (context === undefined) {
-        throw new Error("useLanguage must be used within a LanguageProvider");
-    }
+    // Context will fall back to defaultContext if provider is missing
     return context;
 }

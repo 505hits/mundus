@@ -136,7 +136,7 @@ export default function TeacherSection() {
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 transition-opacity duration-300" />
 
                                     <div className="absolute bottom-0 left-0 w-full p-6 text-white translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                                        <h3 className="text-xl font-bold mb-1 text-white">{teacher.name}</h3>
+                                        <h3 className="text-xl font-bold mb-1 !text-white">{teacher.name}</h3>
                                         <p className="text-sm font-medium text-blue-200 mb-2">{teacher.specialty}</p>
                                         <p className="text-xs text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300 line-clamp-2">
                                             {teacher.description}

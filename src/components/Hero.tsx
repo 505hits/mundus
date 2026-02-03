@@ -34,7 +34,7 @@ const titleAnimation = {
 
 export default function Hero() {
     return (
-        <section className="hero">
+        <section className="hero pt-32 pb-16 md:py-32 overflow-hidden">
             <motion.div
                 variants={stagger}
                 initial="hidden"
@@ -47,8 +47,8 @@ export default function Hero() {
                     transition={{ duration: 0.5 }}
                     className="flex justify-center"
                 >
-                    <span className="hero-badge">
-                        <Star size={14} />
+                    <span className="hero-badge text-xs md:text-sm px-3 py-1.5 md:px-4 md:py-2">
+                        <Star size={12} className="md:w-[14px] md:h-[14px]" />
                         Thousands of happy learners — and counting
                     </span>
                 </motion.div>
@@ -56,17 +56,30 @@ export default function Hero() {
                 {/* Animated Title */}
                 <motion.h1
                     variants={titleAnimation}
-                    className="hero-title"
+                    className="hero-title mt-6 text-4xl md:text-6xl lg:text-7xl font-bold text-center leading-[1.1]"
                 >
                     Learn languages with{" "}
-                    <span className="accent-word">native speakers</span>
+                    <span className="accent-word relative inline-block">
+                        native speakers
+                        <svg className="absolute w-full h-3 -bottom-1 left-0 text-primary opacity-80 -z-10" viewBox="0 0 100 10" preserveAspectRatio="none">
+                            <motion.path
+                                d="M0 5 Q 50 10 100 5"
+                                stroke="currentColor"
+                                strokeWidth="8"
+                                fill="none"
+                                initial={{ pathLength: 0 }}
+                                animate={{ pathLength: 1 }}
+                                transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
+                            />
+                        </svg>
+                    </span>
                 </motion.h1>
 
                 {/* Subtitle */}
                 <motion.p
                     variants={fadeInUp}
                     transition={{ duration: 0.5, delay: 0.2 }}
-                    className="hero-subtitle"
+                    className="hero-subtitle mt-6 text-base md:text-xl text-center max-w-2xl mx-auto text-gray-600"
                 >
                     Experience immersive 1-on-1 sessions with native experts.
                     Fluid, fast, and tailored to your goals.
@@ -76,72 +89,124 @@ export default function Hero() {
                 <motion.div
                     variants={fadeInUp}
                     transition={{ duration: 0.5, delay: 0.3 }}
-                    className="hero-cta"
+                    className="hero-cta mt-8 flex flex-col sm:flex-row items-center justify-center gap-4"
                 >
                     <motion.a
                         href="#booking"
                         whileHover={{ scale: 1.02, y: -2 }}
                         whileTap={{ scale: 0.98 }}
-                        className="btn btn-primary"
+                        className="btn btn-primary w-full sm:w-auto justify-center"
                     >
                         Book my first lesson
                         <ArrowRight size={18} />
                     </motion.a>
-                    <a href="#how-it-works" className="btn btn-secondary">
+                    <a href="#how-it-works" className="btn btn-secondary w-full sm:w-auto justify-center hidden sm:flex">
                         See how it works
                     </a>
                 </motion.div>
 
-                {/* Image Grid */}
+                {/* Image Grid - Mobile Scroller / Desktop Grid */}
                 <motion.div
                     variants={stagger}
-                    className="image-grid mt-16"
+                    className="mt-12 md:mt-16"
                 >
-                    <motion.div
-                        variants={imageReveal}
-                        className="image-grid-item large"
-                    >
-                        <Image
-                            src="/Gemini_Generated_Image_4omac74omac74oma.png"
-                            alt="Mundus learning experience"
-                            width={800}
-                            height={1000}
-                            className="w-full h-full object-cover"
-                        />
-                    </motion.div>
-                    <motion.div
-                        variants={imageReveal}
-                        className="image-grid-item"
-                    >
-                        <Image
-                            src="/Gemini_Generated_Image_841mwh841mwh841m.png"
-                            alt="Student learning"
-                            width={600}
-                            height={400}
-                            className="w-full h-full object-cover"
-                        />
-                    </motion.div>
-                    <motion.div
-                        variants={imageReveal}
-                        className="image-grid-item"
-                    >
-                        <Image
-                            src="/Gemini_Generated_Image_r3ay2xr3ay2xr3ay.png"
-                            alt="Student studying"
-                            width={600}
-                            height={400}
-                            className="w-full h-full object-cover"
-                        />
-                    </motion.div>
+                    {/* Mobile Stacked Images */}
+                    <div className="md:hidden relative h-[450px] w-full mt-10 flex justify-center items-center">
+                        {/* Card 3 - Back */}
+                        <motion.div
+                            initial={{ rotate: -10, y: 20, scale: 0.9 }}
+                            animate={{ rotate: -6, y: 10, scale: 0.95 }}
+                            transition={{ duration: 0.8, delay: 0.2 }}
+                            className="absolute w-[75%] aspect-[3/4] rounded-2xl overflow-hidden shadow-lg border-4 border-white transform -translate-x-4 bg-gray-200 z-10"
+                        >
+                            <Image
+                                src="/Gemini_Generated_Image_r3ay2xr3ay2xr3ay.png"
+                                alt="Mundus learner"
+                                fill
+                                className="object-cover opacity-60"
+                            />
+                        </motion.div>
+
+                        {/* Card 2 - Middle */}
+                        <motion.div
+                            initial={{ rotate: 10, y: 20, scale: 0.9 }}
+                            animate={{ rotate: 6, y: 10, scale: 0.95 }}
+                            transition={{ duration: 0.8, delay: 0.4 }}
+                            className="absolute w-[75%] aspect-[3/4] rounded-2xl overflow-hidden shadow-xl border-4 border-white transform translate-x-4 bg-gray-200 z-20"
+                        >
+                            <Image
+                                src="/Gemini_Generated_Image_841mwh841mwh841m.png"
+                                alt="Mundus learner"
+                                fill
+                                className="object-cover opacity-80"
+                            />
+                        </motion.div>
+
+                        {/* Card 1 - Front (Main) */}
+                        <motion.div
+                            initial={{ rotate: 0, y: 40, scale: 0.9 }}
+                            animate={{ rotate: 0, y: 0, scale: 1 }}
+                            transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
+                            className="absolute w-[75%] aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl border-4 border-white z-30"
+                        >
+                            <Image
+                                src="/Gemini_Generated_Image_4omac74omac74oma.png"
+                                alt="Mundus learner"
+                                fill
+                                className="object-cover"
+                            />
+                            <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/60 to-transparent text-white text-center">
+                                <p className="font-bold text-sm">Interactive Logic</p>
+                            </div>
+                        </motion.div>
+                    </div>
+
+                    <div className="hidden md:grid image-grid grid-cols-12 gap-6 h-[500px]">
+                        <motion.div
+                            variants={imageReveal}
+                            className="col-span-12 md:col-span-6 lg:col-span-5 relative rounded-3xl overflow-hidden shadow-2xl h-full"
+                        >
+                            <Image
+                                src="/Gemini_Generated_Image_4omac74omac74oma.png"
+                                alt="Mundus learning experience"
+                                fill
+                                className="object-cover"
+                            />
+                        </motion.div>
+                        <motion.div
+                            variants={imageReveal}
+                            className="col-span-12 md:col-span-6 lg:col-span-4 flex flex-col gap-6 h-full"
+                        >
+                            <div className="relative flex-1 rounded-3xl overflow-hidden shadow-xl">
+                                <Image
+                                    src="/Gemini_Generated_Image_841mwh841mwh841m.png"
+                                    alt="Student learning"
+                                    fill
+                                    className="object-cover"
+                                />
+                            </div>
+                        </motion.div>
+                        <motion.div
+                            variants={imageReveal}
+                            className="col-span-12 lg:col-span-3 relative rounded-3xl overflow-hidden shadow-xl hidden lg:block h-full"
+                        >
+                            <Image
+                                src="/Gemini_Generated_Image_r3ay2xr3ay2xr3ay.png"
+                                alt="Student studying"
+                                fill
+                                className="object-cover"
+                            />
+                        </motion.div>
+                    </div>
                 </motion.div>
 
                 {/* Trust indicators */}
                 <motion.div
                     variants={fadeInUp}
                     transition={{ duration: 0.5, delay: 0.8 }}
-                    className="flex flex-wrap items-center justify-center gap-8 mt-12 text-sm text-[#525252]"
+                    className="flex flex-wrap items-center justify-center gap-4 md:gap-8 mt-8 md:mt-12 text-sm text-[#525252]"
                 >
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 bg-white/50 backdrop-blur-sm px-4 py-2 rounded-full border border-white/50 shadow-sm">
                         <div className="flex -space-x-2">
                             {[
                                 "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
@@ -159,14 +224,14 @@ export default function Hero() {
                                 />
                             ))}
                         </div>
-                        <span>10,000+ students</span>
+                        <span className="font-medium">10,000+ students</span>
                     </div>
-                    <div className="h-4 w-px bg-[#E5E5E5] hidden sm:block" />
-                    <div className="flex items-center gap-1">
+
+                    <div className="flex items-center gap-1 bg-white/50 backdrop-blur-sm px-4 py-2 rounded-full border border-white/50 shadow-sm">
                         {[1, 2, 3, 4, 5].map((i) => (
                             <Star key={i} size={16} className="fill-yellow-400 text-yellow-400" />
                         ))}
-                        <span className="ml-1">4.9/5 rating</span>
+                        <span className="ml-1 font-medium">4.9/5 rating</span>
                     </div>
                 </motion.div>
             </motion.div>

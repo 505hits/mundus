@@ -16,7 +16,7 @@ export default function CalendlyWidget() {
     }, []);
 
     return (
-        <section id="calendly" className="section bg-white">
+        <section id="booking" className="section bg-white">
             <div className="container">
                 <div className="section-header">
                     <span className="section-label">Book now</span>

@@ -26,7 +26,7 @@ export default function CalendlyWidget() {
 
                 <div
                     className="calendly-inline-widget w-full h-[700px] border border-[#E5E5E5] rounded-2xl overflow-hidden shadow-sm"
-                    data-url="https://calendly.com/allan-chemla/30min?hide_gdpr_banner=1"
+                    data-url="https://calendly.com/apollinairechemla/30min?hide_gdpr_banner=1"
                 />
             </div>
         </section>

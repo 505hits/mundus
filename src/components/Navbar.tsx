@@ -34,7 +34,7 @@ export default function Navbar() {
             >
                 <div className="navbar-inner">
                     {/* Logo */}
-                    <a href="#" className="nav-logo relative h-10 w-32">
+                    <a href="#" className="nav-logo relative h-14 w-40">
                         <Image
                             src="/Gemini_Generated_Image_ytz5tytz5tytz5ty-removebg-preview.png"
                             alt="Mundus"

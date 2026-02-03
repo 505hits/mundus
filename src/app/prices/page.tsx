@@ -107,7 +107,7 @@ export default function PricesPage() {
                                 href="#calendly"
                                 className={`btn w-full justify-center ${pack.highlight ? 'btn-primary' : 'btn-secondary'}`}
                             >
-                                Choose {pack.name}
+                                Book a free discovery call
                             </a>
                         </motion.div>
                     ))}

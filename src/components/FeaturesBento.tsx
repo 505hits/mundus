@@ -26,43 +26,43 @@ const cardReveal = {
 const features = [
     {
         icon: Users,
-        title: "Native-speaker interaction",
-        description: "No extra apps or platforms — talk to real teachers directly inside Mundus.",
+        title: "Interakcia s rodeným hovorcom",
+        description: "Žiadne ďalšie aplikácie alebo platformy — hovorte so skutočnými učiteľmi priamo v Mundus.",
         color: "from-blue-500 to-indigo-600",
         shadow: "shadow-blue-200",
     },
     {
         icon: Brain,
-        title: "Smart progress tracking",
-        description: "Track your learning journey and adapt lessons to your pace.",
+        title: "Smart sledovanie pokroku",
+        description: "Sledujte svoju cestu učením a prispôsobte lekcie svojmu tempu.",
         color: "from-purple-500 to-pink-500",
         shadow: "shadow-purple-200",
     },
     {
         icon: Globe,
-        title: "24/7 availability",
-        description: "Find tutors across all time zones, ready when you are.",
+        title: "Dostupnosť 24/7",
+        description: "Nájdite tútorov vo všetkých časových pásmach, pripravených keď ste vy.",
         color: "from-teal-400 to-emerald-500",
         shadow: "shadow-teal-200",
     },
     {
         icon: Zap,
-        title: "Instant matching",
-        description: "Get paired with the perfect tutor in seconds based on your goals.",
+        title: "Okamžité priradenie",
+        description: "Získajte perfektného tútora za pár sekúnd na základe vašich cieľov.",
         color: "from-amber-400 to-orange-500",
         shadow: "shadow-amber-200",
     },
     {
         icon: MessageCircle,
-        title: "Real conversations",
-        description: "Practice authentic dialogues, not scripted scenarios.",
+        title: "Skutočné konverzácie",
+        description: "Precvičujte autentické dialógy, nie napísané scenáre.",
         color: "from-rose-400 to-red-500",
         shadow: "shadow-rose-200",
     },
     {
         icon: Award,
-        title: "Certified progress",
-        description: "Receive a personalized certificate when you complete your course.",
+        title: "Certifikovaný pokrok",
+        description: "Získajte personalizovaný certifikát po dokončení kurzu.",
         color: "from-cyan-400 to-blue-500",
         shadow: "shadow-cyan-200",
     },
@@ -81,13 +81,13 @@ export default function FeaturesBento() {
                     className="section-header text-center mb-16"
                 >
                     <motion.span variants={fadeInUp} className="section-label inline-block px-4 py-1.5 rounded-full bg-blue-100 text-blue-600 font-semibold text-sm mb-4">
-                        Why Mundus
+                        Prečo Mundus
                     </motion.span>
                     <motion.h2 variants={fadeInUp} className="section-title text-4xl md:text-5xl font-bold mb-6">
-                        Everything you need to <span className="accent-word text-blue-600">succeed</span>
+                        Všetko čo potrebujete na <span className="accent-word text-blue-600">úspech</span>
                     </motion.h2>
                     <motion.p variants={fadeInUp} className="section-subtitle text-lg text-gray-600 max-w-2xl mx-auto">
-                        Not just another course — Mundus blends smart tools with real conversation.
+                        Nie len ďalší kurz — Mundus spája smart nástroje so skutočnou konverzáciou.
                     </motion.p>
                 </motion.div>
 

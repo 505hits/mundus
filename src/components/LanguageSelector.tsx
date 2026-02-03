@@ -78,21 +78,21 @@ export default function LanguageSelector() {
                 >
                     <motion.div variants={fadeInUp} className="inline-block mb-6">
                         <span className="px-5 py-2 rounded-full bg-blue-50 text-blue-600 text-sm font-bold border border-blue-100 uppercase tracking-wide">
-                            Choose your language
+                            Vyberte si jazyk
                         </span>
                     </motion.div>
                     <motion.h2 variants={fadeInUp} className="section-title text-5xl md:text-7xl font-bold mb-8 text-gray-900 tracking-tight leading-none">
-                        Choose the right course <br className="hidden md:block" />
-                        for your <span className="text-primary relative inline-block">
-                            goals
+                        Vyberte si správny kurz <br className="hidden md:block" />
+                        pre vaše <span className="text-primary relative inline-block">
+                            ciele
                             <svg className="absolute w-full h-3 bottom-0 left-0 text-yellow-300 -z-10 opacity-60" viewBox="0 0 100 10" preserveAspectRatio="none">
                                 <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="8" fill="none" />
                             </svg>
                         </span>
                     </motion.h2>
                     <motion.p variants={fadeInUp} className="section-subtitle text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto font-medium">
-                        Select your desired language and connect with native-speaking tutors
-                        from around the world.
+                        Vyberte si požadovaný jazyk a spojte sa s rodenými lektormi
+                        z celého sveta.
                     </motion.p>
                 </motion.div>
 

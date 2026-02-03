@@ -19,14 +19,14 @@ export default function CalendlyWidget() {
         <section id="booking" className="section bg-white">
             <div className="container">
                 <div className="section-header">
-                    <span className="section-label">Book now</span>
-                    <h2 className="section-title">Schedule your <span className="accent-word">first lesson</span></h2>
-                    <p className="section-subtitle">Select a time that works for you and start speaking immediately.</p>
+                    <span className="section-label">Rezervovať</span>
+                    <h2 className="section-title">Naplánujte si <span className="accent-word">prvú lekciu</span></h2>
+                    <p className="section-subtitle">Vyberte si čas, ktorý vám vyhovuje, a začnite hovoriť okamžite.</p>
                 </div>
 
                 <div
                     className="calendly-inline-widget w-full h-[700px] border border-[#E5E5E5] rounded-2xl overflow-hidden shadow-sm"
-                    data-url="https://calendly.com/apollinairechemla/30min?hide_gdpr_banner=1"
+                    data-url="https://calendly.com/mundus-languages/30min?hide_gdpr_banner=1"
                 />
             </div>
         </section>

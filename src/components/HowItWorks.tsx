@@ -15,23 +15,23 @@ const stagger = {
 const steps = [
     {
         number: "01",
-        title: "Take a quick test",
-        description: "Find your level in just 2 minutes — no pressure, just a starting point.",
+        title: "Urobte si rýchly test",
+        description: "Zistite svoju úroveň za 2 minúty — žiadny stres, len východiskový bod.",
     },
     {
         number: "02",
-        title: "Choose your course",
-        description: "Pick the plan that fits your goals: beginner, conversation, business, or exam prep.",
+        title: "Vyberte si kurz",
+        description: "Zvoľte plán, ktorý sedí vašim cieľom: začiatočník, konverzácia, biznis alebo príprava na skúšky.",
     },
     {
         number: "03",
-        title: "Start learning online",
-        description: "Access lessons anytime and join live video calls with native-speaking tutors.",
+        title: "Začnite sa učiť online",
+        description: "Prístup k lekciám kedykoľvek a živé videohovory s rodenými lektormi.",
     },
     {
         number: "04",
-        title: "Improve every day",
-        description: "Track your progress, unlock new topics, and stay consistent with smart reminders.",
+        title: "Zlepšujte sa každý deň",
+        description: "Sledujte svoj pokrok, odomykajte nové témy a buďte konzistentní vďaka smart pripomienkam.",
     },
 ];
 
@@ -48,13 +48,13 @@ export default function HowItWorks() {
                     className="section-header"
                 >
                     <motion.span variants={fadeInUp} className="section-label">
-                        Simple process
+                        Jednoduchý proces
                     </motion.span>
                     <motion.h2 variants={fadeInUp} className="section-title">
-                        How it <span className="accent-word">works</span>
+                        Ako to <span className="accent-word">funguje</span>
                     </motion.h2>
                     <motion.p variants={fadeInUp} className="section-subtitle">
-                        Get started in minutes — choose your path, learn at your pace, and see real progress.
+                        Začnite v priebehu pár minút — vyberte si cestu, učte sa vlastným tempom a vidíte skutočný pokrok.
                     </motion.p>
                 </motion.div>
 

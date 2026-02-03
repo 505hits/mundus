@@ -49,7 +49,7 @@ export default function Hero() {
                 >
                     <span className="hero-badge text-xs md:text-sm px-3 py-1.5 md:px-4 md:py-2">
                         <Star size={12} className="md:w-[14px] md:h-[14px]" />
-                        Thousands of happy learners — and counting
+                        Tisíce spokojných študentov — a rastieme
                     </span>
                 </motion.div>
 
@@ -58,9 +58,9 @@ export default function Hero() {
                     variants={titleAnimation}
                     className="hero-title mt-6 text-4xl md:text-6xl lg:text-7xl font-bold text-center leading-[1.1]"
                 >
-                    Learn languages with{" "}
+                    Učte sa jazyky s{" "}
                     <span className="accent-word relative inline-block">
-                        native speakers
+                        native spíkrami
                         <svg className="absolute w-full h-3 -bottom-1 left-0 text-primary opacity-80 -z-10" viewBox="0 0 100 10" preserveAspectRatio="none">
                             <motion.path
                                 d="M0 5 Q 50 10 100 5"
@@ -81,8 +81,8 @@ export default function Hero() {
                     transition={{ duration: 0.5, delay: 0.2 }}
                     className="hero-subtitle mt-6 text-base md:text-xl text-center max-w-2xl mx-auto text-gray-600"
                 >
-                    Experience immersive 1-on-1 sessions with native experts.
-                    Fluid, fast, and tailored to your goals.
+                    Zažite pohlcujúce lekcie 1 na 1 s rodenými expertmi.
+                    Plynulé, rýchle a prispôsobené vašim cieľom.
                 </motion.p>
 
                 {/* CTAs */}
@@ -97,11 +97,11 @@ export default function Hero() {
                         whileTap={{ scale: 0.98 }}
                         className="btn btn-primary w-full sm:w-auto justify-center"
                     >
-                        Book my first lesson
+                        Rezervovať prvú lekciu
                         <ArrowRight size={18} />
                     </motion.a>
                     <a href="#how-it-works" className="btn btn-secondary w-full sm:w-auto justify-center hidden sm:flex">
-                        See how it works
+                        Ako to funguje
                     </a>
                 </motion.div>
 
@@ -156,7 +156,7 @@ export default function Hero() {
                                 className="object-cover"
                             />
                             <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/60 to-transparent text-white text-center">
-                                <p className="font-bold text-sm">Interactive Logic</p>
+                                <p className="font-bold text-sm">Interaktívna výučba</p>
                             </div>
                         </motion.div>
                     </div>
@@ -224,14 +224,14 @@ export default function Hero() {
                                 />
                             ))}
                         </div>
-                        <span className="font-medium">10,000+ students</span>
+                        <span className="font-medium">10,000+ študentov</span>
                     </div>
 
                     <div className="flex items-center gap-1 bg-white/50 backdrop-blur-sm px-4 py-2 rounded-full border border-white/50 shadow-sm">
                         {[1, 2, 3, 4, 5].map((i) => (
                             <Star key={i} size={16} className="fill-yellow-400 text-yellow-400" />
                         ))}
-                        <span className="ml-1 font-medium">4.9/5 rating</span>
+                        <span className="ml-1 font-medium">4.9/5 hodnotenie</span>
                     </div>
                 </motion.div>
             </motion.div>

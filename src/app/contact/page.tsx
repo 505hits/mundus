@@ -35,13 +35,13 @@ export default function ContactPage() {
                         {/* Header Section */}
                         <motion.div variants={fadeInUp} className="text-center mb-16">
                             <span className="inline-block px-4 py-1.5 rounded-full bg-blue-100 text-blue-700 font-semibold text-sm tracking-wide uppercase mb-4 shadow-sm border border-blue-200/50">
-                                Get in touch
+                                Kontaktujte nás
                             </span>
                             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 tracking-tight">
-                                Let's Start a <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">Conversation</span>
+                                Začnime <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">konverzáciu</span>
                             </h1>
                             <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                                Whether you're ready to start learning or just have a few questions, we're here to help you every step of the way.
+                                Či už ste pripravení začať sa učiť alebo máte len pár otázok, sme tu aby sme vám pomohli na každom kroku.
                             </p>
                         </motion.div>
 
@@ -53,14 +53,14 @@ export default function ContactPage() {
                                         <Send size={120} className="transform rotate-12" />
                                     </div>
 
-                                    <h3 className="text-3xl font-bold mb-8 text-gray-900">Contact Info</h3>
+                                    <h3 className="text-3xl font-bold mb-8 text-gray-900">Kontaktné info</h3>
                                     <div className="space-y-8 relative z-10">
                                         <a href="mailto:hello@mundus.com" className="flex items-center gap-6 group/item p-4 rounded-2xl hover:bg-blue-50/50 transition-colors">
                                             <div className="bg-gradient-to-br from-blue-500 to-indigo-400 p-4 rounded-2xl text-white shadow-lg shadow-blue-200 group-hover/item:scale-110 transition-transform duration-300">
                                                 <Mail size={24} />
                                             </div>
                                             <div>
-                                                <p className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-1">Email Us</p>
+                                                <p className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-1">Napíšte nám</p>
                                                 <span className="text-lg font-bold text-gray-900 group-hover/item:text-blue-600 transition-colors">
                                                     hello@mundus.com
                                                 </span>
@@ -72,7 +72,7 @@ export default function ContactPage() {
                                                 <Phone size={24} />
                                             </div>
                                             <div>
-                                                <p className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-1">Call Us</p>
+                                                <p className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-1">Zavolajte nám</p>
                                                 <span className="text-lg font-bold text-gray-900 group-hover/item:text-blue-600 transition-colors">
                                                     +421 904 082 794
                                                 </span>
@@ -84,7 +84,7 @@ export default function ContactPage() {
                                                 <MapPin size={24} />
                                             </div>
                                             <div>
-                                                <p className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-1">Visit Us</p>
+                                                <p className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-1">Navštívte nás</p>
                                                 <span className="text-lg font-bold text-gray-900">
                                                     123 Language Street<br />
                                                     Paris, France 75001
@@ -100,48 +100,48 @@ export default function ContactPage() {
                                 <form className="bg-white p-10 rounded-[2.5rem] shadow-xl border border-gray-100 space-y-8 relative z-10">
                                     {/* Form Header */}
                                     <div className="mb-8">
-                                        <h3 className="text-2xl font-bold text-gray-900">Send us a message</h3>
-                                        <p className="text-gray-500 mt-2">Fill out the form below and we'll get back to you within 24 hours.</p>
+                                        <h3 className="text-2xl font-bold text-gray-900">Pošlite nám správu</h3>
+                                        <p className="text-gray-500 mt-2">Vyplňte formulár nižšie a ozveme sa vám do 24 hodín.</p>
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2 group">
-                                            <label htmlFor="firstName" className="text-sm font-bold text-gray-700 ml-1 group-focus-within:text-blue-600 transition-colors">First Name</label>
+                                            <label htmlFor="firstName" className="text-sm font-bold text-gray-700 ml-1 group-focus-within:text-blue-600 transition-colors">Meno</label>
                                             <input
                                                 type="text"
                                                 id="firstName"
                                                 className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-gray-200 text-gray-900 font-medium focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all duration-300 placeholder:text-gray-400"
-                                                placeholder="John"
+                                                placeholder="Ján"
                                             />
                                         </div>
                                         <div className="space-y-2 group">
-                                            <label htmlFor="lastName" className="text-sm font-bold text-gray-700 ml-1 group-focus-within:text-blue-600 transition-colors">Last Name</label>
+                                            <label htmlFor="lastName" className="text-sm font-bold text-gray-700 ml-1 group-focus-within:text-blue-600 transition-colors">Priezvisko</label>
                                             <input
                                                 type="text"
                                                 id="lastName"
                                                 className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-gray-200 text-gray-900 font-medium focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all duration-300 placeholder:text-gray-400"
-                                                placeholder="Doe"
+                                                placeholder="Novák"
                                             />
                                         </div>
                                     </div>
 
                                     <div className="space-y-2 group">
-                                        <label htmlFor="email" className="text-sm font-bold text-gray-700 ml-1 group-focus-within:text-blue-600 transition-colors">Email Address</label>
+                                        <label htmlFor="email" className="text-sm font-bold text-gray-700 ml-1 group-focus-within:text-blue-600 transition-colors">Emailová adresa</label>
                                         <input
                                             type="email"
                                             id="email"
                                             className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-gray-200 text-gray-900 font-medium focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all duration-300 placeholder:text-gray-400"
-                                            placeholder="john@example.com"
+                                            placeholder="jan.novak@example.com"
                                         />
                                     </div>
 
                                     <div className="space-y-2 group">
-                                        <label htmlFor="message" className="text-sm font-bold text-gray-700 ml-1 group-focus-within:text-blue-600 transition-colors">Your Message</label>
+                                        <label htmlFor="message" className="text-sm font-bold text-gray-700 ml-1 group-focus-within:text-blue-600 transition-colors">Vaša správa</label>
                                         <textarea
                                             id="message"
                                             rows={5}
                                             className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-gray-200 text-gray-900 font-medium focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all duration-300 resize-none placeholder:text-gray-400"
-                                            placeholder="Tell us how we can help..."
+                                            placeholder="Napíšte nám ako vám môžeme pomôcť..."
                                         />
                                     </div>
 
@@ -151,7 +151,7 @@ export default function ContactPage() {
                                         whileTap={{ scale: 0.98 }}
                                         className="w-full bg-gradient-to-r from-blue-600 to-indigo-500 text-white font-bold text-lg py-5 rounded-2xl shadow-lg shadow-blue-200 transition-all duration-300 flex items-center justify-center gap-3 group"
                                     >
-                                        Send Message
+                                        Odoslať správu
                                         <Send size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
                                     </motion.button>
                                 </form>

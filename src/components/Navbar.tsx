@@ -7,11 +7,11 @@ import Image from "next/image";
 import Link from "next/link";
 
 const navLinks = [
-    { name: "Courses", href: "/#languages" },
-    { name: "How it works", href: "/#how-it-works" },
-    { name: "Teachers", href: "/#teachers" },
-    { name: "Features", href: "/#features" },
-    { name: "Contact", href: "/contact" },
+    { name: "Kurzy", href: "/#languages" },
+    { name: "Ako to funguje", href: "/#how-it-works" },
+    { name: "Lektori", href: "/#teachers" },
+    { name: "Výhody", href: "/#features" },
+    { name: "Kontakt", href: "/contact" },
 ];
 
 export default function Navbar() {
@@ -75,7 +75,7 @@ export default function Navbar() {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                         >
-                            Book my first lesson
+                            Rezervovať prvú lekciu
                         </motion.a>
                     </div>
 
@@ -150,10 +150,10 @@ export default function Navbar() {
                                 onClick={() => setIsMobileMenuOpen(false)}
                                 className="btn btn-primary w-full justify-center text-lg py-4"
                             >
-                                Book my first lesson
+                                Rezervovať prvú lekciu
                             </a>
                             <p className="mt-6 text-center text-gray-500 text-sm">
-                                Need help? <a href="mailto:support@mundus.com" className="text-primary underline">Contact us</a>
+                                Potrebujete pomoc? <a href="mailto:support@mundus.com" className="text-primary underline">Kontaktujte nás</a>
                             </p>
                         </motion.div>
                     </motion.div>

@@ -27,57 +27,57 @@ const teachers = [
     {
         name: "Aniko",
         flag: "🇬🇧",
-        specialty: "British English Specialist",
-        description: "Master the British accent and cultural nuances.",
+        specialty: "Špecialistka na britskú angličtinu",
+        description: "Osvojte si britský prízvuk a kultúrne nuansy.",
         image: "/Aniko.png",
     },
     {
         name: "Dani",
         flag: "🇪🇸",
-        specialty: "Conversational Spanish",
-        description: "Fluid conversation practice for all levels.",
+        specialty: "Konverzačná španielčina",
+        description: "Plynulá konverzácia pre všetky úrovne.",
         image: "/Dani.png",
     },
     {
         name: "Jakub",
         flag: "🇪🇸",
-        specialty: "Spanish Grammar Coach",
-        description: "Master complex grammar with simple explanations.",
+        specialty: "Kouč španielskej gramatiky",
+        description: "Zvládnite komplexnú gramatiku jednoduchými vysvetleniami.",
         image: "/Jakub.jpeg",
     },
     {
         name: "Alisa",
         flag: "🇷🇺",
-        specialty: "Russian Native",
-        description: "Immersive lessons in Russian language and culture.",
+        specialty: "Rodená hovorkyňa ruštiny",
+        description: "Pohlcujúce lekcie ruského jazyka a kultúry.",
         image: "/alisa.JPG",
     },
     {
         name: "Roland",
         flag: "🇮🇹",
-        specialty: "Italian Expert",
-        description: "Learn to speak Italian with passion and confidence.",
+        specialty: "Expert na taliančinu",
+        description: "Naučte sa hovoriť taliansky s vášňou a sebavedomím.",
         image: "/roland.jpeg",
     },
     {
         name: "Bella",
         flag: "🇬🇧",
-        specialty: "English",
-        description: "Engaging lessons for everyone, from beginners to advanced.",
+        specialty: "Angličtina",
+        description: "Zábavné lekcie pre každého, od začiatočníkov po pokročilých.",
         image: "/Bella English side.png",
     },
     {
         name: "Simona",
         flag: "🇬🇧",
-        specialty: "Business English",
-        description: "Professional communication skills for your career.",
+        specialty: "Obchodná angličtina",
+        description: "Profesionálne komunikačné zručnosti pre vašu kariéru.",
         image: "/simona.jpg",
     },
     {
         name: "Anar",
         flag: "🇨🇳",
-        specialty: "Mandarin Chinese",
-        description: "Learn the world's most spoken language effectively.",
+        specialty: "Mandarínska čínština",
+        description: "Naučte sa efektívne najrozšírenejší jazyk sveta.",
         image: "/Anar Chinese chill.png",
     },
 ];
@@ -96,13 +96,13 @@ export default function TeacherSection() {
                     className="section-header text-center mb-16"
                 >
                     <motion.span variants={fadeInUp} className="section-label inline-block px-4 py-1.5 rounded-full bg-blue-100 text-blue-600 text-sm font-semibold mb-4">
-                        Our teachers
+                        Naši lektori
                     </motion.span>
                     <motion.h2 variants={fadeInUp} className="section-title text-4xl md:text-5xl font-bold mb-6">
-                        Meet your <span className="text-primary">experts</span>
+                        Spoznajte vašich <span className="text-primary">expertov</span>
                     </motion.h2>
                     <motion.p variants={fadeInUp} className="section-subtitle text-lg text-gray-600 max-w-2xl mx-auto">
-                        Join live sessions with native teachers — carefully selected for their expertise and passion.
+                        Pripojte sa k živým lekciám s rodenými hovorcami — starostlivo vybranými pre ich odbornosť a vášeň.
                     </motion.p>
                 </motion.div>
 

@@ -13,10 +13,10 @@ const stagger = {
 };
 
 const footerLinks = {
-    Languages: ["English", "Spanish", "Italian", "Portuguese"],
-    Company: ["About us", "Careers", "Blog", "Press"],
-    Support: ["Help center", "Contact", "FAQs", "Community"],
-    Legal: ["Privacy", "Terms", "Cookies", "Licenses"],
+    Languages: ["Angličtina", "Španielčina", "Taliančina", "Portugalčina"],
+    Company: ["O nás", "Kariéra", "Blog", "Tlač"],
+    Support: ["Centrum pomoci", "Kontakt", "FAQ", "Komunita"],
+    Legal: ["Súkromie", "Podmienky", "Cookies", "Licencie"],
 };
 
 export default function Footer() {
@@ -34,15 +34,15 @@ export default function Footer() {
                     <motion.div variants={fadeInUp}>
                         <div className="footer-brand">Mundus</div>
                         <p className="footer-desc">
-                            Master the world&apos;s most beautiful languages with native speakers.
-                            Immersive, personalized, and effective.
+                            Osvojte si najkrajšie jazyky sveta s rodenými hovorcami.
+                            Pohlcujúce, personalizované a efektívne.
                         </p>
                     </motion.div>
 
                     {/* Links */}
                     {Object.entries(footerLinks).map(([category, links]) => (
                         <motion.div key={category} variants={fadeInUp}>
-                            <div className="footer-title">{category}</div>
+                            <div className="footer-title">{category === "Languages" ? "Jazyky" : category === "Company" ? "Spoločnosť" : category === "Support" ? "Podpora" : "Právne"}</div>
                             <ul className="footer-links">
                                 {links.map((link) => (
                                     <li key={link}>
@@ -61,7 +61,7 @@ export default function Footer() {
                     variants={fadeInUp}
                     className="footer-bottom"
                 >
-                    <span>© 2024 Mundus. All rights reserved.</span>
+                    <span>© 2024 Mundus. Všetky práva vyhradené.</span>
                     <div className="flex gap-6">
                         <a href="#" className="hover:text-[#181818] transition-colors">Twitter</a>
                         <a href="#" className="hover:text-[#181818] transition-colors">LinkedIn</a>

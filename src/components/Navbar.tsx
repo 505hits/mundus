@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import Image from "next/image";
 
 const navLinks = [
     { name: "Courses", href: "#languages" },
@@ -33,8 +34,13 @@ export default function Navbar() {
             >
                 <div className="navbar-inner">
                     {/* Logo */}
-                    <a href="#" className="nav-logo">
-                        Mundus
+                    <a href="#" className="nav-logo relative h-10 w-32">
+                        <Image
+                            src="/Gemini_Generated_Image_ytz5tytz5tytz5ty-removebg-preview.png"
+                            alt="Mundus"
+                            fill
+                            className="object-contain object-left"
+                        />
                     </a>
 
                     {/* Desktop Navigation */}

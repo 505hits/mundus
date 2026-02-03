@@ -88,7 +88,7 @@ export default function Navbar() {
                     <div className="hidden xl:flex items-center">
                         <motion.a
                             href="/#booking"
-                            className="btn btn-primary"
+                            className="btn btn-primary !py-2.5 !px-5 !text-sm whitespace-nowrap"
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                         >
@@ -188,7 +188,7 @@ export default function Navbar() {
                             <a
                                 href="/#booking"
                                 onClick={() => setIsMobileMenuOpen(false)}
-                                className="btn btn-primary w-full justify-center text-lg py-4"
+                                className="btn btn-primary w-full justify-center text-base py-3"
                             >
                                 {t.nav.book}
                             </a>

@@ -6,6 +6,7 @@ import TeacherSection from "@/components/TeacherSection";
 import FeaturesBento from "@/components/FeaturesBento";
 import CalendlyWidget from "@/components/CalendlyWidget";
 import Footer from "@/components/Footer";
+import PricingSection from "@/components/PricingSection";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
       <HowItWorks />
       <TeacherSection />
       <FeaturesBento />
+      <PricingSection />
       <CalendlyWidget />
       <Footer />
     </main>

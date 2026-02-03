@@ -2,10 +2,11 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useLanguage } from "@/context/LanguageContext";
 
 const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const } },
 };
 
 const stagger = {
@@ -13,13 +14,13 @@ const stagger = {
     visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
 };
 
-const imageReveal = {
-    hidden: { opacity: 0, scale: 0.9, filter: "blur(10px)" },
+const cardReveal = {
+    hidden: { opacity: 0, y: 50, scale: 0.9 },
     visible: {
         opacity: 1,
+        y: 0,
         scale: 1,
-        filter: "blur(0px)",
-        transition: { duration: 0.8, ease: "easeOut" as const }
+        transition: { type: "spring" as const, stiffness: 100, damping: 15 }
     },
 };
 
@@ -84,10 +85,10 @@ const teachers = [
 
 
 export default function TeacherSection() {
+    const { t } = useLanguage();
     return (
-        <section id="teachers" className="section relative overflow-hidden bg-white py-24">
-            <div className="container relative z-10">
-                {/* Header */}
+        <section id="teachers" className="section bg-white py-24">
+            <div className="container">
                 <motion.div
                     initial="hidden"
                     whileInView="visible"
@@ -95,57 +96,57 @@ export default function TeacherSection() {
                     variants={stagger}
                     className="section-header text-center mb-16"
                 >
-                    <motion.span variants={fadeInUp} className="section-label inline-block px-4 py-1.5 rounded-full bg-blue-100 text-blue-600 text-sm font-semibold mb-4">
-                        Naši lektori
+                    <motion.span variants={fadeInUp} className="section-label inline-block px-4 py-1.5 rounded-full bg-blue-50 text-blue-600 font-semibold text-sm mb-4">
+                        {t.teachers.label}
                     </motion.span>
-                    <motion.h2 variants={fadeInUp} className="section-title text-4xl md:text-5xl font-bold mb-6">
-                        Spoznajte vašich <span className="text-primary">expertov</span>
+                    <motion.h2 variants={fadeInUp} className="section-title text-4xl md:text-5xl font-bold mb-6 text-gray-900">
+                        {t.teachers.titleStart} <span className="accent-word relative inline-block text-blue-600">
+                            {t.teachers.titleEnd}
+                            <svg className="absolute w-full h-3 bottom-0 left-0 text-yellow-300 -z-10 opacity-40" viewBox="0 0 100 10" preserveAspectRatio="none">
+                                <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="8" fill="none" />
+                            </svg>
+                        </span>
                     </motion.h2>
                     <motion.p variants={fadeInUp} className="section-subtitle text-lg text-gray-600 max-w-2xl mx-auto">
-                        Pripojte sa k živým lekciám s rodenými hovorcami — starostlivo vybranými pre ich odbornosť a vášeň.
+                        {t.teachers.subtitle}
                     </motion.p>
                 </motion.div>
 
-                {/* Teachers Grid */}
-                <motion.div
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, margin: "-50px" }}
-                    variants={stagger}
-                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
-                >
-                    {teachers.map((teacher) => (
-                        <motion.div
-                            key={teacher.name}
-                            variants={imageReveal}
-                            className="group relative bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-100"
-                        >
-                            <motion.div
-                                className="relative aspect-[3/4] overflow-hidden"
-                                whileHover={{ scale: 1.05 }}
-                                transition={{ duration: 0.4 }}
-                            >
-                                <Image
-                                    src={teacher.image}
-                                    alt={teacher.name}
-                                    fill
-                                    className="object-cover transition-transform duration-500"
-                                />
-                                {/* Enhanced Gradient Overlay for Readability */}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-90" />
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    {t.teachers.list.map((teacher, index) => {
+                        // Map static images to translated teachers
+                        const teacherImage = teachers[index].image;
 
-                                <div className="absolute bottom-0 left-0 p-6 w-full translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                                    <div className="flex items-center gap-2 mb-1">
-                                        <h3 className="text-xl font-bold !text-white drop-shadow-md">{teacher.name}</h3>
-                                        <span className="text-2xl text-white">{teacher.flag}</span>
+                        return (
+                            <motion.div
+                                key={index}
+                                initial="hidden"
+                                whileInView="visible"
+                                viewport={{ once: true, margin: "-50px" }}
+                                variants={cardReveal}
+                                className="group relative cursor-pointer"
+                            >
+                                <div className="relative overflow-hidden rounded-2xl aspect-[3/4] mb-4 shadow-lg shadow-gray-200">
+                                    <Image
+                                        src={teacherImage}
+                                        alt={teacher.name}
+                                        fill
+                                        className="object-cover transition-transform duration-700 group-hover:scale-110"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 transition-opacity duration-300" />
+
+                                    <div className="absolute bottom-0 left-0 w-full p-6 text-white translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                                        <h3 className="text-xl font-bold mb-1 text-white">{teacher.name}</h3>
+                                        <p className="text-sm font-medium text-blue-200 mb-2">{teacher.specialty}</p>
+                                        <p className="text-xs text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300 line-clamp-2">
+                                            {teacher.description}
+                                        </p>
                                     </div>
-                                    <p className="!text-white text-sm font-medium mb-2 opacity-95 drop-shadow-md">{teacher.specialty}</p>
-                                    <p className="!text-white text-sm line-clamp-2 leading-relaxed drop-shadow-md">{teacher.description}</p>
                                 </div>
                             </motion.div>
-                        </motion.div>
-                    ))}
-                </motion.div>
+                        );
+                    })}
+                </div>
             </div>
         </section>
     );

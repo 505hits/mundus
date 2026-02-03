@@ -3,8 +3,10 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function FloatingCTA() {
+    const { t } = useLanguage();
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
@@ -28,10 +30,10 @@ export default function FloatingCTA() {
                     className="fixed bottom-8 right-8 z-40"
                 >
                     <a
-                        href="/prices"
+                        href="/#booking"
                         className="flex items-center gap-2 bg-[#BFFF00] text-[#181818] px-6 py-4 rounded-full font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all transform"
                     >
-                        <span>Book your first lesson</span>
+                        <span>{t.nav.book}</span>
                         <ArrowRight size={20} />
                     </a>
                 </motion.div>

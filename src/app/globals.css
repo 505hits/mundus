@@ -10,7 +10,7 @@
   --foreground-muted: #525252;
   --foreground-subtle: #A3A3A3;
 
-  /* Lime Green Accent (from Talkee) */
+  /* Lime Green Accent (Updated) */
   --accent: #BFFF00;
   --accent-dark: #A3E000;
   --accent-text: #181818;
@@ -281,7 +281,7 @@ h3 {
 }
 
 .nav-links {
-  display: flex;
+  /* display: flex; REMOVED to allow Tailwind 'hidden' to work */
   align-items: center;
   gap: 32px;
 }

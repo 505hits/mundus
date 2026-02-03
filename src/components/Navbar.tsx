@@ -5,18 +5,20 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-
-const navLinks = [
-    { name: "Kurzy", href: "/#languages" },
-    { name: "Ako to funguje", href: "/#how-it-works" },
-    { name: "Lektori", href: "/#teachers" },
-    { name: "Výhody", href: "/#features" },
-    { name: "Kontakt", href: "/contact" },
-];
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function Navbar() {
+    const { t, language, setLanguage } = useLanguage();
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+    const navLinks = [
+        { name: t.nav.courses, href: "/#languages" },
+        { name: t.nav.howItWorks, href: "/#how-it-works" },
+        { name: t.nav.teachers, href: "/#teachers" },
+        { name: t.nav.features, href: "/#features" },
+        { name: t.nav.contact, href: "/contact" },
+    ];
 
     useEffect(() => {
         const handleScroll = () => {
@@ -62,6 +64,21 @@ export default function Navbar() {
                                 {link.name}
                             </Link>
                         ))}
+                        {/* Language Toggle */}
+                        <div className="flex items-center gap-2 bg-gray-100 rounded-full p-1 ml-2">
+                            <button
+                                onClick={() => setLanguage("en")}
+                                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${language === "en" ? "bg-white shadow text-gray-900" : "text-gray-500 hover:text-gray-900"}`}
+                            >
+                                EN
+                            </button>
+                            <button
+                                onClick={() => setLanguage("sk")}
+                                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${language === "sk" ? "bg-white shadow text-gray-900" : "text-gray-500 hover:text-gray-900"}`}
+                            >
+                                SK
+                            </button>
+                        </div>
                         <a href="tel:+421904082794" className="nav-link text-sm font-semibold text-gray-900 hover:text-primary transition-colors flex items-center gap-1">
                             +421 904 082 794
                         </a>
@@ -75,7 +92,7 @@ export default function Navbar() {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                         >
-                            Rezervovať prvú lekciu
+                            {t.nav.book}
                         </motion.a>
                     </div>
 
@@ -122,7 +139,6 @@ export default function Navbar() {
                                     </Link>
                                 </motion.div>
                             ))}
-                            {/* Mobile Phone Number */}
                             <motion.div
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
@@ -137,6 +153,30 @@ export default function Navbar() {
                                     <ArrowRight size={20} className="text-gray-400" />
                                 </a>
                             </motion.div>
+
+                            {/* Mobile Language Toggle */}
+                            <motion.div
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.4 }}
+                                className="flex items-center gap-3 justify-center bg-gray-50 p-3 rounded-xl"
+                            >
+                                <span className="text-sm font-semibold text-gray-500">Language:</span>
+                                <div className="flex items-center gap-2 bg-white rounded-full p-1 shadow-sm border border-gray-100">
+                                    <button
+                                        onClick={() => setLanguage("en")}
+                                        className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${language === "en" ? "bg-gray-900 text-white shadow-md" : "text-gray-500 hover:text-gray-900"}`}
+                                    >
+                                        English
+                                    </button>
+                                    <button
+                                        onClick={() => setLanguage("sk")}
+                                        className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${language === "sk" ? "bg-gray-900 text-white shadow-md" : "text-gray-500 hover:text-gray-900"}`}
+                                    >
+                                        Slovenský
+                                    </button>
+                                </div>
+                            </motion.div>
                         </div>
 
                         <motion.div
@@ -150,15 +190,16 @@ export default function Navbar() {
                                 onClick={() => setIsMobileMenuOpen(false)}
                                 className="btn btn-primary w-full justify-center text-lg py-4"
                             >
-                                Rezervovať prvú lekciu
+                                {t.nav.book}
                             </a>
                             <p className="mt-6 text-center text-gray-500 text-sm">
-                                Potrebujete pomoc? <a href="mailto:support@mundus.com" className="text-primary underline">Kontaktujte nás</a>
+                                {t.nav.needHelp} <a href="mailto:support@mundus.com" className="text-primary underline">{t.nav.contactUs}</a>
                             </p>
                         </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                    </motion.div >
+                )
+                }
+            </AnimatePresence >
         </>
     );
 }

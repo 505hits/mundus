@@ -30,7 +30,10 @@ const floatingFlags = [
     { code: "de", x: "75%", y: "30%", delay: 1.2, size: 40 },
 ];
 
+import { useLanguage } from "@/context/LanguageContext";
+
 export default function LanguageSelector() {
+    const { t } = useLanguage();
     return (
         <section id="languages" className="section relative overflow-hidden bg-gradient-to-b from-blue-50/20 to-white py-12 md:py-24">
             {/* Background Floating Flags - Adjusted positions to avoid center text */}
@@ -78,21 +81,20 @@ export default function LanguageSelector() {
                 >
                     <motion.div variants={fadeInUp} className="inline-block mb-6">
                         <span className="px-5 py-2 rounded-full bg-blue-50 text-blue-600 text-sm font-bold border border-blue-100 uppercase tracking-wide">
-                            Vyberte si jazyk
+                            {t.languageSelector.badge}
                         </span>
                     </motion.div>
                     <motion.h2 variants={fadeInUp} className="section-title text-5xl md:text-7xl font-bold mb-8 text-gray-900 tracking-tight leading-none">
-                        Vyberte si správny kurz <br className="hidden md:block" />
-                        pre vaše <span className="text-primary relative inline-block">
-                            ciele
+                        {t.languageSelector.title} <br className="hidden md:block" />
+                        {t.languageSelector.titleBreak} <span className="text-primary relative inline-block">
+                            {t.languageSelector.goals}
                             <svg className="absolute w-full h-3 bottom-0 left-0 text-yellow-300 -z-10 opacity-60" viewBox="0 0 100 10" preserveAspectRatio="none">
                                 <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="8" fill="none" />
                             </svg>
                         </span>
                     </motion.h2>
                     <motion.p variants={fadeInUp} className="section-subtitle text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto font-medium">
-                        Vyberte si požadovaný jazyk a spojte sa s rodenými lektormi
-                        z celého sveta.
+                        {t.languageSelector.subtitle}
                     </motion.p>
                 </motion.div>
 

@@ -3,7 +3,10 @@
 import { useEffect } from "react";
 
 
+import { useLanguage } from "@/context/LanguageContext";
+
 export default function CalendlyWidget() {
+    const { t } = useLanguage();
     useEffect(() => {
         const script = document.createElement("script");
         script.src = "https://assets.calendly.com/assets/external/widget.js";
@@ -19,9 +22,9 @@ export default function CalendlyWidget() {
         <section id="booking" className="section bg-white">
             <div className="container">
                 <div className="section-header">
-                    <span className="section-label">Rezervovať</span>
-                    <h2 className="section-title">Naplánujte si <span className="accent-word">prvú lekciu</span></h2>
-                    <p className="section-subtitle">Vyberte si čas, ktorý vám vyhovuje, a začnite hovoriť okamžite.</p>
+                    <span className="section-label">{t.booking.label}</span>
+                    <h2 className="section-title">{t.booking.titleStart} <span className="accent-word">{t.booking.titleEnd}</span></h2>
+                    <p className="section-subtitle">{t.booking.subtitle}</p>
                 </div>
 
                 <div

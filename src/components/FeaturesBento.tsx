@@ -28,51 +28,53 @@ const features = [
         icon: Users,
         title: "Interakcia s rodeným hovorcom",
         description: "Žiadne ďalšie aplikácie alebo platformy — hovorte so skutočnými učiteľmi priamo v Mundus.",
-        color: "from-blue-500 to-indigo-600",
-        shadow: "shadow-blue-200",
+        color: "from-lime-400 to-lime-600",
+        shadow: "shadow-lime-200",
     },
     {
         icon: Brain,
         title: "Smart sledovanie pokroku",
         description: "Sledujte svoju cestu učením a prispôsobte lekcie svojmu tempu.",
-        color: "from-purple-500 to-pink-500",
-        shadow: "shadow-purple-200",
+        color: "from-lime-400 to-lime-600",
+        shadow: "shadow-lime-200",
     },
     {
         icon: Globe,
         title: "Dostupnosť 24/7",
         description: "Nájdite tútorov vo všetkých časových pásmach, pripravených keď ste vy.",
-        color: "from-teal-400 to-emerald-500",
-        shadow: "shadow-teal-200",
+        color: "from-lime-400 to-lime-600",
+        shadow: "shadow-lime-200",
     },
     {
         icon: Zap,
         title: "Okamžité priradenie",
         description: "Získajte perfektného tútora za pár sekúnd na základe vašich cieľov.",
-        color: "from-amber-400 to-orange-500",
-        shadow: "shadow-amber-200",
+        color: "from-lime-400 to-lime-600",
+        shadow: "shadow-lime-200",
     },
     {
         icon: MessageCircle,
         title: "Skutočné konverzácie",
         description: "Precvičujte autentické dialógy, nie napísané scenáre.",
-        color: "from-rose-400 to-red-500",
-        shadow: "shadow-rose-200",
+        color: "from-lime-400 to-lime-600",
+        shadow: "shadow-lime-200",
     },
     {
         icon: Award,
         title: "Certifikovaný pokrok",
         description: "Získajte personalizovaný certifikát po dokončení kurzu.",
-        color: "from-cyan-400 to-blue-500",
-        shadow: "shadow-cyan-200",
+        color: "from-lime-400 to-lime-600",
+        shadow: "shadow-lime-200",
     },
 ];
 
+import { useLanguage } from "@/context/LanguageContext";
+
 export default function FeaturesBento() {
+    const { t } = useLanguage();
     return (
         <section id="features" className="section py-24 bg-gray-50/50">
-            <div className="container">
-                {/* Header */}
+            <div className="container relative z-10">
                 <motion.div
                     initial="hidden"
                     whileInView="visible"
@@ -80,43 +82,49 @@ export default function FeaturesBento() {
                     variants={stagger}
                     className="section-header text-center mb-16"
                 >
-                    <motion.span variants={fadeInUp} className="section-label inline-block px-4 py-1.5 rounded-full bg-blue-100 text-blue-600 font-semibold text-sm mb-4">
-                        Prečo Mundus
+                    <motion.span variants={fadeInUp} className="section-label inline-block px-4 py-1.5 rounded-full bg-lime-100 text-lime-700 font-semibold text-sm mb-4">
+                        {t.features.label}
                     </motion.span>
                     <motion.h2 variants={fadeInUp} className="section-title text-4xl md:text-5xl font-bold mb-6">
-                        Všetko čo potrebujete na <span className="accent-word text-blue-600">úspech</span>
+                        {t.features.titleStart} <span className="accent-word text-lime-600">{t.features.titleEnd}</span>
                     </motion.h2>
                     <motion.p variants={fadeInUp} className="section-subtitle text-lg text-gray-600 max-w-2xl mx-auto">
-                        Nie len ďalší kurz — Mundus spája smart nástroje so skutočnou konverzáciou.
+                        {t.features.subtitle}
                     </motion.p>
                 </motion.div>
 
-                {/* Features Grid */}
                 <motion.div
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true, margin: "-50px" }}
                     variants={stagger}
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[minmax(180px,auto)]"
                 >
-                    {features.map((feature) => (
-                        <motion.div
-                            key={feature.title}
-                            variants={cardReveal}
-                            whileHover={{ y: -8, transition: { duration: 0.2 } }}
-                            className="bg-white p-8 rounded-3xl shadow-lg border border-gray-100 hover:shadow-xl transition-all"
-                        >
+                    {t.features.items.map((feature, index) => {
+                        // We map the static icons to the translated items based on index
+                        const FeatureIcon = features[index].icon;
+
+                        return (
                             <motion.div
-                                className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${feature.color} text-white flex items-center justify-center mb-6 shadow-lg ${feature.shadow}`}
-                                whileHover={{ scale: 1.1, rotate: 5 }}
-                                transition={{ type: "spring", stiffness: 400 }}
+                                key={index}
+                                variants={fadeInUp}
+                                whileHover={{ y: -5, transition: { duration: 0.3 } }}
+                                className={`group relative p-8 rounded-3xl bg-white border border-gray-100 shadow-xl shadow-gray-200/50 hover:shadow-2xl hover:shadow-lime-200/50 transition-all duration-300 overflow-hidden flex flex-col justify-between ${index === 0 || index === 3 ? "md:col-span-1" : ""
+                                    }`}
                             >
-                                <feature.icon size={30} strokeWidth={1.5} />
+                                <div className={`absolute top-0 right-0 w-32 h-32 bg-[#BFFF00] opacity-[0.1] rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-150 duration-500`} />
+
+                                <div className={`w-14 h-14 rounded-2xl bg-[#BFFF00] flex items-center justify-center text-black mb-6 shadow-lg shadow-lime-200/50 group-hover:scale-110 transition-transform duration-300`}>
+                                    <FeatureIcon size={28} />
+                                </div>
+
+                                <div>
+                                    <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">{feature.title}</h3>
+                                    <p className="text-gray-500 leading-relaxed text-[15px]">{feature.description}</p>
+                                </div>
                             </motion.div>
-                            <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
-                            <p className="text-gray-600 leading-relaxed">{feature.description}</p>
-                        </motion.div>
-                    ))}
+                        );
+                    })}
                 </motion.div>
             </div>
         </section>

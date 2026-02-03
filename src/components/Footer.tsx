@@ -12,14 +12,26 @@ const stagger = {
     visible: { opacity: 1, transition: { staggerChildren: 0.05 } },
 };
 
+import { useLanguage } from "@/context/LanguageContext";
+
 const footerLinks = {
-    Languages: ["Angličtina", "Španielčina", "Taliančina", "Portugalčina"],
-    Company: ["O nás", "Kariéra", "Blog", "Tlač"],
-    Support: ["Centrum pomoci", "Kontakt", "FAQ", "Komunita"],
-    Legal: ["Súkromie", "Podmienky", "Cookies", "Licencie"],
+    Languages: "Languages",
+    Company: "Company",
+    Support: "Support",
+    Legal: "Legal",
 };
 
 export default function Footer() {
+    const { t } = useLanguage();
+
+    // Map the keys to the translated arrays from t.footer.links
+    const linksMap = {
+        Languages: t.footer.links.Languages,
+        Company: t.footer.links.Company,
+        Support: t.footer.links.Support,
+        Legal: t.footer.links.Legal,
+    };
+
     return (
         <footer className="footer">
             <div className="container">
@@ -34,17 +46,16 @@ export default function Footer() {
                     <motion.div variants={fadeInUp}>
                         <div className="footer-brand">Mundus</div>
                         <p className="footer-desc">
-                            Osvojte si najkrajšie jazyky sveta s rodenými hovorcami.
-                            Pohlcujúce, personalizované a efektívne.
+                            {t.footer.brandDesc}
                         </p>
                     </motion.div>
 
                     {/* Links */}
-                    {Object.entries(footerLinks).map(([category, links]) => (
+                    {(Object.keys(linksMap) as Array<keyof typeof linksMap>).map((category) => (
                         <motion.div key={category} variants={fadeInUp}>
-                            <div className="footer-title">{category === "Languages" ? "Jazyky" : category === "Company" ? "Spoločnosť" : category === "Support" ? "Podpora" : "Právne"}</div>
+                            <div className="footer-title">{t.footer.headings[category]}</div>
                             <ul className="footer-links">
-                                {links.map((link) => (
+                                {linksMap[category].map((link) => (
                                     <li key={link}>
                                         <a href="#">{link}</a>
                                     </li>
@@ -61,7 +72,7 @@ export default function Footer() {
                     variants={fadeInUp}
                     className="footer-bottom"
                 >
-                    <span>© 2024 Mundus. Všetky práva vyhradené.</span>
+                    <span>{t.footer.copyright}</span>
                     <div className="flex gap-6">
                         <a href="#" className="hover:text-[#181818] transition-colors">Twitter</a>
                         <a href="#" className="hover:text-[#181818] transition-colors">LinkedIn</a>

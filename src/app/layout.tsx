@@ -31,8 +31,8 @@ export default function RootLayout({
       <body className={`${inter.variable} antialiased`}>
         <ClientProviders>
           {children}
+          <FloatingCTA />
         </ClientProviders>
-        <FloatingCTA />
       </body>
     </html>
   );

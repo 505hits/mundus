@@ -47,7 +47,8 @@ export default function Navbar() {
                 <div className="navbar-inner flex items-center justify-between px-6 py-4 w-full">
                     {/* Logo */}
                     {/* Logo */}
-                    <Link href="/" className="nav-logo relative h-24 w-96 md:h-28 md:w-[28rem] shrink-0">
+                    {/* Logo */}
+                    <Link href="/" className="nav-logo relative h-14 w-56 sm:h-20 sm:w-80 md:h-28 md:w-[28rem] shrink-0">
                         <Image
                             src="/logo-removebg-preview.png"
                             alt="Mundus"

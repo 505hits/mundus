@@ -44,8 +44,8 @@ export default function Hero() {
                 {/* MeshBackground component is not defined or imported in the provided context. */}
             </div>
 
-            {/* Gradient Fade at Bottom - Blue Glow (Enhanced) */}
-            <div className="absolute bottom-0 left-0 w-full h-[800px] bg-gradient-to-t from-[#2F3AA2]/25 via-[#2F3AA2]/5 to-transparent pointer-events-none z-0" />
+            {/* Stylish Colored Light Effect */}
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[120%] h-[600px] bg-[radial-gradient(circle_at_bottom,rgba(47,58,162,0.35),transparent_60%)] pointer-events-none z-0 blur-3xl opacity-80" />
 
             {/* Gradient Fade to Gray-50 (Next Section Blend) */}
             <div className="absolute -bottom-1 left-0 w-full h-32 bg-gradient-to-b from-transparent via-gray-50/50 to-gray-50 pointer-events-none z-10" />

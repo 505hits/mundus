@@ -58,7 +58,7 @@ export default function Navbar() {
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <div className="nav-links hidden xl:flex items-center gap-10">
+                    <div className="nav-links hidden xl:flex items-center gap-10 mr-10">
                         {navLinks.map((link) => (
                             <Link key={link.name} href={link.href} className="nav-link text-sm font-medium hover:text-primary transition-colors whitespace-nowrap">
                                 {link.name}

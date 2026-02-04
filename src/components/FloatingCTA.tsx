@@ -31,7 +31,7 @@ export default function FloatingCTA() {
                 >
                     <a
                         href="/#booking"
-                        className="flex items-center gap-2 bg-[#BFFF00] text-[#181818] px-6 py-4 rounded-full font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all transform"
+                        className="flex items-center gap-2 bg-[#2F3AA2] text-white px-6 py-4 rounded-full font-semibold shadow-lg shadow-blue-900/20 hover:shadow-xl hover:bg-[#252E82] hover:scale-105 transition-all transform"
                     >
                         <span>{t.nav.book}</span>
                         <ArrowRight size={20} />

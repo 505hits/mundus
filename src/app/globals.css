@@ -10,13 +10,13 @@
   --foreground-muted: #525252;
   --foreground-subtle: #A3A3A3;
 
-  /* Lime Green Accent (Updated) */
-  --accent: #BFFF00;
-  --accent-dark: #A3E000;
-  --accent-text: #181818;
+  /* Blue Accent (Updated) */
+  --accent: #2F3AA2;
+  --accent-dark: #252E82;
+  --accent-text: #FFFFFF;
 
   /* Gradient Colors */
-  --gradient-start: #ECFFD9;
+  --gradient-start: #E0E6FF;
   --gradient-end: #FAFAF9;
 
   /* Card & Border */
@@ -145,18 +145,18 @@ h3 {
 .gradient-green {
   background: linear-gradient(180deg,
       var(--background) 0%,
-      #E8FFB8 30%,
-      #D4F59A 50%,
-      #E8FFB8 70%,
+      #C4D0FF 30%,
+      #A3B8FF 50%,
+      #C4D0FF 70%,
       var(--background) 100%);
 }
 
 .gradient-section {
-  background: linear-gradient(180deg, var(--background) 0%, #E8FFB8 50%, var(--background) 100%);
+  background: linear-gradient(180deg, var(--background) 0%, #C4D0FF 50%, var(--background) 100%);
 }
 
 .gradient-bottom {
-  background: linear-gradient(180deg, var(--background) 0%, #E8FFB8 100%);
+  background: linear-gradient(180deg, var(--background) 0%, #C4D0FF 100%);
 }
 
 /* ===== LAYOUT ===== */
@@ -225,7 +225,7 @@ h3 {
 .btn-primary:hover {
   background: var(--accent-dark);
   transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(191, 255, 0, 0.3);
+  box-shadow: 0 10px 30px rgba(47, 58, 162, 0.3);
 }
 
 .btn-secondary {

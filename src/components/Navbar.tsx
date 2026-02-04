@@ -16,7 +16,6 @@ export default function Navbar() {
         { name: t.nav.courses, href: "/#languages" },
         { name: t.nav.howItWorks, href: "/#how-it-works" },
         { name: t.nav.teachers, href: "/#teachers" },
-        { name: t.nav.features, href: "/#features" },
         { name: t.nav.contact, href: "/contact" },
     ];
 
@@ -47,9 +46,10 @@ export default function Navbar() {
             >
                 <div className="navbar-inner flex items-center justify-between px-6 py-4 w-full">
                     {/* Logo */}
-                    <Link href="/" className="nav-logo relative h-10 w-32 md:h-14 md:w-40 shrink-0">
+                    {/* Logo */}
+                    <Link href="/" className="nav-logo relative h-24 w-96 md:h-28 md:w-[28rem] shrink-0">
                         <Image
-                            src="/Gemini_Generated_Image_ytz5tytz5tytz5ty-removebg-preview.png"
+                            src="/logo-removebg-preview.png"
                             alt="Mundus"
                             fill
                             className="object-contain object-left"
@@ -58,9 +58,9 @@ export default function Navbar() {
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <div className="nav-links hidden xl:flex items-center gap-6">
+                    <div className="nav-links hidden xl:flex items-center gap-10">
                         {navLinks.map((link) => (
-                            <Link key={link.name} href={link.href} className="nav-link text-sm font-medium hover:text-primary transition-colors">
+                            <Link key={link.name} href={link.href} className="nav-link text-sm font-medium hover:text-primary transition-colors whitespace-nowrap">
                                 {link.name}
                             </Link>
                         ))}
@@ -79,7 +79,7 @@ export default function Navbar() {
                                 SK
                             </button>
                         </div>
-                        <a href="tel:+421904082794" className="nav-link text-sm font-semibold text-gray-900 hover:text-primary transition-colors flex items-center gap-1">
+                        <a href="tel:+421904082794" className="nav-link text-sm font-semibold text-gray-900 hover:text-primary transition-colors flex items-center gap-1 whitespace-nowrap">
                             +421 904 082 794
                         </a>
                     </div>

@@ -42,18 +42,14 @@ export default function Hero() {
             {/* Background elements */}
             <div className="absolute inset-0 z-0">
                 {/* MeshBackground component is not defined or imported in the provided context. */}
-                {/* Assuming MeshBackground is a placeholder or will be imported elsewhere. */}
-                {/* For now, it will cause a reference error if not defined. */}
-                {/* If it's meant to be a comment, please clarify. */}
-                {/* If it's a component, ensure it's imported. */}
-                {/* For the purpose of this edit, I'm adding it as requested, but noting the potential issue. */}
-                {/* If MeshBackground is a component, you would typically need: import MeshBackground from '@/components/MeshBackground'; */}
-                {/* Or define it within this file. */}
-                {/* As per instructions, I'm only applying the given diff. */}
-                {/* If this causes a runtime error, please provide the MeshBackground component or its import. */}
-                {/* For now, I'm commenting it out to prevent a syntax error, but keeping the div structure. */}
-                {/* <MeshBackground /> */}
             </div>
+
+            {/* Gradient Fade at Bottom - Blue Glow (Enhanced) */}
+            <div className="absolute bottom-0 left-0 w-full h-[800px] bg-gradient-to-t from-[#2F3AA2]/25 via-[#2F3AA2]/5 to-transparent pointer-events-none z-0" />
+
+            {/* Gradient Fade to Gray-50 (Next Section Blend) */}
+            <div className="absolute -bottom-1 left-0 w-full h-32 bg-gradient-to-b from-transparent via-gray-50/50 to-gray-50 pointer-events-none z-10" />
+
             <motion.div
                 variants={stagger}
                 initial="hidden"
@@ -80,7 +76,7 @@ export default function Hero() {
                     {t.hero.titleBefore}{" "}
                     <span className="accent-word relative inline-block">
                         {t.hero.nativeSpeakers}
-                        <svg className="absolute w-full h-3 -bottom-1 left-0 text-primary opacity-80 -z-10" viewBox="0 0 100 10" preserveAspectRatio="none">
+                        <svg className="absolute w-full h-3 -bottom-1 left-0 text-[#2F3AA2] opacity-80 -z-10" viewBox="0 0 100 10" preserveAspectRatio="none">
                             <motion.path
                                 d="M0 5 Q 50 10 100 5"
                                 stroke="currentColor"
@@ -107,7 +103,7 @@ export default function Hero() {
                 <motion.div
                     variants={fadeInUp}
                     transition={{ duration: 0.5, delay: 0.3 }}
-                    className="hero-cta mt-8 flex flex-col sm:flex-row items-center justify-center gap-4"
+                    className="hero-cta mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 relative z-20"
                 >
                     <motion.a
                         href="#booking"
@@ -118,9 +114,14 @@ export default function Hero() {
                         {t.hero.ctaPrimary}
                         <ArrowRight size={18} />
                     </motion.a>
-                    <a href="#how-it-works" className="btn btn-secondary w-full sm:w-auto justify-center hidden sm:flex">
+                    <motion.a
+                        href="#how-it-works"
+                        whileHover={{ scale: 1.02, y: -2 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="btn btn-secondary w-full sm:w-auto justify-center hidden sm:flex cursor-pointer relative z-20"
+                    >
                         {t.hero.ctaSecondary}
-                    </a>
+                    </motion.a>
                 </motion.div>
 
                 {/* Image Grid - Mobile Scroller / Desktop Grid */}
@@ -201,6 +202,7 @@ export default function Hero() {
                                     alt="Student learning"
                                     fill
                                     className="object-cover"
+
                                 />
                             </div>
                         </motion.div>

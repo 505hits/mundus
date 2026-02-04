@@ -50,8 +50,8 @@ export default function BookingSection() {
                             Start free trial
                             <ArrowRight size={18} />
                         </motion.a>
-                        <a href="#" className="btn" style={{ background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)' }}>
-                            Contact sales
+                        <a href="/contact" className="btn" style={{ background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)' }}>
+                            Contact us
                         </a>
                     </motion.div>
 

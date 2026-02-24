@@ -19,6 +19,9 @@ export const metadata: Metadata = {
     description: "Experience immersive 1-on-1 language sessions with native experts.",
     type: "website",
   },
+  verification: {
+    google: "E8jeITeM86HOhcoQCXpdxzqra-O-Xy-2CsS3JH7QLFk",
+  },
 };
 
 export default function RootLayout({

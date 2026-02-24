@@ -26,13 +26,6 @@ const cardReveal = {
 
 const teachers = [
     {
-        name: "Aniko",
-        flag: "🇬🇧",
-        specialty: "Špecialistka na britskú angličtinu",
-        description: "Osvojte si britský prízvuk a kultúrne nuansy.",
-        image: "/Aniko.png",
-    },
-    {
         name: "Dani",
         flag: "🇪🇸",
         specialty: "Konverzačná španielčina",
@@ -66,13 +59,6 @@ const teachers = [
         specialty: "Angličtina",
         description: "Zábavné lekcie pre každého, od začiatočníkov po pokročilých.",
         image: "/Bella English side.png",
-    },
-    {
-        name: "Simona",
-        flag: "🇬🇧",
-        specialty: "Obchodná angličtina",
-        description: "Profesionálne komunikačné zručnosti pre vašu kariéru.",
-        image: "/simona.jpg",
     },
     {
         name: "Anar",
@@ -112,7 +98,7 @@ export default function TeacherSection() {
                     </motion.p>
                 </motion.div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {t.teachers.list.map((teacher, index) => {
                         // Map static images to translated teachers
                         const teacherImage = teachers[index].image;

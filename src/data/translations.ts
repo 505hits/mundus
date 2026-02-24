@@ -96,11 +96,6 @@ export const translations = {
             subtitle: "Join live sessions with native teachers — carefully selected for their expertise and passion.",
             list: [
                 {
-                    name: "Aniko",
-                    specialty: "British English Specialist",
-                    description: "Master the British accent and cultural nuances.",
-                },
-                {
                     name: "Dani",
                     specialty: "Conversational Spanish",
                     description: "Fluid conversation practice for all levels.",
@@ -124,11 +119,6 @@ export const translations = {
                     name: "Bella",
                     specialty: "English",
                     description: "Engaging lessons for everyone, from beginners to advanced.",
-                },
-                {
-                    name: "Simona",
-                    specialty: "Business English",
-                    description: "Professional communication skills for your career.",
                 },
                 {
                     name: "Anar",
@@ -393,11 +383,6 @@ export const translations = {
             subtitle: "Pripojte sa k živým lekciám s rodenými hovorcami — starostlivo vybranými pre ich odbornosť a vášeň.",
             list: [
                 {
-                    name: "Aniko",
-                    specialty: "Špecialistka na britskú angličtinu",
-                    description: "Osvojte si britský prízvuk a kultúrne nuansy.",
-                },
-                {
                     name: "Dani",
                     specialty: "Konverzačná španielčina",
                     description: "Plynulá konverzácia pre všetky úrovne.",
@@ -421,11 +406,6 @@ export const translations = {
                     name: "Bella",
                     specialty: "Angličtina",
                     description: "Zábavné lekcie pre každého, od začiatočníkov po pokročilých.",
-                },
-                {
-                    name: "Simona",
-                    specialty: "Obchodná angličtina",
-                    description: "Profesionálne komunikačné zručnosti pre vašu kariéru.",
                 },
                 {
                     name: "Anar",

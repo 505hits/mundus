@@ -16,8 +16,8 @@ export default function PricingSection() {
         <section id="pricing" className="section bg-white py-24 relative overflow-hidden">
             {/* Background Decorations */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-                <div className="absolute top-1/4 -right-64 w-96 h-96 bg-lime-200/30 rounded-full blur-3xl" />
-                <div className="absolute bottom-1/4 -left-64 w-96 h-96 bg-yellow-200/30 rounded-full blur-3xl" />
+                <div className="absolute top-1/4 -right-64 w-96 h-96 bg-blue-200/30 rounded-full blur-3xl" />
+                <div className="absolute bottom-1/4 -left-64 w-96 h-96 bg-indigo-200/30 rounded-full blur-3xl" />
             </div>
 
             <div className="container relative z-10">
@@ -29,11 +29,11 @@ export default function PricingSection() {
                     variants={fadeInUp}
                     className="section-header text-center mb-16"
                 >
-                    <span className="section-label inline-block px-4 py-1.5 rounded-full bg-lime-100 text-lime-700 font-semibold text-sm mb-4">
+                    <span className="section-label inline-block px-4 py-1.5 rounded-full bg-blue-100 text-blue-700 font-semibold text-sm mb-4">
                         {t.pricing.label}
                     </span>
                     <h2 className="section-title text-4xl md:text-5xl font-bold mb-6">
-                        {t.pricing.titleStart} <span className="accent-word relative inline-block text-lime-600">
+                        {t.pricing.titleStart} <span className="accent-word relative inline-block text-blue-600">
                             {t.pricing.titleEnd}
                             <svg className="absolute w-full h-3 bottom-0 left-0 text-yellow-300 -z-10 opacity-40" viewBox="0 0 100 10" preserveAspectRatio="none">
                                 <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="8" fill="none" />
@@ -51,11 +51,11 @@ export default function PricingSection() {
                     whileInView="visible"
                     viewport={{ once: true, margin: "-50px" }}
                     variants={fadeInUp}
-                    className="mb-16 bg-white rounded-3xl border border-gray-100 shadow-xl shadow-lime-100/50 overflow-hidden"
+                    className="mb-16 bg-white rounded-3xl border border-gray-100 shadow-xl shadow-blue-100/50 overflow-hidden"
                 >
                     <div className="p-8 md:p-10">
                         <div className="flex items-center gap-3 mb-8">
-                            <div className="w-12 h-12 rounded-xl bg-lime-100 flex items-center justify-center text-lime-600">
+                            <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600">
                                 <UsersIcon />
                             </div>
                             <h3 className="text-2xl font-bold uppercase tracking-tight">{t.pricing.group.title}</h3>
@@ -81,7 +81,7 @@ export default function PricingSection() {
                                                         {row.originalPrice}
                                                     </span>
                                                     {row.launchPrice && (
-                                                        <span className="font-bold text-lg text-lime-600 flex items-center gap-1">
+                                                        <span className="font-bold text-lg text-blue-600 flex items-center gap-1">
                                                             {row.launchPrice}
                                                             <Zap size={16} fill="currentColor" />
                                                         </span>
@@ -94,7 +94,7 @@ export default function PricingSection() {
                             </table>
                         </div>
                         <div className="mt-6 pt-6 border-t border-gray-100 text-sm text-gray-500 flex items-center gap-2">
-                            <Gift size={18} className="text-lime-500" />
+                            <Gift size={18} className="text-blue-500" />
                             {t.pricing.group.note}
                         </div>
                     </div>
@@ -107,7 +107,7 @@ export default function PricingSection() {
                         whileInView="visible"
                         viewport={{ once: true, margin: "-50px" }}
                         variants={fadeInUp}
-                        className="bg-white rounded-3xl border border-gray-100 shadow-xl shadow-lime-100/50 overflow-hidden flex flex-col"
+                        className="bg-white rounded-3xl border border-gray-100 shadow-xl shadow-blue-100/50 overflow-hidden flex flex-col"
                     >
                         <div className="p-8 md:p-10 flex-1">
                             <div className="flex items-center gap-3 mb-8">
@@ -122,7 +122,7 @@ export default function PricingSection() {
                                     <tr className="border-b border-gray-100">
                                         <th className="text-left py-4 font-semibold text-gray-500">{t.pricing.individual.headers.package}</th>
                                         <th className="text-right py-4 font-semibold text-gray-500">{t.pricing.individual.headers.originalPrice}</th>
-                                        <th className="text-right py-4 font-semibold text-lime-600">{t.pricing.individual.headers.launchPrice}</th>
+                                        <th className="text-right py-4 font-semibold text-blue-600">{t.pricing.individual.headers.launchPrice}</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-50">
@@ -130,7 +130,7 @@ export default function PricingSection() {
                                         <tr key={i}>
                                             <td className="py-4 font-medium text-gray-900">{row.package}</td>
                                             <td className="py-4 text-right text-gray-400 line-through">{row.originalPrice}</td>
-                                            <td className="py-4 text-right font-bold text-lime-600 text-lg">{row.launchPrice}</td>
+                                            <td className="py-4 text-right font-bold text-blue-600 text-lg">{row.launchPrice}</td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -152,7 +152,7 @@ export default function PricingSection() {
                     >
                         <div className="p-8 md:p-10 flex-1">
                             <div className="flex items-center gap-3 mb-8">
-                                <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-lime-400">
+                                <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-blue-400">
                                     <HeartIcon />
                                 </div>
                                 <h3 className="text-2xl font-bold uppercase tracking-tight text-white">{t.pricing.discounts.title}</h3>
@@ -162,7 +162,7 @@ export default function PricingSection() {
                                 <tbody className="divide-y divide-white/10">
                                     {t.pricing.discounts.rows.map((row, i) => (
                                         <tr key={i}>
-                                            <td className="py-4 pr-4 font-bold text-lime-400 whitespace-nowrap">{row.type}</td>
+                                            <td className="py-4 pr-4 font-bold text-blue-400 whitespace-nowrap">{row.type}</td>
                                             <td className="py-4 px-2 text-gray-300 text-sm hidden sm:table-cell">{row.description}</td>
                                             <td className="py-4 pl-4 text-right font-bold text-white">{row.discount}</td>
                                         </tr>

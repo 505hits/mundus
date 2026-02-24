@@ -49,7 +49,7 @@ export default function Navbar() {
                     {/* Logo */}
                     {/* Logo */}
                     {/* Logo */}
-                    <Link href="/" className="nav-logo relative h-16 w-64 sm:h-20 sm:w-80 md:h-28 md:w-[28rem] shrink-0">
+                    <Link href="/" className="nav-logo relative h-20 w-72 sm:h-24 sm:w-96 md:h-28 md:w-[28rem] shrink-0">
                         <Image
                             src="/logo-removebg-preview.png"
                             alt="Mundus"

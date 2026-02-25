@@ -38,41 +38,7 @@ export default function Hero() {
     const { t } = useLanguage();
 
     return (
-        <section className="relative overflow-hidden pt-36 pb-20 lg:pt-48 lg:pb-32 min-h-screen flex items-center" style={{ background: '#FFFFFF' }}>
-            {/* Mesh Gradient: Blue radial blobs at top */}
-            <div className="absolute inset-0 z-0 overflow-hidden">
-                {/* Blob 1 — Top Left */}
-                <div
-                    className="absolute w-[60vw] h-[60vw] max-w-[800px] max-h-[800px] rounded-full"
-                    style={{
-                        top: '-15%',
-                        left: '-5%',
-                        background: 'radial-gradient(circle, rgba(37,99,235,0.55) 0%, rgba(37,99,235,0.2) 40%, transparent 70%)',
-                        filter: 'blur(80px)',
-                        animation: 'heroGradientMove 10s ease-in-out infinite',
-                    }}
-                />
-                {/* Blob 2 — Top Right (larger, deeper blue) */}
-                <div
-                    className="absolute w-[70vw] h-[70vw] max-w-[1000px] max-h-[1000px] rounded-full"
-                    style={{
-                        top: '-10%',
-                        right: '-10%',
-                        background: 'radial-gradient(circle, rgba(0,71,171,0.5) 0%, rgba(37,99,235,0.2) 40%, transparent 70%)',
-                        filter: 'blur(100px)',
-                        animation: 'heroGradientMove2 12s ease-in-out infinite',
-                    }}
-                />
-            </div>
-
-            {/* Noise/Grain Texture Overlay */}
-            <svg className="absolute inset-0 w-full h-full z-[1] pointer-events-none opacity-[0.04]">
-                <filter id="heroNoise">
-                    <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
-                </filter>
-                <rect width="100%" height="100%" filter="url(#heroNoise)" />
-            </svg>
-
+        <section className="hero-mesh-gradient relative overflow-hidden pt-36 pb-20 lg:pt-48 lg:pb-32 min-h-screen flex items-center">
             {/* Gradient Fade to Gray-50 (Next Section Blend) */}
             <div className="absolute -bottom-1 left-0 w-full h-32 bg-gradient-to-b from-transparent via-white/80 to-gray-50 pointer-events-none z-10" />
 

@@ -12,14 +12,14 @@ export const translations = {
             contactUs: "Contact us",
         },
         hero: {
-            badge: "Thousands of happy learners — and counting",
+            badge: "Hundreds of happy learners — and counting",
             titleBefore: "Learn languages with",
             nativeSpeakers: "native speakers",
             subtitle: "Experience immersive 1-on-1 sessions with native experts. Fluid, fast, and tailored to your goals.",
             ctaPrimary: "Book my first lesson for free",
             ctaSecondary: "See how it works",
             interactive: "Interactive Logic",
-            students: "10,000+ students",
+            students: "200+ students",
             rating: "4.9/5 rating",
         },
         languageSelector: {
@@ -96,9 +96,9 @@ export const translations = {
             subtitle: "Join live sessions with native teachers — carefully selected for their expertise and passion.",
             list: [
                 {
-                    name: "Dani",
-                    specialty: "Conversational Spanish",
-                    description: "Fluid conversation practice for all levels.",
+                    name: "Lenka",
+                    specialty: "English & Slovak",
+                    description: "Engaging English and Slovak lessons for all levels.",
                 },
                 {
                     name: "Jakub",
@@ -124,6 +124,11 @@ export const translations = {
                     name: "Anar",
                     specialty: "Mandarin Chinese",
                     description: "Learn the world's most spoken language effectively.",
+                },
+                {
+                    name: "Tamara",
+                    specialty: "Ukrainian, Slovak & English",
+                    description: "Learn Ukrainian, Slovak or English with a passionate native teacher.",
                 },
             ]
         },
@@ -299,14 +304,14 @@ export const translations = {
             contactUs: "Kontaktujte nás",
         },
         hero: {
-            badge: "Tisíce spokojných študentov — a rastieme",
+            badge: "Stovky spokojných študentov — a rastieme",
             titleBefore: "Učte sa jazyky s",
             nativeSpeakers: "native spíkrami",
             subtitle: "Zažite pohlcujúce lekcie 1 na 1 s rodenými expertmi. Plynulé, rýchle a prispôsobené vašim cieľom.",
             ctaPrimary: "Rezervovať prvú lekciu zdarma",
             ctaSecondary: "Ako to funguje",
             interactive: "Interaktívna výučba",
-            students: "10,000+ študentov",
+            students: "200+ študentov",
             rating: "4.9/5 hodnotenie",
         },
         languageSelector: {
@@ -383,9 +388,9 @@ export const translations = {
             subtitle: "Pripojte sa k živým lekciám s rodenými hovorcami — starostlivo vybranými pre ich odbornosť a vášeň.",
             list: [
                 {
-                    name: "Dani",
-                    specialty: "Konverzačná španielčina",
-                    description: "Plynulá konverzácia pre všetky úrovne.",
+                    name: "Lenka",
+                    specialty: "Angličtina a slovenčina",
+                    description: "Zábavné lekcie angličtiny a slovenčiny pre všetky úrovne.",
                 },
                 {
                     name: "Jakub",
@@ -411,6 +416,11 @@ export const translations = {
                     name: "Anar",
                     specialty: "Mandarínska čínština",
                     description: "Naučte sa efektívne najrozšírenejší jazyk sveta.",
+                },
+                {
+                    name: "Tamara",
+                    specialty: "Ukrajinčina, slovenčina a angličtina",
+                    description: "Naučte sa ukrajinsky, slovensky alebo anglicky s nadšenou lektorkou.",
                 },
             ]
         },

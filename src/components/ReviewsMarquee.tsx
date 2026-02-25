@@ -151,10 +151,12 @@ export default function ReviewsMarquee() {
 
             <div className="container mx-auto px-6 mb-16 text-center relative z-10">
                 <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
-                    Trusted by Language Lovers
+                    {language === 'sk' ? 'Dôverujú nám milovníci jazykov' : 'Trusted by Language Lovers'}
                 </h2>
                 <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                    Join thousands of students and teachers worldwide who are already achieving their goals.
+                    {language === 'sk'
+                        ? 'Pripojte sa k stovkám študentov a učiteľov po celom svete, ktorí už dosahujú svoje ciele.'
+                        : 'Join hundreds of students and teachers worldwide who are already achieving their goals.'}
                 </p>
             </div>
 

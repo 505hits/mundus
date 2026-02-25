@@ -26,11 +26,11 @@ const cardReveal = {
 
 const teachers = [
     {
-        name: "Dani",
-        flag: "🇪🇸",
-        specialty: "Konverzačná španielčina",
-        description: "Plynulá konverzácia pre všetky úrovne.",
-        image: "/Dani.png",
+        name: "Lenka",
+        flag: "🇬🇧🇸🇰",
+        specialty: "English & Slovak",
+        description: "Engaging English and Slovak lessons for all levels.",
+        image: "/Lenka.jpeg",
     },
     {
         name: "Jakub",
@@ -66,6 +66,13 @@ const teachers = [
         specialty: "Mandarínska čínština",
         description: "Naučte sa efektívne najrozšírenejší jazyk sveta.",
         image: "/Anar Chinese chill.png",
+    },
+    {
+        name: "Tamara",
+        flag: "🇺🇦🇸🇰🇬🇧",
+        specialty: "Ukrainian, Slovak & English",
+        description: "Learn Ukrainian, Slovak or English with a passionate native teacher.",
+        image: "/Tamara.jpeg",
     },
 ];
 

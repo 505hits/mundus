@@ -38,23 +38,43 @@ export default function Hero() {
     const { t } = useLanguage();
 
     return (
-        <section className="relative overflow-hidden pt-36 pb-20 lg:pt-48 lg:pb-32 min-h-screen flex items-center">
-            {/* Background elements */}
-            <div className="absolute inset-0 z-0">
-                {/* MeshBackground component is not defined or imported in the provided context. */}
+        <section className="relative overflow-hidden pt-36 pb-20 lg:pt-48 lg:pb-32 min-h-screen flex items-center" style={{ background: '#0a0a0f' }}>
+            {/* Animated blue gradient blobs */}
+            <div className="absolute inset-0 z-0 overflow-hidden">
+                <div
+                    className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[900px] h-[900px] rounded-full opacity-60 blur-[120px]"
+                    style={{
+                        background: 'radial-gradient(circle, rgba(47,58,162,0.8) 0%, rgba(30,40,130,0.4) 40%, transparent 70%)',
+                        animation: 'heroGradientMove 8s ease-in-out infinite',
+                    }}
+                />
+                <div
+                    className="absolute top-[-10%] left-[30%] w-[600px] h-[600px] rounded-full opacity-40 blur-[100px]"
+                    style={{
+                        background: 'radial-gradient(circle, rgba(80,100,220,0.7) 0%, rgba(47,58,162,0.3) 50%, transparent 70%)',
+                        animation: 'heroGradientMove2 10s ease-in-out infinite',
+                    }}
+                />
+                <div
+                    className="absolute top-[5%] right-[20%] w-[500px] h-[500px] rounded-full opacity-30 blur-[100px]"
+                    style={{
+                        background: 'radial-gradient(circle, rgba(100,120,255,0.6) 0%, transparent 60%)',
+                        animation: 'heroGradientMove3 12s ease-in-out infinite',
+                    }}
+                />
             </div>
 
-            {/* Stylish Colored Light Effect */}
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[120%] h-[600px] bg-[radial-gradient(circle_at_bottom,rgba(47,58,162,0.35),transparent_60%)] pointer-events-none z-0 blur-3xl opacity-80" />
-
             {/* Gradient Fade to Gray-50 (Next Section Blend) */}
-            <div className="absolute -bottom-1 left-0 w-full h-32 bg-gradient-to-b from-transparent via-gray-50/50 to-gray-50 pointer-events-none z-10" />
+            <div className="absolute -bottom-1 left-0 w-full h-48 bg-gradient-to-b from-transparent via-[#0a0a0f]/80 to-gray-50 pointer-events-none z-10" />
+
+
+
 
             <motion.div
                 variants={stagger}
                 initial="hidden"
                 animate="visible"
-                className="container"
+                className="container relative z-[5]"
             >
                 {/* Badge */}
                 <motion.div
@@ -62,7 +82,7 @@ export default function Hero() {
                     transition={{ duration: 0.5 }}
                     className="flex justify-center"
                 >
-                    <span className="hero-badge text-xs md:text-sm px-3 py-1.5 md:px-4 md:py-2">
+                    <span className="hero-badge text-xs md:text-sm px-3 py-1.5 md:px-4 md:py-2" style={{ background: 'rgba(47,58,162,0.6)', backdropFilter: 'blur(8px)', border: '1px solid rgba(100,120,255,0.3)' }}>
                         <Star size={12} className="md:w-[14px] md:h-[14px]" />
                         {t.hero.badge}
                     </span>
@@ -71,12 +91,12 @@ export default function Hero() {
                 {/* Animated Title */}
                 <motion.h1
                     variants={titleAnimation}
-                    className="hero-title mt-6 text-4xl md:text-6xl lg:text-7xl font-bold text-center leading-[1.1]"
+                    className="hero-title mt-6 text-4xl md:text-6xl lg:text-7xl font-bold text-center leading-[1.1] !text-white"
                 >
                     {t.hero.titleBefore}{" "}
-                    <span className="accent-word relative inline-block">
+                    <span className="relative inline-block text-blue-300" style={{ fontStyle: 'italic' }}>
                         {t.hero.nativeSpeakers}
-                        <svg className="absolute w-full h-3 -bottom-1 left-0 text-[#2F3AA2] opacity-80 -z-10" viewBox="0 0 100 10" preserveAspectRatio="none">
+                        <svg className="absolute w-full h-3 -bottom-1 left-0 text-blue-400 opacity-80 -z-10" viewBox="0 0 100 10" preserveAspectRatio="none">
                             <motion.path
                                 d="M0 5 Q 50 10 100 5"
                                 stroke="currentColor"
@@ -94,7 +114,7 @@ export default function Hero() {
                 <motion.p
                     variants={fadeInUp}
                     transition={{ duration: 0.5, delay: 0.2 }}
-                    className="hero-subtitle mt-6 text-base md:text-xl text-center max-w-2xl mx-auto text-gray-600"
+                    className="hero-subtitle mt-6 text-base md:text-xl text-center max-w-2xl mx-auto !text-gray-300"
                 >
                     {t.hero.subtitle}
                 </motion.p>
@@ -109,7 +129,8 @@ export default function Hero() {
                         href="#booking"
                         whileHover={{ scale: 1.02, y: -2 }}
                         whileTap={{ scale: 0.98 }}
-                        className="btn btn-primary w-full sm:w-auto justify-center"
+                        className="btn w-full sm:w-auto justify-center text-white font-semibold"
+                        style={{ background: 'linear-gradient(135deg, #2F3AA2, #4a58d6)', boxShadow: '0 0 30px rgba(47,58,162,0.5)' }}
                     >
                         {t.hero.ctaPrimary}
                         <ArrowRight size={18} />
@@ -118,7 +139,8 @@ export default function Hero() {
                         href="#how-it-works"
                         whileHover={{ scale: 1.02, y: -2 }}
                         whileTap={{ scale: 0.98 }}
-                        className="btn btn-secondary w-full sm:w-auto justify-center hidden sm:flex cursor-pointer relative z-20"
+                        className="btn w-full sm:w-auto justify-center hidden sm:flex cursor-pointer relative z-20 text-white"
+                        style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)' }}
                     >
                         {t.hero.ctaSecondary}
                     </motion.a>
@@ -136,7 +158,7 @@ export default function Hero() {
                             initial={{ rotate: -10, y: 20, scale: 0.9 }}
                             animate={{ rotate: -6, y: 10, scale: 0.95 }}
                             transition={{ duration: 0.8, delay: 0.2 }}
-                            className="absolute w-[75%] aspect-[3/4] rounded-2xl overflow-hidden shadow-lg border-4 border-white transform -translate-x-4 bg-gray-200 z-10"
+                            className="absolute w-[75%] aspect-[3/4] rounded-2xl overflow-hidden shadow-lg border-4 border-white/20 transform -translate-x-4 bg-gray-800 z-10"
                         >
                             <Image
                                 src="/Gemini_Generated_Image_r3ay2xr3ay2xr3ay.png"
@@ -151,7 +173,7 @@ export default function Hero() {
                             initial={{ rotate: 10, y: 20, scale: 0.9 }}
                             animate={{ rotate: 6, y: 10, scale: 0.95 }}
                             transition={{ duration: 0.8, delay: 0.4 }}
-                            className="absolute w-[75%] aspect-[3/4] rounded-2xl overflow-hidden shadow-xl border-4 border-white transform translate-x-4 bg-gray-200 z-20"
+                            className="absolute w-[75%] aspect-[3/4] rounded-2xl overflow-hidden shadow-xl border-4 border-white/20 transform translate-x-4 bg-gray-800 z-20"
                         >
                             <Image
                                 src="/Gemini_Generated_Image_841mwh841mwh841m.png"
@@ -166,7 +188,7 @@ export default function Hero() {
                             initial={{ rotate: 0, y: 40, scale: 0.9 }}
                             animate={{ rotate: 0, y: 0, scale: 1 }}
                             transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
-                            className="absolute w-[75%] aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl border-4 border-white z-30"
+                            className="absolute w-[75%] aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl border-4 border-white/20 z-30"
                         >
                             <Image
                                 src="/Gemini_Generated_Image_4omac74omac74oma.png"
@@ -202,7 +224,6 @@ export default function Hero() {
                                     alt="Student learning"
                                     fill
                                     className="object-cover"
-
                                 />
                             </div>
                         </motion.div>
@@ -224,9 +245,9 @@ export default function Hero() {
                 <motion.div
                     variants={fadeInUp}
                     transition={{ duration: 0.5, delay: 0.8 }}
-                    className="flex flex-wrap items-center justify-center gap-4 md:gap-8 mt-8 md:mt-12 text-sm text-[#525252]"
+                    className="flex flex-wrap items-center justify-center gap-4 md:gap-8 mt-8 md:mt-12 text-sm text-gray-300"
                 >
-                    <div className="flex items-center gap-2 bg-white/50 backdrop-blur-sm px-4 py-2 rounded-full border border-white/50 shadow-sm">
+                    <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/15 shadow-sm">
                         <div className="flex -space-x-2">
                             {[
                                 "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
@@ -240,18 +261,18 @@ export default function Hero() {
                                     alt="Student"
                                     width={32}
                                     height={32}
-                                    className="w-8 h-8 rounded-full border-2 border-white object-cover"
+                                    className="w-8 h-8 rounded-full border-2 border-white/30 object-cover"
                                 />
                             ))}
                         </div>
-                        <span className="font-medium">{t.hero.students}</span>
+                        <span className="font-medium text-white">{t.hero.students}</span>
                     </div>
 
-                    <div className="flex items-center gap-1 bg-white/50 backdrop-blur-sm px-4 py-2 rounded-full border border-white/50 shadow-sm">
+                    <div className="flex items-center gap-1 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/15 shadow-sm">
                         {[1, 2, 3, 4, 5].map((i) => (
                             <Star key={i} size={16} className="fill-yellow-400 text-yellow-400" />
                         ))}
-                        <span className="ml-1 font-medium">{t.hero.rating}</span>
+                        <span className="ml-1 font-medium text-white">{t.hero.rating}</span>
                     </div>
                 </motion.div>
             </motion.div>

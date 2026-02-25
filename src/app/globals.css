@@ -793,3 +793,45 @@ h3 {
 .stagger-4 {
   transition-delay: 0.4s;
 }
+
+/* ===== HERO GRADIENT ANIMATIONS ===== */
+
+@keyframes heroGradientMove {
+
+  0%,
+  100% {
+    transform: translate(-50%, 0%) scale(1);
+  }
+
+  33% {
+    transform: translate(-48%, 3%) scale(1.05);
+  }
+
+  66% {
+    transform: translate(-52%, -2%) scale(0.97);
+  }
+}
+
+@keyframes heroGradientMove2 {
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(30px, -20px) scale(1.08);
+  }
+}
+
+@keyframes heroGradientMove3 {
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(-25px, 15px) scale(1.1);
+  }
+}

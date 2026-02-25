@@ -155,7 +155,7 @@ export default function PricingSection() {
                                 <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-blue-400">
                                     <HeartIcon />
                                 </div>
-                                <h3 className="text-2xl font-bold uppercase tracking-tight text-white">{t.pricing.discounts.title}</h3>
+                                <h3 className="text-2xl font-bold uppercase tracking-tight text-blue-300">{t.pricing.discounts.title}</h3>
                             </div>
 
                             <table className="w-full text-sm md:text-base">

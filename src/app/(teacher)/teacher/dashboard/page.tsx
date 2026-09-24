@@ -2,73 +2,188 @@ import Link from "next/link";
 import {
   AlertCircle,
   CalendarDays,
-  CheckCircle2,
   ChevronRight,
   Clock3,
   GraduationCap,
   Users,
   Video,
 } from "lucide-react";
+import { requireRole } from "@/lib/auth";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-const todaysLessons = [
-  {
-    student: "Emma K.",
-    language: "English",
-    level: "B1",
-    time: "15:00",
-    type: "Conversation",
-  },
-  {
-    student: "Martin S.",
-    language: "English",
-    level: "A2",
-    time: "17:30",
-    type: "General English",
-  },
-  {
-    student: "Lucia P.",
-    language: "English",
-    level: "B2",
-    time: "19:00",
-    type: "Business English",
-  },
-];
+function formatTime(value: string) {
+  return new Intl.DateTimeFormat("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "Europe/Bratislava",
+  }).format(new Date(value));
+}
 
-const students = [
-  {
-    name: "Emma K.",
-    language: "English",
-    level: "B1",
-    next: "Today · 15:00",
-    homework: "Completed",
-  },
-  {
-    name: "Martin S.",
-    language: "English",
-    level: "A2",
-    next: "Today · 17:30",
-    homework: "To review",
-  },
-  {
-    name: "Lucia P.",
-    language: "English",
-    level: "B2",
-    next: "Today · 19:00",
-    homework: "No homework",
-  },
-  {
-    name: "Peter M.",
-    language: "English",
-    level: "B1",
-    next: "29 Sep · 18:00",
-    homework: "To do",
-  },
-];
+function formatShortDate(value: string) {
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "short",
+    timeZone: "Europe/Bratislava",
+  }).format(new Date(value));
+}
 
-export default function TeacherDashboardPage() {
+function getName(
+  profile:
+    | { full_name?: string | null; email?: string | null }
+    | null
+    | undefined
+) {
+  return profile?.full_name?.trim() || profile?.email || "Student";
+}
+
+function getInitials(name: string) {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+
+  if (!parts.length) return "T";
+
+  return parts
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("");
+}
+
+export default async function TeacherDashboardPage() {
+  const { user } = await requireRole("teacher");
+  const supabase = await createSupabaseServerClient();
+
+  const { data: teacherProfile } = await supabase
+    .from("profiles")
+    .select("full_name, email")
+    .eq("id", user.id)
+    .single();
+
+  const now = new Date();
+
+  const bratislavaDate = new Intl.DateTimeFormat("en-CA", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    timeZone: "Europe/Bratislava",
+  }).format(now);
+
+  const startOfToday = new Date(
+    `${bratislavaDate}T00:00:00+02:00`
+  ).toISOString();
+
+  const endOfToday = new Date(
+    `${bratislavaDate}T23:59:59+02:00`
+  ).toISOString();
+
+  const { data: todayLessons } = await supabase
+    .from("lessons")
+    .select(`
+      id,
+      student_id,
+      scheduled_at,
+      duration_minutes,
+      status,
+      language,
+      lesson_type,
+      meet_link,
+      student:profiles!lessons_student_id_fkey (
+        full_name,
+        email
+      )
+    `)
+    .eq("teacher_id", user.id)
+    .in("status", ["scheduled", "rescheduled"])
+    .gte("scheduled_at", startOfToday)
+    .lte("scheduled_at", endOfToday)
+    .order("scheduled_at", { ascending: true });
+
+  const { data: upcomingLessons } = await supabase
+    .from("lessons")
+    .select(`
+      id,
+      student_id,
+      scheduled_at,
+      language,
+      student:profiles!lessons_student_id_fkey (
+        full_name,
+        email
+      )
+    `)
+    .eq("teacher_id", user.id)
+    .in("status", ["scheduled", "rescheduled"])
+    .gte("scheduled_at", now.toISOString())
+    .order("scheduled_at", { ascending: true });
+
+  const { data: pendingRequests } = await supabase
+    .from("schedule_change_requests")
+    .select(`
+      id,
+      requested_by,
+      preferred_at,
+      lesson:lessons!schedule_change_requests_lesson_id_fkey (
+        id,
+        teacher_id,
+        student_id,
+        scheduled_at,
+        language,
+        student:profiles!lessons_student_id_fkey (
+          full_name,
+          email
+        )
+      )
+    `)
+    .eq("status", "pending")
+    .order("requested_at", { ascending: true });
+
+  const myPendingRequests =
+    pendingRequests?.filter((request) => {
+      const lesson = Array.isArray(request.lesson)
+        ? request.lesson[0]
+        : request.lesson;
+
+      return (
+        lesson?.teacher_id === user.id &&
+        request.requested_by !== user.id
+      );
+    }) ?? [];
+
+  const uniqueStudents = new Map<
+    string,
+    {
+      id: string;
+      name: string;
+      language: string;
+      nextLesson: string;
+    }
+  >();
+
+  for (const lesson of upcomingLessons ?? []) {
+    if (uniqueStudents.has(lesson.student_id)) continue;
+
+    const student = Array.isArray(lesson.student)
+      ? lesson.student[0]
+      : lesson.student;
+
+    uniqueStudents.set(lesson.student_id, {
+      id: lesson.student_id,
+      name: getName(student),
+      language: lesson.language || "Language",
+      nextLesson: lesson.scheduled_at,
+    });
+  }
+
+  const students = Array.from(uniqueStudents.values());
+
+  const teacherName =
+    teacherProfile?.full_name?.trim() ||
+    teacherProfile?.email ||
+    user.email ||
+    "Teacher";
+
+  const firstName = teacherName.split(" ")[0];
+
   return (
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
-      {/* Header */}
       <header className="border-b border-black/5 bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
           <Link href="/" className="text-xl font-bold tracking-tight">
@@ -77,26 +192,25 @@ export default function TeacherDashboardPage() {
 
           <div className="flex items-center gap-3">
             <div className="hidden text-right sm:block">
-              <p className="text-sm font-semibold">Teacher Portal</p>
-              <p className="text-xs text-gray-400">Preview account</p>
+              <p className="text-sm font-semibold">{teacherName}</p>
+              <p className="text-xs text-gray-400">Teacher Portal</p>
             </div>
 
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#183f38] text-sm font-semibold text-white">
-              T
+              {getInitials(teacherName)}
             </div>
           </div>
         </div>
       </header>
 
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
-        {/* Intro */}
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
             Teacher dashboard
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Good morning 👋
+            Hi, {firstName} 👋
           </h1>
 
           <p className="mt-2 text-gray-500">
@@ -104,14 +218,17 @@ export default function TeacherDashboardPage() {
           </p>
         </section>
 
-        {/* Overview */}
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-8 grid gap-4 sm:grid-cols-3">
           <article className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between">
               <p className="text-sm text-gray-400">Today</p>
               <CalendarDays size={19} className="text-[#9a8049]" />
             </div>
-            <p className="mt-3 text-3xl font-semibold">3</p>
+
+            <p className="mt-3 text-3xl font-semibold">
+              {todayLessons?.length ?? 0}
+            </p>
+
             <p className="mt-1 text-sm text-gray-500">lessons</p>
           </article>
 
@@ -120,32 +237,34 @@ export default function TeacherDashboardPage() {
               <p className="text-sm text-gray-400">My students</p>
               <Users size={19} className="text-[#9a8049]" />
             </div>
-            <p className="mt-3 text-3xl font-semibold">8</p>
-            <p className="mt-1 text-sm text-gray-500">active students</p>
+
+            <p className="mt-3 text-3xl font-semibold">
+              {students.length}
+            </p>
+
+            <p className="mt-1 text-sm text-gray-500">
+              upcoming students
+            </p>
           </article>
 
           <article className="rounded-3xl border border-[#c6a65b]/20 bg-[#faf6eb] p-5">
             <div className="flex items-center justify-between">
-              <p className="text-sm text-[#7e693a]/70">Change requests</p>
+              <p className="text-sm text-[#7e693a]/70">
+                Change requests
+              </p>
               <Clock3 size={19} className="text-[#9a8049]" />
             </div>
-            <p className="mt-3 text-3xl font-semibold text-[#7e693a]">2</p>
+
+            <p className="mt-3 text-3xl font-semibold text-[#7e693a]">
+              {myPendingRequests.length}
+            </p>
+
             <p className="mt-1 text-sm text-[#7e693a]/70">
               waiting for you
             </p>
           </article>
-
-          <article className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-400">Reports</p>
-              <CheckCircle2 size={19} className="text-[#9a8049]" />
-            </div>
-            <p className="mt-3 text-3xl font-semibold">1</p>
-            <p className="mt-1 text-sm text-gray-500">to complete</p>
-          </article>
         </div>
 
-        {/* Today's lessons */}
         <section className="mt-10">
           <div className="flex items-center justify-between">
             <div>
@@ -155,216 +274,193 @@ export default function TeacherDashboardPage() {
               </h2>
             </div>
 
-            <button
-              disabled
+            <Link
+              href="/teacher/schedule"
               className="rounded-xl bg-[#183f38] px-4 py-2.5 text-sm font-semibold text-white"
             >
-              + Add lesson
-            </button>
+              View schedule
+            </Link>
           </div>
 
-          <div className="mt-4 space-y-3">
-            {todaysLessons.map((lesson, index) => (
-              <article
-                key={`${lesson.student}-${lesson.time}`}
-                className={`rounded-3xl border p-5 shadow-sm sm:p-6 ${
-                  index === 0
-                    ? "border-[#183f38]/10 bg-[#183f38] text-white"
-                    : "border-black/5 bg-white"
-                }`}
-              >
-                <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="flex items-center gap-4">
-                    <div
-                      className={`flex h-14 w-14 items-center justify-center rounded-2xl text-sm font-semibold ${
-                        index === 0
-                          ? "bg-white/10"
-                          : "bg-[#eef3ef] text-[#183f38]"
-                      }`}
-                    >
-                      {lesson.time}
-                    </div>
+          {!todayLessons?.length ? (
+            <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
+              <p className="font-medium">No lessons today</p>
+              <p className="mt-1 text-sm text-gray-400">
+                Your scheduled lessons for today will appear here.
+              </p>
+            </div>
+          ) : (
+            <div className="mt-4 space-y-3">
+              {todayLessons.map((lesson, index) => {
+                const student = Array.isArray(lesson.student)
+                  ? lesson.student[0]
+                  : lesson.student;
 
-                    <div>
-                      <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="font-semibold">{lesson.student}</h3>
+                return (
+                  <article
+                    key={lesson.id}
+                    className={`rounded-3xl border p-5 shadow-sm sm:p-6 ${
+                      index === 0
+                        ? "border-[#183f38]/10 bg-[#183f38] text-white"
+                        : "border-black/5 bg-white"
+                    }`}
+                  >
+                    <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="flex items-center gap-4">
+                        <div
+                          className={`flex h-14 w-14 items-center justify-center rounded-2xl text-sm font-semibold ${
+                            index === 0
+                              ? "bg-white/10"
+                              : "bg-[#eef3ef] text-[#183f38]"
+                          }`}
+                        >
+                          {formatTime(lesson.scheduled_at)}
+                        </div>
 
-                        {index === 0 && (
-                          <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold">
-                            Next
-                          </span>
-                        )}
+                        <div>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <h3 className="font-semibold">
+                              {getName(student)}
+                            </h3>
+
+                            {index === 0 && (
+                              <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold">
+                                Next
+                              </span>
+                            )}
+                          </div>
+
+                          <p
+                            className={`mt-1 text-sm ${
+                              index === 0
+                                ? "text-white/60"
+                                : "text-gray-400"
+                            }`}
+                          >
+                            {lesson.language || "Language"} ·{" "}
+                            {lesson.duration_minutes || 60} min
+                          </p>
+                        </div>
                       </div>
 
-                      <p
-                        className={`mt-1 text-sm ${
-                          index === 0 ? "text-white/60" : "text-gray-400"
-                        }`}
-                      >
-                        {lesson.language} · {lesson.level} · {lesson.type}
-                      </p>
+                      {lesson.meet_link ? (
+                        <a
+                          href={lesson.meet_link}
+                          target="_blank"
+                          rel="noreferrer"
+                          className={`flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold ${
+                            index === 0
+                              ? "bg-white text-[#183f38]"
+                              : "bg-[#eef3ef] text-[#183f38]"
+                          }`}
+                        >
+                          <Video size={17} />
+                          Join lesson
+                        </a>
+                      ) : (
+                        <span
+                          className={`rounded-xl px-4 py-3 text-sm ${
+                            index === 0
+                              ? "bg-white/10 text-white/60"
+                              : "bg-gray-100 text-gray-400"
+                          }`}
+                        >
+                          Meet link not added
+                        </span>
+                      )}
                     </div>
-                  </div>
-
-                  <div className="flex flex-col gap-2 sm:flex-row">
-                    <button
-                      disabled
-                      className={`flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold ${
-                        index === 0
-                          ? "bg-white text-[#183f38]"
-                          : "bg-[#eef3ef] text-[#183f38]"
-                      }`}
-                    >
-                      <Video size={17} />
-                      Join lesson
-                    </button>
-
-                    <button
-                      disabled
-                      className={`rounded-xl border px-4 py-3 text-sm font-medium ${
-                        index === 0
-                          ? "border-white/20 text-white"
-                          : "border-gray-200 text-gray-500"
-                      }`}
-                    >
-                      Student
-                    </button>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
+                  </article>
+                );
+              })}
+            </div>
+          )}
         </section>
 
-        {/* Needs attention */}
-        <section className="mt-10">
-          <div className="flex items-center gap-2">
-            <AlertCircle size={20} className="text-[#9a8049]" />
-            <h2 className="text-xl font-semibold">Needs your attention</h2>
-          </div>
+        {myPendingRequests.length > 0 && (
+          <section className="mt-10">
+            <div className="flex items-center gap-2">
+              <AlertCircle size={20} className="text-[#9a8049]" />
+              <h2 className="text-xl font-semibold">
+                Needs your attention
+              </h2>
+            </div>
 
-          <div className="mt-4 grid gap-4 lg:grid-cols-2">
-            <article className="rounded-3xl border border-[#c6a65b]/20 bg-[#faf6eb] p-6">
+            <div className="mt-4 rounded-3xl border border-[#c6a65b]/20 bg-[#faf6eb] p-6">
               <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#9a8049]">
-                Schedule change
+                Schedule changes
               </p>
 
               <h3 className="mt-3 font-semibold text-[#7e693a]">
-                Emma K. requested a new lesson time
+                {myPendingRequests.length === 1
+                  ? "1 student is waiting for your response"
+                  : `${myPendingRequests.length} students are waiting for your response`}
               </h3>
 
               <p className="mt-2 text-sm leading-6 text-[#7e693a]/75">
-                Current: Thursday · 15:00
-                <br />
-                Requested: Friday · 16:30
+                Review the requested lesson times before confirming any
+                changes.
               </p>
 
-              <div className="mt-5 flex flex-wrap gap-2">
-                <button
-                  disabled
-                  className="rounded-xl bg-[#183f38] px-4 py-2.5 text-sm font-semibold text-white"
-                >
-                  Accept
-                </button>
-
-                <button
-                  disabled
-                  className="rounded-xl border border-[#7e693a]/20 bg-white px-4 py-2.5 text-sm font-medium text-[#7e693a]"
-                >
-                  Suggest another time
-                </button>
-              </div>
-            </article>
-
-            <article className="rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
-              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#9a8049]">
-                Lesson report
-              </p>
-
-              <h3 className="mt-3 font-semibold">
-                Report missing for Peter M.
-              </h3>
-
-              <p className="mt-2 text-sm leading-6 text-gray-500">
-                Lesson completed yesterday. Add a short progress note and
-                homework if needed.
-              </p>
-
-              <button
-                disabled
-                className="mt-5 rounded-xl bg-[#eef3ef] px-4 py-2.5 text-sm font-semibold"
+              <Link
+                href="/teacher/schedule"
+                className="mt-5 inline-flex rounded-xl bg-[#183f38] px-4 py-2.5 text-sm font-semibold text-white"
               >
-                Complete report
-              </button>
-            </article>
-          </div>
-        </section>
+                Review requests
+              </Link>
+            </div>
+          </section>
+        )}
 
-        {/* Students */}
         <section className="mt-10">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-400">Students</p>
-              <h2 className="mt-1 text-xl font-semibold">My students</h2>
+              <h2 className="mt-1 text-xl font-semibold">
+                My students
+              </h2>
             </div>
 
             <GraduationCap size={21} className="text-[#9a8049]" />
           </div>
 
-          <div className="mt-4 overflow-hidden rounded-3xl border border-black/5 bg-white shadow-sm">
-            {students.map((student, index) => (
-              <div
-                key={student.name}
-                className={`flex items-center justify-between gap-4 p-5 sm:p-6 ${
-                  index !== students.length - 1
-                    ? "border-b border-gray-100"
-                    : ""
-                }`}
-              >
-                <div>
-                  <div className="flex flex-wrap items-center gap-2">
+          {students.length === 0 ? (
+            <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
+              <p className="font-medium">No upcoming students</p>
+              <p className="mt-1 text-sm text-gray-400">
+                Students with upcoming lessons will appear here.
+              </p>
+            </div>
+          ) : (
+            <div className="mt-4 overflow-hidden rounded-3xl border border-black/5 bg-white shadow-sm">
+              {students.slice(0, 6).map((student, index) => (
+                <Link
+                  key={student.id}
+                  href="/teacher/students"
+                  className={`flex items-center justify-between gap-4 p-5 transition hover:bg-[#fafbf9] sm:p-6 ${
+                    index !== Math.min(students.length, 6) - 1
+                      ? "border-b border-gray-100"
+                      : ""
+                  }`}
+                >
+                  <div>
                     <p className="font-semibold">{student.name}</p>
 
-                    <span className="rounded-full bg-[#eef3ef] px-2.5 py-1 text-xs font-semibold">
-                      {student.level}
-                    </span>
+                    <p className="mt-1 text-sm text-gray-400">
+                      {student.language} · Next:{" "}
+                      {formatShortDate(student.nextLesson)} ·{" "}
+                      {formatTime(student.nextLesson)}
+                    </p>
                   </div>
 
-                  <p className="mt-1 text-sm text-gray-400">
-                    {student.language} · Next: {student.next}
-                  </p>
-
-                  <p className="mt-2 text-xs text-gray-500">
-                    Homework: {student.homework}
-                  </p>
-                </div>
-
-                <ChevronRight
-                  size={18}
-                  className="shrink-0 text-gray-300"
-                />
-              </div>
-            ))}
-          </div>
+                  <ChevronRight
+                    size={18}
+                    className="shrink-0 text-gray-300"
+                  />
+                </Link>
+              ))}
+            </div>
+          )}
         </section>
-
-        {/* Availability */}
-        <section className="mt-6 flex flex-col gap-5 rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm text-gray-400">Teacher availability</p>
-            <p className="mt-1 font-semibold">
-              Accepting new students
-            </p>
-          </div>
-
-          <span className="inline-flex w-fit rounded-full bg-[#eaf4ed] px-3 py-1.5 text-xs font-semibold text-[#527064]">
-            Available
-          </span>
-        </section>
-
-        <p className="mt-8 text-center text-xs text-gray-400">
-          Preview data · Mundus Teacher Portal
-        </p>
       </div>
     </main>
   );

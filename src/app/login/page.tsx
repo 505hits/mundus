@@ -1,10 +1,40 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { FormEvent, useState } from "react";
+import { createSupabaseBrowserClient } from "@/lib/supabase";
 
 export default function LoginPage() {
+  const supabase = createSupabaseBrowserClient();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleLogin(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    setError("");
+    setLoading(true);
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      setError(error.message);
+      setLoading(false);
+      return;
+    }
+
+    window.location.href = "/dashboard";
+  }
+
   return (
     <main className="min-h-screen bg-[#f7f8f5] flex">
-      {/* Left side */}
       <section className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-[#163f3a] p-12 flex-col justify-between">
         <div className="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-[#d7b56d]/10 blur-3xl" />
         <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-white/5 blur-3xl" />
@@ -32,7 +62,7 @@ export default function LoginPage() {
           </h1>
 
           <p className="mt-6 max-w-md text-lg leading-8 text-white/70">
-            Keep track of your lessons, homework, materials and progress with
+            Keep track of your lessons, learning materials and progress with
             Mundus.
           </p>
         </div>
@@ -42,7 +72,6 @@ export default function LoginPage() {
         </p>
       </section>
 
-      {/* Login */}
       <section className="flex w-full items-center justify-center px-6 py-12 lg:w-1/2">
         <div className="w-full max-w-md">
           <div className="mb-10 lg:hidden">
@@ -70,55 +99,53 @@ export default function LoginPage() {
             Sign in to see your lessons, learning materials and progress.
           </p>
 
-          <div className="mt-9 space-y-5">
+          <form onSubmit={handleLogin} className="mt-9 space-y-5">
             <label className="block">
               <span className="text-sm font-medium text-gray-700">
                 Email address
               </span>
+
               <input
                 type="email"
-                disabled
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
                 placeholder="name@email.com"
-                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-gray-400 shadow-sm outline-none"
+                required
+                autoComplete="email"
+                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-gray-800 shadow-sm outline-none focus:border-[#163f3a]"
               />
             </label>
 
             <label className="block">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700">
-                  Password
-                </span>
-                <span className="text-sm text-gray-400">
-                  Forgot password?
-                </span>
-              </div>
+              <span className="text-sm font-medium text-gray-700">
+                Password
+              </span>
 
               <input
                 type="password"
-                disabled
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
                 placeholder="••••••••"
-                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-gray-400 shadow-sm outline-none"
+                required
+                autoComplete="current-password"
+                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-gray-800 shadow-sm outline-none focus:border-[#163f3a]"
               />
             </label>
 
-            <button
-              disabled
-              className="w-full rounded-2xl bg-[#163f3a] px-5 py-4 font-semibold text-white opacity-90"
-            >
-              Sign in
-            </button>
-          </div>
+            {error && (
+              <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                {error}
+              </div>
+            )}
 
-          <div className="mt-7 rounded-2xl border border-[#163f3a]/10 bg-[#eef3ef] p-4">
-            <p className="text-sm leading-6 text-[#526963]">
-              <span className="font-semibold text-[#163f3a]">
-                Portal preview
-              </span>
-              <br />
-              Secure account access will be connected in the next development
-              stage.
-            </p>
-          </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full rounded-2xl bg-[#163f3a] px-5 py-4 font-semibold text-white transition hover:bg-[#12342f] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {loading ? "Signing in..." : "Sign in"}
+            </button>
+          </form>
 
           <p className="mt-8 text-center text-sm text-gray-400">
             Need help? Contact Mundus Languages.

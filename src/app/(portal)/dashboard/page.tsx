@@ -33,45 +33,70 @@ export default async function DashboardPage() {
   const { user } = await requireRole("student");
   const supabase = await createSupabaseServerClient();
 
-  const [{ data: profile }, { data: packages }, { data: lessons }] =
-    await Promise.all([
-      supabase
-        .from("profiles")
-        .select("full_name")
-        .eq("id", user.id)
-        .single(),
+  const [
+    { data: profile },
+    { data: packages },
+    { data: lessons },
+    { data: reports },
+  ] = await Promise.all([
+    supabase
+      .from("profiles")
+      .select("full_name")
+      .eq("id", user.id)
+      .single(),
 
-      supabase
-        .from("lesson_packages")
-        .select(
-          "id,total_lessons,remaining_lessons,used_lessons,status"
-        )
-        .eq("student_id", user.id)
-        .eq("status", "active")
-        .order("purchased_at", { ascending: false })
-        .limit(1),
+    supabase
+      .from("lesson_packages")
+      .select(
+        "id,total_lessons,remaining_lessons,used_lessons,status"
+      )
+      .eq("student_id", user.id)
+      .eq("status", "active")
+      .order("purchased_at", { ascending: false })
+      .limit(1),
 
-      supabase
-        .from("lessons")
-        .select(
-          "id,scheduled_at,duration_minutes,status,lesson_type,meet_link,language"
-        )
-        .eq("student_id", user.id)
-        .in("status", ["scheduled", "rescheduled"])
-        .order("scheduled_at", { ascending: true })
-        .limit(5),
-    ]);
+    supabase
+      .from("lessons")
+      .select(
+        "id,scheduled_at,duration_minutes,status,lesson_type,meet_link,language"
+      )
+      .eq("student_id", user.id)
+      .in("status", ["scheduled", "rescheduled"])
+      .order("scheduled_at", { ascending: true })
+      .limit(5),
+
+    supabase
+      .from("lesson_reports")
+      .select(
+        "id,lesson_id,topic,progress,student_note,homework,next_focus,updated_at"
+      )
+      .eq("student_id", user.id)
+      .order("updated_at", { ascending: false })
+      .limit(5),
+  ]);
 
   const activePackage = packages?.[0] ?? null;
   const upcomingLessons = lessons ?? [];
   const nextLesson = upcomingLessons[0] ?? null;
+  const teacherReports = reports ?? [];
+
+  const latestReport = teacherReports[0] ?? null;
+
+  const latestHomework =
+    teacherReports.find(
+      (report) => report.homework?.trim()
+    )?.homework?.trim() || null;
+
+  const latestNextFocus =
+    latestReport?.next_focus?.trim() || null;
 
   const firstName =
     profile?.full_name?.trim().split(/\s+/)[0] || "there";
 
   const totalLessons = activePackage?.total_lessons ?? 0;
   const usedLessons = activePackage?.used_lessons ?? 0;
-  const remainingLessons = activePackage?.remaining_lessons ?? 0;
+  const remainingLessons =
+    activePackage?.remaining_lessons ?? 0;
 
   const progress =
     totalLessons > 0
@@ -85,7 +110,10 @@ export default async function DashboardPage() {
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
       <header className="border-b border-black/5 bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
-          <Link href="/" className="text-xl font-bold tracking-tight">
+          <Link
+            href="/"
+            className="text-xl font-bold tracking-tight"
+          >
             mundus
           </Link>
 
@@ -94,7 +122,10 @@ export default async function DashboardPage() {
               <p className="text-sm font-semibold text-[#183f38]">
                 Student Portal
               </p>
-              <p className="text-xs text-gray-400">{user.email}</p>
+
+              <p className="text-xs text-gray-400">
+                {user.email}
+              </p>
             </div>
 
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#183f38] text-sm font-semibold text-white">
@@ -124,6 +155,7 @@ export default async function DashboardPage() {
         </section>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-3">
+          {/* Next lesson */}
           <section className="rounded-3xl bg-[#183f38] p-6 text-white shadow-sm lg:col-span-2 sm:p-8">
             <div className="flex items-start justify-between gap-4">
               <div>
@@ -205,6 +237,7 @@ export default async function DashboardPage() {
             )}
           </section>
 
+          {/* Package */}
           <section className="rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
             <p className="text-sm font-medium text-gray-500">
               Current package
@@ -216,6 +249,7 @@ export default async function DashboardPage() {
                   <span className="text-5xl font-semibold tracking-tight">
                     {remainingLessons}
                   </span>
+
                   <span className="pb-1 text-gray-400">
                     lessons left
                   </span>
@@ -241,10 +275,14 @@ export default async function DashboardPage() {
         </div>
 
         <div className="mt-6 grid gap-6 md:grid-cols-2">
+          {/* Progress */}
           <section className="rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-400">Progress</p>
+                <p className="text-sm text-gray-400">
+                  Progress
+                </p>
+
                 <h2 className="mt-1 text-2xl font-semibold">
                   Learning journey
                 </h2>
@@ -255,10 +293,19 @@ export default async function DashboardPage() {
               </div>
             </div>
 
-            <p className="mt-5 text-sm leading-6 text-gray-500">
-              Your level and progress will appear here as your teacher
-              adds assessments.
-            </p>
+            {latestNextFocus ? (
+              <p className="mt-5 text-sm leading-6 text-gray-500">
+                Next focus:{" "}
+                <span className="font-medium text-[#183f38]">
+                  {latestNextFocus}
+                </span>
+              </p>
+            ) : (
+              <p className="mt-5 text-sm leading-6 text-gray-500">
+                Your level and progress will appear here as your teacher
+                adds assessments and lesson reports.
+              </p>
+            )}
 
             <Link
               href="/progress"
@@ -269,12 +316,18 @@ export default async function DashboardPage() {
             </Link>
           </section>
 
+          {/* Homework */}
           <section className="rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-4">
               <div>
-                <p className="text-sm text-gray-400">Homework</p>
+                <p className="text-sm text-gray-400">
+                  Homework
+                </p>
+
                 <h2 className="mt-1 text-xl font-semibold">
-                  No homework due
+                  {latestHomework
+                    ? "Your latest homework"
+                    : "No homework yet"}
                 </h2>
               </div>
 
@@ -284,21 +337,49 @@ export default async function DashboardPage() {
             </div>
 
             <p className="mt-5 text-sm leading-6 text-gray-500">
-              New assignments from your teacher will appear here.
+              {latestHomework
+                ? latestHomework
+                : "New assignments from your teacher will appear here after a lesson report is saved."}
             </p>
+
+            {latestReport?.updated_at && (
+              <p className="mt-4 text-xs text-gray-400">
+                Updated{" "}
+                {new Intl.DateTimeFormat("en-GB", {
+                  day: "numeric",
+                  month: "long",
+                  timeZone: "Europe/Bratislava",
+                }).format(new Date(latestReport.updated_at))}
+              </p>
+            )}
+
+            <Link
+              href="/progress"
+              className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#9a8049]"
+            >
+              View learning progress
+              <ChevronRight size={16} />
+            </Link>
           </section>
         </div>
 
+        {/* Schedule */}
         <section className="mt-6 rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-400">Schedule</p>
+              <p className="text-sm text-gray-400">
+                Schedule
+              </p>
+
               <h2 className="mt-1 text-xl font-semibold">
                 Upcoming lessons
               </h2>
             </div>
 
-            <CalendarDays size={21} className="text-[#9a8049]" />
+            <CalendarDays
+              size={21}
+              className="text-[#9a8049]"
+            />
           </div>
 
           {upcomingLessons.length > 0 ? (

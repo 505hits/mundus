@@ -4,35 +4,91 @@ import {
   ClipboardList,
   Clock3,
 } from "lucide-react";
+import { requireRole } from "@/lib/auth";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import LessonReportForm from "./LessonReportForm";
 
-const completedLessons = [
-  {
-    student: "Emma K.",
-    language: "English",
-    level: "B1",
-    date: "22 September",
-    time: "15:00",
-    report: "Missing",
-  },
-  {
-    student: "Martin S.",
-    language: "English",
-    level: "A2",
-    date: "21 September",
-    time: "17:30",
-    report: "Completed",
-  },
-  {
-    student: "Lucia P.",
-    language: "English",
-    level: "B2",
-    date: "20 September",
-    time: "19:00",
-    report: "Completed",
-  },
-];
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "long",
+    timeZone: "Europe/Bratislava",
+  }).format(new Date(value));
+}
 
-export default function TeacherReportsPage() {
+function formatTime(value: string) {
+  return new Intl.DateTimeFormat("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "Europe/Bratislava",
+  }).format(new Date(value));
+}
+
+function getStudentName(
+  profile:
+    | { full_name?: string | null; email?: string | null }
+    | null
+    | undefined
+) {
+  return profile?.full_name?.trim() || profile?.email || "Student";
+}
+
+export default async function TeacherReportsPage() {
+  const { user } = await requireRole("teacher");
+  const supabase = await createSupabaseServerClient();
+
+  const { data: lessons, error: lessonsError } = await supabase
+    .from("lessons")
+    .select(`
+      id,
+      student_id,
+      scheduled_at,
+      language,
+      lesson_type,
+      status,
+      student:profiles!lessons_student_id_fkey (
+        full_name,
+        email
+      )
+    `)
+    .eq("teacher_id", user.id)
+    .eq("status", "completed")
+    .order("scheduled_at", { ascending: false })
+    .limit(20);
+
+  const lessonIds = (lessons ?? []).map((lesson) => lesson.id);
+
+  const { data: reports, error: reportsError } = lessonIds.length
+    ? await supabase
+        .from("lesson_reports")
+        .select(`
+          id,
+          lesson_id,
+          topic,
+          progress,
+          student_note,
+          homework,
+          next_focus,
+          private_teacher_note,
+          created_at,
+          updated_at
+        `)
+        .in("lesson_id", lessonIds)
+    : { data: [], error: null };
+
+  const reportMap = new Map(
+    (reports ?? []).map((report) => [report.lesson_id, report])
+  );
+
+  const recentLessons = lessons ?? [];
+
+  const completedReports = recentLessons.filter((lesson) =>
+    reportMap.has(lesson.id)
+  ).length;
+
+  const missingReports = recentLessons.length - completedReports;
+
   return (
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
@@ -46,182 +102,137 @@ export default function TeacherReportsPage() {
           </h1>
 
           <p className="mt-2 max-w-2xl text-gray-500">
-            Add a short update after each lesson so the student&apos;s learning
-            journey stays up to date.
+            Add a short update after each completed lesson so the student&apos;s
+            learning journey stays up to date.
           </p>
         </section>
+
+        {(lessonsError || reportsError) && (
+          <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+            We couldn&apos;t load all lesson report data. Please refresh the
+            page or try again shortly.
+          </div>
+        )}
 
         <section className="mt-8 grid gap-4 sm:grid-cols-3">
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <ClipboardList size={20} className="text-[#9a8049]" />
-            <p className="mt-4 text-3xl font-semibold">3</p>
-            <p className="mt-1 text-sm text-gray-500">Recent lessons</p>
+
+            <p className="mt-4 text-3xl font-semibold">
+              {recentLessons.length}
+            </p>
+
+            <p className="mt-1 text-sm text-gray-500">
+              Recent lessons
+            </p>
           </div>
 
-          <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border border-[#c6a65b]/20 bg-[#faf6eb] p-5">
             <AlertCircle size={20} className="text-[#9a8049]" />
-            <p className="mt-4 text-3xl font-semibold">1</p>
-            <p className="mt-1 text-sm text-gray-500">Report needed</p>
+
+            <p className="mt-4 text-3xl font-semibold text-[#7e693a]">
+              {missingReports}
+            </p>
+
+            <p className="mt-1 text-sm text-[#7e693a]/70">
+              Reports needed
+            </p>
           </div>
 
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CheckCircle2 size={20} className="text-[#9a8049]" />
-            <p className="mt-4 text-3xl font-semibold">2</p>
-            <p className="mt-1 text-sm text-gray-500">Completed reports</p>
+
+            <p className="mt-4 text-3xl font-semibold">
+              {completedReports}
+            </p>
+
+            <p className="mt-1 text-sm text-gray-500">
+              Completed reports
+            </p>
           </div>
         </section>
 
         <section className="mt-8">
-          <div>
-            <p className="text-sm text-gray-400">Recent activity</p>
-            <h2 className="mt-1 text-xl font-semibold">
-              Completed lessons
-            </h2>
-          </div>
-
-          <div className="mt-4 space-y-3">
-            {completedLessons.map((lesson, index) => (
-              <article
-                key={`${lesson.student}-${lesson.date}`}
-                className={`rounded-3xl border p-5 shadow-sm sm:p-6 ${
-                  lesson.report === "Missing"
-                    ? "border-[#c6a65b]/20 bg-[#faf6eb]"
-                    : "border-black/5 bg-white"
-                }`}
-              >
-                <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-                  <div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="font-semibold">{lesson.student}</h3>
-
-                      <span
-                        className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
-                          lesson.report === "Missing"
-                            ? "bg-white text-[#9a8049]"
-                            : "bg-[#eef3ef] text-[#527064]"
-                        }`}
-                      >
-                        {lesson.report === "Missing"
-                          ? "Report needed"
-                          : "Report completed"}
-                      </span>
-                    </div>
-
-                    <p className="mt-2 text-sm text-gray-500">
-                      {lesson.language} · {lesson.level}
-                    </p>
-
-                    <div className="mt-2 flex items-center gap-2 text-sm text-gray-400">
-                      <Clock3 size={15} />
-                      {lesson.date} · {lesson.time}
-                    </div>
-                  </div>
-
-                  {index === 0 ? (
-                    <button
-                      disabled
-                      className="rounded-xl bg-[#183f38] px-5 py-2.5 text-sm font-semibold text-white"
-                    >
-                      Add report
-                    </button>
-                  ) : (
-                    <button
-                      disabled
-                      className="rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-500"
-                    >
-                      View report
-                    </button>
-                  )}
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="mt-10 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
-          <div className="flex items-center gap-2">
-            <ClipboardList size={19} className="text-[#9a8049]" />
-            <h2 className="font-semibold">Quick lesson report</h2>
-          </div>
-
-          <p className="mt-2 text-sm leading-6 text-gray-500">
-            Reports are intentionally short. After a lesson, record the topic,
-            how the student is progressing, homework if needed, and the next
-            focus.
+          <p className="text-sm text-gray-400">
+            Recent activity
           </p>
 
-          <div className="mt-6 grid gap-5 md:grid-cols-2">
-            <label className="text-sm font-medium">
-              Lesson topic
-              <input
-                disabled
-                placeholder="e.g. Past tense & conversation"
-                className="mt-2 w-full rounded-xl border border-gray-200 bg-[#fafafa] px-4 py-3 font-normal text-gray-500"
-              />
-            </label>
+          <h2 className="mt-1 text-xl font-semibold">
+            Completed lessons
+          </h2>
 
-            <label className="text-sm font-medium">
-              Progress
-              <select
-                disabled
-                className="mt-2 w-full rounded-xl border border-gray-200 bg-[#fafafa] px-4 py-3 font-normal text-gray-500"
-              >
-                <option>Good progress</option>
-                <option>Normal progress</option>
-                <option>Needs attention</option>
-              </select>
-            </label>
+          {recentLessons.length === 0 ? (
+            <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
+              <p className="font-medium">
+                No completed lessons yet
+              </p>
 
-            <label className="text-sm font-medium md:col-span-2">
-              Student-visible note
-              <textarea
-                disabled
-                rows={3}
-                placeholder="What went well and what should the student focus on next?"
-                className="mt-2 w-full resize-none rounded-xl border border-gray-200 bg-[#fafafa] px-4 py-3 font-normal text-gray-500"
-              />
-            </label>
+              <p className="mt-1 text-sm text-gray-400">
+                Reports will become available after completed lessons.
+              </p>
+            </div>
+          ) : (
+            <div className="mt-4 space-y-4">
+              {recentLessons.map((lesson) => {
+                const student = Array.isArray(lesson.student)
+                  ? lesson.student[0]
+                  : lesson.student;
 
-            <label className="text-sm font-medium">
-              Homework
-              <input
-                disabled
-                placeholder="Optional"
-                className="mt-2 w-full rounded-xl border border-gray-200 bg-[#fafafa] px-4 py-3 font-normal text-gray-500"
-              />
-            </label>
+                const report = reportMap.get(lesson.id);
 
-            <label className="text-sm font-medium">
-              Next focus
-              <input
-                disabled
-                placeholder="e.g. Speaking confidence"
-                className="mt-2 w-full rounded-xl border border-gray-200 bg-[#fafafa] px-4 py-3 font-normal text-gray-500"
-              />
-            </label>
+                return (
+                  <article
+                    key={lesson.id}
+                    className={`rounded-3xl border p-5 shadow-sm sm:p-6 ${
+                      report
+                        ? "border-black/5 bg-white"
+                        : "border-[#c6a65b]/20 bg-[#faf6eb]"
+                    }`}
+                  >
+                    <div className="flex flex-col gap-5">
+                      <div>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <h3 className="font-semibold">
+                            {getStudentName(student)}
+                          </h3>
 
-            <label className="text-sm font-medium md:col-span-2">
-              Private teacher note
-              <textarea
-                disabled
-                rows={2}
-                placeholder="Visible only to teachers and Mundus admin"
-                className="mt-2 w-full resize-none rounded-xl border border-gray-200 bg-[#fafafa] px-4 py-3 font-normal text-gray-500"
-              />
-            </label>
-          </div>
+                          <span
+                            className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
+                              report
+                                ? "bg-[#eef3ef] text-[#527064]"
+                                : "bg-white text-[#9a8049]"
+                            }`}
+                          >
+                            {report
+                              ? "Report completed"
+                              : "Report needed"}
+                          </span>
+                        </div>
 
-          <button
-            disabled
-            className="mt-6 rounded-xl bg-[#183f38] px-5 py-3 text-sm font-semibold text-white"
-          >
-            Save lesson report
-          </button>
+                        <p className="mt-2 text-sm text-gray-500">
+                          {lesson.language || "Language"} ·{" "}
+                          {lesson.lesson_type || "Lesson"}
+                        </p>
+
+                        <div className="mt-2 flex items-center gap-2 text-sm text-gray-400">
+                          <Clock3 size={15} />
+                          {formatDate(lesson.scheduled_at)} ·{" "}
+                          {formatTime(lesson.scheduled_at)}
+                        </div>
+                      </div>
+
+                      <LessonReportForm
+                        lessonId={lesson.id}
+                        studentId={lesson.student_id}
+                        existingReport={report ?? null}
+                      />
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          )}
         </section>
-
-        <p className="mt-8 text-center text-xs text-gray-400">
-          Preview data · Mundus Teacher Portal
-        </p>
       </div>
     </main>
   );

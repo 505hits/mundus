@@ -2,46 +2,98 @@ import Link from "next/link";
 import {
   ArrowLeft,
   BookOpen,
-  Check,
+  CalendarDays,
+  CheckCircle2,
+  FileText,
   MessageCircle,
   Target,
   TrendingUp,
-  Trophy,
 } from "lucide-react";
+import { requireRole } from "@/lib/auth";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-const levels = [
-  { name: "A1", status: "completed" },
-  { name: "A2", status: "completed" },
-  { name: "B1", status: "current" },
-  { name: "B2", status: "future" },
-  { name: "C1", status: "future" },
-  { name: "C2", status: "future" },
-];
+export default async function ProgressPage() {
+  const { user } = await requireRole("student");
+  const supabase = await createSupabaseServerClient();
 
-const skills = [
-  {
-    name: "Speaking",
-    value: 72,
-    note: "Improving",
-  },
-  {
-    name: "Listening",
-    value: 68,
-    note: "Improving",
-  },
-  {
-    name: "Vocabulary",
-    value: 64,
-    note: "Good progress",
-  },
-  {
-    name: "Grammar",
-    value: 58,
-    note: "Keep practising",
-  },
-];
+  const [{ data: lessons }, { data: packages }, { data: reports }] =
+    await Promise.all([
+      supabase
+        .from("lessons")
+        .select(
+          "id,scheduled_at,status,language,lesson_type"
+        )
+        .eq("student_id", user.id)
+        .order("scheduled_at", { ascending: false }),
 
-export default function ProgressPage() {
+      supabase
+        .from("lesson_packages")
+        .select(
+          "id,total_lessons,used_lessons,remaining_lessons,status"
+        )
+        .eq("student_id", user.id)
+        .eq("status", "active")
+        .order("purchased_at", { ascending: false }),
+
+      supabase
+        .from("lesson_reports")
+        .select(
+          "id,lesson_id,topic,progress,student_note,homework,next_focus,updated_at"
+        )
+        .eq("student_id", user.id)
+        .order("updated_at", { ascending: false }),
+    ]);
+
+  const allLessons = lessons ?? [];
+
+  const completedLessons = allLessons.filter(
+    (lesson) => lesson.status === "completed"
+  );
+
+  const activePackages = packages ?? [];
+  const teacherReports = reports ?? [];
+  const latestReport = teacherReports[0] ?? null;
+
+  const totalLessons = activePackages.reduce(
+    (sum, pkg) => sum + (pkg.total_lessons ?? 0),
+    0
+  );
+
+  const usedLessons = activePackages.reduce(
+    (sum, pkg) => sum + (pkg.used_lessons ?? 0),
+    0
+  );
+
+  const remainingLessons = activePackages.reduce(
+    (sum, pkg) => sum + (pkg.remaining_lessons ?? 0),
+    0
+  );
+
+  const packageProgress =
+    totalLessons > 0
+      ? Math.min(
+          100,
+          Math.round((usedLessons / totalLessons) * 100)
+        )
+      : 0;
+
+  const language =
+    allLessons.find((lesson) => lesson.language)?.language ||
+    "Your language";
+
+  const nextFocus =
+    latestReport?.next_focus ||
+    "Your teacher will add your next learning focus after a lesson.";
+
+  function formatDate(value: string) {
+    return new Intl.DateTimeFormat("en-GB", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      timeZone: "Europe/Bratislava",
+    }).format(new Date(value));
+  }
+
   return (
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
       {/* Header */}
@@ -49,13 +101,15 @@ export default function ProgressPage() {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
           <Link
             href="/dashboard"
-            className="flex items-center gap-2 text-sm font-medium"
+            className="flex items-center gap-2 text-sm font-medium transition hover:text-[#9a8049]"
           >
             <ArrowLeft size={17} />
             Dashboard
           </Link>
 
-          <p className="text-sm font-semibold">Mundus Learning Portal</p>
+          <p className="text-sm font-semibold">
+            Mundus Learning Portal
+          </p>
         </div>
       </header>
 
@@ -71,28 +125,29 @@ export default function ProgressPage() {
           </h1>
 
           <p className="mt-2 max-w-2xl text-gray-500">
-            Follow your learning journey, see your strengths and know what to
-            focus on next.
+            Follow your real Mundus learning activity and see the latest
+            feedback from your teacher.
           </p>
         </section>
 
-        {/* Current level */}
+        {/* Current learning */}
         <section className="mt-8 rounded-3xl bg-[#183f38] p-6 text-white shadow-sm sm:p-8">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <p className="text-sm font-medium text-white/55">
-                Current estimated level
+                Current learning
               </p>
 
               <div className="mt-3 flex items-end gap-3">
-                <span className="text-5xl font-semibold">B1</span>
-                <span className="pb-1 text-white/60">English</span>
+                <span className="text-4xl font-semibold">
+                  {language}
+                </span>
               </div>
 
               <p className="mt-4 max-w-xl text-sm leading-6 text-white/60">
-                Your Mundus learning progress is aligned with the CEFR
-                framework. This is a learning estimate, not an official
-                language certificate.
+                Your progress here is based on lessons and teacher reports
+                recorded in your Mundus account. A CEFR level is shown only
+                when Mundus has a recorded assessment for you.
               </p>
             </div>
 
@@ -102,57 +157,94 @@ export default function ProgressPage() {
           </div>
         </section>
 
-        {/* CEFR journey */}
-        <section className="mt-6 rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
-          <div>
-            <p className="text-sm text-gray-400">Your language journey</p>
-            <h2 className="mt-1 text-xl font-semibold">
-              CEFR learning path
-            </h2>
-          </div>
+        {/* Real stats */}
+        <section className="mt-6 grid gap-4 sm:grid-cols-3">
+          <article className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
+            <CheckCircle2
+              size={20}
+              className="text-[#9a8049]"
+            />
 
-          <div className="mt-8 grid grid-cols-6 gap-2">
-            {levels.map((level) => (
-              <div key={level.name} className="text-center">
-                <div
-                  className={`mx-auto flex h-11 w-11 items-center justify-center rounded-full text-sm font-semibold ${
-                    level.status === "completed"
-                      ? "bg-[#183f38] text-white"
-                      : level.status === "current"
-                        ? "bg-[#c6a65b] text-white ring-4 ring-[#c6a65b]/15"
-                        : "bg-[#edf0ec] text-gray-400"
-                  }`}
-                >
-                  {level.status === "completed" ? (
-                    <Check size={17} />
-                  ) : (
-                    level.name
-                  )}
-                </div>
+            <p className="mt-4 text-3xl font-semibold">
+              {completedLessons.length}
+            </p>
 
-                <p
-                  className={`mt-3 text-xs font-semibold ${
-                    level.status === "current"
-                      ? "text-[#9a8049]"
-                      : level.status === "future"
-                        ? "text-gray-300"
-                        : "text-[#183f38]"
-                  }`}
-                >
-                  {level.name}
-                </p>
+            <p className="mt-1 text-sm text-gray-500">
+              Lessons completed
+            </p>
+          </article>
 
-                {level.status === "current" && (
-                  <p className="mt-1 text-[11px] text-[#9a8049]">
-                    You are here
-                  </p>
-                )}
-              </div>
-            ))}
-          </div>
+          <article className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
+            <CalendarDays
+              size={20}
+              className="text-[#9a8049]"
+            />
+
+            <p className="mt-4 text-3xl font-semibold">
+              {remainingLessons}
+            </p>
+
+            <p className="mt-1 text-sm text-gray-500">
+              Lessons remaining
+            </p>
+          </article>
+
+          <article className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
+            <FileText
+              size={20}
+              className="text-[#9a8049]"
+            />
+
+            <p className="mt-4 text-3xl font-semibold">
+              {teacherReports.length}
+            </p>
+
+            <p className="mt-1 text-sm text-gray-500">
+              Teacher reports
+            </p>
+          </article>
         </section>
 
-        {/* Goal */}
+        {/* Package progress */}
+        {totalLessons > 0 && (
+          <section className="mt-6 rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-sm text-gray-400">
+                  Current package
+                </p>
+
+                <h2 className="mt-1 text-xl font-semibold">
+                  Your lesson progress
+                </h2>
+              </div>
+
+              <BookOpen
+                size={21}
+                className="text-[#9a8049]"
+              />
+            </div>
+
+            <div className="mt-6 h-3 overflow-hidden rounded-full bg-[#edf0ec]">
+              <div
+                className="h-full rounded-full bg-[#183f38]"
+                style={{
+                  width: `${packageProgress}%`,
+                }}
+              />
+            </div>
+
+            <div className="mt-3 flex flex-wrap justify-between gap-2 text-sm text-gray-500">
+              <span>
+                {usedLessons} of {totalLessons} lessons completed
+              </span>
+
+              <span>{packageProgress}%</span>
+            </div>
+          </section>
+        )}
+
+        {/* Next focus */}
         <section className="mt-6 rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
           <div className="flex items-start gap-4">
             <div className="rounded-2xl bg-[#faf6eb] p-3 text-[#9a8049]">
@@ -160,69 +252,35 @@ export default function ProgressPage() {
             </div>
 
             <div>
-              <p className="text-sm text-gray-400">Your learning goal</p>
+              <p className="text-sm text-gray-400">
+                Next focus
+              </p>
 
               <h2 className="mt-1 text-xl font-semibold">
-                Speak confidently at work
+                {nextFocus}
               </h2>
 
-              <p className="mt-3 max-w-2xl text-sm leading-6 text-gray-500">
-                Feel comfortable speaking English in meetings, everyday work
-                conversations and situations where you need to respond
-                naturally without overthinking.
-              </p>
+              {!latestReport && (
+                <p className="mt-3 text-sm leading-6 text-gray-500">
+                  Your teacher has not added a learning focus yet. It will
+                  appear here after a report is saved.
+                </p>
+              )}
             </div>
           </div>
         </section>
 
-        {/* Skills */}
-        <section className="mt-10">
-          <div>
-            <p className="text-sm text-gray-400">Skills</p>
-            <h2 className="mt-1 text-xl font-semibold">
-              What you&apos;re working on
-            </h2>
-          </div>
-
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            {skills.map((skill) => (
-              <article
-                key={skill.name}
-                className="rounded-3xl border border-black/5 bg-white p-6 shadow-sm"
-              >
-                <div className="flex items-center justify-between">
-                  <p className="font-semibold">{skill.name}</p>
-
-                  <span className="text-xs font-semibold text-[#9a8049]">
-                    {skill.note}
-                  </span>
-                </div>
-
-                <div className="mt-5 h-2 overflow-hidden rounded-full bg-[#edf0ec]">
-                  <div
-                    className="h-full rounded-full bg-[#183f38]"
-                    style={{ width: `${skill.value}%` }}
-                  />
-                </div>
-
-                <p className="mt-3 text-xs text-gray-400">
-                  Based on your recent Mundus progress checks
-                </p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        {/* Progress check */}
+        {/* Latest teacher feedback */}
         <section className="mt-6 rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-sm text-gray-400">
-                Latest teacher progress check
+                Latest teacher feedback
               </p>
 
               <h2 className="mt-1 text-xl font-semibold">
-                You&apos;re becoming more confident
+                {latestReport?.topic ||
+                  "No teacher report yet"}
               </h2>
             </div>
 
@@ -231,68 +289,109 @@ export default function ProgressPage() {
             </div>
           </div>
 
-          <p className="mt-5 max-w-3xl text-sm leading-7 text-gray-500">
-            Your speaking is becoming more natural and you&apos;re responding
-            faster in conversation. You&apos;ve also started using more of the
-            vocabulary from previous lessons without prompting.
-          </p>
+          {latestReport ? (
+            <>
+              {latestReport.progress && (
+                <span className="mt-5 inline-flex rounded-full bg-[#eef3ef] px-3 py-1.5 text-xs font-semibold text-[#527064]">
+                  {latestReport.progress}
+                </span>
+              )}
 
-          <div className="mt-6 rounded-2xl bg-[#f7f8f5] p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#9a8049]">
-              Next focus
-            </p>
+              {latestReport.student_note ? (
+                <p className="mt-5 max-w-3xl text-sm leading-7 text-gray-500">
+                  {latestReport.student_note}
+                </p>
+              ) : (
+                <p className="mt-5 text-sm text-gray-500">
+                  Your teacher has not added a student-visible note to this
+                  report.
+                </p>
+              )}
 
-            <p className="mt-2 font-medium">
-              Building longer answers and improving grammar accuracy while
-              speaking.
+              {latestReport.homework && (
+                <div className="mt-6 rounded-2xl bg-[#f7f8f5] p-5">
+                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#9a8049]">
+                    Homework
+                  </p>
+
+                  <p className="mt-2 text-sm leading-6 text-gray-600">
+                    {latestReport.homework}
+                  </p>
+                </div>
+              )}
+
+              <p className="mt-5 text-xs text-gray-400">
+                Updated {formatDate(latestReport.updated_at)}
+              </p>
+            </>
+          ) : (
+            <p className="mt-5 max-w-2xl text-sm leading-6 text-gray-500">
+              Your latest teacher feedback will appear here once your teacher
+              saves a lesson report.
             </p>
-          </div>
+          )}
         </section>
 
-        {/* Milestone */}
-        <section className="mt-6 flex flex-col gap-5 rounded-3xl border border-[#c6a65b]/20 bg-[#faf6eb] p-6 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-4">
-            <div className="rounded-2xl bg-white p-3 text-[#9a8049] shadow-sm">
-              <Trophy size={23} />
-            </div>
+        {/* Completed lessons */}
+        <section className="mt-10">
+          <div>
+            <p className="text-sm text-gray-400">
+              Recent activity
+            </p>
 
-            <div>
-              <p className="font-semibold">Learning milestone</p>
-              <p className="mt-1 text-sm text-[#7e693a]/75">
-                You&apos;ve completed 10 lessons with Mundus.
-              </p>
-            </div>
+            <h2 className="mt-1 text-xl font-semibold">
+              Completed lessons
+            </h2>
           </div>
 
-          <span className="text-sm font-semibold text-[#9a8049]">
-            Keep going ✨
-          </span>
-        </section>
+          {completedLessons.length > 0 ? (
+            <div className="mt-4 overflow-hidden rounded-3xl border border-black/5 bg-white shadow-sm">
+              {completedLessons.slice(0, 10).map(
+                (lesson, index) => (
+                  <div
+                    key={lesson.id}
+                    className={`flex items-center justify-between gap-4 p-5 sm:p-6 ${
+                      index !==
+                      Math.min(completedLessons.length, 10) - 1
+                        ? "border-b border-gray-100"
+                        : ""
+                    }`}
+                  >
+                    <div>
+                      <p className="font-semibold">
+                        {lesson.lesson_type ||
+                          lesson.language ||
+                          "Lesson"}
+                      </p>
 
-        {/* Next step */}
-        <section className="mt-6 rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
-          <div className="flex items-start gap-4">
-            <div className="rounded-2xl bg-[#eef3ef] p-3">
-              <BookOpen size={22} />
+                      <p className="mt-1 text-sm text-gray-400">
+                        {formatDate(lesson.scheduled_at)}
+                      </p>
+                    </div>
+
+                    <span className="rounded-full bg-[#eef3ef] px-3 py-1.5 text-xs font-semibold text-[#527064]">
+                      Completed
+                    </span>
+                  </div>
+                )
+              )}
             </div>
+          ) : (
+            <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
+              <p className="font-medium">
+                No completed lessons yet
+              </p>
 
-            <div>
-              <p className="text-sm text-gray-400">Your next step</p>
-
-              <h2 className="mt-1 text-xl font-semibold">
-                Keep building speaking confidence
-              </h2>
-
-              <p className="mt-3 text-sm leading-6 text-gray-500">
-                Your next lessons will focus on real work situations, longer
-                conversations and using new vocabulary naturally.
+              <p className="mt-1 text-sm text-gray-400">
+                Your lesson history will appear here after your first
+                completed lesson.
               </p>
             </div>
-          </div>
+          )}
         </section>
 
         <p className="mt-8 text-center text-xs text-gray-400">
-          Preview data · Mundus Learning Portal
+          Mundus Learning Portal
         </p>
       </div>
     </main>

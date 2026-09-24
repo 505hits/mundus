@@ -19,8 +19,8 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
+const { data, error } = await supabase.auth.signInWithPassword({
+  email,
       password,
     });
 
@@ -30,9 +30,34 @@ export default function LoginPage() {
       return;
     }
 
-    window.location.href = "/dashboard";
-  }
+const { data: profile, error: profileError } = await supabase
+  .from("profiles")
+  .select("role, status")
+  .eq("id", data.user.id)
+  .single();
 
+if (profileError || !profile) {
+  setError("We couldn't load your Mundus profile. Please try again.");
+  setLoading(false);
+  return;
+}
+
+if (profile.role === "admin" && profile.status === "active") {
+  window.location.href = "/admin/dashboard";
+  return;
+}
+
+if (profile.role === "teacher") {
+  if (profile.status === "active") {
+    window.location.href = "/teacher/dashboard";
+  } else {
+    window.location.href = "/pending-approval";
+  }
+  return;
+}
+
+window.location.href = "/dashboard";
+}
   return (
     <main className="min-h-screen bg-[#f7f8f5] flex">
       <section className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-[#163f3a] p-12 flex-col justify-between">

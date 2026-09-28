@@ -284,7 +284,7 @@ export default async function DashboardPage() {
                 </p>
 
                 <h2 className="mt-1 text-2xl font-semibold">
-                  Learning journey
+                  Vaše napredovanie
                 </h2>
               </div>
 
@@ -311,7 +311,7 @@ export default async function DashboardPage() {
               href="/progress"
               className="mt-6 flex items-center gap-2 text-sm font-semibold text-[#9a8049]"
             >
-              View my progress
+              Zobraziť môj pokrok
               <ChevronRight size={16} />
             </Link>
           </section>
@@ -326,8 +326,8 @@ export default async function DashboardPage() {
 
                 <h2 className="mt-1 text-xl font-semibold">
                   {latestDomáca úloha
-                    ? "Your latest homework"
-                    : "No homework yet"}
+                    ? "Vaša posledná domáca úloha"
+                    : "Zatiaľ nemáte domácu úlohu"}
                 </h2>
               </div>
 
@@ -339,7 +339,7 @@ export default async function DashboardPage() {
             <p className="mt-5 text-sm leading-6 text-gray-500">
               {latestDomáca úloha
                 ? latestDomáca úloha
-                : "New assignments from your teacher will appear here after a lesson report is saved."}
+                : "Nové úlohy od lektora sa zobrazia po uložení záznamu z hodiny."}
             </p>
 
             {latestReport?.updated_at && (
@@ -357,7 +357,7 @@ export default async function DashboardPage() {
               href="/progress"
               className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#9a8049]"
             >
-              View learning progress
+              Zobraziť učenie
               <ChevronRight size={16} />
             </Link>
           </section>

@@ -10,7 +10,7 @@ import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 function formatDate(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -20,12 +20,26 @@ function formatDate(value: string) {
 }
 
 function formatTime(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
     timeZone: "Europe/Bratislava",
   }).format(new Date(value));
+}
+
+function lessonStatusLabel(status: string) {
+  const labels: Record<string, string> = {
+    scheduled: "Naplánovaná",
+    rescheduled: "Presunutá",
+    completed: "Dokončená",
+    student_no_show: "Študent sa nedostavil",
+    teacher_cancelled: "Zrušená lektorom",
+    student_cancelled: "Zrušená študentom",
+    late_cancellation: "Neskoré zrušenie",
+  };
+
+  return labels[status] || status.replaceAll("_", " ");
 }
 
 export default async function LessonsPage() {
@@ -119,9 +133,7 @@ export default async function LessonsPage() {
                         </h3>
 
                         {index === 0 && (
-                          <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/80">
-                            Next
-                          </span>
+                          <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/80">Najbližšia</span>
                         )}
 
                         {lesson.status === "rescheduled" && (
@@ -240,7 +252,7 @@ export default async function LessonsPage() {
                 >
                   <div>
                     <p className="font-medium">
-                      {lesson.language || "Language"} lesson
+                      {lesson.language || "Jazyk"} lesson
                     </p>
 
                     <p className="mt-1 text-sm text-gray-400">
@@ -250,7 +262,7 @@ export default async function LessonsPage() {
                   </div>
 
                   <span className="w-fit rounded-full bg-[#eef3ef] px-3 py-1.5 text-xs font-semibold capitalize">
-                    {lesson.status}
+                    {lessonStatusLabel(lesson.status)}
                   </span>
                 </div>
               ))}

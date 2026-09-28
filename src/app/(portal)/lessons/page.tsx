@@ -241,7 +241,7 @@ export default async function LessonsPage() {
                 >
                   <div>
                     <p className="font-medium">
-                      {lesson.language || "Language"} lesson
+                      {formatLanguage(lesson.language)} hodina
                     </p>
 
                     <p className="mt-1 text-sm text-gray-400">

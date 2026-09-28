@@ -6,10 +6,10 @@ import {
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import ScheduleRequestActions from "./ScheduleRequestActions";
+import RozvrhRequestActions from "./RozvrhRequestActions";
 
 function formatDate(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -18,7 +18,7 @@ function formatDate(value: string) {
 }
 
 function formatTime(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -39,7 +39,7 @@ function studentName(
   );
 }
 
-export default async function TeacherSchedulePage() {
+export default async function TeacherRozvrhPage() {
   const { user } = await requireRole("teacher");
   const supabase = await createSupabaseServerClient();
 
@@ -109,15 +109,15 @@ export default async function TeacherSchedulePage() {
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
-            Schedule
+            Rozvrh
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Your lessons
+            Vaše hodiny
           </h1>
 
           <p className="mt-2 text-gray-500">
-            Manage your upcoming lessons and student schedule requests.
+            Spravujte svoje najbližšie hodiny a žiadosti študentov o zmenu termínu.
           </p>
         </section>
 
@@ -125,7 +125,7 @@ export default async function TeacherSchedulePage() {
           <div className="flex items-center gap-2">
             <RefreshCw size={19} className="text-[#9a8049]" />
             <h2 className="text-xl font-semibold">
-              Change requests
+              Žiadosti o zmenu
             </h2>
 
             {teacherRequests.length > 0 && (
@@ -137,9 +137,9 @@ export default async function TeacherSchedulePage() {
 
           {teacherRequests.length === 0 ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
-              <p className="font-medium">No pending requests</p>
+              <p className="font-medium">Žiadne čakajúce žiadosti</p>
               <p className="mt-1 text-sm text-gray-400">
-                Student schedule-change requests will appear here.
+                Žiadosti študentov o zmenu termínu sa zobrazia tu.
               </p>
             </div>
           ) : (
@@ -178,13 +178,13 @@ export default async function TeacherSchedulePage() {
 
                         <div className="mt-4 space-y-2 text-sm text-[#7e693a]">
                           <p>
-                            <strong>Current:</strong>{" "}
+                            <strong>Aktuálne:</strong>{" "}
                             {formatDate(lesson.scheduled_at)} ·{" "}
                             {formatTime(lesson.scheduled_at)}
                           </p>
 
                           <p>
-                            <strong>Requested:</strong>{" "}
+                            <strong>Navrhovaný termín:</strong>{" "}
                             {formatDate(request.preferred_at)} ·{" "}
                             {formatTime(request.preferred_at)}
                           </p>
@@ -197,7 +197,7 @@ export default async function TeacherSchedulePage() {
                         )}
                       </div>
 
-                      <ScheduleRequestActions
+                      <RozvrhRequestActions
                         requestId={request.id}
                       />
                     </div>
@@ -217,7 +217,7 @@ export default async function TeacherSchedulePage() {
             <div>
               <p className="text-sm text-gray-400">Upcoming</p>
               <h2 className="mt-1 text-xl font-semibold">
-                Scheduled lessons
+                Rozvrhd lessons
               </h2>
             </div>
 
@@ -230,7 +230,7 @@ export default async function TeacherSchedulePage() {
                 No upcoming lessons
               </p>
               <p className="mt-1 text-sm text-gray-400">
-                Your confirmed lessons will appear here.
+                Vaše potvrdené hodiny sa zobrazia tu.
               </p>
             </div>
           ) : (
@@ -277,7 +277,7 @@ export default async function TeacherSchedulePage() {
                                   : "bg-[#eef3ef] text-[#527064]"
                               }`}
                             >
-                              {index === 0 ? "Next" : "Scheduled"}
+                              {index === 0 ? "Najbližšia" : "Rozvrhd"}
                             </span>
                           </div>
 
@@ -316,7 +316,7 @@ export default async function TeacherSchedulePage() {
                           }`}
                         >
                           <Video size={17} />
-                          Join lesson
+                          Pripojiť sa na hodinu
                         </a>
                       ) : (
                         <span

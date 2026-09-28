@@ -84,9 +84,7 @@ export default async function AdminTeachersPage() {
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
-            Teachers
-          </p>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">Lektori</p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
             Správa lektorov
           </h1>

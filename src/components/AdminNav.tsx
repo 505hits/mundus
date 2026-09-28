@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import LogoutButton from "@/components/LogoutButton";
 import {
   CalendarDays,
   GraduationCap,
@@ -93,6 +94,8 @@ export default function AdminNav() {
         </nav>
 
         <div className="border-t border-black/5 p-5">
+          <LogoutButton />
+          <div className="mt-3">
           <div className="rounded-2xl bg-[#f7f8f5] p-4">
             <p className="text-sm font-semibold text-[#0a0a0f]">
               Anikó
@@ -102,9 +105,11 @@ export default function AdminNav() {
             </p>
           </div>
         </div>
+        </div>
       </aside>
 
       {/* Mobile navigation */}
+      <div className="fixed right-4 top-4 z-50 lg:hidden"><LogoutButton compact /></div>
       <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-black/5 bg-white/95 px-2 py-2 backdrop-blur lg:hidden">
         <div className="mx-auto flex max-w-xl items-center justify-around">
           {navItems.map((item) => {

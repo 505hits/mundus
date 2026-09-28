@@ -38,15 +38,15 @@ export default async function TeacherŠtudentiPage() {
   const { user } = await requireRole("teacher");
   const supabase = await createSupabaseServerClient();
 
-  const { data: hodín } = await supabase
-    .from("hodín")
+  const { data: lessons } = await supabase
+    .from("lessons")
     .select(`
       id,
       student_id,
       scheduled_at,
       status,
       language,
-      student:profiles!hodín_student_id_fkey (
+      student:profiles!lessons_student_id_fkey (
         full_name,
         email
       )
@@ -56,14 +56,14 @@ export default async function TeacherŠtudentiPage() {
     .order("scheduled_at", { ascending: false });
 
   const studentIds = Array.from(
-    new Set((hodín ?? []).map((lesson) => lesson.student_id))
+    new Set((lessons ?? []).map((lesson) => lesson.student_id))
   );
 
   const { data: packages } = studentIds.length
     ? await supabase
         .from("lesson_packages")
         .select(
-          "student_id,total_hodín,used_hodín,remaining_hodín,status"
+          "student_id,total_lessons,used_lessons,remaining_lessons,status"
         )
         .in("student_id", studentIds)
         .eq("status", "active")
@@ -83,10 +83,10 @@ export default async function TeacherŠtudentiPage() {
     packageMap.set(pkg.student_id, {
       remaining:
         (existing?.remaining ?? 0) +
-        (pkg.remaining_hodín ?? 0),
+        (pkg.remaining_lessons ?? 0),
       total:
         (existing?.total ?? 0) +
-        (pkg.total_hodín ?? 0),
+        (pkg.total_lessons ?? 0),
     });
   }
 
@@ -102,7 +102,7 @@ export default async function TeacherŠtudentiPage() {
     }
   >();
 
-  for (const lesson of hodín ?? []) {
+  for (const lesson of lessons ?? []) {
     const existing = studentMap.get(lesson.student_id);
 
     const student = Array.isArray(lesson.student)
@@ -158,7 +158,7 @@ export default async function TeacherŠtudentiPage() {
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Moji študenti
+            Môj študents
           </h1>
 
           <p className="mt-2 text-gray-500">
@@ -175,7 +175,7 @@ export default async function TeacherŠtudentiPage() {
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
-              Študenti with hodín
+              Študenti with lessons
             </p>
           </div>
 
@@ -211,7 +211,7 @@ export default async function TeacherŠtudentiPage() {
               </p>
 
               <p className="mt-1 text-sm text-gray-400">
-                Študenti will appear here once they have hodín with you.
+                Študenti will appear here once they have lessons with you.
               </p>
             </div>
           ) : (
@@ -257,7 +257,7 @@ export default async function TeacherŠtudentiPage() {
 
                       <div>
                         <p className="text-xs text-gray-400">
-                          Najbližšia lesson
+                          Najbližšia hodina
                         </p>
 
                         <p className="mt-1 text-sm font-medium">

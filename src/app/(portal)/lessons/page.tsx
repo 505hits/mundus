@@ -53,6 +53,10 @@ export default async function LessonsPage() {
     .filter(
       (lesson) =>
         lesson.status === "completed" ||
+        lesson.status === "student_no_show" ||
+        lesson.status === "teacher_cancelled" ||
+        lesson.status === "student_cancelled" ||
+        lesson.status === "late_cancellation" ||
         new Date(lesson.scheduled_at).getTime() < Date.now()
     )
     .reverse();

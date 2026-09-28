@@ -9,7 +9,7 @@ import {
   Video,
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseServerClient } from "@/lib/supabase/server";\nimport { formatLanguage, formatLessonType } from "@/lib/portalLabels";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("sk-SK", {
@@ -167,8 +167,8 @@ export default async function DashboardPage() {
                 {nextLesson ? (
                   <>
                     <h2 className="mt-3 text-2xl font-semibold">
-                      {nextLesson.language || "Jazyk"} ·{" "}
-                      {nextLesson.lesson_type || "Hodina"}
+                      {formatLanguage(nextLesson.language)} ·{" "}
+                      {formatLessonType(nextLesson.lesson_type)}
                     </h2>
 
                     <div className="mt-5 flex flex-wrap gap-4 text-sm text-white/75">
@@ -388,7 +388,7 @@ export default async function DashboardPage() {
                 >
                   <div>
                     <p className="font-medium">
-                      {lesson.language || "Jazyk"} hodina
+                      {formatLanguage(lesson.language)} hodina
                     </p>
 
                     <p className="mt-1 text-sm text-gray-400">

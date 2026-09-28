@@ -17,28 +17,28 @@ export default function RequestChangeForm({
   const router = useRouter();
 
   const [preferredAt, setPreferredAt] = useState("");
-  const [message, setMessage] = useState("");
+  const [message, setSpráva] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorSpráva, setErrorSpráva] = useState("");
   const [success, setSuccess] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (!preferredAt) {
-      setErrorMessage("Please choose your preferred date and time.");
+      setErrorSpráva("Please choose your preferred date and time.");
       return;
     }
 
     const selectedDate = new Date(preferredAt);
 
     if (selectedDate.getTime() <= Date.now()) {
-      setErrorMessage("Please choose a future date and time.");
+      setErrorSpráva("Please choose a future date and time.");
       return;
     }
 
     setSubmitting(true);
-    setErrorMessage("");
+    setErrorSpráva("");
 
     const supabase = createSupabaseBrowserClient();
 
@@ -54,7 +54,7 @@ export default function RequestChangeForm({
       });
 
     if (error) {
-      setErrorMessage(
+      setErrorSpráva(
         "We couldn't send your request. Please try again."
       );
       setSubmitting(false);
@@ -74,7 +74,7 @@ export default function RequestChangeForm({
         </div>
 
         <h2 className="mt-5 text-2xl font-semibold">
-          Request sent
+          Žiadosť odoslaná
         </h2>
 
         <p className="mt-2 leading-7 text-gray-500">
@@ -88,7 +88,7 @@ export default function RequestChangeForm({
           onClick={() => router.push("/lessons")}
           className="mt-6 rounded-2xl bg-[#183f38] px-5 py-3 font-semibold text-white"
         >
-          Back to my lessons
+          Späť na moje hodiny
         </button>
       </section>
     );
@@ -132,7 +132,7 @@ export default function RequestChangeForm({
           htmlFor="message"
           className="mt-6 block text-sm font-semibold"
         >
-          Message to your teacher{" "}
+          Správa to your teacher{" "}
           <span className="font-normal text-gray-400">
             (optional)
           </span>
@@ -142,14 +142,14 @@ export default function RequestChangeForm({
           id="message"
           rows={4}
           value={message}
-          onChange={(event) => setMessage(event.target.value)}
+          onChange={(event) => setSpráva(event.target.value)}
           placeholder="For example: Would Tuesday evening work instead?"
           className="mt-2 w-full resize-none rounded-2xl border border-black/10 bg-white px-4 py-3.5 outline-none transition focus:border-[#183f38]"
         />
 
-        {errorMessage && (
+        {errorSpráva && (
           <div className="mt-5 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
-            {errorMessage}
+            {errorSpráva}
           </div>
         )}
 
@@ -161,7 +161,7 @@ export default function RequestChangeForm({
           >
             <Send size={17} />
 
-            {submitting ? "Sending..." : "Send request"}
+            {submitting ? "Odosielam..." : "Odoslať žiadosť"}
           </button>
 
           <button

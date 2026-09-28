@@ -35,7 +35,7 @@ function getName(
     | null
     | undefined
 ) {
-  return profile?.full_name?.trim() || profile?.email || "Student";
+  return profile?.full_name?.trim() || profile?.email || "Študent";
 }
 
 function getInitials(name: string) {
@@ -168,7 +168,7 @@ export default async function TeacherDashboardPage() {
     uniqueStudents.set(lesson.student_id, {
       id: lesson.student_id,
       name: getName(student),
-      language: lesson.language || "Language",
+      language: formatLanguage(lesson.language),
       nextLesson: lesson.scheduled_at,
     });
   }
@@ -179,7 +179,7 @@ export default async function TeacherDashboardPage() {
     teacherProfile?.full_name?.trim() ||
     teacherProfile?.email ||
     user.email ||
-    "Teacher";
+    "Lektor";
 
   const firstName = teacherName.split(" ")[0];
 
@@ -222,7 +222,7 @@ export default async function TeacherDashboardPage() {
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
           <article className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-400">Today</p>
+              <p className="text-sm text-gray-400">Dnes</p>
               <CalendarDays size={19} className="text-[#9a8049]" />
             </div>
 
@@ -235,7 +235,7 @@ export default async function TeacherDashboardPage() {
 
           <article className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-400">My students</p>
+              <p className="text-sm text-gray-400">Moji študenti</p>
               <Users size={19} className="text-[#9a8049]" />
             </div>
 
@@ -269,7 +269,7 @@ export default async function TeacherDashboardPage() {
         <section className="mt-10">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-400">Schedule</p>
+              <p className="text-sm text-gray-400">Rozvrh</p>
               <h2 className="mt-1 text-xl font-semibold">
                 Dnešné hodiny
               </h2>
@@ -393,8 +393,8 @@ export default async function TeacherDashboardPage() {
 
               <h3 className="mt-3 font-semibold text-[#7e693a]">
                 {myPendingRequests.length === 1
-                  ? "1 student is čakajú na vybavenier response"
-                  : `${myPendingRequests.length} students are čakajú na vybavenier response`}
+                  ? "1 študent čaká na vašu odpoveď"
+                  : `${myPendingRequests.length} študenti čakajú na vašu odpoveď`}
               </h3>
 
               <p className="mt-2 text-sm leading-6 text-[#7e693a]/75">
@@ -415,7 +415,7 @@ export default async function TeacherDashboardPage() {
         <section className="mt-10">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-400">Students</p>
+              <p className="text-sm text-gray-400">Študenti</p>
               <h2 className="mt-1 text-xl font-semibold">
                 My students
               </h2>
@@ -447,7 +447,7 @@ export default async function TeacherDashboardPage() {
                     <p className="font-semibold">{student.name}</p>
 
                     <p className="mt-1 text-sm text-gray-400">
-                      {student.language} · Next:{" "}
+                      {student.language} · Najbližšia:{" "}
                       {formatShortDate(student.nextLesson)} ·{" "}
                       {formatTime(student.nextLesson)}
                     </p>

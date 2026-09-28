@@ -130,9 +130,9 @@ export default function RequestChangeForm({
           htmlFor="message"
           className="mt-6 block text-sm font-semibold"
         >
-          Message to your teacher{" "}
+          Správa pre lektora{" "}
           <span className="font-normal text-gray-400">
-            (optional)
+            (voliteľné)
           </span>
         </label>
 
@@ -141,7 +141,7 @@ export default function RequestChangeForm({
           rows={4}
           value={message}
           onChange={(event) => setMessage(event.target.value)}
-          placeholder="For example: Would Tuesday evening work instead?"
+          placeholder="Napríklad: Vyhovoval by vám namiesto toho utorok večer?"
           className="mt-2 w-full resize-none rounded-2xl border border-black/10 bg-white px-4 py-3.5 outline-none transition focus:border-[#183f38]"
         />
 
@@ -168,14 +168,12 @@ export default function RequestChangeForm({
             disabled={submitting}
             className="rounded-2xl border border-black/10 px-5 py-3.5 font-medium text-[#183f38]"
           >
-            Cancel
+            Zrušiť
           </button>
         </div>
 
         <p className="mt-5 text-xs leading-5 text-gray-400">
-          Sending a request does not automatically change your
-          confirmed lesson. The schedule changes only after the
-          request is accepted.
+          Odoslaním žiadosti sa potvrdený termín automaticky nemení. Termín sa zmení až po schválení žiadosti.
         </p>
       </form>
     </section>

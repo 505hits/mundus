@@ -10,7 +10,7 @@ function formatStudentStatus(status: string | null) {
 }
 
 function formatDateTime(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     day: "numeric",
     month: "short",
     hour: "2-digit",

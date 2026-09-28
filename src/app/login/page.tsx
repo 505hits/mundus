@@ -6,8 +6,6 @@ import { FormEvent, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 
 export default function LoginPage() {
-  const supabase = createSupabaseBrowserClient();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -17,6 +15,12 @@ export default function LoginPage() {
     event.preventDefault();
 
     setError("");
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY) {
+      setError("Login is temporarily unavailable. Please contact support.");
+      return;
+    }
+
+    const supabase = createSupabaseBrowserClient();
     setLoading(true);
 
 const { data, error } = await supabase.auth.signInWithPassword({

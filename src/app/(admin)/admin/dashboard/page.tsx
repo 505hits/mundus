@@ -10,7 +10,7 @@ import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 function formatTime(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -94,19 +94,19 @@ export default async function AdminDashboardPage() {
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
-            Mundus Admin
+            Mundus administrácia
           </p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Welcome, {firstName}
+            Vitajte, {firstName}
           </h1>
           <p className="mt-2 text-gray-500">
-            Live overview of students, teachers and today&apos;s lessons.
+            Aktuálny prehľad študentov, lektorov a dnešných hodín.
           </p>
         </section>
 
         {lessonsError && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            Some dashboard data could not be loaded. Please refresh and try again.
+            Niektoré údaje sa nepodarilo načítať. Obnovte stránku a skúste to znova.
           </div>
         )}
 
@@ -114,22 +114,22 @@ export default async function AdminDashboardPage() {
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <Users size={20} className="text-[#9a8049]" />
             <p className="mt-4 text-3xl font-semibold">{students?.length ?? 0}</p>
-            <p className="mt-1 text-sm text-gray-500">Active students</p>
+            <p className="mt-1 text-sm text-gray-500">Aktívni študenti</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <GraduationCap size={20} className="text-[#9a8049]" />
             <p className="mt-4 text-3xl font-semibold">{teachers?.length ?? 0}</p>
-            <p className="mt-1 text-sm text-gray-500">Active teachers</p>
+            <p className="mt-1 text-sm text-gray-500">Aktívni lektori</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CalendarDays size={20} className="text-[#9a8049]" />
             <p className="mt-4 text-3xl font-semibold">{todayLessons.length}</p>
-            <p className="mt-1 text-sm text-gray-500">Lessons today</p>
+            <p className="mt-1 text-sm text-gray-500">Dnešné hodiny</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <AlertCircle size={20} className="text-[#9a8049]" />
             <p className="mt-4 text-3xl font-semibold">{pendingRequests}</p>
-            <p className="mt-1 text-sm text-gray-500">Pending schedule requests</p>
+            <p className="mt-1 text-sm text-gray-500">Čakajúce žiadosti o zmenu termínu</p>
           </div>
         </section>
 
@@ -138,7 +138,7 @@ export default async function AdminDashboardPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-400">Priority</p>
-                <h2 className="mt-1 text-xl font-semibold">Needs attention</h2>
+                <h2 className="mt-1 text-xl font-semibold">Vyžaduje pozornosť</h2>
               </div>
               <AlertCircle size={21} className="text-[#9a8049]" />
             </div>
@@ -146,15 +146,15 @@ export default async function AdminDashboardPage() {
             <div className="mt-5 space-y-3">
               <div className="rounded-2xl bg-[#faf8f2] p-4">
                 <p className="font-medium">{lowPackages.length} package{lowPackages.length === 1 ? "" : "s"} with 1–2 lessons left</p>
-                <p className="mt-1 text-sm text-gray-500">Consider renewal follow-up.</p>
+                <p className="mt-1 text-sm text-gray-500">Odporúčame kontaktovať študenta ohľadom pokračovania.</p>
               </div>
               <div className="rounded-2xl bg-[#faf8f2] p-4">
-                <p className="font-medium">{pendingRequests} pending schedule request{pendingRequests === 1 ? "" : "s"}</p>
-                <p className="mt-1 text-sm text-gray-500">Waiting for review or teacher response.</p>
+                <p className="font-medium">{pendingRequests} čakajúca žiadosť o zmenu termínu{pendingRequests === 1 ? "" : "s"}</p>
+                <p className="mt-1 text-sm text-gray-500">Čaká sa na kontrolu alebo odpoveď lektora.</p>
               </div>
               <div className="rounded-2xl bg-[#faf8f2] p-4">
                 <p className="font-medium">{noUpcoming} active student{noUpcoming === 1 ? "" : "s"} without an upcoming lesson</p>
-                <p className="mt-1 text-sm text-gray-500">Scheduling follow-up may be needed.</p>
+                <p className="mt-1 text-sm text-gray-500">Môže byť potrebné dohodnúť ďalší termín.</p>
               </div>
             </div>
           </section>
@@ -162,9 +162,9 @@ export default async function AdminDashboardPage() {
           <section className="rounded-3xl border border-black/5 bg-[#183f38] p-6 text-white shadow-sm">
             <Package size={21} className="text-[#d7b56d]" />
             <p className="mt-5 text-sm text-white/50">Packages</p>
-            <h2 className="mt-1 text-xl font-semibold">Renewal overview</h2>
+            <h2 className="mt-1 text-xl font-semibold">Prehľad pokračovania</h2>
             <p className="mt-7 text-4xl font-semibold">{lowPackages.length}</p>
-            <p className="mt-2 text-sm text-white/65">Active packages with only 1–2 lessons remaining</p>
+            <p className="mt-2 text-sm text-white/65">Aktívne balíčky s poslednými 1–2 hodinami</p>
           </section>
         </div>
 
@@ -172,19 +172,19 @@ export default async function AdminDashboardPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-400">
-                {new Intl.DateTimeFormat("en-GB", {
+                {new Intl.DateTimeFormat("sk-SK", {
                   day: "numeric",
                   month: "long",
                   timeZone: "Europe/Bratislava",
                 }).format(now)}
               </p>
-              <h2 className="mt-1 text-xl font-semibold">Today&apos;s lessons</h2>
+              <h2 className="mt-1 text-xl font-semibold">Dnešné hodiny</h2>
             </div>
             <BookOpen size={21} className="text-[#9a8049]" />
           </div>
 
           {todayLessons.length === 0 ? (
-            <p className="mt-5 text-sm text-gray-500">No lessons scheduled for today.</p>
+            <p className="mt-5 text-sm text-gray-500">Na dnes nie sú naplánované žiadne hodiny.</p>
           ) : (
             <div className="mt-5 divide-y divide-gray-100">
               {todayLessons.map((lesson) => {

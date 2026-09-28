@@ -42,7 +42,7 @@ export default function TeacherNav() {
         <div className="sticky top-0 flex h-screen flex-col p-5">
           <Link
             href="/"
-            className="px-3 py-3 text-xl font-bold tracking-tight text-[#183f38]"
+            className="px-3 py-3 text-xl font-bold tracking-tight text-[#0a0a0f]"
           >
             mundus
           </Link>
@@ -66,8 +66,8 @@ export default function TeacherNav() {
                   href={item.href}
                   className={`flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-medium transition ${
                     active
-                      ? "bg-[#183f38] text-white"
-                      : "text-gray-500 hover:bg-[#f4f6f3] hover:text-[#183f38]"
+                      ? "bg-[#0a0a0f] text-white"
+                      : "text-gray-500 hover:bg-[#f4f6f3] hover:text-[#0a0a0f]"
                   }`}
                 >
                   <Icon size={18} />
@@ -78,7 +78,7 @@ export default function TeacherNav() {
           </nav>
 
           <div className="mt-auto rounded-2xl bg-[#f4f6f3] p-4">
-            <p className="text-sm font-semibold text-[#183f38]">
+            <p className="text-sm font-semibold text-[#0a0a0f]">
               Teacher account
             </p>
 
@@ -105,7 +105,7 @@ export default function TeacherNav() {
                 key={item.href}
                 href={item.href}
                 className={`flex flex-col items-center justify-center gap-1 py-3 text-[11px] font-medium ${
-                  active ? "text-[#183f38]" : "text-gray-400"
+                  active ? "text-[#0a0a0f]" : "text-gray-400"
                 }`}
               >
                 <div

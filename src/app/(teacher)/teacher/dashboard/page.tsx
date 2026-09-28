@@ -68,16 +68,16 @@ export default async function LektorDashboardPage() {
     timeZone: "Europe/Bratislava",
   }).format(now);
 
-  const startOfToday = new Date(
+  const startOfDnes = new Date(
     `${bratislavaDate}T00:00:00+02:00`
   ).toISOString();
 
-  const endOfToday = new Date(
+  const endOfDnes = new Date(
     `${bratislavaDate}T23:59:59+02:00`
   ).toISOString();
 
   const { data: todayLessons } = await supabase
-    .from("lessons")
+    .from("hodín")
     .select(`
       id,
       student_id,
@@ -87,25 +87,25 @@ export default async function LektorDashboardPage() {
       language,
       lesson_type,
       meet_link,
-      student:profiles!lessons_student_id_fkey (
+      student:profiles!hodín_student_id_fkey (
         full_name,
         email
       )
     `)
     .eq("teacher_id", user.id)
     .in("status", ["scheduled", "rescheduled"])
-    .gte("scheduled_at", startOfToday)
-    .lte("scheduled_at", endOfToday)
+    .gte("scheduled_at", startOfDnes)
+    .lte("scheduled_at", endOfDnes)
     .order("scheduled_at", { ascending: true });
 
   const { data: upcomingLessons } = await supabase
-    .from("lessons")
+    .from("hodín")
     .select(`
       id,
       student_id,
       scheduled_at,
       language,
-      student:profiles!lessons_student_id_fkey (
+      student:profiles!hodín_student_id_fkey (
         full_name,
         email
       )
@@ -121,13 +121,13 @@ export default async function LektorDashboardPage() {
       id,
       requested_by,
       preferred_at,
-      lesson:lessons!schedule_change_requests_lesson_id_fkey (
+      lesson:hodín!schedule_change_requests_lesson_id_fkey (
         id,
         teacher_id,
         student_id,
         scheduled_at,
         language,
-        student:profiles!lessons_student_id_fkey (
+        student:profiles!hodín_student_id_fkey (
           full_name,
           email
         )
@@ -148,7 +148,7 @@ export default async function LektorDashboardPage() {
       );
     }) ?? [];
 
-  const uniqueStudents = new Map<
+  const uniqueŠtudenti = new Map<
     string,
     {
       id: string;
@@ -159,13 +159,13 @@ export default async function LektorDashboardPage() {
   >();
 
   for (const lesson of upcomingLessons ?? []) {
-    if (uniqueStudents.has(lesson.student_id)) continue;
+    if (uniqueŠtudenti.has(lesson.student_id)) continue;
 
     const student = Array.isArray(lesson.student)
       ? lesson.student[0]
       : lesson.student;
 
-    uniqueStudents.set(lesson.student_id, {
+    uniqueŠtudenti.set(lesson.student_id, {
       id: lesson.student_id,
       name: getName(student),
       language: formatLanguage(lesson.language),
@@ -173,7 +173,7 @@ export default async function LektorDashboardPage() {
     });
   }
 
-  const students = Array.from(uniqueStudents.values());
+  const students = Array.from(uniqueŠtudenti.values());
 
   const teacherName =
     teacherProfile?.full_name?.trim() ||

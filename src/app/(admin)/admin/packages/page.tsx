@@ -2,6 +2,14 @@ import { AlertCircle, CheckCircle2, Package, RefreshCw } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
+function formatPackageStatus(status: string | null) {
+  if (status === "active") return "Aktívny";
+  if (status === "completed") return "Dokončený";
+  if (status === "expired") return "Expirovaný";
+  if (status === "cancelled") return "Zrušený";
+  return status ? status.replaceAll("_", " ") : "Neznámy";
+}
+
 function formatDate(value: string | null) {
   if (!value) return "—";
   return new Intl.DateTimeFormat("en-GB", {
@@ -30,13 +38,13 @@ export default async function AdminPackagesPage() {
   const renewalDue = rows.filter(
     (item) => (item.remaining_lessons ?? 0) === 0
   );
-  const totalVyužité = rows.reduce((sum, item) => sum + (item.used_lessons ?? 0), 0);
+  const totalUsed = rows.reduce((sum, item) => sum + (item.used_lessons ?? 0), 0);
 
   return (
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">Packages</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">Balíčky</p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Prehľad balíčkov</h1>
           <p className="mt-2 max-w-2xl text-gray-500">
             Aktuálny stav hodín v balíčkoch a upozornenia na pokračovanie.
@@ -45,7 +53,7 @@ export default async function AdminPackagesPage() {
 
         {error && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            We couldn&apos;t load package data. Please refresh and try again.
+            Nepodarilo sa načítať údaje o balíčkoch. Obnovte stránku a skúste to znova.
           </div>
         )}
 
@@ -68,7 +76,7 @@ export default async function AdminPackagesPage() {
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CheckCircle2 size={20} className="text-[#9a8049]" />
             <p className="mt-4 text-3xl font-semibold">{totalVyužité}</p>
-            <p className="mt-1 text-sm text-gray-500">Hodiny used in all packages</p>
+            <p className="mt-1 text-sm text-gray-500">Využité hodiny vo všetkých balíčkoch</p>
           </div>
         </section>
 
@@ -88,7 +96,7 @@ export default async function AdminPackagesPage() {
                 const displayStav =
                   remaining === 0 ? "Je čas pokračovať" :
                   item.status === "active" && remaining <= 2 ? "Čoskoro pokračovanie" :
-                  item.status || "Unknown";
+                  formatPackageStatus(item.status);
 
                 return (
                   <div key={item.id} className="grid gap-4 px-5 py-5 lg:grid-cols-[1.5fr_0.8fr_0.7fr_0.7fr_0.9fr_1fr] lg:items-center lg:px-6">
@@ -121,7 +129,7 @@ export default async function AdminPackagesPage() {
                       <span className={`rounded-full px-3 py-1 text-xs font-semibold capitalize ${
                         warning ? "bg-[#faf1d9] text-[#9a8049]" : "bg-[#eef3ef] text-[#527064]"
                       }`}>
-                        {displayStav.replaceAll("_", " ")}
+                        {displayStav}
                       </span>
                     </div>
                     <div className="text-sm text-gray-400">

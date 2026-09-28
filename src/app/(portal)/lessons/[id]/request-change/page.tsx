@@ -63,6 +63,19 @@ export default async function RequestChangePage({
     notFound();
   }
 
+  if (new Date(lesson.scheduled_at).getTime() < Date.now()) {
+    notFound();
+  }
+
+  const { data: pendingRequest } = await supabase
+    .from("schedule_change_requests")
+    .select("id")
+    .eq("lesson_id", lesson.id)
+    .eq("student_id", user.id)
+    .eq("status", "pending")
+    .limit(1)
+    .maybeSingle();
+
   return (
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
       <div className="mx-auto max-w-3xl px-5 py-8 sm:px-8 lg:py-10">
@@ -124,10 +137,31 @@ export default async function RequestChangePage({
           </div>
         </section>
 
-        <RequestChangeForm
-          lessonId={lesson.id}
-          studentId={user.id}
-        />
+        {pendingRequest ? (
+          <section className="mt-6 rounded-3xl border border-[#dfe8e2] bg-white p-6 shadow-sm sm:p-8">
+            <h2 className="text-xl font-semibold">
+              Change request pending
+            </h2>
+
+            <p className="mt-2 leading-7 text-gray-500">
+              You already have a pending schedule change request for this
+              lesson. Your current lesson stays confirmed until the request
+              is accepted.
+            </p>
+
+            <Link
+              href="/lessons"
+              className="mt-6 inline-flex rounded-2xl bg-[#183f38] px-5 py-3 font-semibold text-white"
+            >
+              Back to my lessons
+            </Link>
+          </section>
+        ) : (
+          <RequestChangeForm
+            lessonId={lesson.id}
+            studentId={user.id}
+          />
+        )}
       </div>
     </main>
   );

@@ -7,7 +7,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseServerClient } from "@/lib/supabase/server";\nimport { formatLanguage } from "@/lib/portalLabels";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("sk-SK", {
@@ -129,7 +129,7 @@ export default async function LessonsPage() {
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
                         <h3 className="text-xl font-semibold">
-                          {lesson.language || "Jazyk"} hodina
+                          {formatLanguage(lesson.language)}
                         </h3>
 
                         {index === 0 && (
@@ -252,7 +252,7 @@ export default async function LessonsPage() {
                 >
                   <div>
                     <p className="font-medium">
-                      {lesson.language || "Jazyk"} hodina
+                      {formatLanguage(lesson.language)}
                     </p>
 
                     <p className="mt-1 text-sm text-gray-400">

@@ -12,7 +12,7 @@ function formatPackageStatus(status: string | null) {
 
 function formatDate(value: string | null) {
   if (!value) return "—";
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     day: "numeric", month: "short", year: "numeric", timeZone: "Europe/Bratislava",
   }).format(new Date(value));
 }

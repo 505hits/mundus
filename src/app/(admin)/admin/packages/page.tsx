@@ -4,12 +4,12 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 function formatDate(value: string | null) {
   if (!value) return "—";
-  return new Intl.DateTimeFormat("sk-SK", {
+  return new Intl.DateTimeFormat("en-GB", {
     day: "numeric", month: "short", year: "numeric", timeZone: "Europe/Bratislava",
   }).format(new Date(value));
 }
 
-export default async function AdminBalíčkyPage() {
+export default async function AdminPackagesPage() {
   await requireRole("admin");
   const supabase = await createSupabaseServerClient();
 
@@ -30,22 +30,22 @@ export default async function AdminBalíčkyPage() {
   const renewalDue = rows.filter(
     (item) => (item.remaining_lessons ?? 0) === 0
   );
-  const totalVyužité = rows.reduce((sum, item) => sum + (item.used_lessons ?? 0), 0);
+  const totalUsed = rows.reduce((sum, item) => sum + (item.used_lessons ?? 0), 0);
 
   return (
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">Balíčky</p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Prehľad balíčkov</h1>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">Packages</p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Package tracking</h1>
           <p className="mt-2 max-w-2xl text-gray-500">
-            Aktuálny stav hodín v balíčkoch a upozornenia na pokračovanie.
+            Live lesson balances and renewal signals from student packages.
           </p>
         </section>
 
         {error && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            Nepodarilo sa načítať údaje o balíčkoch. Obnovte stránku a skúste to znova.
+            We couldn&apos;t load package data. Please refresh and try again.
           </div>
         )}
 
@@ -53,28 +53,28 @@ export default async function AdminBalíčkyPage() {
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <Package size={20} className="text-[#9a8049]" />
             <p className="mt-4 text-3xl font-semibold">{active.length}</p>
-            <p className="mt-1 text-sm text-gray-500">Aktívne balíčky</p>
+            <p className="mt-1 text-sm text-gray-500">Active packages</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <AlertCircle size={20} className="text-[#9a8049]" />
             <p className="mt-4 text-3xl font-semibold">{renewalSoon.length}</p>
-            <p className="mt-1 text-sm text-gray-500">2 alebo menej hodín</p>
+            <p className="mt-1 text-sm text-gray-500">2 lessons or fewer</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <RefreshCw size={20} className="text-[#9a8049]" />
             <p className="mt-4 text-3xl font-semibold">{renewalDue.length}</p>
-            <p className="mt-1 text-sm text-gray-500">Je čas pokračovať</p>
+            <p className="mt-1 text-sm text-gray-500">Renewal due</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CheckCircle2 size={20} className="text-[#9a8049]" />
-            <p className="mt-4 text-3xl font-semibold">{totalVyužité}</p>
-            <p className="mt-1 text-sm text-gray-500">Využité hodiny vo všetkých balíčkoch</p>
+            <p className="mt-4 text-3xl font-semibold">{totalUsed}</p>
+            <p className="mt-1 text-sm text-gray-500">Lessons used in all packages</p>
           </div>
         </section>
 
         <section className="mt-8 overflow-hidden rounded-3xl border border-black/5 bg-white shadow-sm">
           {rows.length === 0 ? (
-            <div className="p-8 text-center text-sm text-gray-500">Zatiaľ nie sú vytvorené žiadne balíčky.</div>
+            <div className="p-8 text-center text-sm text-gray-500">No lesson packages yet.</div>
           ) : (
             <div className="divide-y divide-gray-100">
               {rows.map((item) => {
@@ -86,33 +86,33 @@ export default async function AdminBalíčkyPage() {
                 const percentage = purchased > 0 ? Math.min(100, Math.round((used / purchased) * 100)) : 0;
                 const warning = remaining <= 2;
                 const displayStatus =
-                  remaining === 0 ? "Je čas pokračovať" :
-                  item.status === "active" && remaining <= 2 ? "Čoskoro pokračovanie" :
+                  remaining === 0 ? "Renewal due" :
+                  item.status === "active" && remaining <= 2 ? "Renewal soon" :
                   item.status || "Unknown";
 
                 return (
                   <div key={item.id} className="grid gap-4 px-5 py-5 lg:grid-cols-[1.5fr_0.8fr_0.7fr_0.7fr_0.9fr_1fr] lg:items-center lg:px-6">
                     <div>
                       <p className="font-semibold">
-                        {student?.full_name?.trim() || student?.email || "Študent"}
+                        {student?.full_name?.trim() || student?.email || "Student"}
                       </p>
                       <p className="mt-1 text-sm text-gray-400">
-                        {item.package_type || "Balíček hodín"} · {formatDate(item.purchased_at)}
+                        {item.package_type || "Lesson package"} · {formatDate(item.purchased_at)}
                       </p>
                       <div className="mt-3 h-1.5 max-w-[180px] overflow-hidden rounded-full bg-gray-100">
                         <div className="h-full rounded-full bg-[#183f38]" style={{ width: `${percentage}%` }} />
                       </div>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 lg:hidden">Zakúpené</p>
+                      <p className="text-xs text-gray-400 lg:hidden">Purchased</p>
                       <p className="mt-1 text-sm font-medium lg:mt-0">{purchased}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 lg:hidden">Využité</p>
+                      <p className="text-xs text-gray-400 lg:hidden">Used</p>
                       <p className="mt-1 text-sm font-medium lg:mt-0">{used}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 lg:hidden">Zostáva</p>
+                      <p className="text-xs text-gray-400 lg:hidden">Left</p>
                       <p className={`mt-1 text-lg font-semibold lg:mt-0 ${warning ? "text-[#9a8049]" : ""}`}>
                         {remaining}
                       </p>
@@ -125,7 +125,7 @@ export default async function AdminBalíčkyPage() {
                       </span>
                     </div>
                     <div className="text-sm text-gray-400">
-                      {item.expires_at ? `Expires ${formatDate(item.expires_at)}` : "Bez expirácie"}
+                      {item.expires_at ? `Expires ${formatDate(item.expires_at)}` : "No expiry"}
                     </div>
                   </div>
                 );

@@ -32,7 +32,7 @@ function getStudentName(
     | null
     | undefined
 ) {
-  return profile?.full_name?.trim() || profile?.email || "Student";
+  return profile?.full_name?.trim() || profile?.email || "Študent";
 }
 
 export default async function TeacherReportsPage() {
@@ -203,7 +203,7 @@ export default async function TeacherReportsPage() {
                             }`}
                           >
                             {report
-                              ? "Report completed"
+                              ? "Záznam vyplnený"
                               : "Treba doplniť záznam"}
                           </span>
                         </div>

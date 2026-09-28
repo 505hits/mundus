@@ -82,8 +82,7 @@ export default async function LessonsPage() {
           </h1>
 
           <p className="mt-2 text-gray-500">
-            View your upcoming lessons, join your class and request
-            schedule changes.
+            Pozrite si najbližšie hodiny, pripojte sa na hodinu alebo požiadajte o zmenu termínu.
           </p>
         </section>
 
@@ -97,7 +96,7 @@ export default async function LessonsPage() {
             </div>
 
             <span className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold shadow-sm">
-              {upcomingLessons.length} upcoming
+              {upcomingLessons.length} naplánovaných
             </span>
           </div>
 
@@ -116,7 +115,7 @@ export default async function LessonsPage() {
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
                         <h3 className="text-xl font-semibold">
-                          {lesson.language || "Language"} lesson
+                          {lesson.language || "Jazyk"} hodina
                         </h3>
 
                         {index === 0 && (

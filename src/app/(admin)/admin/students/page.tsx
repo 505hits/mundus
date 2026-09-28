@@ -77,7 +77,7 @@ export default async function AdminStudentsPage() {
   const renewalSoon = studentRows.filter(
     (student) => student.status === "active" && student.remaining > 0 && student.remaining <= 2
   ).length;
-  const needsAttention = studentRows.filter(
+  const needsPozornosť = studentRows.filter(
     (student) => student.status === "active" && (!student.nextLesson || student.remaining <= 2)
   ).length;
 
@@ -109,7 +109,7 @@ export default async function AdminStudentsPage() {
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <AlertCircle size={20} className="text-[#9a8049]" />
-            <p className="mt-4 text-3xl font-semibold">{needsAttention}</p>
+            <p className="mt-4 text-3xl font-semibold">{needsPozornosť}</p>
             <p className="mt-1 text-sm text-gray-500">Vyžaduje pozornosť</p>
           </div>
         </section>

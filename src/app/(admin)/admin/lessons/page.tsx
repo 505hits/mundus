@@ -3,232 +3,137 @@ import {
   CalendarDays,
   CheckCircle2,
   Clock3,
-  Plus,
   Video,
 } from "lucide-react";
+import { requireRole } from "@/lib/auth";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-const lessons = [
-  {
-    student: "Emma K.",
-    teacher: "Anna",
-    language: "English",
-    date: "24 Sep",
-    time: "15:00",
-    status: "Scheduled",
-    charge: "Pending",
-  },
-  {
-    student: "Martin S.",
-    teacher: "Anna",
-    language: "English",
-    date: "24 Sep",
-    time: "17:30",
-    status: "Scheduled",
-    charge: "Pending",
-  },
-  {
-    student: "Lucia P.",
-    teacher: "Anna",
-    language: "English",
-    date: "24 Sep",
-    time: "19:00",
-    status: "Scheduled",
-    charge: "Pending",
-  },
-  {
-    student: "Peter M.",
-    teacher: "Anna",
-    language: "English",
-    date: "23 Sep",
-    time: "18:00",
-    status: "Completed",
-    charge: "1 lesson",
-  },
-  {
-    student: "Emma K.",
-    teacher: "Anna",
-    language: "English",
-    date: "22 Sep",
-    time: "15:00",
-    status: "Completed",
-    charge: "1 lesson",
-  },
-];
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "Europe/Bratislava",
+  }).format(new Date(value));
+}
 
-export default function AdminLessonsPage() {
+function formatTime(value: string) {
+  return new Intl.DateTimeFormat("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "Europe/Bratislava",
+  }).format(new Date(value));
+}
+
+function name(profile: { full_name?: string | null; email?: string | null } | null | undefined) {
+  return profile?.full_name?.trim() || profile?.email || "Unknown";
+}
+
+export default async function AdminLessonsPage() {
+  await requireRole("admin");
+  const supabase = await createSupabaseServerClient();
+
+  const { data: lessons, error } = await supabase
+    .from("lessons")
+    .select(`
+      id,scheduled_at,duration_minutes,status,language,meet_link,
+      student:profiles!lessons_student_id_fkey(full_name,email),
+      teacher:profiles!lessons_teacher_id_fkey(full_name,email)
+    `)
+    .order("scheduled_at", { ascending: false })
+    .limit(100);
+
+  const rows = lessons ?? [];
+  const now = new Date();
+  const bratislavaDay = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Bratislava",
+    year: "numeric", month: "2-digit", day: "2-digit",
+  });
+  const todayKey = bratislavaDay.format(now);
+  const today = rows.filter((lesson) => bratislavaDay.format(new Date(lesson.scheduled_at)) === todayKey);
+  const completed = rows.filter((lesson) => lesson.status === "completed");
+  const attention = rows.filter((lesson) =>
+    ["student_no_show", "teacher_cancelled", "student_cancelled", "late_cancellation"].includes(lesson.status)
+  );
+
   return (
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
-        <section className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
-              Lessons
-            </p>
-
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-              Lesson management
-            </h1>
-
-            <p className="mt-2 text-gray-500">
-              See and manage lessons across all Mundus students and teachers.
-            </p>
-          </div>
-
-          <button
-            disabled
-            className="flex w-fit items-center gap-2 rounded-xl bg-[#183f38] px-5 py-3 text-sm font-semibold text-white"
-          >
-            <Plus size={18} />
-            Add lesson
-          </button>
+        <section>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">Lessons</p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Lesson management</h1>
+          <p className="mt-2 text-gray-500">Real lessons across Mundus students and teachers.</p>
         </section>
 
-        <section className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {error && (
+          <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+            We couldn&apos;t load lesson data. Please refresh and try again.
+          </div>
+        )}
+
+        <section className="mt-8 grid gap-4 sm:grid-cols-3">
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CalendarDays size={20} className="text-[#9a8049]" />
-            <p className="mt-4 text-3xl font-semibold">3</p>
+            <p className="mt-4 text-3xl font-semibold">{today.length}</p>
             <p className="mt-1 text-sm text-gray-500">Today</p>
           </div>
-
-          <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <Clock3 size={20} className="text-[#9a8049]" />
-            <p className="mt-4 text-3xl font-semibold">31</p>
-            <p className="mt-1 text-sm text-gray-500">This week</p>
-          </div>
-
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CheckCircle2 size={20} className="text-[#9a8049]" />
-            <p className="mt-4 text-3xl font-semibold">24</p>
-            <p className="mt-1 text-sm text-gray-500">
-              Completed this week
-            </p>
+            <p className="mt-4 text-3xl font-semibold">{completed.length}</p>
+            <p className="mt-1 text-sm text-gray-500">Completed in loaded history</p>
           </div>
-
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <AlertCircle size={20} className="text-[#9a8049]" />
-            <p className="mt-4 text-3xl font-semibold">1</p>
-            <p className="mt-1 text-sm text-gray-500">
-              Needs attention
-            </p>
+            <p className="mt-4 text-3xl font-semibold">{attention.length}</p>
+            <p className="mt-1 text-sm text-gray-500">Cancelled / no-show</p>
           </div>
         </section>
 
-        <section className="mt-8">
-          <div className="flex flex-wrap gap-2">
-            {["All lessons", "Scheduled", "Completed", "Cancelled"].map(
-              (filter, index) => (
-                <button
-                  key={filter}
-                  disabled
-                  className={`rounded-xl px-4 py-2 text-sm font-medium ${
-                    index === 0
-                      ? "bg-[#183f38] text-white"
-                      : "border border-black/5 bg-white text-gray-500"
-                  }`}
-                >
-                  {filter}
-                </button>
-              )
-            )}
-          </div>
-
-          <div className="mt-5 overflow-hidden rounded-3xl border border-black/5 bg-white shadow-sm">
-            <div className="hidden grid-cols-[1.2fr_1fr_0.8fr_0.8fr_0.9fr_0.8fr] gap-4 border-b border-gray-100 px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-400 lg:grid">
-              <span>Student</span>
-              <span>Teacher</span>
-              <span>Date</span>
-              <span>Time</span>
-              <span>Status</span>
-              <span>Package</span>
-            </div>
-
+        <section className="mt-8 overflow-hidden rounded-3xl border border-black/5 bg-white shadow-sm">
+          {rows.length === 0 ? (
+            <div className="p-8 text-center text-sm text-gray-500">No lessons have been recorded yet.</div>
+          ) : (
             <div className="divide-y divide-gray-100">
-              {lessons.map((lesson, index) => (
-                <div
-                  key={`${lesson.student}-${lesson.date}-${lesson.time}`}
-                  className="grid gap-4 px-5 py-5 lg:grid-cols-[1.2fr_1fr_0.8fr_0.8fr_0.9fr_0.8fr] lg:items-center lg:px-6"
-                >
-                  <div>
-                    <p className="font-semibold">{lesson.student}</p>
-                    <p className="mt-1 text-sm text-gray-400">
-                      {lesson.language}
-                    </p>
+              {rows.map((lesson) => {
+                const student = Array.isArray(lesson.student) ? lesson.student[0] : lesson.student;
+                const teacher = Array.isArray(lesson.teacher) ? lesson.teacher[0] : lesson.teacher;
+                return (
+                  <div key={lesson.id} className="grid gap-4 px-5 py-5 lg:grid-cols-[1.2fr_1fr_0.9fr_0.7fr_0.9fr_0.5fr] lg:items-center lg:px-6">
+                    <div>
+                      <p className="font-semibold">{name(student)}</p>
+                      <p className="mt-1 text-sm text-gray-400">{lesson.language || "Language"}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-400 lg:hidden">Teacher</p>
+                      <p className="mt-1 text-sm font-medium lg:mt-0">{name(teacher)}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-400 lg:hidden">Date</p>
+                      <p className="mt-1 text-sm lg:mt-0">{formatDate(lesson.scheduled_at)}</p>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm font-semibold">
+                      <Clock3 size={15} className="text-gray-400" />
+                      {formatTime(lesson.scheduled_at)}
+                    </div>
+                    <div>
+                      <span className="inline-flex rounded-full bg-[#eef3ef] px-3 py-1 text-xs font-semibold capitalize text-[#527064]">
+                        {lesson.status.replaceAll("_", " ")}
+                      </span>
+                    </div>
+                    <div>
+                      {lesson.meet_link && (
+                        <a href={lesson.meet_link} target="_blank" rel="noreferrer" aria-label="Open meeting" className="inline-flex rounded-xl p-2 text-[#183f38] hover:bg-[#eef3ef]">
+                          <Video size={17} />
+                        </a>
+                      )}
+                    </div>
                   </div>
-
-                  <div>
-                    <p className="text-xs text-gray-400 lg:hidden">
-                      Teacher
-                    </p>
-                    <p className="mt-1 text-sm font-medium lg:mt-0">
-                      {lesson.teacher}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-xs text-gray-400 lg:hidden">
-                      Date
-                    </p>
-                    <p className="mt-1 text-sm lg:mt-0">
-                      {lesson.date}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-xs text-gray-400 lg:hidden">
-                      Time
-                    </p>
-                    <p className="mt-1 text-sm font-semibold lg:mt-0">
-                      {lesson.time}
-                    </p>
-                  </div>
-
-                  <div>
-                    <span
-                      className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
-                        lesson.status === "Completed"
-                          ? "bg-[#eef3ef] text-[#527064]"
-                          : "bg-[#f4f1e8] text-[#9a8049]"
-                      }`}
-                    >
-                      {lesson.status}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-sm text-gray-500">
-                      {lesson.charge}
-                    </span>
-
-                    {index === 0 && (
-                      <button
-                        disabled
-                        aria-label="Open lesson"
-                        className="text-[#183f38]"
-                      >
-                        <Video size={17} />
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
-          </div>
+          )}
         </section>
-
-        <section className="mt-8 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
-          <h2 className="font-semibold">How lesson credits work</h2>
-
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-gray-500">
-            A lesson should only reduce a student&apos;s package balance after
-            it is marked as completed or otherwise chargeable according to
-            Mundus cancellation rules. Rescheduled lessons should never be
-            counted twice.
-          </p>
-        </section>
-
-        <p className="mt-8 text-center text-xs text-gray-400">
-          Preview data · Mundus Admin Portal
-        </p>
       </div>
     </main>
   );

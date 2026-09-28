@@ -5,14 +5,14 @@ import {
   CalendarDays,
   CheckCircle2,
   FileText,
-  SprávaCircle,
+  MessageCircle,
   Target,
   TrendingUp,
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-export default async function ProgressPage() {
+export default async function PokrokPage() {
   const { user } = await requireRole("student");
   const supabase = await createSupabaseServerClient();
 
@@ -69,7 +69,7 @@ export default async function ProgressPage() {
     0
   );
 
-  const packageProgress =
+  const packagePokrok =
     totalLessons > 0
       ? Math.min(
           100,
@@ -108,7 +108,7 @@ export default async function ProgressPage() {
           </Link>
 
           <p className="text-sm font-semibold">
-            Mundus Vzdelávací portál
+            Mundus Learning Portal
           </p>
         </div>
       </header>
@@ -229,7 +229,7 @@ export default async function ProgressPage() {
               <div
                 className="h-full rounded-full bg-[#183f38]"
                 style={{
-                  width: `${packageProgress}%`,
+                  width: `${packagePokrok}%`,
                 }}
               />
             </div>
@@ -239,12 +239,12 @@ export default async function ProgressPage() {
                 {usedLessons} of {totalLessons} lessons completed
               </span>
 
-              <span>{packageProgress}%</span>
+              <span>{packagePokrok}%</span>
             </div>
           </section>
         )}
 
-        {/* Najbližšia focus */}
+        {/* Next focus */}
         <section className="mt-6 rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
           <div className="flex items-start gap-4">
             <div className="rounded-2xl bg-[#faf6eb] p-3 text-[#9a8049]">
@@ -253,7 +253,7 @@ export default async function ProgressPage() {
 
             <div>
               <p className="text-sm text-gray-400">
-                Najbližšia focus
+                Next focus
               </p>
 
               <h2 className="mt-1 text-xl font-semibold">
@@ -285,7 +285,7 @@ export default async function ProgressPage() {
             </div>
 
             <div className="rounded-2xl bg-[#eef3ef] p-3">
-              <SprávaCircle size={22} />
+              <MessageCircle size={22} />
             </div>
           </div>
 
@@ -321,7 +321,7 @@ export default async function ProgressPage() {
               )}
 
               <p className="mt-5 text-xs text-gray-400">
-                Aktualizované {formatDate(latestReport.updated_at)}
+                Updated {formatDate(latestReport.updated_at)}
               </p>
             </>
           ) : (
@@ -391,7 +391,7 @@ export default async function ProgressPage() {
         </section>
 
         <p className="mt-8 text-center text-xs text-gray-400">
-          Mundus Vzdelávací portál
+          Mundus Learning Portal
         </p>
       </div>
     </main>

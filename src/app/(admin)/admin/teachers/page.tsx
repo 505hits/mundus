@@ -7,7 +7,7 @@ import {
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-export default async function AdminTeachersPage() {
+export default async function AdminLektorsPage() {
   await requireRole("admin");
   const supabase = await createSupabaseServerClient();
 
@@ -33,19 +33,19 @@ export default async function AdminTeachersPage() {
   weekEnd.setDate(weekStart.getDate() + 7);
 
   const teacherRows = (teachers ?? []).map((teacher) => {
-    const teacherLessons = (lessons ?? []).filter(
+    const teacherHodiny = (lessons ?? []).filter(
       (lesson) => lesson.teacher_id === teacher.id
     );
     const studentCount = new Set(
-      teacherLessons.map((lesson) => lesson.student_id)
+      teacherHodiny.map((lesson) => lesson.student_id)
     ).size;
-    const lessonsThisWeek = teacherLessons.filter((lesson) => {
+    const lessonsThisWeek = teacherHodiny.filter((lesson) => {
       const time = new Date(lesson.scheduled_at).getTime();
       return time >= weekStart.getTime() && time < weekEnd.getTime();
     }).length;
     const languages = Array.from(
       new Set(
-        teacherLessons
+        teacherHodiny
           .map((lesson) => lesson.language)
           .filter((language): language is string => Boolean(language))
       )
@@ -59,13 +59,13 @@ export default async function AdminTeachersPage() {
     };
   });
 
-  const activeTeachers = teacherRows.filter(
+  const activeLektors = teacherRows.filter(
     (teacher) => teacher.status === "active"
   ).length;
-  const pendingTeachers = teacherRows.filter(
+  const pendingLektors = teacherRows.filter(
     (teacher) => teacher.status !== "active"
   ).length;
-  const assignedStudents = new Set(
+  const assignedŠtudents = new Set(
     (lessons ?? []).map((lesson) => lesson.student_id)
   ).size;
   const lessonsThisWeek = teacherRows.reduce(
@@ -78,10 +78,10 @@ export default async function AdminTeachersPage() {
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
-            Teachers
+            Lektors
           </p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Teacher management
+            Lektor management
           </h1>
           <p className="mt-2 text-gray-500">
             Real teacher accounts and current teaching activity.
@@ -97,29 +97,29 @@ export default async function AdminTeachersPage() {
         <section className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <GraduationCap size={20} className="text-[#9a8049]" />
-            <p className="mt-4 text-3xl font-semibold">{activeTeachers}</p>
-            <p className="mt-1 text-sm text-gray-500">Active teachers</p>
+            <p className="mt-4 text-3xl font-semibold">{activeLektors}</p>
+            <p className="mt-1 text-sm text-gray-500">Aktívni lektori</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <Users size={20} className="text-[#9a8049]" />
-            <p className="mt-4 text-3xl font-semibold">{assignedStudents}</p>
+            <p className="mt-4 text-3xl font-semibold">{assignedŠtudents}</p>
             <p className="mt-1 text-sm text-gray-500">Assigned students</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CalendarDays size={20} className="text-[#9a8049]" />
             <p className="mt-4 text-3xl font-semibold">{lessonsThisWeek}</p>
-            <p className="mt-1 text-sm text-gray-500">Lessons this week</p>
+            <p className="mt-1 text-sm text-gray-500">Hodiny this week</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <AlertCircle size={20} className="text-[#9a8049]" />
-            <p className="mt-4 text-3xl font-semibold">{pendingTeachers}</p>
+            <p className="mt-4 text-3xl font-semibold">{pendingLektors}</p>
             <p className="mt-1 text-sm text-gray-500">Pending / inactive</p>
           </div>
         </section>
 
         <section className="mt-10">
           <p className="text-sm text-gray-400">Team</p>
-          <h2 className="mt-1 text-xl font-semibold">Teacher accounts</h2>
+          <h2 className="mt-1 text-xl font-semibold">Lektor accounts</h2>
 
           {teacherRows.length === 0 ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 text-sm text-gray-500 shadow-sm">
@@ -135,7 +135,7 @@ export default async function AdminTeachersPage() {
                   >
                     <div>
                       <p className="font-semibold">
-                        {teacher.full_name?.trim() || teacher.email || "Teacher"}
+                        {teacher.full_name?.trim() || teacher.email || "Lektor"}
                       </p>
                       <p className="mt-1 text-sm text-gray-400">
                         {teacher.languages}
@@ -148,7 +148,7 @@ export default async function AdminTeachersPage() {
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 lg:hidden">Students</p>
+                      <p className="text-xs text-gray-400 lg:hidden">Študents</p>
                       <p className="mt-1 text-sm font-medium lg:mt-0">
                         {teacher.studentCount}
                       </p>

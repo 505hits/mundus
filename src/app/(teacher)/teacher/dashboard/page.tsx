@@ -12,7 +12,7 @@ import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 function formatTime(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -21,7 +21,7 @@ function formatTime(value: string) {
 }
 
 function formatShortDate(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     day: "numeric",
     month: "short",
     timeZone: "Europe/Bratislava",
@@ -414,7 +414,7 @@ export default async function LektorDashboardPage() {
         <section className="mt-10">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-400">Students</p>
+              <p className="text-sm text-gray-400">Študenti</p>
               <h2 className="mt-1 text-xl font-semibold">
                 Moji študenti
               </h2>

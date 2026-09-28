@@ -29,7 +29,7 @@ const { data, error } = await supabase.auth.signInWithPassword({
     });
 
     if (error) {
-      setError(error.message);
+      setError("Nesprávny e-mail alebo heslo. Skontrolujte údaje a skúste to znova.");
       setLoading(false);
       return;
     }

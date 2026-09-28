@@ -363,7 +363,7 @@ export default async function DashboardPage() {
           </section>
         </div>
 
-        {/* Schedule */}
+        {/* Rozvrh */}
         <section className="mt-6 rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
           <div className="flex items-center justify-between">
             <div>

@@ -35,19 +35,19 @@ function getName(
   return profile?.full_name?.trim() || profile?.email || "Študent";
 }
 
-export default async function TeacherStudentsPage() {
+export default async function TeacherŠtudentiPage() {
   const { user } = await requireRole("teacher");
   const supabase = await createSupabaseServerClient();
 
-  const { data: lessons } = await supabase
-    .from("lessons")
+  const { data: hodín } = await supabase
+    .from("hodín")
     .select(`
       id,
       student_id,
       scheduled_at,
       status,
       language,
-      student:profiles!lessons_student_id_fkey (
+      student:profiles!hodín_student_id_fkey (
         full_name,
         email
       )
@@ -57,14 +57,14 @@ export default async function TeacherStudentsPage() {
     .order("scheduled_at", { ascending: false });
 
   const studentIds = Array.from(
-    new Set((lessons ?? []).map((lesson) => lesson.student_id))
+    new Set((hodín ?? []).map((lesson) => lesson.student_id))
   );
 
   const { data: packages } = studentIds.length
     ? await supabase
         .from("lesson_packages")
         .select(
-          "student_id,total_lessons,used_lessons,remaining_lessons,status"
+          "student_id,total_hodín,used_hodín,remaining_hodín,status"
         )
         .in("student_id", studentIds)
         .eq("status", "active")
@@ -84,10 +84,10 @@ export default async function TeacherStudentsPage() {
     packageMap.set(pkg.student_id, {
       remaining:
         (existing?.remaining ?? 0) +
-        (pkg.remaining_lessons ?? 0),
+        (pkg.remaining_hodín ?? 0),
       total:
         (existing?.total ?? 0) +
-        (pkg.total_lessons ?? 0),
+        (pkg.total_hodín ?? 0),
     });
   }
 
@@ -103,7 +103,7 @@ export default async function TeacherStudentsPage() {
     }
   >();
 
-  for (const lesson of lessons ?? []) {
+  for (const lesson of hodín ?? []) {
     const existing = studentMap.get(lesson.student_id);
 
     const student = Array.isArray(lesson.student)

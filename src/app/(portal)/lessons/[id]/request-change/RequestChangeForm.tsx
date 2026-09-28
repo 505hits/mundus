@@ -26,14 +26,14 @@ export default function RequestChangeForm({
     event.preventDefault();
 
     if (!preferredAt) {
-      setErrorMessage("Please choose your preferred date and time.");
+      setErrorMessage("Vyberte si prosím preferovaný dátum a čas.");
       return;
     }
 
     const selectedDate = new Date(preferredAt);
 
     if (selectedDate.getTime() <= Date.now()) {
-      setErrorMessage("Please choose a future date and time.");
+      setErrorMessage("Vyberte prosím budúci dátum a čas.");
       return;
     }
 
@@ -55,7 +55,7 @@ export default function RequestChangeForm({
 
     if (error) {
       setErrorMessage(
-        "We couldn't send your request. Please try again."
+        "Žiadosť sa nepodarilo odoslať. Skúste to prosím znova."
       );
       setSubmitting(false);
       return;
@@ -78,9 +78,7 @@ export default function RequestChangeForm({
         </h2>
 
         <p className="mt-2 leading-7 text-gray-500">
-          Your teacher can now review your schedule change request.
-          Your current lesson stays confirmed until the change is
-          accepted.
+          Lektor teraz môže vašu žiadosť skontrolovať. Pôvodný termín zostáva platný, kým nebude zmena schválená.
         </p>
 
         <button
@@ -103,10 +101,10 @@ export default function RequestChangeForm({
 
         <div>
           <p className="text-sm text-gray-400">
-            Preferred new time
+            Preferovaný nový termín
           </p>
           <h2 className="font-semibold">
-            When would work better?
+            Kedy by vám to vyhovovalo viac?
           </h2>
         </div>
       </div>
@@ -116,7 +114,7 @@ export default function RequestChangeForm({
           htmlFor="preferredAt"
           className="text-sm font-semibold"
         >
-          New date and time
+          Nový dátum a čas
         </label>
 
         <input

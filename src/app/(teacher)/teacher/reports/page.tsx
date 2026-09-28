@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import HodinaReportForm from "./HodinaReportForm";
+import LessonReportForm from "./LessonReportForm";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("en-GB", {
@@ -81,13 +81,13 @@ export default async function TeacherReportsPage() {
     (reports ?? []).map((report) => [report.lesson_id, report])
   );
 
-  const recentHodinas = lessons ?? [];
+  const recentLessons = lessons ?? [];
 
-  const completedReports = recentHodinas.filter((lesson) =>
+  const completedReports = recentLessons.filter((lesson) =>
     reportMap.has(lesson.id)
   ).length;
 
-  const missingReports = recentHodinas.length - completedReports;
+  const missingReports = recentLessons.length - completedReports;
 
   return (
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
@@ -117,7 +117,7 @@ export default async function TeacherReportsPage() {
             <ClipboardList size={20} className="text-[#9a8049]" />
 
             <p className="mt-4 text-3xl font-semibold">
-              {recentHodinas.length}
+              {recentLessons.length}
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
@@ -159,7 +159,7 @@ export default async function TeacherReportsPage() {
             Dokončené hodiny
           </h2>
 
-          {recentHodinas.length === 0 ? (
+          {recentLessons.length === 0 ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
               <p className="font-medium">
                 Zatiaľ nemáte dokončené hodiny
@@ -171,7 +171,7 @@ export default async function TeacherReportsPage() {
             </div>
           ) : (
             <div className="mt-4 space-y-4">
-              {recentHodinas.map((lesson) => {
+              {recentLessons.map((lesson) => {
                 const student = Array.isArray(lesson.student)
                   ? lesson.student[0]
                   : lesson.student;
@@ -219,7 +219,7 @@ export default async function TeacherReportsPage() {
                         </div>
                       </div>
 
-                      <HodinaReportForm
+                      <LessonReportForm
                         lessonId={lesson.id}
                         studentId={lesson.student_id}
                         existingReport={report ?? null}

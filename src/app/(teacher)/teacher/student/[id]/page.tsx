@@ -187,15 +187,13 @@ async function renderStudentPage(
     0
   );
 
-  const language =
-    nextHodina?.language ||
-    lessons[0]?.language ||
-    "Jazyk";
+  const language = formatLanguage(
+    nextHodina?.language || lessons[0]?.language
+  );
 
-  const lessonType =
-    nextHodina?.lesson_type ||
-    lessons[0]?.lesson_type ||
-    "Individuálna hodina";
+  const lessonType = formatLessonType(
+    nextHodina?.lesson_type || lessons[0]?.lesson_type
+  );
 
   return (
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">

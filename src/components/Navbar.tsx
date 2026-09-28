@@ -88,6 +88,9 @@ export default function Navbar() {
 
                     {/* Desktop CTA */}
                     <div className="hidden xl:flex items-center">
+                        <Link href="/login" className="mr-4 whitespace-nowrap text-sm font-semibold text-gray-900 hover:text-primary">
+                            Dashboard
+                        </Link>
                         <motion.a
                             href="/#booking"
                             className="btn btn-primary !py-2.5 !px-5 !text-sm whitespace-nowrap"
@@ -124,6 +127,14 @@ export default function Navbar() {
                         className="fixed inset-0 z-40 bg-white xl:hidden flex flex-col pt-24 px-6 pb-8"
                     >
                         <div className="flex flex-col gap-6">
+                            <Link
+                                href="/login"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="flex items-center justify-between border-b border-gray-100 py-3 text-2xl font-medium text-gray-900"
+                            >
+                                Dashboard
+                                <ArrowRight size={20} className="text-gray-400" />
+                            </Link>
                             {navLinks.map((link, i) => (
                                 <motion.div
                                     key={link.name}

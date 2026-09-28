@@ -26,14 +26,14 @@ export default function LessonReportForm({
   studentId,
   existingReport,
 }: Props) {
-  const [topic, setTéma] = useState(existingReport?.topic ?? "");
-  const [progress, setPokrok] = useState(
+  const [topic, setTopic] = useState(existingReport?.topic ?? "");
+  const [progress, setProgress] = useState(
     existingReport?.progress ?? "Dobrý pokrok"
   );
   const [studentNote, setStudentNote] = useState(
     existingReport?.student_note ?? ""
   );
-  const [homework, setDomáca úloha] = useState(
+  const [homework, setHomework] = useState(
     existingReport?.homework ?? ""
   );
   const [nextFocus, setNextFocus] = useState(
@@ -44,12 +44,12 @@ export default function LessonReportForm({
   );
 
   const [saving, setSaving] = useState(false);
-  const [saved, setUložené] = useState(Boolean(existingReport));
+  const [saved, setSaved] = useState(Boolean(existingReport));
   const [error, setError] = useState("");
 
   async function saveReport() {
     setSaving(true);
-    setUložené(false);
+    setSaved(false);
     setError("");
 
     const supabase = createSupabaseBrowserClient();
@@ -91,7 +91,7 @@ export default function LessonReportForm({
       return;
     }
 
-    setUložené(true);
+    setSaved(true);
     setSaving(false);
   }
 
@@ -112,7 +112,7 @@ export default function LessonReportForm({
           Pokrok
           <select
             value={progress}
-            onChange={(event) => setPokrok(event.target.value)}
+            onChange={(event) => setProgress(event.target.value)}
             className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#183f38]"
           >
             <option>Dobrý pokrok</option>
@@ -136,7 +136,7 @@ export default function LessonReportForm({
           Domáca úloha
           <input
             value={homework}
-            onChange={(event) => setDomáca úloha(event.target.value)}
+            onChange={(event) => setHomework(event.target.value)}
             placeholder="Voliteľné"
             className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#183f38]"
           />

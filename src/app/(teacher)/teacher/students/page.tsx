@@ -7,9 +7,10 @@ import {
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { formatLanguage } from "@/lib/portalLabels";
 
 function formatDate(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     day: "numeric",
     month: "short",
     timeZone: "Europe/Bratislava",
@@ -17,7 +18,7 @@ function formatDate(value: string) {
 }
 
 function formatTime(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -116,7 +117,7 @@ export default async function TeacherStudentsPage() {
       studentMap.set(lesson.student_id, {
         id: lesson.student_id,
         name: getName(student),
-        language: lesson.language || "Language",
+        language: formatLanguage(lesson.language),
         nextLesson: isFuture ? lesson.scheduled_at : null,
         remaining:
           packageMap.get(lesson.student_id)?.remaining ?? 0,
@@ -154,15 +155,15 @@ export default async function TeacherStudentsPage() {
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
-            Students
+            Študenti
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            My students
+            Moji študenti
           </h1>
 
           <p className="mt-2 text-gray-500">
-            See your assigned students and their learning activity.
+            Pozrite si svojich študentov a ich aktivitu vo výučbe.
           </p>
         </section>
 
@@ -175,7 +176,7 @@ export default async function TeacherStudentsPage() {
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
-              Students with lessons
+              Študenti s hodinami
             </p>
           </div>
 
@@ -187,7 +188,7 @@ export default async function TeacherStudentsPage() {
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
-              Lessons remaining
+              Zostávajúce hodiny
             </p>
           </div>
         </section>
@@ -200,18 +201,18 @@ export default async function TeacherStudentsPage() {
             />
 
             <div className="w-full rounded-2xl border border-black/5 bg-white py-3 pl-11 pr-4 text-sm text-gray-400">
-              Student search coming soon
+              Vyhľadávanie študentov pripravujeme
             </div>
           </div>
 
           {students.length === 0 ? (
             <div className="mt-5 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
               <p className="font-medium">
-                No students assigned yet
+                Zatiaľ nemáte priradených študentov
               </p>
 
               <p className="mt-1 text-sm text-gray-400">
-                Students will appear here once they have lessons with you.
+                Študenti sa zobrazia, keď budú mať s vami naplánované hodiny.
               </p>
             </div>
           ) : (
@@ -247,7 +248,7 @@ export default async function TeacherStudentsPage() {
                     <div className="grid gap-4 sm:grid-cols-2 md:flex md:items-center md:gap-8">
                       <div>
                         <p className="text-xs text-gray-400">
-                          Lessons left
+                          Zostáva hodín
                         </p>
 
                         <p className="mt-1 text-sm font-semibold">
@@ -257,7 +258,7 @@ export default async function TeacherStudentsPage() {
 
                       <div>
                         <p className="text-xs text-gray-400">
-                          Next lesson
+                          Najbližšia hodina
                         </p>
 
                         <p className="mt-1 text-sm font-medium">
@@ -267,7 +268,7 @@ export default async function TeacherStudentsPage() {
                               )} · ${formatTime(
                                 student.nextLesson
                               )}`
-                            : "Not scheduled"}
+                            : "Nenaplánované"}
                         </p>
                       </div>
 
@@ -275,7 +276,7 @@ export default async function TeacherStudentsPage() {
                         href={`/teacher/student/${student.id}`}
                         className="flex items-center gap-2 rounded-xl bg-[#183f38] px-4 py-2.5 text-sm font-semibold text-white"
                       >
-                        View student
+                        Zobraziť študenta
                         <ArrowRight size={16} />
                       </Link>
                     </div>

@@ -6,11 +6,10 @@ import {
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { formatLanguage } from "@/lib/portalLabels";
-import RozvrhRequestActions from "./RozvrhRequestActions";
+import ScheduleRequestActions from "./ScheduleRequestActions";
 
 function formatDate(value: string) {
-  return new Intl.DateTimeFormat("sk-SK", {
+  return new Intl.DateTimeFormat("en-GB", {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -19,7 +18,7 @@ function formatDate(value: string) {
 }
 
 function formatTime(value: string) {
-  return new Intl.DateTimeFormat("sk-SK", {
+  return new Intl.DateTimeFormat("en-GB", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -36,18 +35,18 @@ function studentName(
   return (
     profile?.full_name?.trim() ||
     profile?.email ||
-    "Študent"
+    "Student"
   );
 }
 
-export default async function TeacherRozvrhPage() {
+export default async function TeacherSchedulePage() {
   const { user } = await requireRole("teacher");
   const supabase = await createSupabaseServerClient();
 
   const now = new Date().toISOString();
 
-  const { data: hodín } = await supabase
-    .from("hodín")
+  const { data: lessons } = await supabase
+    .from("lessons")
     .select(`
       id,
       student_id,
@@ -57,7 +56,7 @@ export default async function TeacherRozvrhPage() {
       language,
       lesson_type,
       meet_link,
-      student:profiles!hodín_student_id_fkey (
+      student:profiles!lessons_student_id_fkey (
         full_name,
         email
       )
@@ -79,12 +78,12 @@ export default async function TeacherRozvrhPage() {
       alternative_at,
       message,
       status,
-      lesson:hodín!schedule_change_requests_lesson_id_fkey (
+      lesson:lessons!schedule_change_requests_lesson_id_fkey (
         id,
         teacher_id,
         scheduled_at,
         language,
-        student:profiles!hodín_student_id_fkey (
+        student:profiles!lessons_student_id_fkey (
           full_name,
           email
         )
@@ -109,14 +108,16 @@ export default async function TeacherRozvrhPage() {
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">Rozvrh</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
+            Schedule
+          </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Vaše hodiny
+            Your lessons
           </h1>
 
           <p className="mt-2 text-gray-500">
-            Spravujte svoje najbližšie hodiny a žiadosti študentov o zmenu termínu.
+            Manage your upcoming lessons and student schedule requests.
           </p>
         </section>
 
@@ -124,7 +125,7 @@ export default async function TeacherRozvrhPage() {
           <div className="flex items-center gap-2">
             <RefreshCw size={19} className="text-[#9a8049]" />
             <h2 className="text-xl font-semibold">
-              Žiadosti o zmenu
+              Change requests
             </h2>
 
             {teacherRequests.length > 0 && (
@@ -136,9 +137,9 @@ export default async function TeacherRozvrhPage() {
 
           {teacherRequests.length === 0 ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
-              <p className="font-medium">Žiadne čakajúce žiadosti</p>
+              <p className="font-medium">No pending requests</p>
               <p className="mt-1 text-sm text-gray-400">
-                Žiadosti študentov o zmenu termínu sa zobrazia tu.
+                Student schedule-change requests will appear here.
               </p>
             </div>
           ) : (
@@ -167,23 +168,23 @@ export default async function TeacherRozvrhPage() {
                           </p>
 
                           <span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-[#9a8049]">
-                            Nová žiadosť
+                            New request
                           </span>
                         </div>
 
                         <p className="mt-2 text-sm text-[#7e693a]/70">
-                          {formatLanguage(lesson.language)} hodina
+                          {lesson.language || "Language"} lesson
                         </p>
 
                         <div className="mt-4 space-y-2 text-sm text-[#7e693a]">
                           <p>
-                            <strong>Aktuálne:</strong>{" "}
+                            <strong>Current:</strong>{" "}
                             {formatDate(lesson.scheduled_at)} ·{" "}
                             {formatTime(lesson.scheduled_at)}
                           </p>
 
                           <p>
-                            <strong>Navrhované:</strong>{" "}
+                            <strong>Requested:</strong>{" "}
                             {formatDate(request.preferred_at)} ·{" "}
                             {formatTime(request.preferred_at)}
                           </p>
@@ -196,7 +197,7 @@ export default async function TeacherRozvrhPage() {
                         )}
                       </div>
 
-                      <RozvrhRequestActions
+                      <ScheduleRequestActions
                         requestId={request.id}
                       />
                     </div>
@@ -207,34 +208,34 @@ export default async function TeacherRozvrhPage() {
           )}
 
           <p className="mt-3 text-xs text-gray-400">
-            Pôvodný termín zostáva potvrdený, kým nebude zmena schválená.
+            The original lesson stays confirmed until a change is accepted.
           </p>
         </section>
 
         <section className="mt-10">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-400">Najbližšie</p>
+              <p className="text-sm text-gray-400">Upcoming</p>
               <h2 className="mt-1 text-xl font-semibold">
-                Naplánované hodiny
+                Scheduled lessons
               </h2>
             </div>
 
             <CalendarDays size={21} className="text-[#9a8049]" />
           </div>
 
-          {!hodín?.length ? (
+          {!lessons?.length ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
               <p className="font-medium">
-                Žiadne naplánované hodiny
+                No upcoming lessons
               </p>
               <p className="mt-1 text-sm text-gray-400">
-                Vaše potvrdené hodiny sa zobrazia tu.
+                Your confirmed lessons will appear here.
               </p>
             </div>
           ) : (
             <div className="mt-4 space-y-3">
-              {hodín.map((lesson, index) => {
+              {lessons.map((lesson, index) => {
                 const student = Array.isArray(lesson.student)
                   ? lesson.student[0]
                   : lesson.student;
@@ -276,7 +277,7 @@ export default async function TeacherRozvrhPage() {
                                   : "bg-[#eef3ef] text-[#527064]"
                               }`}
                             >
-                              {index === 0 ? "Najbližšia" : "Naplánovaná"}
+                              {index === 0 ? "Next" : "Scheduled"}
                             </span>
                           </div>
 
@@ -287,7 +288,7 @@ export default async function TeacherRozvrhPage() {
                                 : "text-gray-400"
                             }`}
                           >
-                            {formatLanguage(lesson.language)} ·{" "}
+                            {lesson.language || "Language"} ·{" "}
                             {lesson.duration_minutes || 60} min
                           </p>
 
@@ -315,7 +316,7 @@ export default async function TeacherRozvrhPage() {
                           }`}
                         >
                           <Video size={17} />
-                          Pripojiť sa
+                          Join lesson
                         </a>
                       ) : (
                         <span
@@ -325,7 +326,7 @@ export default async function TeacherRozvrhPage() {
                               : "bg-gray-100 text-gray-400"
                           }`}
                         >
-                          Odkaz na Meet zatiaľ nie je pridaný
+                          Meet link not added
                         </span>
                       )}
                     </div>

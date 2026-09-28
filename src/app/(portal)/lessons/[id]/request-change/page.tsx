@@ -97,9 +97,7 @@ export default async function RequestChangePage({
           </h1>
 
           <p className="mt-3 max-w-2xl leading-7 text-gray-500">
-            Let your teacher know which new date and time would work
-            better for you. Your current lesson stays confirmed until
-            the request is accepted.
+            Navrhnite nový dátum a čas, ktorý vám vyhovuje. Pôvodný termín zostáva platný, kým lektor zmenu nepotvrdí.
           </p>
         </section>
 
@@ -111,7 +109,7 @@ export default async function RequestChangePage({
               </p>
 
               <h2 className="mt-2 text-xl font-semibold">
-                {lesson.language || "Language"} lesson
+                {lesson.language || "Jazyk"} lesson
               </h2>
 
               <div className="mt-5 flex flex-wrap gap-4 text-sm text-white/75">
@@ -144,9 +142,7 @@ export default async function RequestChangePage({
             </h2>
 
             <p className="mt-2 leading-7 text-gray-500">
-              You already have a pending schedule change request for this
-              lesson. Your current lesson stays confirmed until the request
-              is accepted.
+              Pre túto hodinu už máte odoslanú žiadosť o zmenu. Pôvodný termín zostáva platný, kým nebude žiadosť schválená.
             </p>
 
             <Link

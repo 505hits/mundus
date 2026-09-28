@@ -9,7 +9,7 @@ type Props = {
   requestId: string;
 };
 
-export default function RozvrhRequestActions({
+export default function ScheduleRequestActions({
   requestId,
 }: Props) {
   const router = useRouter();
@@ -38,7 +38,7 @@ export default function RozvrhRequestActions({
 
     if (error) {
       setErrorMessage(
-        "We couldn't update this request. Please try again."
+        "Žiadosť sa nepodarilo aktualizovať. Skúste to prosím znova."
       );
       setLoading(null);
       return;
@@ -57,7 +57,7 @@ export default function RozvrhRequestActions({
           className="flex items-center gap-2 rounded-xl bg-[#183f38] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#12332d] disabled:cursor-not-allowed disabled:opacity-60"
         >
           <Check size={16} />
-          {loading === "accepted" ? "Schváliťing..." : "Schváliť"}
+          {loading === "accepted" ? "Schvaľujem..." : "Schváliť"}
         </button>
 
         <button
@@ -69,7 +69,7 @@ export default function RozvrhRequestActions({
           <X size={16} />
           {loading === "declined"
             ? "Zamietam..."
-            : "Keep original"}
+            : "Ponechať pôvodný termín"}
         </button>
       </div>
 

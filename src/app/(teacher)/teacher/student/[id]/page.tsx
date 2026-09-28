@@ -5,7 +5,7 @@ import {
   CalendarDays,
   CheckCircle2,
   Clock3,
-  MessageCircle,
+  SprávaCircle,
   Target,
   TrendingUp,
   Video,
@@ -61,8 +61,8 @@ export default async function TeacherStudentPage({
 
   const supabase = await createSupabaseServerClient();
 
-  const { data: hodín } = await supabase
-    .from("hodín")
+  const { data: lessons } = await supabase
+    .from("lessons")
     .select(`
       id,
       student_id,
@@ -73,7 +73,7 @@ export default async function TeacherStudentPage({
       language,
       lesson_type,
       meet_link,
-      student:profiles!hodín_student_id_fkey (
+      student:profiles!lessons_student_id_fkey (
         full_name,
         email
       )
@@ -88,11 +88,11 @@ export default async function TeacherStudentPage({
    *
    * We then use the student_id for the complete student view.
    */
-  const studentId = hodín?.student_id;
+  const studentId = lessons?.student_id;
 
   if (!studentId) {
     const { data: studentLesson } = await supabase
-      .from("hodín")
+      .from("lessons")
       .select("student_id")
       .eq("student_id", id)
       .eq("teacher_id", user.id)
@@ -120,7 +120,7 @@ async function renderStudentPage(
 ) {
   const [
     profileResult,
-    hodínResult,
+    lessonsResult,
     packagesResult,
   ] = await Promise.all([
     supabase
@@ -130,7 +130,7 @@ async function renderStudentPage(
       .single(),
 
     supabase
-      .from("hodín")
+      .from("lessons")
       .select(`
         id,
         scheduled_at,
@@ -147,14 +147,14 @@ async function renderStudentPage(
     supabase
       .from("lesson_packages")
       .select(
-        "id,total_hodín,used_hodín,remaining_hodín,status"
+        "id,total_lessons,used_lessons,remaining_lessons,status"
       )
       .eq("student_id", studentId)
       .eq("status", "active"),
   ]);
 
   const profile = profileResult.data;
-  const hodín = hodínResult.data ?? [];
+  const lessons = lessonsResult.data ?? [];
   const packages = packagesResult.data ?? [];
 
   if (!profile) {
@@ -163,11 +163,11 @@ async function renderStudentPage(
 
   const studentName = getName(profile);
 
-  const completedLessons = hodín.filter(
+  const completedLessons = lessons.filter(
     (lesson) => lesson.status === "completed"
   );
 
-  const upcomingLessons = hodín
+  const upcomingLessons = lessons
     .filter(
       (lesson) =>
         ["scheduled", "rescheduled"].includes(lesson.status) &&
@@ -181,19 +181,19 @@ async function renderStudentPage(
 
   const nextLesson = upcomingLessons[0] ?? null;
 
-  const hodínRemaining = packages.reduce(
-    (sum, pkg) => sum + (pkg.remaining_hodín ?? 0),
+  const lessonsRemaining = packages.reduce(
+    (sum, pkg) => sum + (pkg.remaining_lessons ?? 0),
     0
   );
 
   const language =
     nextLesson?.language ||
-    hodín[0]?.language ||
+    lessons[0]?.language ||
     "Language";
 
   const lessonType =
     nextLesson?.lesson_type ||
-    hodín[0]?.lesson_type ||
+    lessons[0]?.lesson_type ||
     "Individual lesson";
 
   return (
@@ -205,7 +205,7 @@ async function renderStudentPage(
             className="flex items-center gap-2 text-sm font-medium"
           >
             <ArrowLeft size={17} />
-            Moji študenti
+            Môj študents
           </Link>
 
           <p className="text-sm font-semibold">
@@ -256,7 +256,7 @@ async function renderStudentPage(
             </p>
 
             <p className="mt-1 text-2xl font-semibold">
-              {hodínRemaining}
+              {lessonsRemaining}
             </p>
           </article>
 
@@ -280,7 +280,7 @@ async function renderStudentPage(
             <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm text-white/55">
-                  Najbližšia lesson
+                  Najbližšia hodina
                 </p>
 
                 <h2 className="mt-2 text-2xl font-semibold">
@@ -327,18 +327,18 @@ async function renderStudentPage(
             </p>
 
             <h2 className="mt-1 text-xl font-semibold">
-              Recent hodín
+              Recent lessons
             </h2>
           </div>
 
           {completedLessons.length === 0 ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
               <p className="font-medium">
-                No completed hodín yet
+                No completed lessons yet
               </p>
 
               <p className="mt-1 text-sm text-gray-400">
-                Completed hodín will appear here.
+                Completed lessons will appear here.
               </p>
             </div>
           ) : (
@@ -380,19 +380,19 @@ async function renderStudentPage(
 
         <section className="mt-6 rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
           <div className="flex items-center gap-2">
-            <MessageCircle
+            <SprávaCircle
               size={20}
               className="text-[#9a8049]"
             />
 
             <h2 className="text-lg font-semibold">
-              Poznámka pre študentas
+              Student notes
             </h2>
           </div>
 
           <div className="mt-5 rounded-2xl bg-[#f7f8f5] p-5">
             <p className="text-sm leading-6 text-gray-500">
-              Poznámka pre študentas will appear here once the teacher
+              Student notes will appear here once the teacher
               note system is connected.
             </p>
           </div>

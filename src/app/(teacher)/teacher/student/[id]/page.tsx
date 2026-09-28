@@ -51,7 +51,7 @@ function getName(
     | null
     | undefined
 ) {
-  return profile?.full_name?.trim() || profile?.email || "Student";
+  return profile?.full_name?.trim() || profile?.email || "Študent";
 }
 
 export default async function TeacherStudentPage({
@@ -190,12 +190,12 @@ async function renderStudentPage(
   const language =
     nextLesson?.language ||
     lessons[0]?.language ||
-    "Language";
+    "Jazyk";
 
   const lessonType =
     nextLesson?.lesson_type ||
     lessons[0]?.lesson_type ||
-    "Individual lesson";
+    "Individuálna hodina";
 
   return (
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
@@ -270,7 +270,7 @@ async function renderStudentPage(
 
             <p className="mt-1 text-sm font-semibold">
               {completedLessons.length > 0
-                ? "Lessons in progress"
+                ? "Prebiehajúca výučba"
                 : "Getting started"}
             </p>
           </article>
@@ -285,8 +285,8 @@ async function renderStudentPage(
                 </p>
 
                 <h2 className="mt-2 text-2xl font-semibold">
-                  {nextLesson.language || language} ·{" "}
-                  {nextLesson.lesson_type || "Lesson"}
+                  {formatLanguage(nextLesson.language || language)} ·{" "}
+                  {formatLessonType(nextLesson.lesson_type)}
                 </h2>
 
                 <div className="mt-4 flex flex-wrap gap-4 text-sm text-white/65">
@@ -393,7 +393,7 @@ async function renderStudentPage(
 
           <div className="mt-5 rounded-2xl bg-[#f7f8f5] p-5">
             <p className="text-sm leading-6 text-gray-500">
-              Poznámky pre študenta will appear here once the teacher
+              Poznámky pre študenta sa zobrazia po uložení záznamu z hodiny.
               note system is connected.
             </p>
           </div>

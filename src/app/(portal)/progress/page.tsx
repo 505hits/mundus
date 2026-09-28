@@ -1,6 +1,6 @@
 import Link from "next/link";
 import {
-  ArrowLeft,
+  ArrowZostáva,
   BookOpen,
   CalendarDays,
   CheckCircle2,
@@ -51,21 +51,21 @@ export default async function ProgressPage() {
     (lesson) => lesson.status === "completed"
   );
 
-  const activePackages = packages ?? [];
+  const activeBalíčky = packages ?? [];
   const teacherReports = reports ?? [];
   const latestReport = teacherReports[0] ?? null;
 
-  const totalLessons = activePackages.reduce(
+  const totalLessons = activeBalíčky.reduce(
     (sum, pkg) => sum + (pkg.total_lessons ?? 0),
     0
   );
 
-  const usedLessons = activePackages.reduce(
+  const usedLessons = activeBalíčky.reduce(
     (sum, pkg) => sum + (pkg.used_lessons ?? 0),
     0
   );
 
-  const remainingLessons = activePackages.reduce(
+  const remainingLessons = activeBalíčky.reduce(
     (sum, pkg) => sum + (pkg.remaining_lessons ?? 0),
     0
   );
@@ -104,7 +104,7 @@ export default async function ProgressPage() {
             href="/dashboard"
             className="flex items-center gap-2 text-sm font-medium transition hover:text-[#9a8049]"
           >
-            <ArrowLeft size={17} />Prehľad</Link>
+            <ArrowZostáva size={17} />Prehľad</Link>
 
           <p className="text-sm font-semibold">
             Vzdelávací portál Mundus

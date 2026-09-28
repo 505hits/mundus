@@ -9,7 +9,7 @@ import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 function formatDate(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -18,7 +18,7 @@ function formatDate(value: string) {
 }
 
 function formatTime(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,

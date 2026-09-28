@@ -1,6 +1,6 @@
 import Link from "next/link";
 import {
-  ArrowLeft,
+  ArrowZostáva,
   BookOpen,
   FileText,
   Target,
@@ -43,7 +43,7 @@ export default async function UčeniePage() {
             href="/dashboard"
             className="flex items-center gap-2 text-sm font-medium"
           >
-            <ArrowLeft size={17} />
+            <ArrowZostáva size={17} />
             Prehľad
           </Link>
 

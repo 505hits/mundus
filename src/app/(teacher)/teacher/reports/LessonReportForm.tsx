@@ -44,12 +44,12 @@ export default function LessonReportForm({
   );
 
   const [saving, setSaving] = useState(false);
-  const [saved, setUložené] = useState(Boolean(existingReport));
+  const [saved, setSaved] = useState(Boolean(existingReport));
   const [error, setError] = useState("");
 
   async function saveReport() {
     setSaving(true);
-    setUložené(false);
+    setSaved(false);
     setError("");
 
     const supabase = createSupabaseBrowserClient();
@@ -91,7 +91,7 @@ export default function LessonReportForm({
       return;
     }
 
-    setUložené(true);
+    setSaved(true);
     setSaving(false);
   }
 
@@ -102,17 +102,17 @@ export default function LessonReportForm({
           Lesson topic
           <input
             value={topic}
-            onChange={(event) => setTéma(event.target.value)}
+            onChange={(event) => setTopic(event.target.value)}
             placeholder="e.g. Past tense & conversation"
             className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none transition focus:border-[#183f38]"
           />
         </label>
 
         <label className="text-sm font-medium">
-          Pokrok
+          Progress
           <select
             value={progress}
-            onChange={(event) => setPokrok(event.target.value)}
+            onChange={(event) => setProgress(event.target.value)}
             className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#183f38]"
           >
             <option>Good progress</option>
@@ -133,10 +133,10 @@ export default function LessonReportForm({
         </label>
 
         <label className="text-sm font-medium">
-          Domáca úloha
+          Homework
           <input
             value={homework}
-            onChange={(event) => setDomáca úloha(event.target.value)}
+            onChange={(event) => setHomework(event.target.value)}
             placeholder="Voliteľné"
             className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#183f38]"
           />
@@ -182,7 +182,7 @@ export default function LessonReportForm({
         {saved && !saving && (
           <span className="flex items-center gap-1.5 text-sm font-medium text-[#527064]">
             <CheckCircle2 size={17} />
-            Uložené
+            Saved
           </span>
         )}
 

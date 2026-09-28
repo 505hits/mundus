@@ -8,29 +8,29 @@ import {
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-function formatDátum(value: string) {
-  return new Intl.DátumTimeFormat("sk-SK", {
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat("en-GB", {
     day: "numeric",
     month: "short",
     year: "numeric",
     timeZone: "Europe/Bratislava",
-  }).format(new Dátum(value));
+  }).format(new Date(value));
 }
 
 function formatTime(value: string) {
-  return new Intl.DátumTimeFormat("sk-SK", {
+  return new Intl.DateTimeFormat("en-GB", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
     timeZone: "Europe/Bratislava",
-  }).format(new Dátum(value));
+  }).format(new Date(value));
 }
 
 function name(profile: { full_name?: string | null; email?: string | null } | null | undefined) {
   return profile?.full_name?.trim() || profile?.email || "Unknown";
 }
 
-export default async function AdminHodinyPage() {
+export default async function AdminLessonsPage() {
   await requireRole("admin");
   const supabase = await createSupabaseServerClient();
 
@@ -45,13 +45,13 @@ export default async function AdminHodinyPage() {
     .limit(100);
 
   const rows = lessons ?? [];
-  const now = new Dátum();
-  const bratislavaDay = new Intl.DátumTimeFormat("en-CA", {
+  const now = new Date();
+  const bratislavaDay = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Europe/Bratislava",
     year: "numeric", month: "2-digit", day: "2-digit",
   });
   const todayKey = bratislavaDay.format(now);
-  const today = rows.filter((lesson) => bratislavaDay.format(new Dátum(lesson.scheduled_at)) === todayKey);
+  const today = rows.filter((lesson) => bratislavaDay.format(new Date(lesson.scheduled_at)) === todayKey);
   const completed = rows.filter((lesson) => lesson.status === "completed");
   const attention = rows.filter((lesson) =>
     ["student_no_show", "teacher_cancelled", "student_cancelled", "late_cancellation"].includes(lesson.status)
@@ -61,14 +61,14 @@ export default async function AdminHodinyPage() {
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">Hodiny</p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Správa hodín</h1>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">Lessons</p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Lesson management</h1>
           <p className="mt-2 text-gray-500">Real lessons across Mundus students and teachers.</p>
         </section>
 
         {error && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            Nepodarilo sa načítať údaje o hodinách. Obnovte stránku a skúste to znova.
+            We couldn&apos;t load lesson data. Please refresh and try again.
           </div>
         )}
 
@@ -76,7 +76,7 @@ export default async function AdminHodinyPage() {
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CalendarDays size={20} className="text-[#9a8049]" />
             <p className="mt-4 text-3xl font-semibold">{today.length}</p>
-            <p className="mt-1 text-sm text-gray-500">Dnes</p>
+            <p className="mt-1 text-sm text-gray-500">Today</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CheckCircle2 size={20} className="text-[#9a8049]" />
@@ -105,12 +105,12 @@ export default async function AdminHodinyPage() {
                       <p className="mt-1 text-sm text-gray-400">{lesson.language || "Language"}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 lg:hidden">Lektor</p>
+                      <p className="text-xs text-gray-400 lg:hidden">Teacher</p>
                       <p className="mt-1 text-sm font-medium lg:mt-0">{name(teacher)}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 lg:hidden">Dátum</p>
-                      <p className="mt-1 text-sm lg:mt-0">{formatDátum(lesson.scheduled_at)}</p>
+                      <p className="text-xs text-gray-400 lg:hidden">Date</p>
+                      <p className="mt-1 text-sm lg:mt-0">{formatDate(lesson.scheduled_at)}</p>
                     </div>
                     <div className="flex items-center gap-2 text-sm font-semibold">
                       <Clock3 size={15} className="text-gray-400" />

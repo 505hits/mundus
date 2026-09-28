@@ -36,7 +36,7 @@ function studentName(
   return (
     profile?.full_name?.trim() ||
     profile?.email ||
-    "Student"
+    "Študent"
   );
 }
 
@@ -216,7 +216,7 @@ export default async function TeacherSchedulePage() {
         <section className="mt-10">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-400">Upcoming</p>
+              <p className="text-sm text-gray-400">Najbližšie</p>
               <h2 className="mt-1 text-xl font-semibold">
                 Naplánované hodiny
               </h2>
@@ -289,7 +289,7 @@ export default async function TeacherSchedulePage() {
                                 : "text-gray-400"
                             }`}
                           >
-                            {lesson.language || "Language"} ·{" "}
+                            {formatLanguage(lesson.language)} ·{" "}
                             {lesson.duration_minutes || 60} min
                           </p>
 

@@ -5,7 +5,7 @@ import {
   CalendarDays,
   CheckCircle2,
   FileText,
-  MessageCircle,
+  SprávaCircle,
   Target,
   TrendingUp,
 } from "lucide-react";
@@ -108,7 +108,7 @@ export default async function ProgressPage() {
           </Link>
 
           <p className="text-sm font-semibold">
-            Mundus Learning Portal
+            Mundus Vzdelávací portál
           </p>
         </div>
       </header>
@@ -145,7 +145,7 @@ export default async function ProgressPage() {
               </div>
 
               <p className="mt-4 max-w-xl text-sm leading-6 text-white/60">
-                Your progress here is based on lessons and teacher reports
+                Váš pokrok here is based on lessons and teacher reports
                 recorded in your Mundus account. A CEFR level is shown only
                 when Mundus has a recorded assessment for you.
               </p>
@@ -170,7 +170,7 @@ export default async function ProgressPage() {
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
-              Lessons completed
+              Absolvované hodiny
             </p>
           </article>
 
@@ -244,7 +244,7 @@ export default async function ProgressPage() {
           </section>
         )}
 
-        {/* Next focus */}
+        {/* Najbližšia focus */}
         <section className="mt-6 rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
           <div className="flex items-start gap-4">
             <div className="rounded-2xl bg-[#faf6eb] p-3 text-[#9a8049]">
@@ -253,7 +253,7 @@ export default async function ProgressPage() {
 
             <div>
               <p className="text-sm text-gray-400">
-                Next focus
+                Najbližšia focus
               </p>
 
               <h2 className="mt-1 text-xl font-semibold">
@@ -285,7 +285,7 @@ export default async function ProgressPage() {
             </div>
 
             <div className="rounded-2xl bg-[#eef3ef] p-3">
-              <MessageCircle size={22} />
+              <SprávaCircle size={22} />
             </div>
           </div>
 
@@ -321,7 +321,7 @@ export default async function ProgressPage() {
               )}
 
               <p className="mt-5 text-xs text-gray-400">
-                Updated {formatDate(latestReport.updated_at)}
+                Aktualizované {formatDate(latestReport.updated_at)}
               </p>
             </>
           ) : (
@@ -391,7 +391,7 @@ export default async function ProgressPage() {
         </section>
 
         <p className="mt-8 text-center text-xs text-gray-400">
-          Mundus Learning Portal
+          Mundus Vzdelávací portál
         </p>
       </div>
     </main>

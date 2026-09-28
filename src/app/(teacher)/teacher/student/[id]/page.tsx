@@ -92,7 +92,7 @@ export default async function TeacherStudentPage({
   const studentId = lessons?.student_id;
 
   if (!studentId) {
-    const { data: studentHodina } = await supabase
+    const { data: studentLesson } = await supabase
       .from("lessons")
       .select("student_id")
       .eq("student_id", id)
@@ -100,14 +100,14 @@ export default async function TeacherStudentPage({
       .limit(1)
       .maybeSingle();
 
-    if (!studentHodina?.student_id) {
+    if (!studentLesson?.student_id) {
       notFound();
     }
 
     return renderStudentPage(
       supabase,
       user.id,
-      studentHodina.student_id
+      studentLesson.student_id
     );
   }
 
@@ -164,11 +164,11 @@ async function renderStudentPage(
 
   const studentName = getName(profile);
 
-  const completedHodinas = lessons.filter(
+  const completedLessons = lessons.filter(
     (lesson) => lesson.status === "completed"
   );
 
-  const upcomingHodinas = lessons
+  const upcomingLessons = lessons
     .filter(
       (lesson) =>
         ["scheduled", "rescheduled"].includes(lesson.status) &&
@@ -180,7 +180,7 @@ async function renderStudentPage(
         new Date(b.scheduled_at).getTime()
     );
 
-  const nextHodina = upcomingHodinas[0] ?? null;
+  const nextLesson = upcomingLessons[0] ?? null;
 
   const lessonsRemaining = packages.reduce(
     (sum, pkg) => sum + (pkg.remaining_lessons ?? 0),
@@ -188,11 +188,11 @@ async function renderStudentPage(
   );
 
   const language = formatLanguage(
-    nextHodina?.language || lessons[0]?.language
+    nextLesson?.language || lessons[0]?.language
   );
 
   const lessonType = formatLessonType(
-    nextHodina?.lesson_type || lessons[0]?.lesson_type
+    nextLesson?.lesson_type || lessons[0]?.lesson_type
   );
 
   return (
@@ -243,7 +243,7 @@ async function renderStudentPage(
             </p>
 
             <p className="mt-1 text-2xl font-semibold">
-              {completedHodinas.length}
+              {completedLessons.length}
             </p>
           </article>
 
@@ -267,14 +267,14 @@ async function renderStudentPage(
             </p>
 
             <p className="mt-1 text-sm font-semibold">
-              {completedHodinas.length > 0
+              {completedLessons.length > 0
                 ? "Prebiehajúca výučba"
                 : "Začíname"}
             </p>
           </article>
         </div>
 
-        {nextHodina && (
+        {nextLesson && (
           <section className="mt-6 rounded-3xl bg-[#183f38] p-6 text-white shadow-sm sm:p-8">
             <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
               <div>
@@ -283,26 +283,26 @@ async function renderStudentPage(
                 </p>
 
                 <h2 className="mt-2 text-2xl font-semibold">
-                  {formatLanguage(nextHodina.language) || language} ·{" "}
-                  {formatLessonType(nextHodina.lesson_type)}
+                  {formatLanguage(nextLesson.language) || language} ·{" "}
+                  {formatLessonType(nextLesson.lesson_type)}
                 </h2>
 
                 <div className="mt-4 flex flex-wrap gap-4 text-sm text-white/65">
                   <span className="flex items-center gap-2">
                     <CalendarDays size={16} />
-                    {formatDate(nextHodina.scheduled_at)}
+                    {formatDate(nextLesson.scheduled_at)}
                   </span>
 
                   <span className="flex items-center gap-2">
                     <Clock3 size={16} />
-                    {formatTime(nextHodina.scheduled_at)}
+                    {formatTime(nextLesson.scheduled_at)}
                   </span>
                 </div>
               </div>
 
-              {nextHodina.meet_link ? (
+              {nextLesson.meet_link ? (
                 <a
-                  href={nextHodina.meet_link}
+                  href={nextLesson.meet_link}
                   target="_blank"
                   rel="noreferrer"
                   className="flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 font-semibold text-[#183f38]"
@@ -330,7 +330,7 @@ async function renderStudentPage(
             </h2>
           </div>
 
-          {completedHodinas.length === 0 ? (
+          {completedLessons.length === 0 ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
               <p className="font-medium">
                 Zatiaľ žiadne dokončené hodiny
@@ -342,13 +342,13 @@ async function renderStudentPage(
             </div>
           ) : (
             <div className="mt-4 overflow-hidden rounded-3xl border border-black/5 bg-white shadow-sm">
-              {completedHodinas.slice(0, 10).map(
+              {completedLessons.slice(0, 10).map(
                 (lesson, index) => (
                   <div
                     key={lesson.id}
                     className={`flex items-center justify-between gap-4 p-5 sm:p-6 ${
                       index !==
-                      Math.min(completedHodinas.length, 10) - 1
+                      Math.min(completedLessons.length, 10) - 1
                         ? "border-b border-gray-100"
                         : ""
                     }`}

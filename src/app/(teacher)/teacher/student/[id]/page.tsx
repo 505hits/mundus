@@ -13,6 +13,7 @@ import {
 import { notFound } from "next/navigation";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { formatLanguage, formatLessonType } from "@/lib/portalLabels";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -284,7 +285,7 @@ async function renderStudentPage(
                 </p>
 
                 <h2 className="mt-2 text-2xl font-semibold">
-                  {nextHodina.language || language} ·{" "}
+                  {formatLanguage(nextHodina.language) || language} ·{" "}
                   {nextHodina.lesson_type || "Hodina"}
                 </h2>
 

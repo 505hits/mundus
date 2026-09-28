@@ -1,6 +1,7 @@
 import { AlertCircle, BookOpen, Users } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { formatLanguage } from "@/lib/portalLabels";
 
 function formatStudentStatus(status: string | null) {
   if (status === "active") return "Aktívny";
@@ -65,7 +66,7 @@ export default async function AdminStudentsPage() {
 
     return {
       ...profile,
-      language: nextLesson?.language || latestWithLanguage?.language || "—",
+      language: nextLesson?.language || latestWithLanguage?.language ? formatLanguage(nextLesson?.language || latestWithLanguage?.language) : "—",
       teacher: teacher?.full_name?.trim() || teacher?.email || "Nepriradený",
       remaining,
       nextLesson: nextLesson?.scheduled_at ?? null,

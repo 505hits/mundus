@@ -9,7 +9,8 @@ import {
   Video,
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
-import { createSupabaseServerClient } from "@/lib/supabase/server";\nimport { formatLanguage } from "@/lib/portalLabels";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { formatLanguage } from "@/lib/portalLabels";
 
 function formatTime(value: string) {
   return new Intl.DateTimeFormat("sk-SK", {

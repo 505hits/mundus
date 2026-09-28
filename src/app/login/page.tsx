@@ -16,7 +16,7 @@ export default function LoginPage() {
 
     setError("");
     if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY) {
-      setError("Login is temporarily unavailable. Please contact support.");
+      setError("Prihlásenie je momentálne nedostupné. Prosím, kontaktujte nás.");
       return;
     }
 
@@ -41,7 +41,7 @@ const { data: profile, error: profileError } = await supabase
   .single();
 
 if (profileError || !profile) {
-  setError("We couldn't load your Mundus profile. Please try again.");
+  setError("Nepodarilo sa načítať váš Mundus profil. Skúste to prosím znova.");
   setLoading(false);
   return;
 }
@@ -81,18 +81,17 @@ window.location.href = "/dashboard";
 
         <div className="relative z-10 max-w-lg">
           <p className="mb-5 text-sm font-semibold uppercase tracking-[0.2em] text-[#d7b56d]">
-            Mundus Learning Portal
+            Mundus vzdelávací portál
           </p>
 
           <h1 className="text-5xl font-semibold leading-tight text-white">
-            Your language journey,
+            Vaše jazykové napredovanie,
             <br />
-            all in one place.
+            všetko na jednom mieste.
           </h1>
 
           <p className="mt-6 max-w-md text-lg leading-8 text-white/70">
-            Keep track of your lessons, learning materials and progress with
-            Mundus.
+            Majte prehľad o svojich hodinách, materiáloch a pokroku v Mundus.
           </p>
         </div>
 
@@ -125,7 +124,7 @@ window.location.href = "/dashboard";
           </h2>
 
           <p className="mt-3 text-base leading-7 text-gray-500">
-            Sign in to see your lessons, learning materials and progress.
+            Prihláste sa a majte prehľad o svojich hodinách, materiáloch a pokroku.
           </p>
 
           <form onSubmit={handleLogin} className="mt-9 space-y-5">
@@ -138,7 +137,7 @@ window.location.href = "/dashboard";
                 type="email"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
-                placeholder="name@email.com"
+                placeholder="meno@email.com"
                 required
                 autoComplete="email"
                 className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-gray-800 shadow-sm outline-none focus:border-[#163f3a]"
@@ -172,12 +171,12 @@ window.location.href = "/dashboard";
               disabled={loading}
               className="w-full rounded-2xl bg-[#163f3a] px-5 py-4 font-semibold text-white transition hover:bg-[#12342f] disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {loading ? "Signing in..." : "Sign in"}
+              {loading ? "Prihlasujem..." : "Prihlásiť sa"}
             </button>
           </form>
 
           <p className="mt-8 text-center text-sm text-gray-400">
-            Need help? Contact Mundus Languages.
+            Potrebujete pomoc? Kontaktujte Mundus Languages.
           </p>
 
           <div className="mt-6 text-center">
@@ -185,7 +184,7 @@ window.location.href = "/dashboard";
               href="/"
               className="text-sm font-medium text-[#163f3a] hover:underline"
             >
-              ← Back to Mundus Languages
+              ← Späť na Mundus Languages
             </Link>
           </div>
         </div>

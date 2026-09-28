@@ -35,14 +35,14 @@ export default async function LessonsPage() {
   const { data: lessons } = await supabase
     .from("lessons")
     .select(
-      "id,scheduled_at,duration_minút,status,lesson_type,meet_link,language"
+      "id,scheduled_at,duration_minutes,status,lesson_type,meet_link,language"
     )
     .eq("student_id", user.id)
     .order("scheduled_at", { ascending: true });
 
   const allLessons = lessons ?? [];
 
-  const najbližšíchLessons = allLessons.filter(
+  const upcomingLessons = allLessons.filter(
     (lesson) =>
       (lesson.status === "scheduled" ||
         lesson.status === "rescheduled") &&
@@ -82,7 +82,7 @@ export default async function LessonsPage() {
           </h1>
 
           <p className="mt-2 text-gray-500">
-            View your najbližších lessons, join your class and request
+            View your upcoming lessons, join your class and request
             schedule changes.
           </p>
         </section>
@@ -97,13 +97,13 @@ export default async function LessonsPage() {
             </div>
 
             <span className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold shadow-sm">
-              {najbližšíchLessons.length} najbližších
+              {upcomingLessons.length} upcoming
             </span>
           </div>
 
-          {najbližšíchLessons.length > 0 ? (
+          {upcomingLessons.length > 0 ? (
             <div className="mt-5 space-y-4">
-              {najbližšíchLessons.map((lesson, index) => (
+              {upcomingLessons.map((lesson, index) => (
                 <article
                   key={lesson.id}
                   className={`rounded-3xl p-6 shadow-sm ${
@@ -121,7 +121,7 @@ export default async function LessonsPage() {
 
                         {index === 0 && (
                           <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/80">
-                            Najbližšia
+                            Next
                           </span>
                         )}
 
@@ -156,7 +156,7 @@ export default async function LessonsPage() {
                         </span>
 
                         <span>
-                          {lesson.duration_minút || 60} min
+                          {lesson.duration_minutes || 60} min
                         </span>
                       </div>
                     </div>
@@ -214,7 +214,7 @@ export default async function LessonsPage() {
               />
 
               <h3 className="mt-4 font-semibold">
-                No najbližších lessons
+                Nemáte naplánované ďalšie hodiny
               </h3>
 
               <p className="mt-2 text-sm text-gray-500">

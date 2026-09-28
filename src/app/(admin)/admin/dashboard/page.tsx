@@ -81,7 +81,7 @@ export default async function AdminDashboardPage() {
   const lowBalíčky = (packages ?? []).filter(
     (pkg) => (pkg.remaining_lessons ?? 0) > 0 && (pkg.remaining_lessons ?? 0) <= 2
   );
-  const noNajbližšie = (students ?? []).filter(
+  const noUpcoming = (students ?? []).filter(
     (student) => !upcomingStudentIds.has(student.id)
   ).length;
   const pendingRequests = requests?.length ?? 0;
@@ -106,7 +106,7 @@ export default async function AdminDashboardPage() {
 
         {lessonsError && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            Some dashboard data could not be loaded. Please refresh and try again.
+            Niektoré údaje sa nepodarilo načítať. Obnovte stránku a skúste to znova.
           </div>
         )}
 
@@ -149,11 +149,11 @@ export default async function AdminDashboardPage() {
                 <p className="mt-1 text-sm text-gray-500">Odporúčame kontaktovať študenta ohľadom pokračovania.</p>
               </div>
               <div className="rounded-2xl bg-[#faf8f2] p-4">
-                <p className="font-medium">{pendingRequests} pending schedule request{pendingRequests === 1 ? "" : "s"}</p>
+                <p className="font-medium">{pendingRequests} čakajúcich žiadostí o zmenu termínu</p>
                 <p className="mt-1 text-sm text-gray-500">Čaká na kontrolu alebo odpoveď lektora.</p>
               </div>
               <div className="rounded-2xl bg-[#faf8f2] p-4">
-                <p className="font-medium">{noNajbližšie} active student{noNajbližšie === 1 ? "" : "s"} without an upcoming lesson</p>
+                <p className="font-medium">{noUpcoming} aktívnych študentov bez naplánovanej ďalšej hodiny</p>
                 <p className="mt-1 text-sm text-gray-500">Môže byť potrebné dohodnúť ďalší termín.</p>
               </div>
             </div>
@@ -193,9 +193,9 @@ export default async function AdminDashboardPage() {
                 return (
                   <div key={lesson.id} className="flex flex-col gap-3 py-4 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                      <p className="font-semibold">{getName(student, "Student")}</p>
+                      <p className="font-semibold">{getName(student, "Študent")}</p>
                       <p className="mt-1 text-sm text-gray-500">
-                        {lesson.language || "Language"} · {getName(teacher, "Teacher")}
+                        {lesson.language || "Jazyk"} · {getName(teacher, "Lektor")}
                       </p>
                     </div>
                     <div className="flex items-center gap-3">

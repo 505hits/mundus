@@ -75,7 +75,7 @@ export default async function AdminPackagesPage() {
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CheckCircle2 size={20} className="text-[#9a8049]" />
-            <p className="mt-4 text-3xl font-semibold">{totalVyužité}</p>
+            <p className="mt-4 text-3xl font-semibold">{totalUsed}</p>
             <p className="mt-1 text-sm text-gray-500">Využité hodiny vo všetkých balíčkoch</p>
           </div>
         </section>
@@ -93,7 +93,7 @@ export default async function AdminPackagesPage() {
                 const remaining = item.remaining_lessons ?? 0;
                 const percentage = purchased > 0 ? Math.min(100, Math.round((used / purchased) * 100)) : 0;
                 const warning = remaining <= 2;
-                const displayStav =
+                const displayStatus =
                   remaining === 0 ? "Je čas pokračovať" :
                   item.status === "active" && remaining <= 2 ? "Čoskoro pokračovanie" :
                   formatPackageStatus(item.status);
@@ -129,7 +129,7 @@ export default async function AdminPackagesPage() {
                       <span className={`rounded-full px-3 py-1 text-xs font-semibold capitalize ${
                         warning ? "bg-[#faf1d9] text-[#9a8049]" : "bg-[#eef3ef] text-[#527064]"
                       }`}>
-                        {displayStav}
+                        {displayStatus}
                       </span>
                     </div>
                     <div className="text-sm text-gray-400">

@@ -19,7 +19,7 @@ type Props = {
 };
 
 function formatDate(value: string) {
-  return new Intl.DateTimeFormat("sk-SK", {
+  return new Intl.DateTimeFormat("en-GB", {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -28,7 +28,7 @@ function formatDate(value: string) {
 }
 
 function formatShortDate(value: string) {
-  return new Intl.DateTimeFormat("sk-SK", {
+  return new Intl.DateTimeFormat("en-GB", {
     day: "numeric",
     month: "short",
     timeZone: "Europe/Bratislava",
@@ -36,7 +36,7 @@ function formatShortDate(value: string) {
 }
 
 function formatTime(value: string) {
-  return new Intl.DateTimeFormat("sk-SK", {
+  return new Intl.DateTimeFormat("en-GB", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -205,11 +205,11 @@ async function renderStudentPage(
             className="flex items-center gap-2 text-sm font-medium"
           >
             <ArrowLeft size={17} />
-            Môj študents
+            My students
           </Link>
 
           <p className="text-sm font-semibold">
-            Prehľad študenta
+            Student overview
           </p>
         </div>
       </header>
@@ -218,7 +218,7 @@ async function renderStudentPage(
         <section className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
-              Môj študent
+              My student
             </p>
 
             <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -231,7 +231,7 @@ async function renderStudentPage(
           </div>
 
           <span className="w-fit rounded-full bg-[#eaf4ed] px-3 py-1.5 text-xs font-semibold text-[#527064]">
-            Aktívny študent
+            Active student
           </span>
         </section>
 
@@ -240,7 +240,7 @@ async function renderStudentPage(
             <BookOpen size={19} className="text-[#9a8049]" />
 
             <p className="mt-4 text-sm text-gray-400">
-              Dokončené hodiny
+              Lessons completed
             </p>
 
             <p className="mt-1 text-2xl font-semibold">
@@ -252,7 +252,7 @@ async function renderStudentPage(
             <CalendarDays size={19} className="text-[#9a8049]" />
 
             <p className="mt-4 text-sm text-gray-400">
-              Zostávajúce hodiny
+              Lessons remaining
             </p>
 
             <p className="mt-1 text-2xl font-semibold">
@@ -280,7 +280,7 @@ async function renderStudentPage(
             <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm text-white/55">
-                  Najbližšia hodina
+                  Next lesson
                 </p>
 
                 <h2 className="mt-2 text-2xl font-semibold">
@@ -309,7 +309,7 @@ async function renderStudentPage(
                   className="flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 font-semibold text-[#183f38]"
                 >
                   <Video size={18} />
-                  Pripojiť sa na hodinu
+                  Join lesson
                 </a>
               ) : (
                 <span className="rounded-xl bg-white/10 px-5 py-3 text-sm text-white/60">
@@ -334,11 +334,11 @@ async function renderStudentPage(
           {completedLessons.length === 0 ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
               <p className="font-medium">
-                Zatiaľ žiadne dokončené hodiny
+                No completed lessons yet
               </p>
 
               <p className="mt-1 text-sm text-gray-400">
-                Dokončené hodiny sa zobrazia tu.
+                Completed lessons will appear here.
               </p>
             </div>
           ) : (
@@ -386,13 +386,13 @@ async function renderStudentPage(
             />
 
             <h2 className="text-lg font-semibold">
-              Poznámky pre študenta
+              Student notes
             </h2>
           </div>
 
           <div className="mt-5 rounded-2xl bg-[#f7f8f5] p-5">
             <p className="text-sm leading-6 text-gray-500">
-              Poznámky pre študenta will appear here once the teacher
+              Student notes will appear here once the teacher
               note system is connected.
             </p>
           </div>

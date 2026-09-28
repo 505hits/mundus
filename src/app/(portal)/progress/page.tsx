@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { formatLanguage, formatLessonType } from "@/lib/portalLabels";
+import { formatLanguage, formatLessonType, formatProgressLabel } from "@/lib/portalLabels";
 
 export default async function ProgressPage() {
   const { user } = await requireRole("student");
@@ -288,7 +288,7 @@ export default async function ProgressPage() {
             <>
               {latestReport.progress && (
                 <span className="mt-5 inline-flex rounded-full bg-[#eef3ef] px-3 py-1.5 text-xs font-semibold text-[#527064]">
-                  {latestReport.progress}
+                  {formatProgressLabel(latestReport.progress)}
                 </span>
               )}
 

@@ -7,6 +7,13 @@ import {
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
+function formatTeacherStatus(status: string | null) {
+  if (status === "active") return "Aktívny";
+  if (status === "pending") return "Čaká na schválenie";
+  if (status === "inactive") return "Neaktívny";
+  return status ? status.replaceAll("_", " ") : "Neznámy";
+}
+
 export default async function AdminTeachersPage() {
   await requireRole("admin");
   const supabase = await createSupabaseServerClient();
@@ -81,16 +88,16 @@ export default async function AdminTeachersPage() {
             Teachers
           </p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Teacher management
+            Správa lektorov
           </h1>
           <p className="mt-2 text-gray-500">
-            Real teacher accounts and current teaching activity.
+            Reálne účty lektorov a aktuálna výučba.
           </p>
         </section>
 
         {error && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            We couldn&apos;t load teacher accounts. Please refresh and try again.
+            Nepodarilo sa načítať účty lektorov. Obnovte stránku a skúste to znova.
           </div>
         )}
 
@@ -103,27 +110,27 @@ export default async function AdminTeachersPage() {
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <Users size={20} className="text-[#9a8049]" />
             <p className="mt-4 text-3xl font-semibold">{assignedStudents}</p>
-            <p className="mt-1 text-sm text-gray-500">Assigned students</p>
+            <p className="mt-1 text-sm text-gray-500">Priradení študenti</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CalendarDays size={20} className="text-[#9a8049]" />
             <p className="mt-4 text-3xl font-semibold">{lessonsThisWeek}</p>
-            <p className="mt-1 text-sm text-gray-500">Lessons this week</p>
+            <p className="mt-1 text-sm text-gray-500">Hodiny tento týždeň</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <AlertCircle size={20} className="text-[#9a8049]" />
             <p className="mt-4 text-3xl font-semibold">{pendingTeachers}</p>
-            <p className="mt-1 text-sm text-gray-500">Pending / inactive</p>
+            <p className="mt-1 text-sm text-gray-500">Čakajúci / neaktívni</p>
           </div>
         </section>
 
         <section className="mt-10">
-          <p className="text-sm text-gray-400">Team</p>
-          <h2 className="mt-1 text-xl font-semibold">Teacher accounts</h2>
+          <p className="text-sm text-gray-400">Tím</p>
+          <h2 className="mt-1 text-xl font-semibold">Účty lektorov</h2>
 
           {teacherRows.length === 0 ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 text-sm text-gray-500 shadow-sm">
-              No teacher accounts yet.
+              Zatiaľ nie sú vytvorené žiadne účty lektorov.
             </div>
           ) : (
             <div className="mt-4 overflow-hidden rounded-3xl border border-black/5 bg-white shadow-sm">
@@ -135,7 +142,7 @@ export default async function AdminTeachersPage() {
                   >
                     <div>
                       <p className="font-semibold">
-                        {teacher.full_name?.trim() || teacher.email || "Teacher"}
+                        {teacher.full_name?.trim() || teacher.email || "Lektor"}
                       </p>
                       <p className="mt-1 text-sm text-gray-400">
                         {teacher.languages}
@@ -148,20 +155,20 @@ export default async function AdminTeachersPage() {
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 lg:hidden">Students</p>
+                      <p className="text-xs text-gray-400 lg:hidden">Študenti</p>
                       <p className="mt-1 text-sm font-medium lg:mt-0">
                         {teacher.studentCount}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 lg:hidden">This week</p>
+                      <p className="text-xs text-gray-400 lg:hidden">Tento týždeň</p>
                       <p className="mt-1 text-sm font-medium lg:mt-0">
-                        {teacher.lessonsThisWeek} lessons
+                        {teacher.lessonsThisWeek} hodín
                       </p>
                     </div>
                     <div>
                       <span className="rounded-full bg-[#eef3ef] px-3 py-1 text-xs font-semibold capitalize text-[#527064]">
-                        {teacher.status || "pending"}
+                        {formatTeacherStatus(teacher.status)}
                       </span>
                     </div>
                   </div>

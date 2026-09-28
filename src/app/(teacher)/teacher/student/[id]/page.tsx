@@ -5,7 +5,7 @@ import {
   CalendarDays,
   CheckCircle2,
   Clock3,
-  SprávaCircle,
+  MessageCircle,
   Target,
   TrendingUp,
   Video,
@@ -50,7 +50,7 @@ function getName(
     | null
     | undefined
 ) {
-  return profile?.full_name?.trim() || profile?.email || "Student";
+  return profile?.full_name?.trim() || profile?.email || "Študent";
 }
 
 export default async function TeacherStudentPage({
@@ -205,7 +205,7 @@ async function renderStudentPage(
             className="flex items-center gap-2 text-sm font-medium"
           >
             <ArrowLeft size={17} />
-            Môj študents
+            Moji študenti
           </Link>
 
           <p className="text-sm font-semibold">
@@ -264,13 +264,13 @@ async function renderStudentPage(
             <TrendingUp size={19} className="text-[#9a8049]" />
 
             <p className="mt-4 text-sm text-gray-400">
-              Learning activity
+              Študijná aktivita
             </p>
 
             <p className="mt-1 text-sm font-semibold">
               {completedLessons.length > 0
-                ? "Lessons in progress"
-                : "Getting started"}
+                ? "Prebiehajúca výučba"
+                : "Začíname"}
             </p>
           </article>
         </div>
@@ -285,7 +285,7 @@ async function renderStudentPage(
 
                 <h2 className="mt-2 text-2xl font-semibold">
                   {nextLesson.language || language} ·{" "}
-                  {nextLesson.lesson_type || "Lesson"}
+                  {nextLesson.lesson_type || "Hodina"}
                 </h2>
 
                 <div className="mt-4 flex flex-wrap gap-4 text-sm text-white/65">
@@ -313,7 +313,7 @@ async function renderStudentPage(
                 </a>
               ) : (
                 <span className="rounded-xl bg-white/10 px-5 py-3 text-sm text-white/60">
-                  Meet link not added
+                  Odkaz na Meet zatiaľ nie je pridaný
                 </span>
               )}
             </div>
@@ -327,18 +327,18 @@ async function renderStudentPage(
             </p>
 
             <h2 className="mt-1 text-xl font-semibold">
-              Recent lessons
+              Posledné hodiny
             </h2>
           </div>
 
           {completedLessons.length === 0 ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
               <p className="font-medium">
-                No completed lessons yet
+                Zatiaľ žiadne dokončené hodiny
               </p>
 
               <p className="mt-1 text-sm text-gray-400">
-                Completed lessons will appear here.
+                Dokončené hodiny sa zobrazia tu.
               </p>
             </div>
           ) : (
@@ -369,7 +369,7 @@ async function renderStudentPage(
                     </div>
 
                     <span className="rounded-full bg-[#eef3ef] px-3 py-1.5 text-xs font-semibold text-[#527064]">
-                      Completed
+                      Dokončená
                     </span>
                   </div>
                 )
@@ -380,7 +380,7 @@ async function renderStudentPage(
 
         <section className="mt-6 rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
           <div className="flex items-center gap-2">
-            <SprávaCircle
+            <MessageCircle
               size={20}
               className="text-[#9a8049]"
             />

@@ -7,13 +7,6 @@ import {
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-function formatTeacherStatus(status: string | null) {
-  if (status === "active") return "Aktívny";
-  if (status === "pending") return "Čaká na schválenie";
-  if (status === "inactive") return "Neaktívny";
-  return status ? status.replaceAll("_", " ") : "Neznámy";
-}
-
 export default async function AdminTeachersPage() {
   await requireRole("admin");
   const supabase = await createSupabaseServerClient();
@@ -84,18 +77,20 @@ export default async function AdminTeachersPage() {
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">Lektori</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
+            Teachers
+          </p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Správa lektorov
+            Teacher management
           </h1>
           <p className="mt-2 text-gray-500">
-            Reálne účty lektorov a aktuálna výučba.
+            Real teacher accounts and current teaching activity.
           </p>
         </section>
 
         {error && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            Nepodarilo sa načítať účty lektorov. Obnovte stránku a skúste to znova.
+            We couldn&apos;t load teacher accounts. Please refresh and try again.
           </div>
         )}
 
@@ -103,32 +98,32 @@ export default async function AdminTeachersPage() {
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <GraduationCap size={20} className="text-[#9a8049]" />
             <p className="mt-4 text-3xl font-semibold">{activeTeachers}</p>
-            <p className="mt-1 text-sm text-gray-500">Aktívni lektori</p>
+            <p className="mt-1 text-sm text-gray-500">Active teachers</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <Users size={20} className="text-[#9a8049]" />
             <p className="mt-4 text-3xl font-semibold">{assignedStudents}</p>
-            <p className="mt-1 text-sm text-gray-500">Priradení študenti</p>
+            <p className="mt-1 text-sm text-gray-500">Assigned students</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CalendarDays size={20} className="text-[#9a8049]" />
             <p className="mt-4 text-3xl font-semibold">{lessonsThisWeek}</p>
-            <p className="mt-1 text-sm text-gray-500">Hodiny tento týždeň</p>
+            <p className="mt-1 text-sm text-gray-500">Lessons this week</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <AlertCircle size={20} className="text-[#9a8049]" />
             <p className="mt-4 text-3xl font-semibold">{pendingTeachers}</p>
-            <p className="mt-1 text-sm text-gray-500">Čakajúci / neaktívni</p>
+            <p className="mt-1 text-sm text-gray-500">Pending / inactive</p>
           </div>
         </section>
 
         <section className="mt-10">
-          <p className="text-sm text-gray-400">Tím</p>
-          <h2 className="mt-1 text-xl font-semibold">Účty lektorov</h2>
+          <p className="text-sm text-gray-400">Team</p>
+          <h2 className="mt-1 text-xl font-semibold">Teacher accounts</h2>
 
           {teacherRows.length === 0 ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 text-sm text-gray-500 shadow-sm">
-              Zatiaľ nie sú vytvorené žiadne účty lektorov.
+              No teacher accounts yet.
             </div>
           ) : (
             <div className="mt-4 overflow-hidden rounded-3xl border border-black/5 bg-white shadow-sm">
@@ -140,33 +135,33 @@ export default async function AdminTeachersPage() {
                   >
                     <div>
                       <p className="font-semibold">
-                        {teacher.full_name?.trim() || teacher.email || "Lektor"}
+                        {teacher.full_name?.trim() || teacher.email || "Teacher"}
                       </p>
                       <p className="mt-1 text-sm text-gray-400">
                         {teacher.languages}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 lg:hidden">E-mail</p>
+                      <p className="text-xs text-gray-400 lg:hidden">Email</p>
                       <p className="mt-1 truncate text-sm lg:mt-0">
                         {teacher.email || "—"}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 lg:hidden">Študenti</p>
+                      <p className="text-xs text-gray-400 lg:hidden">Students</p>
                       <p className="mt-1 text-sm font-medium lg:mt-0">
                         {teacher.studentCount}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 lg:hidden">Tento týždeň</p>
+                      <p className="text-xs text-gray-400 lg:hidden">This week</p>
                       <p className="mt-1 text-sm font-medium lg:mt-0">
-                        {teacher.lessonsThisWeek} hodín
+                        {teacher.lessonsThisWeek} lessons
                       </p>
                     </div>
                     <div>
                       <span className="rounded-full bg-[#eef3ef] px-3 py-1 text-xs font-semibold capitalize text-[#527064]">
-                        {formatTeacherStatus(teacher.status)}
+                        {teacher.status || "pending"}
                       </span>
                     </div>
                   </div>

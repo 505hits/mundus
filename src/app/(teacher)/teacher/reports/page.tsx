@@ -7,6 +7,7 @@ import {
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import LessonReportForm from "./LessonReportForm";
+import { formatLanguage, formatLessonType } from "@/lib/portalLabels";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("sk-SK", {
@@ -206,8 +207,8 @@ export default async function TeacherReportsPage() {
                         </div>
 
                         <p className="mt-2 text-sm text-gray-500">
-                          {lesson.language || "Jazyk"} ·{" "}
-                          {lesson.lesson_type || "Hodina"}
+                          {formatLanguage(lesson.language)} ·{" "}
+                          {formatLessonType(lesson.lesson_type)}
                         </p>
 
                         <div className="mt-2 flex items-center gap-2 text-sm text-gray-400">

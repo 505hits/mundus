@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { formatLanguage } from "@/lib/portalLabels";
 
 function formatTime(value: string) {
   return new Intl.DateTimeFormat("sk-SK", {
@@ -209,7 +210,7 @@ export default async function AdminDashboardPage() {
                     <div>
                       <p className="font-semibold">{getName(student, "Študent")}</p>
                       <p className="mt-1 text-sm text-gray-500">
-                        {lesson.language || "Jazyk"} · {getName(teacher, "Lektor")}
+                        {formatLanguage(lesson.language)} · {getName(teacher, "Lektor")}
                       </p>
                     </div>
                     <div className="flex items-center gap-3">

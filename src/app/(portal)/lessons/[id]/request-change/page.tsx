@@ -46,7 +46,7 @@ export default async function RequestChangePage({
   const { data: lesson, error } = await supabase
     .from("lessons")
     .select(
-      "id,student_id,scheduled_at,duration_minút,status,language"
+      "id,student_id,scheduled_at,duration_minutes,status,language"
     )
     .eq("id", id)
     .eq("student_id", user.id)
@@ -89,7 +89,7 @@ export default async function RequestChangePage({
 
         <section className="mt-7">
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
-            Rozvrh
+            Schedule
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -127,7 +127,7 @@ export default async function RequestChangePage({
               </div>
 
               <p className="mt-3 text-sm text-white/60">
-                {lesson.duration_minút || 60} minút
+                {lesson.duration_minutes || 60} minutes
               </p>
             </div>
 

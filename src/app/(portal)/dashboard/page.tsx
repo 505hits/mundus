@@ -92,7 +92,7 @@ export default async function DashboardPage() {
     latestReport?.next_focus?.trim() || null;
 
   const firstName =
-    profile?.full_name?.trim().split(/\s+/)[0] || "there";
+    profile?.full_name?.trim().split(/\s+/)[0] || "";
 
   const totalLessons = activePackage?.total_lessons ?? 0;
   const usedLessons = activePackage?.used_lessons ?? 0;
@@ -121,7 +121,7 @@ export default async function DashboardPage() {
           <div className="flex items-center gap-3">
             <div className="hidden text-right sm:block">
               <p className="text-sm font-semibold text-[#183f38]">
-                Student Portal
+                Študentský portál
               </p>
 
               <p className="text-xs text-gray-400">
@@ -147,28 +147,28 @@ export default async function DashboardPage() {
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Welcome back, {firstName} 👋
+            Vitajte späť, {firstName} 👋
           </h1>
 
           <p className="mt-2 text-gray-500">
-            Your Mundus learning overview.
+            Váš prehľad učenia v Mundus.
           </p>
         </section>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-3">
-          {/* Najbližšia hodina */}
+          {/* Next lesson */}
           <section className="rounded-3xl bg-[#183f38] p-6 text-white shadow-sm lg:col-span-2 sm:p-8">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-sm font-medium text-white/60">
-                  Your next lesson
+                  Vaša najbližšia hodina
                 </p>
 
                 {nextLesson ? (
                   <>
                     <h2 className="mt-3 text-2xl font-semibold">
-                      {nextLesson.language || "Language"} ·{" "}
-                      {nextLesson.lesson_type || "Lesson"}
+                      {nextLesson.language || "Jazyk"} ·{" "}
+                      {nextLesson.lesson_type || "Hodina"}
                     </h2>
 
                     <div className="mt-5 flex flex-wrap gap-4 text-sm text-white/75">
@@ -184,14 +184,13 @@ export default async function DashboardPage() {
                     </div>
 
                     <p className="mt-4 text-sm text-white/60">
-                      {nextLesson.duration_minutes || 60}-minute Mundus
-                      lesson
+                      {nextLesson.duration_minutes || 60} minút · Mundus hodina
                     </p>
                   </>
                 ) : (
                   <>
                     <h2 className="mt-3 text-2xl font-semibold">
-                      No lesson scheduled yet
+                      Zatiaľ nemáte naplánovanú hodinu
                     </h2>
 
                     <p className="mt-4 text-sm text-white/60">
@@ -224,7 +223,7 @@ export default async function DashboardPage() {
                     className="flex cursor-not-allowed items-center justify-center gap-2 rounded-2xl bg-white/70 px-5 py-3.5 font-semibold text-[#183f38]/60"
                   >
                     <Video size={18} />
-                    Meet link coming soon
+                    Odkaz na Meet bude doplnený
                   </button>
                 )}
 
@@ -241,7 +240,7 @@ export default async function DashboardPage() {
           {/* Package */}
           <section className="rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
             <p className="text-sm font-medium text-gray-500">
-              Current package
+              Aktuálny balíček
             </p>
 
             {activePackage ? (
@@ -252,7 +251,7 @@ export default async function DashboardPage() {
                   </span>
 
                   <span className="pb-1 text-gray-400">
-                    lessons left
+                    hodín zostáva
                   </span>
                 </div>
 
@@ -264,12 +263,12 @@ export default async function DashboardPage() {
                 </div>
 
                 <p className="mt-3 text-sm text-gray-400">
-                  {usedLessons} of {totalLessons} lessons completed
+                  {usedLessons} of {totalLessons} hodín absolvovaných
                 </p>
               </>
             ) : (
               <p className="mt-4 text-sm leading-6 text-gray-500">
-                No active lesson package is assigned yet.
+                Zatiaľ nemáte priradený aktívny balíček hodín.
               </p>
             )}
           </section>
@@ -285,7 +284,7 @@ export default async function DashboardPage() {
                 </p>
 
                 <h2 className="mt-1 text-2xl font-semibold">
-                  Učenie journey
+                  Learning journey
                 </h2>
               </div>
 
@@ -296,7 +295,7 @@ export default async function DashboardPage() {
 
             {latestNextFocus ? (
               <p className="mt-5 text-sm leading-6 text-gray-500">
-                Na čo sa zamerať ďalej:{" "}
+                Ďalšie zameranie:{" "}
                 <span className="font-medium text-[#183f38]">
                   {latestNextFocus}
                 </span>
@@ -328,7 +327,7 @@ export default async function DashboardPage() {
                 <h2 className="mt-1 text-xl font-semibold">
                   {latestDomáca úloha
                     ? "Your latest homework"
-                    : "Zatiaľ žiadne domáce úlohy"}
+                    : "No homework yet"}
                 </h2>
               </div>
 
@@ -364,12 +363,12 @@ export default async function DashboardPage() {
           </section>
         </div>
 
-        {/* Rozvrh */}
+        {/* Schedule */}
         <section className="mt-6 rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-400">
-                Rozvrh
+                Schedule
               </p>
 
               <h2 className="mt-1 text-xl font-semibold">
@@ -392,7 +391,7 @@ export default async function DashboardPage() {
                 >
                   <div>
                     <p className="font-medium">
-                      {lesson.language || "Language"} lesson
+                      {lesson.language || "Jazyk"} lesson
                     </p>
 
                     <p className="mt-1 text-sm text-gray-400">
@@ -416,7 +415,7 @@ export default async function DashboardPage() {
             </div>
           ) : (
             <p className="mt-6 text-sm text-gray-500">
-              Nemáte naplánované ďalšie hodiny scheduled.
+              Nemáte naplánované ďalšie hodiny.
             </p>
           )}
         </section>

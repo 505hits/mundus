@@ -284,7 +284,7 @@ async function renderStudentPage(
 
                 <h2 className="mt-2 text-2xl font-semibold">
                   {formatLanguage(nextHodina.language) || language} ·{" "}
-                  {nextHodina.lesson_type || "Hodina"}
+                  {formatLessonType(nextHodina.lesson_type)}
                 </h2>
 
                 <div className="mt-4 flex flex-wrap gap-4 text-sm text-white/65">
@@ -391,8 +391,7 @@ async function renderStudentPage(
 
           <div className="mt-5 rounded-2xl bg-[#f7f8f5] p-5">
             <p className="text-sm leading-6 text-gray-500">
-              Poznámky pre študenta will appear here once the teacher
-              note system is connected.
+              Poznámky pre študenta sa zobrazia po uložení záznamu z hodiny.
             </p>
           </div>
         </section>

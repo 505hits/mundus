@@ -139,7 +139,7 @@ export default async function TeacherSchedulePage() {
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
               <p className="font-medium">Žiadne čakajúce žiadosti</p>
               <p className="mt-1 text-sm text-gray-400">
-                Student schedule-change requests will appear here.
+                Žiadosti študentov o zmenu termínu sa zobrazia tu.
               </p>
             </div>
           ) : (
@@ -168,7 +168,7 @@ export default async function TeacherSchedulePage() {
                           </p>
 
                           <span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-[#9a8049]">
-                            New request
+                            Nová žiadosť
                           </span>
                         </div>
 
@@ -178,13 +178,13 @@ export default async function TeacherSchedulePage() {
 
                         <div className="mt-4 space-y-2 text-sm text-[#7e693a]">
                           <p>
-                            <strong>Current:</strong>{" "}
+                            <strong>Aktuálne:</strong>{" "}
                             {formatDate(lesson.scheduled_at)} ·{" "}
                             {formatTime(lesson.scheduled_at)}
                           </p>
 
                           <p>
-                            <strong>Requested:</strong>{" "}
+                            <strong>Navrhované:</strong>{" "}
                             {formatDate(request.preferred_at)} ·{" "}
                             {formatTime(request.preferred_at)}
                           </p>
@@ -208,7 +208,7 @@ export default async function TeacherSchedulePage() {
           )}
 
           <p className="mt-3 text-xs text-gray-400">
-            The original lesson stays confirmed until a change is accepted.
+            Pôvodný termín zostáva potvrdený, kým nebude zmena schválená.
           </p>
         </section>
 
@@ -217,7 +217,7 @@ export default async function TeacherSchedulePage() {
             <div>
               <p className="text-sm text-gray-400">Upcoming</p>
               <h2 className="mt-1 text-xl font-semibold">
-                Scheduled lessons
+                Naplánované hodiny
               </h2>
             </div>
 
@@ -230,7 +230,7 @@ export default async function TeacherSchedulePage() {
                 Žiadne naplánované hodiny
               </p>
               <p className="mt-1 text-sm text-gray-400">
-                Your confirmed lessons will appear here.
+                Vaše potvrdené hodiny sa zobrazia tu.
               </p>
             </div>
           ) : (
@@ -288,7 +288,7 @@ export default async function TeacherSchedulePage() {
                                 : "text-gray-400"
                             }`}
                           >
-                            {lesson.language || "Language"} ·{" "}
+                            {lesson.language || "Jazyk"} ·{" "}
                             {lesson.duration_minutes || 60} min
                           </p>
 
@@ -326,7 +326,7 @@ export default async function TeacherSchedulePage() {
                               : "bg-gray-100 text-gray-400"
                           }`}
                         >
-                          Meet link not added
+                          Odkaz na Meet zatiaľ nie je pridaný
                         </span>
                       )}
                     </div>

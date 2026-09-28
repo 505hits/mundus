@@ -8,9 +8,10 @@ import {
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { formatLanguage, formatLessonStatus } from "@/lib/portalLabels";
 
 function formatDate(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -20,7 +21,7 @@ function formatDate(value: string) {
 }
 
 function formatTime(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -42,7 +43,7 @@ export default async function LessonsPage() {
 
   const allLessons = lessons ?? [];
 
-  const upcomingLessons = allLessons.filter(
+  const naplánovanýchLessons = allLessons.filter(
     (lesson) =>
       (lesson.status === "scheduled" ||
         lesson.status === "rescheduled") &&
@@ -74,30 +75,29 @@ export default async function LessonsPage() {
 
         <section className="mt-7">
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
-            My learning
+            Moje učenie
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            My lessons
+            Moje hodiny
           </h1>
 
           <p className="mt-2 text-gray-500">
-            View your upcoming lessons, join your class and request
-            schedule changes.
+            Pozrite si najbližšie hodiny, pripojte sa na hodinu alebo požiadajte o zmenu termínu.
           </p>
         </section>
 
         <section className="mt-8">
           <div className="flex items-end justify-between gap-4">
             <div>
-              <p className="text-sm text-gray-400">Schedule</p>
+              <p className="text-sm text-gray-400">Rozvrh</p>
               <h2 className="mt-1 text-xl font-semibold">
-                Upcoming lessons
+                Najbližšie hodiny
               </h2>
             </div>
 
             <span className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold shadow-sm">
-              {upcomingLessons.length} upcoming
+              {upcomingLessons.length} naplánovaných
             </span>
           </div>
 
@@ -116,7 +116,7 @@ export default async function LessonsPage() {
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
                         <h3 className="text-xl font-semibold">
-                          {lesson.language || "Language"} lesson
+                          {formatLanguage(lesson.language)} hodina
                         </h3>
 
                         {index === 0 && (
@@ -174,7 +174,7 @@ export default async function LessonsPage() {
                           }`}
                         >
                           <Video size={17} />
-                          Join lesson
+                          Pripojiť sa na hodinu
                         </a>
                       ) : (
                         <button
@@ -186,7 +186,7 @@ export default async function LessonsPage() {
                           }`}
                         >
                           <Video size={17} />
-                          Meet link pending
+                          Odkaz na hodinu zatiaľ nie je pridaný
                         </button>
                       )}
 
@@ -199,7 +199,7 @@ export default async function LessonsPage() {
                         }`}
                       >
                         <RefreshCw size={16} />
-                        Request a change
+                        Požiadať o zmenu
                       </Link>
                     </div>
                   </div>
@@ -214,11 +214,11 @@ export default async function LessonsPage() {
               />
 
               <h3 className="mt-4 font-semibold">
-                No upcoming lessons
+                No naplánovaných lessons
               </h3>
 
               <p className="mt-2 text-sm text-gray-500">
-                Your next confirmed lesson will appear here.
+                Vaša najbližšia potvrdená hodina sa zobrazí tu.
               </p>
             </div>
           )}
@@ -226,9 +226,9 @@ export default async function LessonsPage() {
 
         <section className="mt-10">
           <div>
-            <p className="text-sm text-gray-400">History</p>
+            <p className="text-sm text-gray-400">História</p>
             <h2 className="mt-1 text-xl font-semibold">
-              Previous lessons
+              Predchádzajúce hodiny
             </h2>
           </div>
 
@@ -251,14 +251,14 @@ export default async function LessonsPage() {
                   </div>
 
                   <span className="w-fit rounded-full bg-[#eef3ef] px-3 py-1.5 text-xs font-semibold capitalize">
-                    {lesson.status}
+                    {formatLessonStatus(lesson.status)}
                   </span>
                 </div>
               ))}
             </div>
           ) : (
             <p className="mt-5 rounded-3xl border border-black/5 bg-white p-6 text-sm text-gray-500 shadow-sm">
-              Your lesson history will appear here.
+              História vašich hodín sa zobrazí tu.
             </p>
           )}
         </section>

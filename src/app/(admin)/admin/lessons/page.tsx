@@ -30,7 +30,7 @@ function name(profile: { full_name?: string | null; email?: string | null } | nu
   return profile?.full_name?.trim() || profile?.email || "Unknown";
 }
 
-export default async function AdminLessonsPage() {
+export default async function AdminHodinyPage() {
   await requireRole("admin");
   const supabase = await createSupabaseServerClient();
 
@@ -61,8 +61,8 @@ export default async function AdminLessonsPage() {
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">Lessons</p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Lesson management</h1>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">Hodiny</p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Správa hodín</h1>
           <p className="mt-2 text-gray-500">Real lessons across Mundus students and teachers.</p>
         </section>
 
@@ -81,7 +81,7 @@ export default async function AdminLessonsPage() {
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CheckCircle2 size={20} className="text-[#9a8049]" />
             <p className="mt-4 text-3xl font-semibold">{completed.length}</p>
-            <p className="mt-1 text-sm text-gray-500">Completed in loaded history</p>
+            <p className="mt-1 text-sm text-gray-500">Dokončená in loaded history</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <AlertCircle size={20} className="text-[#9a8049]" />
@@ -102,10 +102,10 @@ export default async function AdminLessonsPage() {
                   <div key={lesson.id} className="grid gap-4 px-5 py-5 lg:grid-cols-[1.2fr_1fr_0.9fr_0.7fr_0.9fr_0.5fr] lg:items-center lg:px-6">
                     <div>
                       <p className="font-semibold">{name(student)}</p>
-                      <p className="mt-1 text-sm text-gray-400">{lesson.language || "Language"}</p>
+                      <p className="mt-1 text-sm text-gray-400">{lesson.language || "Jazyk"}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 lg:hidden">Teacher</p>
+                      <p className="text-xs text-gray-400 lg:hidden">Lektor</p>
                       <p className="mt-1 text-sm font-medium lg:mt-0">{name(teacher)}</p>
                     </div>
                     <div>

@@ -36,7 +36,7 @@ export default function LessonReportForm({
   const [homework, setDomáca úloha] = useState(
     existingReport?.homework ?? ""
   );
-  const [nextZameranie, setNajbližšiaZameranie] = useState(
+  const [nextFocus, setNextFocus] = useState(
     existingReport?.next_focus ?? ""
   );
   const [privateNote, setPrivateNote] = useState(
@@ -76,7 +76,7 @@ export default function LessonReportForm({
           progress: progress || null,
           student_note: studentNote.trim() || null,
           homework: homework.trim() || null,
-          next_focus: nextZameranie.trim() || null,
+          next_focus: nextFocus.trim() || null,
           private_teacher_note: privateNote.trim() || null,
           updated_at: new Date().toISOString(),
         },
@@ -137,16 +137,16 @@ export default function LessonReportForm({
           <input
             value={homework}
             onChange={(event) => setDomáca úloha(event.target.value)}
-            placeholder="Optional"
+            placeholder="Voliteľné"
             className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#183f38]"
           />
         </label>
 
         <label className="text-sm font-medium">
-          Najbližšia focus
+          Ďalšie zameranie
           <input
-            value={nextZameranie}
-            onChange={(event) => setNajbližšiaZameranie(event.target.value)}
+            value={nextFocus}
+            onChange={(event) => setNextFocus(event.target.value)}
             placeholder="e.g. Speaking confidence"
             className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#183f38]"
           />

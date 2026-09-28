@@ -9,28 +9,26 @@ export default function PendingApprovalPage() {
         </div>
 
         <p className="mt-6 text-sm font-semibold uppercase tracking-[0.16em] text-[#8a7445]">
-          Mundus Teacher Portal
+          Portál lektora Mundus
         </p>
 
         <h1 className="mt-3 text-3xl font-semibold tracking-tight text-[#163f3a]">
-          Your account is being reviewed
+          Váš účet čaká na schválenie
         </h1>
 
         <p className="mt-4 leading-7 text-gray-500">
-          Your teacher account has been created successfully. Mundus Languages
-          needs to approve it before you can access the Teacher Portal.
+          Váš lektorský účet bol úspešne vytvorený. Pred vstupom do portálu ho ešte musí schváliť Mundus Languages.
         </p>
 
         <p className="mt-3 text-sm leading-6 text-gray-400">
-          You&apos;ll be able to access your students, lessons and teaching
-          tools once your account is approved.
+          Po schválení účtu získate prístup k svojim študentom, hodinám a nástrojom pre výučbu.
         </p>
 
         <Link
           href="/"
           className="mt-8 inline-flex rounded-2xl bg-[#163f3a] px-6 py-3.5 font-semibold text-white transition hover:bg-[#12342f]"
         >
-          Back to Mundus Languages
+          Späť na Mundus Languages
         </Link>
       </div>
     </main>

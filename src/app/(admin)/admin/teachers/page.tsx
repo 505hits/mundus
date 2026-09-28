@@ -147,7 +147,7 @@ export default async function AdminTeachersPage() {
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 lg:hidden">Email</p>
+                      <p className="text-xs text-gray-400 lg:hidden">E-mail</p>
                       <p className="mt-1 truncate text-sm lg:mt-0">
                         {teacher.email || "—"}
                       </p>

@@ -54,7 +54,7 @@ export default function PortalNav() {
           <nav className="mt-3 space-y-1">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const active = pathname === item.href;
+              const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
 
               return (
                 <Link
@@ -90,7 +90,7 @@ export default function PortalNav() {
         <div className="mx-auto grid max-w-lg grid-cols-4">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const active = pathname === item.href;
+            const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
 
             return (
               <Link

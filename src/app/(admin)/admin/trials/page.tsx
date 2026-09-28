@@ -69,7 +69,7 @@ export default async function AdminÚvodné hodinyPage() {
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CalendarDays size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{upcoming.length}</p>
-            <p className="mt-1 text-sm text-gray-500">Najbližšie trials</p>
+            <p className="mt-1 text-sm text-gray-500">Upcoming trials</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CheckCircle2 size={20} className="text-[#2F3AA2]" />
@@ -84,7 +84,7 @@ export default async function AdminÚvodné hodinyPage() {
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <UserPlus size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{converted.length}</p>
-            <p className="mt-1 text-sm text-gray-500">Aktívni študenti after trial</p>
+            <p className="mt-1 text-sm text-gray-500">Active students after trial</p>
           </div>
         </section>
 

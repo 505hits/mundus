@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import LogoutButton from "@/components/LogoutButton";
 import {
   BookOpen,
   ChartNoAxesColumnIncreasing,
@@ -73,7 +74,8 @@ export default function PortalNav() {
             })}
           </nav>
 
-          <div className="mt-auto rounded-2xl bg-[#f4f6f3] p-4">
+          <div className="mt-auto space-y-3">
+            <div className="rounded-2xl bg-[#f4f6f3] p-4">
             <p className="text-sm font-semibold text-[#0a0a0f]">
               Need help?
             </p>
@@ -82,10 +84,13 @@ export default function PortalNav() {
               Contact Mundus Languages and we&apos;ll be happy to help.
             </p>
           </div>
+            <LogoutButton />
+          </div>
         </div>
       </aside>
 
       {/* Mobile bottom navigation */}
+      <div className="fixed right-4 top-4 z-50 lg:hidden"><LogoutButton compact /></div>
       <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-black/5 bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
         <div className="mx-auto grid max-w-lg grid-cols-4">
           {navItems.map((item) => {

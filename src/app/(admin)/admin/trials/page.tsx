@@ -3,7 +3,7 @@ import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 function formatDateTime(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     day: "numeric",
     month: "short",
     hour: "2-digit",
@@ -17,7 +17,7 @@ function displayName(profile: { full_name?: string | null; email?: string | null
   return profile?.full_name?.trim() || profile?.email || fallback;
 }
 
-export default async function AdminTrialsPage() {
+export default async function AdminÚvodné hodinyPage() {
   await requireRole("admin");
   const supabase = await createSupabaseServerClient();
 
@@ -52,8 +52,8 @@ export default async function AdminTrialsPage() {
     <main className="min-h-screen bg-[#f7f8f5] text-[#0a0a0f]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">Trials</p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Trial lessons</h1>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">Úvodné hodiny</p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Úvodné hodiny</h1>
           <p className="mt-2 max-w-2xl text-gray-500">
             Live trial lesson overview from the Mundus lesson schedule.
           </p>
@@ -61,7 +61,7 @@ export default async function AdminTrialsPage() {
 
         {error && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            We couldn&apos;t load trial lessons. Please refresh and try again.
+            Nepodarilo sa načítať úvodné hodiny. Obnovte stránku a skúste to znova.
           </div>
         )}
 
@@ -74,12 +74,12 @@ export default async function AdminTrialsPage() {
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CheckCircle2 size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{completed.length}</p>
-            <p className="mt-1 text-sm text-gray-500">Completed trials</p>
+            <p className="mt-1 text-sm text-gray-500">Dokončené úvodné hodiny</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <AlertCircle size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{followUp.length}</p>
-            <p className="mt-1 text-sm text-gray-500">Follow-up needed</p>
+            <p className="mt-1 text-sm text-gray-500">Treba sa ozvať</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <UserPlus size={20} className="text-[#2F3AA2]" />
@@ -109,13 +109,13 @@ export default async function AdminTrialsPage() {
                   <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
-                        <h2 className="font-semibold">{displayName(student, "Student")}</h2>
+                        <h2 className="font-semibold">{displayName(student, "Študent")}</h2>
                         <span className={`rounded-full px-2.5 py-1 text-xs font-semibold capitalize ${
                           needsFollowUp
                             ? "bg-white text-[#2F3AA2]"
                             : "bg-[#eef0ff] text-[#2F3AA2]"
                         }`}>
-                          {needsFollowUp ? "Follow-up needed" : trial.status.replaceAll("_", " ")}
+                          {needsFollowUp ? "Treba sa ozvať" : trial.status.replaceAll("_", " ")}
                         </span>
                       </div>
                       <p className="mt-2 text-sm text-gray-500">{trial.language || "Language not set"}</p>
@@ -124,11 +124,11 @@ export default async function AdminTrialsPage() {
 
                     <div className="grid gap-4 sm:grid-cols-2 lg:flex lg:items-center lg:gap-8">
                       <div>
-                        <p className="text-xs text-gray-400">Teacher</p>
+                        <p className="text-xs text-gray-400">Lektor</p>
                         <p className="mt-1 text-sm font-medium">{displayName(teacher, "Not assigned")}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-400">Trial lesson</p>
+                        <p className="text-xs text-gray-400">Úvodná hodina</p>
                         <p className="mt-1 flex items-center gap-2 text-sm font-medium">
                           <Clock3 size={15} />
                           {formatDateTime(trial.scheduled_at)}

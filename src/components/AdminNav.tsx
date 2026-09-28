@@ -54,12 +54,12 @@ export default function AdminNav() {
         <div className="px-6 py-7">
           <Link
             href="/admin/dashboard"
-            className="text-xl font-semibold tracking-tight text-[#183f38]"
+            className="text-xl font-semibold tracking-tight text-[#0a0a0f]"
           >
             Mundus
           </Link>
 
-          <p className="mt-1 text-xs font-medium uppercase tracking-[0.16em] text-[#9a8049]">
+          <p className="mt-1 text-xs font-medium uppercase tracking-[0.16em] text-[#2F3AA2]">
             Admin Portal
           </p>
         </div>
@@ -80,8 +80,8 @@ export default function AdminNav() {
                   href={item.href}
                   className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition ${
                     active
-                      ? "bg-[#183f38] text-white"
-                      : "text-gray-500 hover:bg-[#f3f5f2] hover:text-[#183f38]"
+                      ? "bg-[#0a0a0f] text-white"
+                      : "text-gray-500 hover:bg-[#f3f5f2] hover:text-[#0a0a0f]"
                   }`}
                 >
                   <Icon size={18} />
@@ -94,7 +94,7 @@ export default function AdminNav() {
 
         <div className="border-t border-black/5 p-5">
           <div className="rounded-2xl bg-[#f7f8f5] p-4">
-            <p className="text-sm font-semibold text-[#183f38]">
+            <p className="text-sm font-semibold text-[#0a0a0f]">
               Anikó
             </p>
             <p className="mt-1 text-xs text-gray-400">
@@ -120,7 +120,7 @@ export default function AdminNav() {
                 key={item.name}
                 href={item.href}
                 className={`flex min-w-0 flex-1 flex-col items-center gap-1 rounded-xl px-1 py-2 text-[10px] font-medium ${
-                  active ? "text-[#183f38]" : "text-gray-400"
+                  active ? "text-[#0a0a0f]" : "text-gray-400"
                 }`}
               >
                 <Icon size={18} />

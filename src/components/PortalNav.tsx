@@ -12,22 +12,22 @@ import {
 
 const navItems = [
   {
-    label: "Home",
+    label: "Domov",
     href: "/dashboard",
     icon: Home,
   },
   {
-    label: "Lessons",
+    label: "Hodiny",
     href: "/lessons",
     icon: GraduationCap,
   },
   {
-    label: "Learning",
+    label: "Učenie",
     href: "/learning",
     icon: BookOpen,
   },
   {
-    label: "Progress",
+    label: "Pokrok",
     href: "/progress",
     icon: ChartNoAxesColumnIncreasing,
   },
@@ -49,7 +49,7 @@ export default function PortalNav() {
           </Link>
 
           <p className="mt-6 px-3 text-xs font-semibold uppercase tracking-[0.14em] text-gray-400">
-            Learning Portal
+            Vzdelávací portál
           </p>
 
           <nav className="mt-3 space-y-1">
@@ -77,11 +77,11 @@ export default function PortalNav() {
           <div className="mt-auto space-y-3">
             <div className="rounded-2xl bg-[#f4f6f3] p-4">
             <p className="text-sm font-semibold text-[#0a0a0f]">
-              Need help?
+              Potrebujete pomoc?
             </p>
 
             <p className="mt-1 text-xs leading-5 text-gray-500">
-              Contact Mundus Languages and we&apos;ll be happy to help.
+              Kontaktujte Mundus Languages a radi vám pomôžeme.
             </p>
           </div>
             <LogoutButton />

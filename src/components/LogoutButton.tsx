@@ -32,7 +32,7 @@ export default function LogoutButton({
       }
     >
       <LogOut size={compact ? 15 : 17} />
-      {loading ? "Signing out..." : "Sign out"}
+      {loading ? "Odhlasujem..." : "Odhlásiť sa"}
     </button>
   );
 }

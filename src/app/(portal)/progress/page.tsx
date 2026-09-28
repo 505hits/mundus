@@ -86,7 +86,7 @@ export default async function ProgressPage() {
     "Lektor doplní ďalšie zameranie po hodine.";
 
   function formatDate(value: string) {
-    return new Intl.DateTimeFormat("en-GB", {
+    return new Intl.DateTimeFormat("sk-SK", {
       day: "numeric",
       month: "long",
       year: "numeric",
@@ -103,9 +103,7 @@ export default async function ProgressPage() {
             href="/dashboard"
             className="flex items-center gap-2 text-sm font-medium transition hover:text-[#9a8049]"
           >
-            <ArrowLeft size={17} />
-            Dashboard
-          </Link>
+            <ArrowLeft size={17} />Prehľad</Link>
 
           <p className="text-sm font-semibold">
             Vzdelávací portál Mundus
@@ -305,9 +303,7 @@ export default async function ProgressPage() {
 
               {latestReport.homework && (
                 <div className="mt-6 rounded-2xl bg-[#f7f8f5] p-5">
-                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#9a8049]">
-                    Homework
-                  </p>
+                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#9a8049]">Domáca úloha</p>
 
                   <p className="mt-2 text-sm leading-6 text-gray-600">
                     {latestReport.homework}
@@ -363,9 +359,7 @@ export default async function ProgressPage() {
                       </p>
                     </div>
 
-                    <span className="rounded-full bg-[#eef3ef] px-3 py-1.5 text-xs font-semibold text-[#527064]">
-                      Completed
-                    </span>
+                    <span className="rounded-full bg-[#eef3ef] px-3 py-1.5 text-xs font-semibold text-[#527064]">Dokončená</span>
                   </div>
                 )
               )}

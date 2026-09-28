@@ -10,7 +10,7 @@ import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 function formatTime(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -20,6 +20,20 @@ function formatTime(value: string) {
 
 function getName(profile: { full_name?: string | null; email?: string | null } | null | undefined, fallback: string) {
   return profile?.full_name?.trim() || profile?.email || fallback;
+}
+
+function lessonStatusLabel(status: string) {
+  const labels: Record<string, string> = {
+    scheduled: "Naplánovaná",
+    rescheduled: "Presunutá",
+    completed: "Dokončená",
+    student_no_show: "Študent sa nedostavil",
+    teacher_cancelled: "Zrušená lektorom",
+    student_cancelled: "Zrušená študentom",
+    late_cancellation: "Neskoré zrušenie",
+  };
+
+  return labels[status] || status.replaceAll("_", " ");
 }
 
 export default async function AdminDashboardPage() {
@@ -87,7 +101,7 @@ export default async function AdminDashboardPage() {
   const pendingRequests = requests?.length ?? 0;
 
   const firstName =
-    profile?.full_name?.trim()?.split(/\s+/)[0] || "Admin";
+    profile?.full_name?.trim()?.split(/\s+/)[0] || "Administrátor";
 
   return (
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
@@ -145,7 +159,7 @@ export default async function AdminDashboardPage() {
 
             <div className="mt-5 space-y-3">
               <div className="rounded-2xl bg-[#faf8f2] p-4">
-                <p className="font-medium">{lowBalíčky.length} package{lowBalíčky.length === 1 ? "" : "s"} with 1–2 lessons left</p>
+                <p className="font-medium">{lowBalíčky.length} {lowBalíčky.length === 1 ? "balíček s 1–2 zostávajúcimi hodinami" : "balíčky s 1–2 zostávajúcimi hodinami"}</p>
                 <p className="mt-1 text-sm text-gray-500">Odporúčame kontaktovať študenta ohľadom pokračovania.</p>
               </div>
               <div className="rounded-2xl bg-[#faf8f2] p-4">
@@ -172,7 +186,7 @@ export default async function AdminDashboardPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-400">
-                {new Intl.DateTimeFormat("en-GB", {
+                {new Intl.DateTimeFormat("sk-SK", {
                   day: "numeric",
                   month: "long",
                   timeZone: "Europe/Bratislava",
@@ -201,7 +215,7 @@ export default async function AdminDashboardPage() {
                     <div className="flex items-center gap-3">
                       <span className="font-semibold">{formatTime(lesson.scheduled_at)}</span>
                       <span className="rounded-full bg-[#eef3ef] px-3 py-1 text-xs font-semibold capitalize text-[#527064]">
-                        {lesson.status}
+                        {lessonStatusLabel(lesson.status)}
                       </span>
                     </div>
                   </div>

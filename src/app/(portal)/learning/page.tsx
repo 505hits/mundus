@@ -161,7 +161,7 @@ export default async function UčeniePage() {
                       </p>
 
                       <p className="mt-3 text-xs text-gray-400">
-                        Updated {formatDate(report.updated_at)}
+                        Aktualizované {formatDate(report.updated_at)}
                       </p>
                     </div>
                   </div>

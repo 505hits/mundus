@@ -9,7 +9,7 @@ import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 function formatDate(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     day: "numeric",
     month: "short",
     timeZone: "Europe/Bratislava",
@@ -17,7 +17,7 @@ function formatDate(value: string) {
 }
 
 function formatTime(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -153,9 +153,7 @@ export default async function TeacherStudentsPage() {
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
-            Students
-          </p>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">Študenti</p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
             Moji študenti
@@ -233,9 +231,7 @@ export default async function TeacherStudentsPage() {
                             {student.name}
                           </h2>
 
-                          <span className="rounded-full bg-[#eef3ef] px-2.5 py-1 text-xs font-semibold text-[#527064]">
-                            Active
-                          </span>
+                          <span className="rounded-full bg-[#eef3ef] px-2.5 py-1 text-xs font-semibold text-[#527064]">Aktívny</span>
                         </div>
 
                         <p className="mt-1 text-sm text-gray-500">

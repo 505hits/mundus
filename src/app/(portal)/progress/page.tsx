@@ -10,7 +10,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseServerClient } from "@/lib/supabase/server";\nimport { formatLanguage, formatLessonType } from "@/lib/portalLabels";
 
 export default async function ProgressPage() {
   const { user } = await requireRole("student");
@@ -137,7 +137,7 @@ export default async function ProgressPage() {
 
               <div className="mt-3 flex items-end gap-3">
                 <span className="text-4xl font-semibold">
-                  {language}
+                  {formatLanguage(language)}
                 </span>
               </div>
 

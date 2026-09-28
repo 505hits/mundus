@@ -43,7 +43,7 @@ export default async function LessonsPage() {
 
   const allLessons = lessons ?? [];
 
-  const naplánovanýchLessons = allLessons.filter(
+  const upcomingLessons = allLessons.filter(
     (lesson) =>
       (lesson.status === "scheduled" ||
         lesson.status === "rescheduled") &&

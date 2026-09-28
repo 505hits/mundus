@@ -11,7 +11,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import RequestChangeForm from "./RequestChangeForm";
 
 function formatDate(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -21,7 +21,7 @@ function formatDate(value: string) {
 }
 
 function formatTime(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -88,9 +88,7 @@ export default async function RequestChangePage({
         </Link>
 
         <section className="mt-7">
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
-            Schedule
-          </p>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">Rozvrh</p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
             Požiadať o zmenu

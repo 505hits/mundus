@@ -5,7 +5,7 @@ import {
   CalendarDays,
   CheckCircle2,
   Clock3,
-  MessageCircle,
+  SprávaCircle,
   Target,
   TrendingUp,
   Video,
@@ -62,8 +62,8 @@ export default async function TeacherStudentPage({
 
   const supabase = await createSupabaseServerClient();
 
-  const { data: lessons } = await supabase
-    .from("lessons")
+  const { data: hodín } = await supabase
+    .from("hodín")
     .select(`
       id,
       student_id,
@@ -74,7 +74,7 @@ export default async function TeacherStudentPage({
       language,
       lesson_type,
       meet_link,
-      student:profiles!lessons_student_id_fkey (
+      student:profiles!hodín_student_id_fkey (
         full_name,
         email
       )
@@ -89,11 +89,11 @@ export default async function TeacherStudentPage({
    *
    * We then use the student_id for the complete student view.
    */
-  const studentId = lessons?.student_id;
+  const studentId = hodín?.student_id;
 
   if (!studentId) {
     const { data: studentLesson } = await supabase
-      .from("lessons")
+      .from("hodín")
       .select("student_id")
       .eq("student_id", id)
       .eq("teacher_id", user.id)
@@ -121,7 +121,7 @@ async function renderStudentPage(
 ) {
   const [
     profileResult,
-    lessonsResult,
+    hodínResult,
     packagesResult,
   ] = await Promise.all([
     supabase
@@ -131,7 +131,7 @@ async function renderStudentPage(
       .single(),
 
     supabase
-      .from("lessons")
+      .from("hodín")
       .select(`
         id,
         scheduled_at,
@@ -148,14 +148,14 @@ async function renderStudentPage(
     supabase
       .from("lesson_packages")
       .select(
-        "id,total_lessons,used_lessons,remaining_lessons,status"
+        "id,total_hodín,used_hodín,remaining_hodín,status"
       )
       .eq("student_id", studentId)
       .eq("status", "active"),
   ]);
 
   const profile = profileResult.data;
-  const lessons = lessonsResult.data ?? [];
+  const hodín = hodínResult.data ?? [];
   const packages = packagesResult.data ?? [];
 
   if (!profile) {
@@ -164,11 +164,11 @@ async function renderStudentPage(
 
   const studentName = getName(profile);
 
-  const completedLessons = lessons.filter(
+  const completedLessons = hodín.filter(
     (lesson) => lesson.status === "completed"
   );
 
-  const upcomingLessons = lessons
+  const upcomingLessons = hodín
     .filter(
       (lesson) =>
         ["scheduled", "rescheduled"].includes(lesson.status) &&
@@ -182,17 +182,17 @@ async function renderStudentPage(
 
   const nextLesson = upcomingLessons[0] ?? null;
 
-  const lessonsRemaining = packages.reduce(
-    (sum, pkg) => sum + (pkg.remaining_lessons ?? 0),
+  const hodínRemaining = packages.reduce(
+    (sum, pkg) => sum + (pkg.remaining_hodín ?? 0),
     0
   );
 
   const language = formatLanguage(
-    nextLesson?.language || lessons[0]?.language
+    nextLesson?.language || hodín[0]?.language
   );
 
   const lessonType = formatLessonType(
-    nextLesson?.lesson_type || lessons[0]?.lesson_type
+    nextLesson?.lesson_type || hodín[0]?.lesson_type
   );
 
   return (
@@ -255,7 +255,7 @@ async function renderStudentPage(
             </p>
 
             <p className="mt-1 text-2xl font-semibold">
-              {lessonsRemaining}
+              {hodínRemaining}
             </p>
           </article>
 
@@ -377,7 +377,7 @@ async function renderStudentPage(
 
         <section className="mt-6 rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
           <div className="flex items-center gap-2">
-            <MessageCircle
+            <SprávaCircle
               size={20}
               className="text-[#9a8049]"
             />

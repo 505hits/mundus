@@ -9,7 +9,7 @@ import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 function formatDate(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -53,9 +53,7 @@ export default async function UčeniePage() {
 
       <div className="mx-auto max-w-6xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
-            Learning
-          </p>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">Učenie</p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
             Domáce úlohy a poznámky

@@ -91,7 +91,7 @@ export default async function TeacherStudentPage({
   const studentId = lessons?.student_id;
 
   if (!studentId) {
-    const { data: studentLesson } = await supabase
+    const { data: studentHodina } = await supabase
       .from("lessons")
       .select("student_id")
       .eq("student_id", id)
@@ -99,14 +99,14 @@ export default async function TeacherStudentPage({
       .limit(1)
       .maybeSingle();
 
-    if (!studentLesson?.student_id) {
+    if (!studentHodina?.student_id) {
       notFound();
     }
 
     return renderStudentPage(
       supabase,
       user.id,
-      studentLesson.student_id
+      studentHodina.student_id
     );
   }
 
@@ -163,11 +163,11 @@ async function renderStudentPage(
 
   const studentName = getName(profile);
 
-  const completedLessons = lessons.filter(
+  const completedHodinas = lessons.filter(
     (lesson) => lesson.status === "completed"
   );
 
-  const upcomingLessons = lessons
+  const upcomingHodinas = lessons
     .filter(
       (lesson) =>
         ["scheduled", "rescheduled"].includes(lesson.status) &&
@@ -179,7 +179,7 @@ async function renderStudentPage(
         new Date(b.scheduled_at).getTime()
     );
 
-  const nextLesson = upcomingLessons[0] ?? null;
+  const nextHodina = upcomingHodinas[0] ?? null;
 
   const lessonsRemaining = packages.reduce(
     (sum, pkg) => sum + (pkg.remaining_lessons ?? 0),
@@ -187,14 +187,14 @@ async function renderStudentPage(
   );
 
   const language =
-    nextLesson?.language ||
+    nextHodina?.language ||
     lessons[0]?.language ||
-    "Language";
+    "Jazyk";
 
   const lessonType =
-    nextLesson?.lesson_type ||
+    nextHodina?.lesson_type ||
     lessons[0]?.lesson_type ||
-    "Individual lesson";
+    "Individuálna hodina";
 
   return (
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
@@ -244,7 +244,7 @@ async function renderStudentPage(
             </p>
 
             <p className="mt-1 text-2xl font-semibold">
-              {completedLessons.length}
+              {completedHodinas.length}
             </p>
           </article>
 
@@ -268,14 +268,14 @@ async function renderStudentPage(
             </p>
 
             <p className="mt-1 text-sm font-semibold">
-              {completedLessons.length > 0
+              {completedHodinas.length > 0
                 ? "Prebiehajúca výučba"
                 : "Začíname"}
             </p>
           </article>
         </div>
 
-        {nextLesson && (
+        {nextHodina && (
           <section className="mt-6 rounded-3xl bg-[#183f38] p-6 text-white shadow-sm sm:p-8">
             <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
               <div>
@@ -284,26 +284,26 @@ async function renderStudentPage(
                 </p>
 
                 <h2 className="mt-2 text-2xl font-semibold">
-                  {nextLesson.language || language} ·{" "}
-                  {nextLesson.lesson_type || "Hodina"}
+                  {nextHodina.language || language} ·{" "}
+                  {nextHodina.lesson_type || "Hodina"}
                 </h2>
 
                 <div className="mt-4 flex flex-wrap gap-4 text-sm text-white/65">
                   <span className="flex items-center gap-2">
                     <CalendarDays size={16} />
-                    {formatDate(nextLesson.scheduled_at)}
+                    {formatDate(nextHodina.scheduled_at)}
                   </span>
 
                   <span className="flex items-center gap-2">
                     <Clock3 size={16} />
-                    {formatTime(nextLesson.scheduled_at)}
+                    {formatTime(nextHodina.scheduled_at)}
                   </span>
                 </div>
               </div>
 
-              {nextLesson.meet_link ? (
+              {nextHodina.meet_link ? (
                 <a
-                  href={nextLesson.meet_link}
+                  href={nextHodina.meet_link}
                   target="_blank"
                   rel="noreferrer"
                   className="flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 font-semibold text-[#183f38]"
@@ -331,7 +331,7 @@ async function renderStudentPage(
             </h2>
           </div>
 
-          {completedLessons.length === 0 ? (
+          {completedHodinas.length === 0 ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
               <p className="font-medium">
                 Zatiaľ žiadne dokončené hodiny
@@ -343,13 +343,13 @@ async function renderStudentPage(
             </div>
           ) : (
             <div className="mt-4 overflow-hidden rounded-3xl border border-black/5 bg-white shadow-sm">
-              {completedLessons.slice(0, 10).map(
+              {completedHodinas.slice(0, 10).map(
                 (lesson, index) => (
                   <div
                     key={lesson.id}
                     className={`flex items-center justify-between gap-4 p-5 sm:p-6 ${
                       index !==
-                      Math.min(completedLessons.length, 10) - 1
+                      Math.min(completedHodinas.length, 10) - 1
                         ? "border-b border-gray-100"
                         : ""
                     }`}
@@ -358,7 +358,7 @@ async function renderStudentPage(
                       <p className="font-semibold">
                         {lesson.lesson_type ||
                           lesson.language ||
-                          "Lesson"}
+                          "Hodina"}
                       </p>
 
                       <p className="mt-1 text-sm text-gray-400">
@@ -386,13 +386,13 @@ async function renderStudentPage(
             />
 
             <h2 className="text-lg font-semibold">
-              Student notes
+              Poznámky pre študenta
             </h2>
           </div>
 
           <div className="mt-5 rounded-2xl bg-[#f7f8f5] p-5">
             <p className="text-sm leading-6 text-gray-500">
-              Student notes will appear here once the teacher
+              Poznámky pre študenta will appear here once the teacher
               note system is connected.
             </p>
           </div>

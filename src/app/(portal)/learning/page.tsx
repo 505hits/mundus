@@ -17,7 +17,7 @@ function formatDate(value: string) {
   }).format(new Date(value));
 }
 
-export default async function LearningPage() {
+export default async function UčeniePage() {
   const { user } = await requireRole("student");
   const supabase = await createSupabaseServerClient();
 
@@ -32,7 +32,7 @@ export default async function LearningPage() {
   const homeworkReports = teacherReports.filter(
     (report) => report.homework?.trim()
   );
-  const latestHomework = homeworkReports[0] ?? null;
+  const latestDomáca úloha = homeworkReports[0] ?? null;
   const latestReport = teacherReports[0] ?? null;
 
   return (
@@ -54,7 +54,7 @@ export default async function LearningPage() {
       <div className="mx-auto max-w-6xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
-            Learning
+            Učenie
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -80,18 +80,18 @@ export default async function LearningPage() {
                 Aktuálna domáca úloha
               </p>
 
-              {latestHomework ? (
+              {latestDomáca úloha ? (
                 <>
                   <h2 className="mt-3 text-2xl font-semibold">
-                    {latestHomework.topic || "Vaša posledná úloha"}
+                    {latestDomáca úloha.topic || "Vaša posledná úloha"}
                   </h2>
 
                   <p className="mt-4 max-w-2xl leading-7 text-white/70">
-                    {latestHomework.homework}
+                    {latestDomáca úloha.homework}
                   </p>
 
                   <p className="mt-5 text-sm text-white/45">
-                    Aktualizované {formatDate(latestHomework.updated_at)}
+                    Updated {formatDate(latestDomáca úloha.updated_at)}
                   </p>
                 </>
               ) : (
@@ -101,7 +101,7 @@ export default async function LearningPage() {
                   </h2>
 
                   <p className="mt-4 max-w-xl leading-7 text-white/60">
-                    Homework from your teacher will appear here after a
+                    Domáca úloha from your teacher will appear here after a
                     lesson report is saved.
                   </p>
                 </>
@@ -121,7 +121,7 @@ export default async function LearningPage() {
             </div>
 
             <div>
-              <p className="text-sm text-gray-400">Najbližšia focus</p>
+              <p className="text-sm text-gray-400">Na čo sa zamerať ďalej</p>
 
               <h2 className="mt-1 text-xl font-semibold">
                 {latestReport?.next_focus?.trim() ||
@@ -157,7 +157,7 @@ export default async function LearningPage() {
 
                     <div>
                       <p className="font-semibold">
-                        {report.topic || "Homework"}
+                        {report.topic || "Domáca úloha"}
                       </p>
 
                       <p className="mt-2 text-sm leading-6 text-gray-600">
@@ -165,7 +165,7 @@ export default async function LearningPage() {
                       </p>
 
                       <p className="mt-3 text-xs text-gray-400">
-                        Aktualizované {formatDate(report.updated_at)}
+                        Updated {formatDate(report.updated_at)}
                       </p>
                     </div>
                   </div>

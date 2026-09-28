@@ -9,7 +9,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import LessonReportForm from "./LessonReportForm";
 
 function formatDate(value: string) {
-  return new Intl.DateTimeFormat("sk-SK", {
+  return new Intl.DateTimeFormat("en-GB", {
     day: "numeric",
     month: "long",
     timeZone: "Europe/Bratislava",
@@ -17,7 +17,7 @@ function formatDate(value: string) {
 }
 
 function formatTime(value: string) {
-  return new Intl.DateTimeFormat("sk-SK", {
+  return new Intl.DateTimeFormat("en-GB", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -34,7 +34,7 @@ function getStudentName(
   return profile?.full_name?.trim() || profile?.email || "Student";
 }
 
-export default async function TeacherZáznamyPage() {
+export default async function TeacherReportsPage() {
   const { user } = await requireRole("teacher");
   const supabase = await createSupabaseServerClient();
 
@@ -83,32 +83,34 @@ export default async function TeacherZáznamyPage() {
 
   const recentLessons = lessons ?? [];
 
-  const completedZáznamy = recentLessons.filter((lesson) =>
+  const completedReports = recentLessons.filter((lesson) =>
     reportMap.has(lesson.id)
   ).length;
 
-  const missingZáznamy = recentLessons.length - completedZáznamy;
+  const missingReports = recentLessons.length - completedReports;
 
   return (
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
-            Záznamy
+            Reports
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Záznamy z hodín
+            Lesson reports
           </h1>
 
           <p className="mt-2 max-w-2xl text-gray-500">
-            Po každej dokončenej hodine pridajte krátky záznam, aby mal študent prehľad o svojom napredovaní.
+            Add a short update after each completed lesson so the student&apos;s
+            learning journey stays up to date.
           </p>
         </section>
 
         {(lessonsError || reportsError) && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            Nepodarilo sa načítať všetky záznamy z hodín. Obnovte stránku alebo to skúste o chvíľu znova.
+            We couldn&apos;t load all lesson report data. Please refresh the
+            page or try again shortly.
           </div>
         )}
 
@@ -121,7 +123,7 @@ export default async function TeacherZáznamyPage() {
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
-              Posledné hodiny
+              Recent lessons
             </p>
           </div>
 
@@ -129,11 +131,11 @@ export default async function TeacherZáznamyPage() {
             <AlertCircle size={20} className="text-[#9a8049]" />
 
             <p className="mt-4 text-3xl font-semibold text-[#7e693a]">
-              {missingZáznamy}
+              {missingReports}
             </p>
 
             <p className="mt-1 text-sm text-[#7e693a]/70">
-              Záznamy needed
+              Reports needed
             </p>
           </div>
 
@@ -141,7 +143,7 @@ export default async function TeacherZáznamyPage() {
             <CheckCircle2 size={20} className="text-[#9a8049]" />
 
             <p className="mt-4 text-3xl font-semibold">
-              {completedZáznamy}
+              {completedReports}
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
@@ -156,17 +158,17 @@ export default async function TeacherZáznamyPage() {
           </p>
 
           <h2 className="mt-1 text-xl font-semibold">
-            Dokončené hodiny
+            Completed lessons
           </h2>
 
           {recentLessons.length === 0 ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
               <p className="font-medium">
-                Zatiaľ nemáte dokončené hodiny
+                No completed lessons yet
               </p>
 
               <p className="mt-1 text-sm text-gray-400">
-                Záznamy will become available after completed lessons.
+                Reports will become available after completed lessons.
               </p>
             </div>
           ) : (
@@ -203,7 +205,7 @@ export default async function TeacherZáznamyPage() {
                           >
                             {report
                               ? "Report completed"
-                              : "Treba doplniť záznam"}
+                              : "Report needed"}
                           </span>
                         </div>
 

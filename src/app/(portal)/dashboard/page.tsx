@@ -58,7 +58,7 @@ export default async function DashboardPage() {
     supabase
       .from("lessons")
       .select(
-        "id,scheduled_at,duration_minút,status,lesson_type,meet_link,language"
+        "id,scheduled_at,duration_minutes,status,lesson_type,meet_link,language"
       )
       .eq("student_id", user.id)
       .in("status", ["scheduled", "rescheduled"])
@@ -77,18 +77,18 @@ export default async function DashboardPage() {
   ]);
 
   const activePackage = packages?.[0] ?? null;
-  const najbližšíchLessons = lessons ?? [];
-  const nextLesson = najbližšíchLessons[0] ?? null;
+  const upcomingLessons = lessons ?? [];
+  const nextLesson = upcomingLessons[0] ?? null;
   const teacherReports = reports ?? [];
 
   const latestReport = teacherReports[0] ?? null;
 
-  const latestHomework =
+  const latestDomáca úloha =
     teacherReports.find(
       (report) => report.homework?.trim()
     )?.homework?.trim() || null;
 
-  const latestNajbližšiaFocus =
+  const latestNextFocus =
     latestReport?.next_focus?.trim() || null;
 
   const firstName =
@@ -156,7 +156,7 @@ export default async function DashboardPage() {
         </section>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-3">
-          {/* Najbližšia lesson */}
+          {/* Najbližšia hodina */}
           <section className="rounded-3xl bg-[#183f38] p-6 text-white shadow-sm lg:col-span-2 sm:p-8">
             <div className="flex items-start justify-between gap-4">
               <div>
@@ -184,7 +184,7 @@ export default async function DashboardPage() {
                     </div>
 
                     <p className="mt-4 text-sm text-white/60">
-                      {nextLesson.duration_minút || 60}-minute Mundus
+                      {nextLesson.duration_minutes || 60}-minute Mundus
                       lesson
                     </p>
                   </>
@@ -276,16 +276,16 @@ export default async function DashboardPage() {
         </div>
 
         <div className="mt-6 grid gap-6 md:grid-cols-2">
-          {/* Progress */}
+          {/* Pokrok */}
           <section className="rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-400">
-                  Progress
+                  Pokrok
                 </p>
 
                 <h2 className="mt-1 text-2xl font-semibold">
-                  Learning journey
+                  Učenie journey
                 </h2>
               </div>
 
@@ -294,11 +294,11 @@ export default async function DashboardPage() {
               </div>
             </div>
 
-            {latestNajbližšiaFocus ? (
+            {latestNextFocus ? (
               <p className="mt-5 text-sm leading-6 text-gray-500">
-                Najbližšia focus:{" "}
+                Na čo sa zamerať ďalej:{" "}
                 <span className="font-medium text-[#183f38]">
-                  {latestNajbližšiaFocus}
+                  {latestNextFocus}
                 </span>
               </p>
             ) : (
@@ -317,16 +317,16 @@ export default async function DashboardPage() {
             </Link>
           </section>
 
-          {/* Homework */}
+          {/* Domáca úloha */}
           <section className="rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="text-sm text-gray-400">
-                  Homework
+                  Domáca úloha
                 </p>
 
                 <h2 className="mt-1 text-xl font-semibold">
-                  {latestHomework
+                  {latestDomáca úloha
                     ? "Your latest homework"
                     : "Zatiaľ žiadne domáce úlohy"}
                 </h2>
@@ -338,8 +338,8 @@ export default async function DashboardPage() {
             </div>
 
             <p className="mt-5 text-sm leading-6 text-gray-500">
-              {latestHomework
-                ? latestHomework
+              {latestDomáca úloha
+                ? latestDomáca úloha
                 : "New assignments from your teacher will appear here after a lesson report is saved."}
             </p>
 
@@ -383,9 +383,9 @@ export default async function DashboardPage() {
             />
           </div>
 
-          {najbližšíchLessons.length > 0 ? (
+          {upcomingLessons.length > 0 ? (
             <div className="mt-6 divide-y divide-gray-100">
-              {najbližšíchLessons.map((lesson, index) => (
+              {upcomingLessons.map((lesson, index) => (
                 <div
                   key={lesson.id}
                   className="flex items-center justify-between gap-4 py-4"
@@ -403,7 +403,7 @@ export default async function DashboardPage() {
 
                   {index === 0 ? (
                     <span className="rounded-full bg-[#eef3ef] px-3 py-1.5 text-xs font-semibold">
-                      Najbližšia
+                      Next
                     </span>
                   ) : (
                     <ChevronRight
@@ -416,7 +416,7 @@ export default async function DashboardPage() {
             </div>
           ) : (
             <p className="mt-6 text-sm text-gray-500">
-              No najbližších lessons scheduled.
+              Nemáte naplánované ďalšie hodiny scheduled.
             </p>
           )}
         </section>

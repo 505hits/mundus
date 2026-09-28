@@ -12,7 +12,7 @@ import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 function formatDate(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -21,7 +21,7 @@ function formatDate(value: string) {
 }
 
 function formatTime(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -344,7 +344,7 @@ export default async function DashboardPage() {
             {latestReport?.updated_at && (
               <p className="mt-4 text-xs text-gray-400">
                 Aktualizované{" "}
-                {new Intl.DateTimeFormat("en-GB", {
+                {new Intl.DateTimeFormat("sk-SK", {
                   day: "numeric",
                   month: "long",
                   timeZone: "Europe/Bratislava",
@@ -366,9 +366,7 @@ export default async function DashboardPage() {
         <section className="mt-6 rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-400">
-                Schedule
-              </p>
+              <p className="text-sm text-gray-400">Rozvrh</p>
 
               <h2 className="mt-1 text-xl font-semibold">
                 Najbližšie hodiny
@@ -400,9 +398,7 @@ export default async function DashboardPage() {
                   </div>
 
                   {index === 0 ? (
-                    <span className="rounded-full bg-[#eef3ef] px-3 py-1.5 text-xs font-semibold">
-                      Next
-                    </span>
+                    <span className="rounded-full bg-[#eef3ef] px-3 py-1.5 text-xs font-semibold">Najbližšia</span>
                   ) : (
                     <ChevronRight
                       size={18}

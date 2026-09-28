@@ -1,6 +1,7 @@
 import { AlertCircle, CalendarDays, CheckCircle2, Clock3, UserPlus } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { formatLanguage } from "@/lib/portalLabels";
 
 function formatDateTime(value: string) {
   return new Intl.DateTimeFormat("sk-SK", {
@@ -131,7 +132,7 @@ export default async function AdminTrialsPage() {
                           {needsFollowUp ? "Treba sa ozvať" : formatTrialStatus(trial.status)}
                         </span>
                       </div>
-                      <p className="mt-2 text-sm text-gray-500">{trial.language || "Jazyk nezadaný"}</p>
+                      <p className="mt-2 text-sm text-gray-500">{trial.language ? formatLanguage(trial.language) : "Jazyk nezadaný"}</p>
                       {trial.notes && <p className="mt-1 text-sm text-gray-400">{trial.notes}</p>}
                     </div>
 

@@ -7,7 +7,7 @@ import {
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatLanguage } from "@/lib/portalLabels";
-import ScheduleRequestActions from "./ScheduleRequestActions";
+import RozvrhRequestActions from "./RozvrhRequestActions";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("sk-SK", {
@@ -40,14 +40,14 @@ function studentName(
   );
 }
 
-export default async function TeacherSchedulePage() {
+export default async function TeacherRozvrhPage() {
   const { user } = await requireRole("teacher");
   const supabase = await createSupabaseServerClient();
 
   const now = new Date().toISOString();
 
-  const { data: lessons } = await supabase
-    .from("lessons")
+  const { data: hodín } = await supabase
+    .from("hodín")
     .select(`
       id,
       student_id,
@@ -57,7 +57,7 @@ export default async function TeacherSchedulePage() {
       language,
       lesson_type,
       meet_link,
-      student:profiles!lessons_student_id_fkey (
+      student:profiles!hodín_student_id_fkey (
         full_name,
         email
       )
@@ -79,12 +79,12 @@ export default async function TeacherSchedulePage() {
       alternative_at,
       message,
       status,
-      lesson:lessons!schedule_change_requests_lesson_id_fkey (
+      lesson:hodín!schedule_change_requests_lesson_id_fkey (
         id,
         teacher_id,
         scheduled_at,
         language,
-        student:profiles!lessons_student_id_fkey (
+        student:profiles!hodín_student_id_fkey (
           full_name,
           email
         )
@@ -196,7 +196,7 @@ export default async function TeacherSchedulePage() {
                         )}
                       </div>
 
-                      <ScheduleRequestActions
+                      <RozvrhRequestActions
                         requestId={request.id}
                       />
                     </div>
@@ -223,7 +223,7 @@ export default async function TeacherSchedulePage() {
             <CalendarDays size={21} className="text-[#9a8049]" />
           </div>
 
-          {!lessons?.length ? (
+          {!hodín?.length ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
               <p className="font-medium">
                 Žiadne naplánované hodiny
@@ -234,7 +234,7 @@ export default async function TeacherSchedulePage() {
             </div>
           ) : (
             <div className="mt-4 space-y-3">
-              {lessons.map((lesson, index) => {
+              {hodín.map((lesson, index) => {
                 const student = Array.isArray(lesson.student)
                   ? lesson.student[0]
                   : lesson.student;

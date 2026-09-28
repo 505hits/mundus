@@ -30,7 +30,7 @@ export default async function AdminDashboardPage() {
     { data: students },
     { data: teachers },
     { data: lessons, error: lessonsError },
-    { data: balíčeks },
+    { data: packages },
     { data: requests },
   ] = await Promise.all([
     supabase.from("profiles").select("id").eq("role", "student").eq("status", "active"),
@@ -44,7 +44,7 @@ export default async function AdminDashboardPage() {
       `)
       .order("scheduled_at", { ascending: true }),
     supabase
-      .from("lesson_balíčeks")
+      .from("lesson_packages")
       .select("student_id,remaining_lessons,status")
       .eq("status", "active"),
     supabase
@@ -62,13 +62,13 @@ export default async function AdminDashboardPage() {
   });
   const todayKey = dateKey.format(now);
 
-  const todayHodiny = (lessons ?? []).filter(
+  const todayLessons = (lessons ?? []).filter(
     (lesson) =>
       ["scheduled", "rescheduled"].includes(lesson.status) &&
       dateKey.format(new Date(lesson.scheduled_at)) === todayKey
   );
 
-  const upcomingŠtudentIds = new Set(
+  const upcomingStudentIds = new Set(
     (lessons ?? [])
       .filter(
         (lesson) =>
@@ -78,11 +78,11 @@ export default async function AdminDashboardPage() {
       .map((lesson) => lesson.student_id)
   );
 
-  const lowBalíčky = (balíčeks ?? []).filter(
+  const lowBalíčky = (packages ?? []).filter(
     (pkg) => (pkg.remaining_lessons ?? 0) > 0 && (pkg.remaining_lessons ?? 0) <= 2
   );
   const noNajbližšie = (students ?? []).filter(
-    (student) => !upcomingŠtudentIds.has(student.id)
+    (student) => !upcomingStudentIds.has(student.id)
   ).length;
   const pendingRequests = requests?.length ?? 0;
 
@@ -123,7 +123,7 @@ export default async function AdminDashboardPage() {
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CalendarDays size={20} className="text-[#9a8049]" />
-            <p className="mt-4 text-3xl font-semibold">{todayHodiny.length}</p>
+            <p className="mt-4 text-3xl font-semibold">{todayLessons.length}</p>
             <p className="mt-1 text-sm text-gray-500">Dnešné hodiny</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
@@ -145,15 +145,15 @@ export default async function AdminDashboardPage() {
 
             <div className="mt-5 space-y-3">
               <div className="rounded-2xl bg-[#faf8f2] p-4">
-                <p className="font-medium">{lowBalíčky.length} balíček{lowBalíčky.length === 1 ? "" : "s"} s 1–2 zostávajúcimi hodinami</p>
+                <p className="font-medium">{lowBalíčky.length} package{lowBalíčky.length === 1 ? "" : "s"} with 1–2 lessons left</p>
                 <p className="mt-1 text-sm text-gray-500">Odporúčame kontaktovať študenta ohľadom pokračovania.</p>
               </div>
               <div className="rounded-2xl bg-[#faf8f2] p-4">
-                <p className="font-medium">{pendingRequests} čakajúca žiadosť o zmenu termínu{pendingRequests === 1 ? "" : "s"}</p>
+                <p className="font-medium">{pendingRequests} pending schedule request{pendingRequests === 1 ? "" : "s"}</p>
                 <p className="mt-1 text-sm text-gray-500">Čaká na kontrolu alebo odpoveď lektora.</p>
               </div>
               <div className="rounded-2xl bg-[#faf8f2] p-4">
-                <p className="font-medium">{noNajbližšie} aktívny študent{noNajbližšie === 1 ? "" : "s"} bez naplánovanej ďalšej hodiny</p>
+                <p className="font-medium">{noNajbližšie} active student{noNajbližšie === 1 ? "" : "s"} without an upcoming lesson</p>
                 <p className="mt-1 text-sm text-gray-500">Môže byť potrebné dohodnúť ďalší termín.</p>
               </div>
             </div>
@@ -164,7 +164,7 @@ export default async function AdminDashboardPage() {
             <p className="mt-5 text-sm text-white/50">Balíčky</p>
             <h2 className="mt-1 text-xl font-semibold">Prehľad pokračovania</h2>
             <p className="mt-7 text-4xl font-semibold">{lowBalíčky.length}</p>
-            <p className="mt-2 text-sm text-white/65">Aktívny balíčeks with only 1–2 lessons remaining</p>
+            <p className="mt-2 text-sm text-white/65">Aktívne balíčky s poslednými 1–2 hodinami</p>
           </section>
         </div>
 
@@ -183,19 +183,19 @@ export default async function AdminDashboardPage() {
             <BookOpen size={21} className="text-[#9a8049]" />
           </div>
 
-          {todayHodiny.length === 0 ? (
+          {todayLessons.length === 0 ? (
             <p className="mt-5 text-sm text-gray-500">Na dnes nie sú naplánované žiadne hodiny.</p>
           ) : (
             <div className="mt-5 divide-y divide-gray-100">
-              {todayHodiny.map((lesson) => {
+              {todayLessons.map((lesson) => {
                 const student = Array.isArray(lesson.student) ? lesson.student[0] : lesson.student;
                 const teacher = Array.isArray(lesson.teacher) ? lesson.teacher[0] : lesson.teacher;
                 return (
                   <div key={lesson.id} className="flex flex-col gap-3 py-4 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                      <p className="font-semibold">{getName(student, "Študent")}</p>
+                      <p className="font-semibold">{getName(student, "Student")}</p>
                       <p className="mt-1 text-sm text-gray-500">
-                        {lesson.language || "Jazyk"} · {getName(teacher, "Lektor")}
+                        {lesson.language || "Language"} · {getName(teacher, "Teacher")}
                       </p>
                     </div>
                     <div className="flex items-center gap-3">

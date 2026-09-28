@@ -12,12 +12,12 @@ import {
 
 const navItems = [
   {
-    label: "Home",
+    label: "Domov",
     href: "/teacher/dashboard",
     icon: Home,
   },
   {
-    label: "Schedule",
+    label: "Rozvrh",
     href: "/teacher/schedule",
     icon: CalendarDays,
   },
@@ -49,7 +49,7 @@ export default function TeacherNav() {
           </Link>
 
           <p className="mt-6 px-3 text-xs font-semibold uppercase tracking-[0.14em] text-gray-400">
-            Teacher Portal
+            Portál lektora
           </p>
 
           <nav className="mt-3 space-y-1">
@@ -81,11 +81,11 @@ export default function TeacherNav() {
           <div className="mt-auto space-y-3">
             <div className="rounded-2xl bg-[#f4f6f3] p-4">
             <p className="text-sm font-semibold text-[#0a0a0f]">
-              Teacher account
+              Účet lektora
             </p>
 
             <p className="mt-1 text-xs leading-5 text-gray-500">
-              Manage your lessons, students and lesson reports in one place.
+              Majte svoje hodiny, študentov a záznamy z hodín na jednom mieste.
             </p>
           </div>
             <LogoutButton />

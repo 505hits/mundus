@@ -107,7 +107,7 @@ export default async function RequestChangePage({
               </p>
 
               <h2 className="mt-2 text-xl font-semibold">
-                {lesson.language || "Jazyk"} lesson
+                {lesson.language || "Jazyk"} hodina
               </h2>
 
               <div className="mt-5 flex flex-wrap gap-4 text-sm text-white/75">
@@ -123,7 +123,7 @@ export default async function RequestChangePage({
               </div>
 
               <p className="mt-3 text-sm text-white/60">
-                {lesson.duration_minutes || 60} minutes
+                {lesson.duration_minutes || 60} minút
               </p>
             </div>
 

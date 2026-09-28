@@ -1,6 +1,6 @@
 import Link from "next/link";
 import {
-  ArrowZostáva,
+  ArrowLeft,
   BookOpen,
   FileText,
   Target,
@@ -9,7 +9,7 @@ import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 function formatDate(value: string) {
-  return new Intl.DateTimeFormat("sk-SK", {
+  return new Intl.DateTimeFormat("en-GB", {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -17,7 +17,7 @@ function formatDate(value: string) {
   }).format(new Date(value));
 }
 
-export default async function UčeniePage() {
+export default async function LearningPage() {
   const { user } = await requireRole("student");
   const supabase = await createSupabaseServerClient();
 
@@ -43,30 +43,33 @@ export default async function UčeniePage() {
             href="/dashboard"
             className="flex items-center gap-2 text-sm font-medium"
           >
-            <ArrowZostáva size={17} />
-            Prehľad
+            <ArrowLeft size={17} />
+            Dashboard
           </Link>
 
-          <p className="text-sm font-semibold">Vzdelávací portál Mundus</p>
+          <p className="text-sm font-semibold">Mundus Learning Portal</p>
         </div>
       </header>
 
       <div className="mx-auto max-w-6xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">Učenie</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
+            Learning
+          </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Domáce úlohy a poznámky
+            Homework & learning notes
           </h1>
 
           <p className="mt-2 max-w-2xl text-gray-500">
-            Domáce úlohy a odporúčania od vášho lektora Mundus.
+            Homework and learning guidance saved by your Mundus teacher.
           </p>
         </section>
 
         {error && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            Nepodarilo sa načítať údaje o učení. Obnovte stránku alebo to skúste o chvíľu znova.
+            We couldn&apos;t load your learning information. Please refresh
+            the page or try again shortly.
           </div>
         )}
 
@@ -74,13 +77,13 @@ export default async function UčeniePage() {
           <div className="flex items-start justify-between gap-5">
             <div>
               <p className="text-sm font-medium text-white/55">
-                Aktuálna domáca úloha
+                Current homework
               </p>
 
               {latestHomework ? (
                 <>
                   <h2 className="mt-3 text-2xl font-semibold">
-                    {latestHomework.topic || "Vaša posledná úloha"}
+                    {latestHomework.topic || "Your latest assignment"}
                   </h2>
 
                   <p className="mt-4 max-w-2xl leading-7 text-white/70">
@@ -88,17 +91,18 @@ export default async function UčeniePage() {
                   </p>
 
                   <p className="mt-5 text-sm text-white/45">
-                    Aktualizované {formatDate(latestHomework.updated_at)}
+                    Updated {formatDate(latestHomework.updated_at)}
                   </p>
                 </>
               ) : (
                 <>
                   <h2 className="mt-3 text-2xl font-semibold">
-                    Zatiaľ nemáte zadanú domácu úlohu
+                    No homework assigned
                   </h2>
 
                   <p className="mt-4 max-w-xl leading-7 text-white/60">
-                    Domáca úloha od lektora sa zobrazí po uložení záznamu z hodiny.
+                    Homework from your teacher will appear here after a
+                    lesson report is saved.
                   </p>
                 </>
               )}
@@ -117,11 +121,11 @@ export default async function UčeniePage() {
             </div>
 
             <div>
-              <p className="text-sm text-gray-400">Ďalšie zameranie</p>
+              <p className="text-sm text-gray-400">Next focus</p>
 
               <h2 className="mt-1 text-xl font-semibold">
                 {latestReport?.next_focus?.trim() ||
-                  "Tu sa zobrazí odporúčanie, na čo sa zamerať ďalej."}
+                  "Your next learning focus will appear here."}
               </h2>
 
               {latestReport?.student_note?.trim() && (
@@ -136,7 +140,7 @@ export default async function UčeniePage() {
         <section className="mt-10">
           <div className="flex items-center gap-2">
             <BookOpen size={20} className="text-[#9a8049]" />
-            <h2 className="text-xl font-semibold">História domácich úloh</h2>
+            <h2 className="text-xl font-semibold">Homework history</h2>
           </div>
 
           {homeworkReports.length > 0 ? (
@@ -153,7 +157,7 @@ export default async function UčeniePage() {
 
                     <div>
                       <p className="font-semibold">
-                        {report.topic || "Domáca úloha"}
+                        {report.topic || "Homework"}
                       </p>
 
                       <p className="mt-2 text-sm leading-6 text-gray-600">
@@ -161,7 +165,7 @@ export default async function UčeniePage() {
                       </p>
 
                       <p className="mt-3 text-xs text-gray-400">
-                        Aktualizované {formatDate(report.updated_at)}
+                        Updated {formatDate(report.updated_at)}
                       </p>
                     </div>
                   </div>
@@ -170,10 +174,10 @@ export default async function UčeniePage() {
             </div>
           ) : (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
-              <p className="font-medium">Zatiaľ žiadne domáce úlohy</p>
+              <p className="font-medium">No homework yet</p>
 
               <p className="mt-1 text-sm text-gray-400">
-                Úlohy od vášho lektora sa zobrazia tu.
+                Your teacher&apos;s assignments will appear here.
               </p>
             </div>
           )}

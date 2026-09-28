@@ -64,3 +64,18 @@ export function formatPackageStatus(value: string | null | undefined) {
 
   return labels[value.trim().toLowerCase()] || value.replaceAll("_", " ");
 }
+
+
+export function formatProgressLabel(value: string | null | undefined) {
+  if (!value) return "";
+
+  const labels: Record<string, string> = {
+    "good progress": "Dobrý pokrok",
+    "normal progress": "Bežný pokrok",
+    "needs attention": "Vyžaduje pozornosť",
+    "improving": "Zlepšuje sa",
+    "stable": "Stabilný pokrok",
+  };
+
+  return labels[value.trim().toLowerCase()] || value;
+}

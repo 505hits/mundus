@@ -45,8 +45,8 @@ export default async function TeacherRozvrhPage() {
 
   const now = new Date().toISOString();
 
-  const { data: hodín } = await supabase
-    .from("hodín")
+  const { data: lessons } = await supabase
+    .from("lessons")
     .select(`
       id,
       student_id,
@@ -56,7 +56,7 @@ export default async function TeacherRozvrhPage() {
       language,
       lesson_type,
       meet_link,
-      student:profiles!hodín_student_id_fkey (
+      student:profiles!lessons_student_id_fkey (
         full_name,
         email
       )
@@ -78,12 +78,12 @@ export default async function TeacherRozvrhPage() {
       alternative_at,
       message,
       status,
-      lesson:hodín!schedule_change_requests_lesson_id_fkey (
+      lesson:lessons!schedule_change_requests_lesson_id_fkey (
         id,
         teacher_id,
         scheduled_at,
         language,
-        student:profiles!hodín_student_id_fkey (
+        student:profiles!lessons_student_id_fkey (
           full_name,
           email
         )
@@ -113,11 +113,11 @@ export default async function TeacherRozvrhPage() {
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Your hodín
+            Vaše hodiny
           </h1>
 
           <p className="mt-2 text-gray-500">
-            Manage your upcoming hodín and student schedule requests.
+            Spravujte svoje najbližšie hodiny a žiadosti študentov o zmenu termínu.
           </p>
         </section>
 
@@ -215,27 +215,27 @@ export default async function TeacherRozvrhPage() {
         <section className="mt-10">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-400">Najbližšie</p>
+              <p className="text-sm text-gray-400">Upcoming</p>
               <h2 className="mt-1 text-xl font-semibold">
-                Rozvrhd hodín
+                Rozvrhd lessons
               </h2>
             </div>
 
             <CalendarDays size={21} className="text-[#9a8049]" />
           </div>
 
-          {!hodín?.length ? (
+          {!lessons?.length ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
               <p className="font-medium">
-                No upcoming hodín
+                Žiadne naplánované hodiny
               </p>
               <p className="mt-1 text-sm text-gray-400">
-                Your confirmed hodín will appear here.
+                Your confirmed lessons will appear here.
               </p>
             </div>
           ) : (
             <div className="mt-4 space-y-3">
-              {hodín.map((lesson, index) => {
+              {lessons.map((lesson, index) => {
                 const student = Array.isArray(lesson.student)
                   ? lesson.student[0]
                   : lesson.student;
@@ -277,7 +277,7 @@ export default async function TeacherRozvrhPage() {
                                   : "bg-[#eef3ef] text-[#527064]"
                               }`}
                             >
-                              {index === 0 ? "Najbližšia" : "Rozvrhd"}
+                              {index === 0 ? "Next" : "Rozvrhd"}
                             </span>
                           </div>
 

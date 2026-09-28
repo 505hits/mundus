@@ -14,32 +14,32 @@ import {
 
 const navItems = [
   {
-    name: "Home",
+    name: "Domov",
     href: "/admin/dashboard",
     icon: Home,
   },
   {
-    name: "Students",
+    name: "Študenti",
     href: "/admin/students",
     icon: Users,
   },
   {
-    name: "Teachers",
+    name: "Lektori",
     href: "/admin/teachers",
     icon: GraduationCap,
   },
   {
-    name: "Lessons",
+    name: "Hodiny",
     href: "/admin/lessons",
     icon: CalendarDays,
   },
   {
-    name: "Trials",
+    name: "Úvodné hodiny",
     href: "/admin/trials",
     icon: UserPlus,
   },
   {
-    name: "Packages",
+    name: "Balíčky",
     href: "/admin/packages",
     icon: Package,
   },
@@ -61,7 +61,7 @@ export default function AdminNav() {
           </Link>
 
           <p className="mt-1 text-xs font-medium uppercase tracking-[0.16em] text-[#2F3AA2]">
-            Admin Portal
+            Admin portál
           </p>
         </div>
 
@@ -101,7 +101,7 @@ export default function AdminNav() {
               Anikó
             </p>
             <p className="mt-1 text-xs text-gray-400">
-              Mundus administrator
+              Administrátor Mundus
             </p>
           </div>
         </div>

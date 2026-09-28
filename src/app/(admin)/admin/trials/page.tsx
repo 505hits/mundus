@@ -31,7 +31,7 @@ function displayName(profile: { full_name?: string | null; email?: string | null
   return profile?.full_name?.trim() || profile?.email || fallback;
 }
 
-export default async function AdminTrialsPage() {
+export default async function AdminÚvodné hodinyPage() {
   await requireRole("admin");
   const supabase = await createSupabaseServerClient();
 

@@ -17,7 +17,7 @@ function formatDate(value: string | null) {
   }).format(new Date(value));
 }
 
-export default async function AdminPackagesPage() {
+export default async function AdminBalíčkyPage() {
   await requireRole("admin");
   const supabase = await createSupabaseServerClient();
 
@@ -38,7 +38,7 @@ export default async function AdminPackagesPage() {
   const renewalDue = rows.filter(
     (item) => (item.remaining_lessons ?? 0) === 0
   );
-  const totalUsed = rows.reduce((sum, item) => sum + (item.used_lessons ?? 0), 0);
+  const totalVyužité = rows.reduce((sum, item) => sum + (item.used_lessons ?? 0), 0);
 
   return (
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
@@ -75,7 +75,7 @@ export default async function AdminPackagesPage() {
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CheckCircle2 size={20} className="text-[#9a8049]" />
-            <p className="mt-4 text-3xl font-semibold">{totalUsed}</p>
+            <p className="mt-4 text-3xl font-semibold">{totalVyužité}</p>
             <p className="mt-1 text-sm text-gray-500">Využité hodiny vo všetkých balíčkoch</p>
           </div>
         </section>

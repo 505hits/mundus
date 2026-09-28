@@ -5,7 +5,8 @@ import {
   Video,
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
-import { createSupabaseServerClient } from "@/lib/supabase/server";\nimport { formatLanguage } from "@/lib/portalLabels";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { formatLanguage } from "@/lib/portalLabels";
 import ScheduleRequestActions from "./ScheduleRequestActions";
 
 function formatDate(value: string) {

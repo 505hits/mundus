@@ -10,10 +10,9 @@ import {
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { formatLanguage } from "@/lib/portalLabels";
 
 function formatTime(value: string) {
-  return new Intl.DateTimeFormat("sk-SK", {
+  return new Intl.DateTimeFormat("en-GB", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -22,7 +21,7 @@ function formatTime(value: string) {
 }
 
 function formatShortDate(value: string) {
-  return new Intl.DateTimeFormat("sk-SK", {
+  return new Intl.DateTimeFormat("en-GB", {
     day: "numeric",
     month: "short",
     timeZone: "Europe/Bratislava",
@@ -35,7 +34,7 @@ function getName(
     | null
     | undefined
 ) {
-  return profile?.full_name?.trim() || profile?.email || "Študent";
+  return profile?.full_name?.trim() || profile?.email || "Student";
 }
 
 function getInitials(name: string) {
@@ -49,7 +48,7 @@ function getInitials(name: string) {
     .join("");
 }
 
-export default async function LektorDashboardPage() {
+export default async function TeacherDashboardPage() {
   const { user } = await requireRole("teacher");
   const supabase = await createSupabaseServerClient();
 
@@ -68,16 +67,16 @@ export default async function LektorDashboardPage() {
     timeZone: "Europe/Bratislava",
   }).format(now);
 
-  const startOfDnes = new Date(
+  const startOfToday = new Date(
     `${bratislavaDate}T00:00:00+02:00`
   ).toISOString();
 
-  const endOfDnes = new Date(
+  const endOfToday = new Date(
     `${bratislavaDate}T23:59:59+02:00`
   ).toISOString();
 
   const { data: todayLessons } = await supabase
-    .from("hodín")
+    .from("lessons")
     .select(`
       id,
       student_id,
@@ -87,25 +86,25 @@ export default async function LektorDashboardPage() {
       language,
       lesson_type,
       meet_link,
-      student:profiles!hodín_student_id_fkey (
+      student:profiles!lessons_student_id_fkey (
         full_name,
         email
       )
     `)
     .eq("teacher_id", user.id)
     .in("status", ["scheduled", "rescheduled"])
-    .gte("scheduled_at", startOfDnes)
-    .lte("scheduled_at", endOfDnes)
+    .gte("scheduled_at", startOfToday)
+    .lte("scheduled_at", endOfToday)
     .order("scheduled_at", { ascending: true });
 
   const { data: upcomingLessons } = await supabase
-    .from("hodín")
+    .from("lessons")
     .select(`
       id,
       student_id,
       scheduled_at,
       language,
-      student:profiles!hodín_student_id_fkey (
+      student:profiles!lessons_student_id_fkey (
         full_name,
         email
       )
@@ -121,13 +120,13 @@ export default async function LektorDashboardPage() {
       id,
       requested_by,
       preferred_at,
-      lesson:hodín!schedule_change_requests_lesson_id_fkey (
+      lesson:lessons!schedule_change_requests_lesson_id_fkey (
         id,
         teacher_id,
         student_id,
         scheduled_at,
         language,
-        student:profiles!hodín_student_id_fkey (
+        student:profiles!lessons_student_id_fkey (
           full_name,
           email
         )
@@ -148,7 +147,7 @@ export default async function LektorDashboardPage() {
       );
     }) ?? [];
 
-  const uniqueŠtudenti = new Map<
+  const uniqueStudents = new Map<
     string,
     {
       id: string;
@@ -159,27 +158,27 @@ export default async function LektorDashboardPage() {
   >();
 
   for (const lesson of upcomingLessons ?? []) {
-    if (uniqueŠtudenti.has(lesson.student_id)) continue;
+    if (uniqueStudents.has(lesson.student_id)) continue;
 
     const student = Array.isArray(lesson.student)
       ? lesson.student[0]
       : lesson.student;
 
-    uniqueŠtudenti.set(lesson.student_id, {
+    uniqueStudents.set(lesson.student_id, {
       id: lesson.student_id,
       name: getName(student),
-      language: formatLanguage(lesson.language),
+      language: lesson.language || "Language",
       nextLesson: lesson.scheduled_at,
     });
   }
 
-  const students = Array.from(uniqueŠtudenti.values());
+  const students = Array.from(uniqueStudents.values());
 
   const teacherName =
     teacherProfile?.full_name?.trim() ||
     teacherProfile?.email ||
     user.email ||
-    "Lektor";
+    "Teacher";
 
   const firstName = teacherName.split(" ")[0];
 
@@ -194,7 +193,7 @@ export default async function LektorDashboardPage() {
           <div className="flex items-center gap-3">
             <div className="hidden text-right sm:block">
               <p className="text-sm font-semibold">{teacherName}</p>
-              <p className="text-xs text-gray-400">Portál lektora</p>
+              <p className="text-xs text-gray-400">Teacher Portal</p>
             </div>
 
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#183f38] text-sm font-semibold text-white">
@@ -207,22 +206,22 @@ export default async function LektorDashboardPage() {
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
-            Prehľad lektora
+            Teacher dashboard
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Ahoj, {firstName} 👋
+            Hi, {firstName} 👋
           </h1>
 
           <p className="mt-2 text-gray-500">
-            Tu nájdete prehľad dnešných hodín a študentov.
+            Here&apos;s what&apos;s happening with your students today.
           </p>
         </section>
 
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
           <article className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-400">Dnes</p>
+              <p className="text-sm text-gray-400">Today</p>
               <CalendarDays size={19} className="text-[#9a8049]" />
             </div>
 
@@ -230,12 +229,12 @@ export default async function LektorDashboardPage() {
               {todayLessons?.length ?? 0}
             </p>
 
-            <p className="mt-1 text-sm text-gray-500">hodín</p>
+            <p className="mt-1 text-sm text-gray-500">lessons</p>
           </article>
 
           <article className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-400">Moji študenti</p>
+              <p className="text-sm text-gray-400">My students</p>
               <Users size={19} className="text-[#9a8049]" />
             </div>
 
@@ -244,14 +243,14 @@ export default async function LektorDashboardPage() {
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
-              študentov s naplánovanou hodinou
+              upcoming students
             </p>
           </article>
 
           <article className="rounded-3xl border border-[#c6a65b]/20 bg-[#faf6eb] p-5">
             <div className="flex items-center justify-between">
               <p className="text-sm text-[#7e693a]/70">
-                Žiadosti o zmenu
+                Change requests
               </p>
               <Clock3 size={19} className="text-[#9a8049]" />
             </div>
@@ -261,7 +260,7 @@ export default async function LektorDashboardPage() {
             </p>
 
             <p className="mt-1 text-sm text-[#7e693a]/70">
-              čakajú na vás
+              waiting for you
             </p>
           </article>
         </div>
@@ -269,9 +268,9 @@ export default async function LektorDashboardPage() {
         <section className="mt-10">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-400">Rozvrh</p>
+              <p className="text-sm text-gray-400">Schedule</p>
               <h2 className="mt-1 text-xl font-semibold">
-                Dnešné hodiny
+                Today&apos;s lessons
               </h2>
             </div>
 
@@ -279,15 +278,15 @@ export default async function LektorDashboardPage() {
               href="/teacher/schedule"
               className="rounded-xl bg-[#183f38] px-4 py-2.5 text-sm font-semibold text-white"
             >
-              Zobraziť rozvrh
+              View schedule
             </Link>
           </div>
 
           {!todayLessons?.length ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
-              <p className="font-medium">Dnes nemáte naplánované hodiny</p>
+              <p className="font-medium">No lessons today</p>
               <p className="mt-1 text-sm text-gray-400">
-                Naplánované dnešné hodiny sa zobrazia tu.
+                Your scheduled lessons for today will appear here.
               </p>
             </div>
           ) : (
@@ -326,7 +325,7 @@ export default async function LektorDashboardPage() {
 
                             {index === 0 && (
                               <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold">
-                                Najbližšia
+                                Next
                               </span>
                             )}
                           </div>
@@ -338,7 +337,7 @@ export default async function LektorDashboardPage() {
                                 : "text-gray-400"
                             }`}
                           >
-                            {formatLanguage(lesson.language)} ·{" "}
+                            {lesson.language || "Language"} ·{" "}
                             {lesson.duration_minutes || 60} min
                           </p>
                         </div>
@@ -356,7 +355,7 @@ export default async function LektorDashboardPage() {
                           }`}
                         >
                           <Video size={17} />
-                          Pripojiť sa
+                          Join lesson
                         </a>
                       ) : (
                         <span
@@ -366,7 +365,7 @@ export default async function LektorDashboardPage() {
                               : "bg-gray-100 text-gray-400"
                           }`}
                         >
-                          Odkaz na Meet zatiaľ nie je pridaný
+                          Meet link not added
                         </span>
                       )}
                     </div>
@@ -382,30 +381,31 @@ export default async function LektorDashboardPage() {
             <div className="flex items-center gap-2">
               <AlertCircle size={20} className="text-[#9a8049]" />
               <h2 className="text-xl font-semibold">
-                Vyžaduje vašu pozornosť
+                Needs your attention
               </h2>
             </div>
 
             <div className="mt-4 rounded-3xl border border-[#c6a65b]/20 bg-[#faf6eb] p-6">
               <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#9a8049]">
-                Zmeny termínov
+                Schedule changes
               </p>
 
               <h3 className="mt-3 font-semibold text-[#7e693a]">
                 {myPendingRequests.length === 1
-                  ? "1 študent čaká na vašu odpoveď"
-                  : `${myPendingRequests.length} študenti čakajú na vašu odpoveď`}
+                  ? "1 student is waiting for your response"
+                  : `${myPendingRequests.length} students are waiting for your response`}
               </h3>
 
               <p className="mt-2 text-sm leading-6 text-[#7e693a]/75">
-                Skontrolujte navrhované termíny hodín pred potvrdením zmeny.
+                Review the requested lesson times before confirming any
+                changes.
               </p>
 
               <Link
                 href="/teacher/schedule"
                 className="mt-5 inline-flex rounded-xl bg-[#183f38] px-4 py-2.5 text-sm font-semibold text-white"
               >
-                Skontrolovať žiadosti
+                Review requests
               </Link>
             </div>
           </section>
@@ -414,9 +414,9 @@ export default async function LektorDashboardPage() {
         <section className="mt-10">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-400">Študenti</p>
+              <p className="text-sm text-gray-400">Students</p>
               <h2 className="mt-1 text-xl font-semibold">
-                Moji študenti
+                My students
               </h2>
             </div>
 
@@ -425,9 +425,9 @@ export default async function LektorDashboardPage() {
 
           {students.length === 0 ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
-              <p className="font-medium">Žiadni študenti s naplánovanou hodinou</p>
+              <p className="font-medium">No upcoming students</p>
               <p className="mt-1 text-sm text-gray-400">
-                Študenti s najbližšími hodinami sa zobrazia tu.
+                Students with upcoming lessons will appear here.
               </p>
             </div>
           ) : (
@@ -446,7 +446,7 @@ export default async function LektorDashboardPage() {
                     <p className="font-semibold">{student.name}</p>
 
                     <p className="mt-1 text-sm text-gray-400">
-                      {student.language} · Najbližšia:{" "}
+                      {student.language} · Next:{" "}
                       {formatShortDate(student.nextLesson)} ·{" "}
                       {formatTime(student.nextLesson)}
                     </p>

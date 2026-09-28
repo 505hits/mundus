@@ -44,9 +44,9 @@ export default async function ProgressPage() {
         .order("updated_at", { ascending: false }),
     ]);
 
-  const allHodinas = lessons ?? [];
+  const allLessons = lessons ?? [];
 
-  const completedHodinas = allHodinas.filter(
+  const completedLessons = allLessons.filter(
     (lesson) => lesson.status === "completed"
   );
 
@@ -54,31 +54,31 @@ export default async function ProgressPage() {
   const teacherReports = reports ?? [];
   const latestReport = teacherReports[0] ?? null;
 
-  const totalHodinas = activePackages.reduce(
+  const totalLessons = activePackages.reduce(
     (sum, pkg) => sum + (pkg.total_lessons ?? 0),
     0
   );
 
-  const usedHodinas = activePackages.reduce(
+  const usedLessons = activePackages.reduce(
     (sum, pkg) => sum + (pkg.used_lessons ?? 0),
     0
   );
 
-  const remainingHodinas = activePackages.reduce(
+  const remainingLessons = activePackages.reduce(
     (sum, pkg) => sum + (pkg.remaining_lessons ?? 0),
     0
   );
 
   const packageProgress =
-    totalHodinas > 0
+    totalLessons > 0
       ? Math.min(
           100,
-          Math.round((usedHodinas / totalHodinas) * 100)
+          Math.round((usedLessons / totalLessons) * 100)
         )
       : 0;
 
   const language =
-    allHodinas.find((lesson) => lesson.language)?.language ||
+    allLessons.find((lesson) => lesson.language)?.language ||
     "Váš jazyk";
 
   const nextFocus =
@@ -125,8 +125,7 @@ export default async function ProgressPage() {
           </h1>
 
           <p className="mt-2 max-w-2xl text-gray-500">
-            Follow your real Mundus learning activity and see the latest
-            feedback from your teacher.
+            Sledujte svoje reálne študijné aktivity v Mundus a najnovšiu spätnú väzbu od lektora.
           </p>
         </section>
 
@@ -145,9 +144,7 @@ export default async function ProgressPage() {
               </div>
 
               <p className="mt-4 max-w-xl text-sm leading-6 text-white/60">
-                Váš pokrok here is based on lessons and teacher reports
-                recorded in your Mundus account. A CEFR level is shown only
-                when Mundus has a recorded assessment for you.
+                Váš pokrok vychádza z hodín a záznamov lektora uložených vo vašom účte Mundus. Úroveň CEFR zobrazíme iba vtedy, keď ju máte zaznamenanú v hodnotení.
               </p>
             </div>
 
@@ -166,7 +163,7 @@ export default async function ProgressPage() {
             />
 
             <p className="mt-4 text-3xl font-semibold">
-              {completedHodinas.length}
+              {completedLessons.length}
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
@@ -181,7 +178,7 @@ export default async function ProgressPage() {
             />
 
             <p className="mt-4 text-3xl font-semibold">
-              {remainingHodinas}
+              {remainingLessons}
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
@@ -206,7 +203,7 @@ export default async function ProgressPage() {
         </section>
 
         {/* Package progress */}
-        {totalHodinas > 0 && (
+        {totalLessons > 0 && (
           <section className="mt-6 rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
             <div className="flex items-start justify-between gap-4">
               <div>
@@ -236,7 +233,7 @@ export default async function ProgressPage() {
 
             <div className="mt-3 flex flex-wrap justify-between gap-2 text-sm text-gray-500">
               <span>
-                {usedHodinas} of {totalHodinas} lessons completed
+                {usedLessons} z {totalLessons} hodín absolvovaných
               </span>
 
               <span>{packageProgress}%</span>
@@ -262,8 +259,7 @@ export default async function ProgressPage() {
 
               {!latestReport && (
                 <p className="mt-3 text-sm leading-6 text-gray-500">
-                  Your teacher has not added a learning focus yet. It will
-                  appear here after a report is saved.
+                  Lektor zatiaľ nepridal ďalšie zameranie. Zobrazí sa po uložení záznamu z hodiny.
                 </p>
               )}
             </div>
@@ -280,7 +276,7 @@ export default async function ProgressPage() {
 
               <h2 className="mt-1 text-xl font-semibold">
                 {latestReport?.topic ||
-                  "No teacher report yet"}
+                  "Zatiaľ bez záznamu od lektora"}
               </h2>
             </div>
 
@@ -303,8 +299,7 @@ export default async function ProgressPage() {
                 </p>
               ) : (
                 <p className="mt-5 text-sm text-gray-500">
-                  Your teacher has not added a student-visible note to this
-                  report.
+                  Lektor zatiaľ nepridal poznámku určenú pre vás.
                 </p>
               )}
 
@@ -321,13 +316,12 @@ export default async function ProgressPage() {
               )}
 
               <p className="mt-5 text-xs text-gray-400">
-                Updated {formatDate(latestReport.updated_at)}
+                Aktualizované {formatDate(latestReport.updated_at)}
               </p>
             </>
           ) : (
             <p className="mt-5 max-w-2xl text-sm leading-6 text-gray-500">
-              Your latest teacher feedback will appear here once your teacher
-              saves a lesson report.
+              Najnovšia spätná väzba sa zobrazí po uložení záznamu z hodiny.
             </p>
           )}
         </section>
@@ -344,15 +338,15 @@ export default async function ProgressPage() {
             </h2>
           </div>
 
-          {completedHodinas.length > 0 ? (
+          {completedLessons.length > 0 ? (
             <div className="mt-4 overflow-hidden rounded-3xl border border-black/5 bg-white shadow-sm">
-              {completedHodinas.slice(0, 10).map(
+              {completedLessons.slice(0, 10).map(
                 (lesson, index) => (
                   <div
                     key={lesson.id}
                     className={`flex items-center justify-between gap-4 p-5 sm:p-6 ${
                       index !==
-                      Math.min(completedHodinas.length, 10) - 1
+                      Math.min(completedLessons.length, 10) - 1
                         ? "border-b border-gray-100"
                         : ""
                     }`}
@@ -383,8 +377,7 @@ export default async function ProgressPage() {
               </p>
 
               <p className="mt-1 text-sm text-gray-400">
-                Your lesson history will appear here after your first
-                completed lesson.
+                História hodín sa zobrazí po prvej dokončenej hodine.
               </p>
             </div>
           )}

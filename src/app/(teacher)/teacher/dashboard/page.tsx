@@ -9,7 +9,7 @@ import {
   Video,
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseServerClient } from "@/lib/supabase/server";\nimport { formatLanguage } from "@/lib/portalLabels";
 
 function formatTime(value: string) {
   return new Intl.DateTimeFormat("sk-SK", {
@@ -167,7 +167,7 @@ export default async function LektorDashboardPage() {
     uniqueStudents.set(lesson.student_id, {
       id: lesson.student_id,
       name: getName(student),
-      language: lesson.language || "Jazyk",
+      language: formatLanguage(lesson.language),
       nextLesson: lesson.scheduled_at,
     });
   }
@@ -337,7 +337,7 @@ export default async function LektorDashboardPage() {
                                 : "text-gray-400"
                             }`}
                           >
-                            {lesson.language || "Jazyk"} ·{" "}
+                            {formatLanguage(lesson.language)} ·{" "}
                             {lesson.duration_minutes || 60} min
                           </p>
                         </div>

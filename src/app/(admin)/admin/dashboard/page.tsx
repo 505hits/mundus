@@ -162,7 +162,7 @@ export default async function AdminDashboardPage() {
 
           <section className="rounded-3xl border border-black/5 bg-[#183f38] p-6 text-white shadow-sm">
             <Package size={21} className="text-[#d7b56d]" />
-            <p className="mt-5 text-sm text-white/50">Packages</p>
+            <p className="mt-5 text-sm text-white/50">Balíčky</p>
             <h2 className="mt-1 text-xl font-semibold">Prehľad pokračovania</h2>
             <p className="mt-7 text-4xl font-semibold">{lowPackages.length}</p>
             <p className="mt-2 text-sm text-white/65">Aktívne balíčky s poslednými 1–2 hodinami</p>
@@ -194,7 +194,7 @@ export default async function AdminDashboardPage() {
                 return (
                   <div key={lesson.id} className="flex flex-col gap-3 py-4 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                      <p className="font-semibold">{getName(student, "Student")}</p>
+                      <p className="font-semibold">{getName(student, "Študent")}</p>
                       <p className="mt-1 text-sm text-gray-500">
                         {formatLanguage(lesson.language)} · {getName(teacher, "Lektor")}
                       </p>

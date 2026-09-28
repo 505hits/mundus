@@ -9,7 +9,7 @@ type Props = {
   requestId: string;
 };
 
-export default function ScheduleRequestActions({
+export default function RozvrhRequestActions({
   requestId,
 }: Props) {
   const router = useRouter();
@@ -57,7 +57,7 @@ export default function ScheduleRequestActions({
           className="flex items-center gap-2 rounded-xl bg-[#183f38] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#12332d] disabled:cursor-not-allowed disabled:opacity-60"
         >
           <Check size={16} />
-          {loading === "accepted" ? "Accepting..." : "Accept"}
+          {loading === "accepted" ? "Schváliťing..." : "Schváliť"}
         </button>
 
         <button
@@ -68,7 +68,7 @@ export default function ScheduleRequestActions({
         >
           <X size={16} />
           {loading === "declined"
-            ? "Declining..."
+            ? "Zamietam..."
             : "Keep original"}
         </button>
       </div>

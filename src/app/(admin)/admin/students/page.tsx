@@ -13,11 +13,11 @@ function formatDateTime(value: string) {
   }).format(new Date(value));
 }
 
-export default async function AdminŠtudentsPage() {
+export default async function AdminStudentsPage() {
   await requireRole("admin");
   const supabase = await createSupabaseServerClient();
 
-  const [{ data: profiles, error: profilesError }, { data: lessons }, { data: balíčeks }] =
+  const [{ data: profiles, error: profilesError }, { data: lessons }, { data: packages }] =
     await Promise.all([
       supabase
         .from("profiles")
@@ -30,42 +30,42 @@ export default async function AdminŠtudentsPage() {
         .in("status", ["scheduled", "rescheduled", "completed"])
         .order("scheduled_at", { ascending: true }),
       supabase
-        .from("lesson_balíčeks")
+        .from("lesson_packages")
         .select("student_id,remaining_lessons,status")
         .eq("status", "active"),
     ]);
 
-  const balíčekRemaining = new Map<string, number>();
-  for (const pkg of balíčeks ?? []) {
-    balíčekRemaining.set(
+  const packageRemaining = new Map<string, number>();
+  for (const pkg of packages ?? []) {
+    packageRemaining.set(
       pkg.student_id,
-      (balíčekRemaining.get(pkg.student_id) ?? 0) + (pkg.remaining_lessons ?? 0)
+      (packageRemaining.get(pkg.student_id) ?? 0) + (pkg.remaining_lessons ?? 0)
     );
   }
 
   const now = Date.now();
   const studentRows = (profiles ?? []).map((profile) => {
-    const studentHodiny = (lessons ?? []).filter((lesson) => lesson.student_id === profile.id);
-    const nextLesson = studentHodiny.find(
+    const studentLessons = (lessons ?? []).filter((lesson) => lesson.student_id === profile.id);
+    const nextLesson = studentLessons.find(
       (lesson) =>
         ["scheduled", "rescheduled"].includes(lesson.status) &&
         new Date(lesson.scheduled_at).getTime() >= now
     );
-    const latestWithJazyk = [...studentHodiny].reverse().find((lesson) => lesson.language);
+    const latestWithLanguage = [...studentLessons].reverse().find((lesson) => lesson.language);
     const teacherRelation = nextLesson?.teacher;
     const teacher = Array.isArray(teacherRelation) ? teacherRelation[0] : teacherRelation;
-    const remaining = balíčekRemaining.get(profile.id) ?? 0;
+    const remaining = packageRemaining.get(profile.id) ?? 0;
 
     return {
       ...profile,
-      language: nextLesson?.language || latestWithJazyk?.language || "—",
+      language: nextLesson?.language || latestWithLanguage?.language || "—",
       teacher: teacher?.full_name?.trim() || teacher?.email || "Not assigned",
       remaining,
       nextLesson: nextLesson?.scheduled_at ?? null,
     };
   });
 
-  const activeŠtudents = studentRows.filter((student) => student.status === "active").length;
+  const activeStudents = studentRows.filter((student) => student.status === "active").length;
   const renewalSoon = studentRows.filter(
     (student) => student.status === "active" && student.remaining > 0 && student.remaining <= 2
   ).length;
@@ -77,9 +77,9 @@ export default async function AdminŠtudentsPage() {
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">Študents</p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Študent management</h1>
-          <p className="mt-2 text-gray-500">Real student accounts, balíčeks and upcoming lessons.</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">Students</p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Student management</h1>
+          <p className="mt-2 text-gray-500">Real student accounts, packages and upcoming lessons.</p>
         </section>
 
         {profilesError && (
@@ -91,7 +91,7 @@ export default async function AdminŠtudentsPage() {
         <section className="mt-8 grid gap-4 sm:grid-cols-3">
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <Users size={20} className="text-[#9a8049]" />
-            <p className="mt-4 text-3xl font-semibold">{activeŠtudents}</p>
+            <p className="mt-4 text-3xl font-semibold">{activeStudents}</p>
             <p className="mt-1 text-sm text-gray-500">Aktívni študenti</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
@@ -115,21 +115,21 @@ export default async function AdminŠtudentsPage() {
                 <div key={student.id} className="grid gap-4 px-5 py-5 lg:grid-cols-[1.4fr_1fr_0.7fr_1.2fr_0.8fr] lg:items-center lg:px-6">
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
-                      <p className="font-semibold">{student.full_name?.trim() || student.email || "Študent"}</p>
+                      <p className="font-semibold">{student.full_name?.trim() || student.email || "Student"}</p>
                       {student.status === "active" && student.remaining > 0 && student.remaining <= 2 && (
                         <span className="rounded-full bg-[#faf1d9] px-2.5 py-1 text-xs font-semibold text-[#9a8049]">
-                          Čoskoro pokračovanie
+                          Renewal soon
                         </span>
                       )}
                     </div>
                     <p className="mt-1 text-sm text-gray-400">{student.language}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-400 lg:hidden">Lektor</p>
+                    <p className="text-xs text-gray-400 lg:hidden">Teacher</p>
                     <p className="mt-1 text-sm font-medium lg:mt-0">{student.teacher}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-400 lg:hidden">Hodiny left</p>
+                    <p className="text-xs text-gray-400 lg:hidden">Zostáva hodín</p>
                     <p className="mt-1 text-sm font-semibold lg:mt-0">{student.remaining}</p>
                   </div>
                   <div>

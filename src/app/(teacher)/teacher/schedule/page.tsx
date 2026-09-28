@@ -171,7 +171,7 @@ export default async function TeacherSchedulePage() {
                         </div>
 
                         <p className="mt-2 text-sm text-[#7e693a]/70">
-                          {lesson.language || "Jazyk"} lesson
+                          {lesson.language || "Jazyk"} hodina
                         </p>
 
                         <div className="mt-4 space-y-2 text-sm text-[#7e693a]">

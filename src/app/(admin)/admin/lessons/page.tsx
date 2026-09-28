@@ -7,9 +7,10 @@ import {
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { formatLanguage, formatLessonStatus } from "@/lib/portalLabels";
 
 function formatDate(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -18,7 +19,7 @@ function formatDate(value: string) {
 }
 
 function formatTime(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -61,14 +62,14 @@ export default async function AdminLessonsPage() {
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">Lessons</p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Lesson management</h1>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">Hodiny</p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Správa hodín</h1>
           <p className="mt-2 text-gray-500">Real lessons across Mundus students and teachers.</p>
         </section>
 
         {error && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            We couldn&apos;t load lesson data. Please refresh and try again.
+            Nepodarilo sa načítať údaje o hodinách. Obnovte stránku a skúste to znova.
           </div>
         )}
 
@@ -76,7 +77,7 @@ export default async function AdminLessonsPage() {
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CalendarDays size={20} className="text-[#9a8049]" />
             <p className="mt-4 text-3xl font-semibold">{today.length}</p>
-            <p className="mt-1 text-sm text-gray-500">Today</p>
+            <p className="mt-1 text-sm text-gray-500">Dnes</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CheckCircle2 size={20} className="text-[#9a8049]" />
@@ -102,14 +103,14 @@ export default async function AdminLessonsPage() {
                   <div key={lesson.id} className="grid gap-4 px-5 py-5 lg:grid-cols-[1.2fr_1fr_0.9fr_0.7fr_0.9fr_0.5fr] lg:items-center lg:px-6">
                     <div>
                       <p className="font-semibold">{name(student)}</p>
-                      <p className="mt-1 text-sm text-gray-400">{lesson.language || "Language"}</p>
+                      <p className="mt-1 text-sm text-gray-400">{formatLanguage(lesson.language)}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 lg:hidden">Teacher</p>
+                      <p className="text-xs text-gray-400 lg:hidden">Lektor</p>
                       <p className="mt-1 text-sm font-medium lg:mt-0">{name(teacher)}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 lg:hidden">Date</p>
+                      <p className="text-xs text-gray-400 lg:hidden">Dátum</p>
                       <p className="mt-1 text-sm lg:mt-0">{formatDate(lesson.scheduled_at)}</p>
                     </div>
                     <div className="flex items-center gap-2 text-sm font-semibold">

@@ -3,7 +3,7 @@ import {
   CalendarDays,
   Clock3,
   Video,
-  ArrowLeft,
+  ArrowZostáva,
   RefreshCw,
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
@@ -83,7 +83,7 @@ export default async function LessonsPage() {
           href="/dashboard"
           className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 transition hover:text-[#183f38]"
         >
-          <ArrowLeft size={17} />
+          <ArrowZostáva size={17} />
           Späť na prehľad
         </Link>
 

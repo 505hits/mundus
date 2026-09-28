@@ -1,216 +1,146 @@
-import {
-  AlertCircle,
-  CalendarDays,
-  CheckCircle2,
-  Clock3,
-  UserPlus,
-} from "lucide-react";
+import { AlertCircle, CalendarDays, CheckCircle2, Clock3, UserPlus } from "lucide-react";
+import { requireRole } from "@/lib/auth";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-const trials = [
-  {
-    name: "Sofia M.",
-    language: "English",
-    level: "A2",
-    goal: "Speaking confidence",
-    teacher: "Anna",
-    date: "23 Sep · 16:00",
-    status: "Follow-up needed",
-  },
-  {
-    name: "Nina K.",
-    language: "Italian",
-    level: "Beginner",
-    goal: "Travel",
-    teacher: "Roland",
-    date: "25 Sep · 17:00",
-    status: "Scheduled",
-  },
-  {
-    name: "Jakub P.",
-    language: "English",
-    level: "B1",
-    goal: "English for work",
-    teacher: "Anna",
-    date: "26 Sep · 18:30",
-    status: "Scheduled",
-  },
-];
+function formatDateTime(value: string) {
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "Europe/Bratislava",
+  }).format(new Date(value));
+}
 
-export default function AdminTrialsPage() {
+function displayName(profile: { full_name?: string | null; email?: string | null } | null | undefined, fallback: string) {
+  return profile?.full_name?.trim() || profile?.email || fallback;
+}
+
+export default async function AdminTrialsPage() {
+  await requireRole("admin");
+  const supabase = await createSupabaseServerClient();
+
+  const { data: trials, error } = await supabase
+    .from("lessons")
+    .select(`
+      id,scheduled_at,status,language,notes,student_id,
+      student:profiles!lessons_student_id_fkey(full_name,email,status),
+      teacher:profiles!lessons_teacher_id_fkey(full_name,email)
+    `)
+    .eq("lesson_type", "trial")
+    .order("scheduled_at", { ascending: false });
+
+  const rows = trials ?? [];
+  const now = Date.now();
+  const upcoming = rows.filter(
+    (trial) =>
+      ["scheduled", "rescheduled"].includes(trial.status) &&
+      new Date(trial.scheduled_at).getTime() >= now
+  );
+  const completed = rows.filter((trial) => trial.status === "completed");
+  const followUp = completed.filter((trial) => {
+    const student = Array.isArray(trial.student) ? trial.student[0] : trial.student;
+    return student?.status !== "active";
+  });
+  const converted = completed.filter((trial) => {
+    const student = Array.isArray(trial.student) ? trial.student[0] : trial.student;
+    return student?.status === "active";
+  });
+
   return (
-    <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
+    <main className="min-h-screen bg-[#f7f8f5] text-[#0a0a0f]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
-        <section className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
-              Trials
-            </p>
-
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-              Trial lessons
-            </h1>
-
-            <p className="mt-2 max-w-2xl text-gray-500">
-              Keep every new student moving from their first lesson to the
-              right Mundus course.
-            </p>
-          </div>
-
-          <button
-            disabled
-            className="flex w-fit items-center gap-2 rounded-xl bg-[#183f38] px-5 py-3 text-sm font-semibold text-white"
-          >
-            <UserPlus size={18} />
-            Add trial
-          </button>
+        <section>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">Trials</p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Trial lessons</h1>
+          <p className="mt-2 max-w-2xl text-gray-500">
+            Live trial lesson overview from the Mundus lesson schedule.
+          </p>
         </section>
+
+        {error && (
+          <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+            We couldn&apos;t load trial lessons. Please refresh and try again.
+          </div>
+        )}
 
         <section className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <CalendarDays size={20} className="text-[#9a8049]" />
-            <p className="mt-4 text-3xl font-semibold">2</p>
+            <CalendarDays size={20} className="text-[#2F3AA2]" />
+            <p className="mt-4 text-3xl font-semibold">{upcoming.length}</p>
             <p className="mt-1 text-sm text-gray-500">Upcoming trials</p>
           </div>
-
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <CheckCircle2 size={20} className="text-[#9a8049]" />
-            <p className="mt-4 text-3xl font-semibold">1</p>
-            <p className="mt-1 text-sm text-gray-500">Completed</p>
+            <CheckCircle2 size={20} className="text-[#2F3AA2]" />
+            <p className="mt-4 text-3xl font-semibold">{completed.length}</p>
+            <p className="mt-1 text-sm text-gray-500">Completed trials</p>
           </div>
-
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <AlertCircle size={20} className="text-[#9a8049]" />
-            <p className="mt-4 text-3xl font-semibold">1</p>
+            <AlertCircle size={20} className="text-[#2F3AA2]" />
+            <p className="mt-4 text-3xl font-semibold">{followUp.length}</p>
             <p className="mt-1 text-sm text-gray-500">Follow-up needed</p>
           </div>
-
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <UserPlus size={20} className="text-[#9a8049]" />
-            <p className="mt-4 text-3xl font-semibold">1</p>
-            <p className="mt-1 text-sm text-gray-500">
-              Converted to student
-            </p>
+            <UserPlus size={20} className="text-[#2F3AA2]" />
+            <p className="mt-4 text-3xl font-semibold">{converted.length}</p>
+            <p className="mt-1 text-sm text-gray-500">Active students after trial</p>
           </div>
         </section>
 
-        <section className="mt-8">
-          <div className="flex flex-wrap gap-2">
-            {[
-              "All trials",
-              "Scheduled",
-              "Assessment ready",
-              "Follow-up needed",
-              "Converted",
-            ].map((filter, index) => (
-              <button
-                key={filter}
-                disabled
-                className={`rounded-xl px-4 py-2 text-sm font-medium ${
-                  index === 0
-                    ? "bg-[#183f38] text-white"
-                    : "border border-black/5 bg-white text-gray-500"
-                }`}
-              >
-                {filter}
-              </button>
-            ))}
-          </div>
+        <section className="mt-8 space-y-3">
+          {rows.length === 0 ? (
+            <div className="rounded-3xl border border-black/5 bg-white p-8 text-center text-sm text-gray-500 shadow-sm">
+              No trial lessons have been added yet.
+            </div>
+          ) : (
+            rows.map((trial) => {
+              const student = Array.isArray(trial.student) ? trial.student[0] : trial.student;
+              const teacher = Array.isArray(trial.teacher) ? trial.teacher[0] : trial.teacher;
+              const needsFollowUp = trial.status === "completed" && student?.status !== "active";
 
-          <div className="mt-5 space-y-3">
-            {trials.map((trial) => (
-              <article
-                key={trial.name}
-                className={`rounded-3xl border p-5 shadow-sm sm:p-6 ${
-                  trial.status === "Follow-up needed"
-                    ? "border-[#c6a65b]/20 bg-[#faf6eb]"
-                    : "border-black/5 bg-white"
-                }`}
-              >
-                <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-                  <div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h2 className="font-semibold">{trial.name}</h2>
-
-                      <span
-                        className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
-                          trial.status === "Follow-up needed"
-                            ? "bg-white text-[#9a8049]"
-                            : "bg-[#eef3ef] text-[#527064]"
-                        }`}
-                      >
-                        {trial.status}
-                      </span>
-                    </div>
-
-                    <p className="mt-2 text-sm text-gray-500">
-                      {trial.language} · {trial.level}
-                    </p>
-
-                    <p className="mt-1 text-sm text-gray-400">
-                      Goal: {trial.goal}
-                    </p>
-                  </div>
-
-                  <div className="grid gap-4 sm:grid-cols-2 lg:flex lg:items-center lg:gap-8">
+              return (
+                <article
+                  key={trial.id}
+                  className={`rounded-3xl border p-5 shadow-sm sm:p-6 ${
+                    needsFollowUp ? "border-[#2F3AA2]/15 bg-[#f5f6ff]" : "border-black/5 bg-white"
+                  }`}
+                >
+                  <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                     <div>
-                      <p className="text-xs text-gray-400">Teacher</p>
-                      <p className="mt-1 text-sm font-medium">
-                        {trial.teacher}
-                      </p>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h2 className="font-semibold">{displayName(student, "Student")}</h2>
+                        <span className={`rounded-full px-2.5 py-1 text-xs font-semibold capitalize ${
+                          needsFollowUp
+                            ? "bg-white text-[#2F3AA2]"
+                            : "bg-[#eef0ff] text-[#2F3AA2]"
+                        }`}>
+                          {needsFollowUp ? "Follow-up needed" : trial.status.replaceAll("_", " ")}
+                        </span>
+                      </div>
+                      <p className="mt-2 text-sm text-gray-500">{trial.language || "Language not set"}</p>
+                      {trial.notes && <p className="mt-1 text-sm text-gray-400">{trial.notes}</p>}
                     </div>
 
-                    <div>
-                      <p className="text-xs text-gray-400">Trial lesson</p>
-                      <p className="mt-1 flex items-center gap-2 text-sm font-medium">
-                        <Clock3 size={15} />
-                        {trial.date}
-                      </p>
+                    <div className="grid gap-4 sm:grid-cols-2 lg:flex lg:items-center lg:gap-8">
+                      <div>
+                        <p className="text-xs text-gray-400">Teacher</p>
+                        <p className="mt-1 text-sm font-medium">{displayName(teacher, "Not assigned")}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-400">Trial lesson</p>
+                        <p className="mt-1 flex items-center gap-2 text-sm font-medium">
+                          <Clock3 size={15} />
+                          {formatDateTime(trial.scheduled_at)}
+                        </p>
+                      </div>
                     </div>
-
-                    <button
-                      disabled
-                      className="rounded-xl border border-black/5 bg-white px-4 py-2.5 text-sm font-semibold text-[#183f38]"
-                    >
-                      Manage
-                    </button>
                   </div>
-                </div>
-              </article>
-            ))}
-          </div>
+                </article>
+              );
+            })
+          )}
         </section>
-
-        <section className="mt-8 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
-          <p className="text-sm text-gray-400">Trial pipeline</p>
-
-          <h2 className="mt-1 text-lg font-semibold">
-            From first contact to active student
-          </h2>
-
-          <div className="mt-5 flex flex-wrap items-center gap-2 text-sm">
-            {[
-              "Trial scheduled",
-              "Completed",
-              "Assessment ready",
-              "Follow-up",
-              "Package purchased",
-            ].map((step, index) => (
-              <div key={step} className="flex items-center gap-2">
-                <span className="rounded-xl bg-[#eef3ef] px-3 py-2 font-medium">
-                  {step}
-                </span>
-
-                {index < 4 && (
-                  <span className="text-gray-300">→</span>
-                )}
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <p className="mt-8 text-center text-xs text-gray-400">
-          Preview data · Mundus Admin Portal
-        </p>
       </div>
     </main>
   );

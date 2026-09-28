@@ -31,10 +31,10 @@ function getName(
     | null
     | undefined
 ) {
-  return profile?.full_name?.trim() || profile?.email || "Student";
+  return profile?.full_name?.trim() || profile?.email || "Študent";
 }
 
-export default async function TeacherŠtudentiPage() {
+export default async function TeacherStudentsPage() {
   const { user } = await requireRole("teacher");
   const supabase = await createSupabaseServerClient();
 
@@ -116,7 +116,7 @@ export default async function TeacherŠtudentiPage() {
       studentMap.set(lesson.student_id, {
         id: lesson.student_id,
         name: getName(student),
-        language: lesson.language || "Language",
+        language: lesson.language || "Jazyk",
         nextLesson: isFuture ? lesson.scheduled_at : null,
         remaining:
           packageMap.get(lesson.student_id)?.remaining ?? 0,
@@ -154,11 +154,11 @@ export default async function TeacherŠtudentiPage() {
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
-            Študenti
+            Students
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Môj študents
+            Moji študenti
           </h1>
 
           <p className="mt-2 text-gray-500">
@@ -175,7 +175,7 @@ export default async function TeacherŠtudentiPage() {
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
-              Študenti with lessons
+              Študenti s hodinami
             </p>
           </div>
 
@@ -211,7 +211,7 @@ export default async function TeacherŠtudentiPage() {
               </p>
 
               <p className="mt-1 text-sm text-gray-400">
-                Študenti will appear here once they have lessons with you.
+                Študenti sa zobrazia, keď budú mať s vami naplánované hodiny.
               </p>
             </div>
           ) : (

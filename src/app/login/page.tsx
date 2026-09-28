@@ -64,8 +64,8 @@ window.location.href = "/dashboard";
 }
   return (
     <main className="min-h-screen bg-[#f7f8f5] flex">
-      <section className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-[#163f3a] p-12 flex-col justify-between">
-        <div className="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-[#d7b56d]/10 blur-3xl" />
+      <section className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-[#0a0a0f] p-12 flex-col justify-between">
+        <div className="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-[#4a58d6]/10 blur-3xl" />
         <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-white/5 blur-3xl" />
 
         <Link href="/" className="relative z-10">
@@ -80,7 +80,7 @@ window.location.href = "/dashboard";
         </Link>
 
         <div className="relative z-10 max-w-lg">
-          <p className="mb-5 text-sm font-semibold uppercase tracking-[0.2em] text-[#d7b56d]">
+          <p className="mb-5 text-sm font-semibold uppercase tracking-[0.2em] text-[#4a58d6]">
             Mundus Learning Portal
           </p>
 
@@ -116,11 +116,11 @@ window.location.href = "/dashboard";
             </Link>
           </div>
 
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#8a7445]">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
             Learning Portal
           </p>
 
-          <h2 className="mt-3 text-4xl font-semibold tracking-tight text-[#163f3a]">
+          <h2 className="mt-3 text-4xl font-semibold tracking-tight text-[#0a0a0f]">
             Welcome back
           </h2>
 
@@ -141,7 +141,7 @@ window.location.href = "/dashboard";
                 placeholder="name@email.com"
                 required
                 autoComplete="email"
-                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-gray-800 shadow-sm outline-none focus:border-[#163f3a]"
+                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-gray-800 shadow-sm outline-none focus:border-[#0a0a0f]"
               />
             </label>
 
@@ -157,7 +157,7 @@ window.location.href = "/dashboard";
                 placeholder="••••••••"
                 required
                 autoComplete="current-password"
-                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-gray-800 shadow-sm outline-none focus:border-[#163f3a]"
+                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-gray-800 shadow-sm outline-none focus:border-[#0a0a0f]"
               />
             </label>
 
@@ -170,7 +170,7 @@ window.location.href = "/dashboard";
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-2xl bg-[#163f3a] px-5 py-4 font-semibold text-white transition hover:bg-[#12342f] disabled:cursor-not-allowed disabled:opacity-60"
+              className="w-full rounded-2xl bg-[#0a0a0f] px-5 py-4 font-semibold text-white transition hover:bg-[#2F3AA2] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading ? "Signing in..." : "Sign in"}
             </button>
@@ -183,7 +183,7 @@ window.location.href = "/dashboard";
           <div className="mt-6 text-center">
             <Link
               href="/"
-              className="text-sm font-medium text-[#163f3a] hover:underline"
+              className="text-sm font-medium text-[#0a0a0f] hover:underline"
             >
               ← Back to Mundus Languages
             </Link>

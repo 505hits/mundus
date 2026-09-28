@@ -17,7 +17,7 @@ export async function requireRole(requiredRole: MundusRole) {
 
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("role, status")
+    .select("role, status, full_name")
     .eq("id", user.id)
     .single();
 

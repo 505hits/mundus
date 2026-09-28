@@ -31,7 +31,7 @@ function getStudentName(
     | null
     | undefined
 ) {
-  return profile?.full_name?.trim() || profile?.email || "Student";
+  return profile?.full_name?.trim() || profile?.email || "Študent";
 }
 
 export default async function TeacherReportsPage() {
@@ -102,15 +102,13 @@ export default async function TeacherReportsPage() {
           </h1>
 
           <p className="mt-2 max-w-2xl text-gray-500">
-            Add a short update after each completed lesson so the student&apos;s
-            learning journey stays up to date.
+            Po každej dokončenej hodine pridajte krátky záznam, aby mal študent prehľad o svojom napredovaní.
           </p>
         </section>
 
         {(lessonsError || reportsError) && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            We couldn&apos;t load all lesson report data. Please refresh the
-            page or try again shortly.
+            Nepodarilo sa načítať všetky záznamy z hodín. Obnovte stránku alebo to skúste o chvíľu znova.
           </div>
         )}
 
@@ -158,7 +156,7 @@ export default async function TeacherReportsPage() {
           </p>
 
           <h2 className="mt-1 text-xl font-semibold">
-            Dokončená hodinas
+            Completed lessons
           </h2>
 
           {recentLessons.length === 0 ? (

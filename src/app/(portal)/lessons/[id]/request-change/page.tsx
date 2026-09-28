@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
-  ArrowZostáva,
+  ArrowLeft,
   CalendarDays,
   Clock3,
   RefreshCw,
@@ -11,7 +11,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import RequestChangeForm from "./RequestChangeForm";
 
 function formatDate(value: string) {
-  return new Intl.DateTimeFormat("sk-SK", {
+  return new Intl.DateTimeFormat("en-GB", {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -21,7 +21,7 @@ function formatDate(value: string) {
 }
 
 function formatTime(value: string) {
-  return new Intl.DateTimeFormat("sk-SK", {
+  return new Intl.DateTimeFormat("en-GB", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -83,19 +83,23 @@ export default async function RequestChangePage({
           href="/lessons"
           className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 transition hover:text-[#183f38]"
         >
-          <ArrowZostáva size={17} />
-          Späť na moje hodiny
+          <ArrowLeft size={17} />
+          Back to my lessons
         </Link>
 
         <section className="mt-7">
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">Rozvrh</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
+            Schedule
+          </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Požiadať o zmenu
+            Request a change
           </h1>
 
           <p className="mt-3 max-w-2xl leading-7 text-gray-500">
-            Navrhnite nový dátum a čas, ktorý vám vyhovuje. Pôvodný termín zostáva platný, kým lektor zmenu nepotvrdí.
+            Let your teacher know which new date and time would work
+            better for you. Your current lesson stays confirmed until
+            the request is accepted.
           </p>
         </section>
 
@@ -103,11 +107,11 @@ export default async function RequestChangePage({
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-sm font-medium text-white/60">
-                Aktuálna hodina
+                Current lesson
               </p>
 
               <h2 className="mt-2 text-xl font-semibold">
-                {lesson.language || "Jazyk"} hodina
+                {lesson.language || "Language"} lesson
               </h2>
 
               <div className="mt-5 flex flex-wrap gap-4 text-sm text-white/75">
@@ -123,7 +127,7 @@ export default async function RequestChangePage({
               </div>
 
               <p className="mt-3 text-sm text-white/60">
-                {lesson.duration_minutes || 60} minút
+                {lesson.duration_minutes || 60} minutes
               </p>
             </div>
 
@@ -136,18 +140,20 @@ export default async function RequestChangePage({
         {pendingRequest ? (
           <section className="mt-6 rounded-3xl border border-[#dfe8e2] bg-white p-6 shadow-sm sm:p-8">
             <h2 className="text-xl font-semibold">
-              Žiadosť o zmenu čaká na vybavenie
+              Change request pending
             </h2>
 
             <p className="mt-2 leading-7 text-gray-500">
-              Pre túto hodinu už máte odoslanú žiadosť o zmenu. Pôvodný termín zostáva platný, kým nebude žiadosť schválená.
+              You already have a pending schedule change request for this
+              lesson. Your current lesson stays confirmed until the request
+              is accepted.
             </p>
 
             <Link
               href="/lessons"
               className="mt-6 inline-flex rounded-2xl bg-[#183f38] px-5 py-3 font-semibold text-white"
             >
-              Späť na moje hodiny
+              Back to my lessons
             </Link>
           </section>
         ) : (

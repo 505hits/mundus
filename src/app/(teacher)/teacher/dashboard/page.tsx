@@ -397,8 +397,7 @@ export default async function LektorDashboardPage() {
               </h3>
 
               <p className="mt-2 text-sm leading-6 text-[#7e693a]/75">
-                Review the requested lesson times before confirming any
-                changes.
+                Skontrolujte navrhované termíny hodín pred potvrdením zmeny.
               </p>
 
               <Link

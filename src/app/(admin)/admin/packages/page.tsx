@@ -9,20 +9,20 @@ function formatDate(value: string | null) {
   }).format(new Date(value));
 }
 
-export default async function AdminBalíčkyPage() {
+export default async function AdminPackagesPage() {
   await requireRole("admin");
   const supabase = await createSupabaseServerClient();
 
-  const { data: balíčeks, error } = await supabase
-    .from("lesson_balíčeks")
+  const { data: packages, error } = await supabase
+    .from("lesson_packages")
     .select(`
-      id,student_id,balíček_type,total_lessons,used_lessons,remaining_lessons,
+      id,student_id,package_type,total_lessons,used_lessons,remaining_lessons,
       purchased_at,status,expires_at,
-      student:profiles!lesson_balíčeks_student_id_fkey(full_name,email)
+      student:profiles!lesson_packages_student_id_fkey(full_name,email)
     `)
     .order("purchased_at", { ascending: false });
 
-  const rows = balíčeks ?? [];
+  const rows = packages ?? [];
   const active = rows.filter((item) => item.status === "active");
   const renewalSoon = active.filter(
     (item) => (item.remaining_lessons ?? 0) > 0 && (item.remaining_lessons ?? 0) <= 2
@@ -36,16 +36,16 @@ export default async function AdminBalíčkyPage() {
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">Balíčky</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">Packages</p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Prehľad balíčkov</h1>
           <p className="mt-2 max-w-2xl text-gray-500">
-            Live lesson balances and renewal signals from student balíčeks.
+            Aktuálny stav hodín v balíčkoch a upozornenia na pokračovanie.
           </p>
         </section>
 
         {error && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            We couldn&apos;t load balíček data. Please refresh and try again.
+            We couldn&apos;t load package data. Please refresh and try again.
           </div>
         )}
 
@@ -53,7 +53,7 @@ export default async function AdminBalíčkyPage() {
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <Package size={20} className="text-[#9a8049]" />
             <p className="mt-4 text-3xl font-semibold">{active.length}</p>
-            <p className="mt-1 text-sm text-gray-500">Aktívny balíčeks</p>
+            <p className="mt-1 text-sm text-gray-500">Aktívne balíčky</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <AlertCircle size={20} className="text-[#9a8049]" />
@@ -68,13 +68,13 @@ export default async function AdminBalíčkyPage() {
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CheckCircle2 size={20} className="text-[#9a8049]" />
             <p className="mt-4 text-3xl font-semibold">{totalVyužité}</p>
-            <p className="mt-1 text-sm text-gray-500">Hodiny used in all balíčeks</p>
+            <p className="mt-1 text-sm text-gray-500">Hodiny used in all packages</p>
           </div>
         </section>
 
         <section className="mt-8 overflow-hidden rounded-3xl border border-black/5 bg-white shadow-sm">
           {rows.length === 0 ? (
-            <div className="p-8 text-center text-sm text-gray-500">No lesson balíčeks yet.</div>
+            <div className="p-8 text-center text-sm text-gray-500">Zatiaľ nie sú vytvorené žiadne balíčky.</div>
           ) : (
             <div className="divide-y divide-gray-100">
               {rows.map((item) => {
@@ -97,7 +97,7 @@ export default async function AdminBalíčkyPage() {
                         {student?.full_name?.trim() || student?.email || "Študent"}
                       </p>
                       <p className="mt-1 text-sm text-gray-400">
-                        {item.balíček_type || "Lesson balíček"} · {formatDate(item.purchased_at)}
+                        {item.package_type || "Balíček hodín"} · {formatDate(item.purchased_at)}
                       </p>
                       <div className="mt-3 h-1.5 max-w-[180px] overflow-hidden rounded-full bg-gray-100">
                         <div className="h-full rounded-full bg-[#183f38]" style={{ width: `${percentage}%` }} />

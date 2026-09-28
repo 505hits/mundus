@@ -48,7 +48,7 @@ function getInitials(name: string) {
     .join("");
 }
 
-export default async function TeacherDashboardPage() {
+export default async function LektorDashboardPage() {
   const { user } = await requireRole("teacher");
   const supabase = await createSupabaseServerClient();
 
@@ -178,7 +178,7 @@ export default async function TeacherDashboardPage() {
     teacherProfile?.full_name?.trim() ||
     teacherProfile?.email ||
     user.email ||
-    "Teacher";
+    "Lektor";
 
   const firstName = teacherName.split(" ")[0];
 
@@ -365,7 +365,7 @@ export default async function TeacherDashboardPage() {
                               : "bg-gray-100 text-gray-400"
                           }`}
                         >
-                          Meet link not added
+                          Odkaz na Meet zatiaľ nie je pridaný
                         </span>
                       )}
                     </div>
@@ -381,19 +381,19 @@ export default async function TeacherDashboardPage() {
             <div className="flex items-center gap-2">
               <AlertCircle size={20} className="text-[#9a8049]" />
               <h2 className="text-xl font-semibold">
-                Needs your attention
+                Vyžaduje vašu pozornosť
               </h2>
             </div>
 
             <div className="mt-4 rounded-3xl border border-[#c6a65b]/20 bg-[#faf6eb] p-6">
               <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#9a8049]">
-                Rozvrh changes
+                Zmeny termínov
               </p>
 
               <h3 className="mt-3 font-semibold text-[#7e693a]">
                 {myPendingRequests.length === 1
-                  ? "1 student is čakajú na vásr response"
-                  : `${myPendingRequests.length} students are čakajú na vásr response`}
+                  ? "1 študent čaká na vašu odpoveď"
+                  : `${myPendingRequests.length} študenti čakajú na vašu odpoveď`}
               </h3>
 
               <p className="mt-2 text-sm leading-6 text-[#7e693a]/75">
@@ -405,7 +405,7 @@ export default async function TeacherDashboardPage() {
                 href="/teacher/schedule"
                 className="mt-5 inline-flex rounded-xl bg-[#183f38] px-4 py-2.5 text-sm font-semibold text-white"
               >
-                Review requests
+                Skontrolovať žiadosti
               </Link>
             </div>
           </section>
@@ -425,9 +425,9 @@ export default async function TeacherDashboardPage() {
 
           {students.length === 0 ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
-              <p className="font-medium">No študentov s naplánovanou hodinou</p>
+              <p className="font-medium">Žiadni študenti s naplánovanou hodinou</p>
               <p className="mt-1 text-sm text-gray-400">
-                Students with upcoming lessons will appear here.
+                Študenti s najbližšími hodinami sa zobrazia tu.
               </p>
             </div>
           ) : (

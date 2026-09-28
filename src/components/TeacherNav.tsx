@@ -22,12 +22,12 @@ const navItems = [
     icon: CalendarDays,
   },
   {
-    label: "Students",
+    label: "Študenti",
     href: "/teacher/students",
     icon: Users,
   },
   {
-    label: "Reports",
+    label: "Záznamy",
     href: "/teacher/reports",
     icon: ClipboardCheck,
   },

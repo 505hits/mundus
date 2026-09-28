@@ -93,7 +93,7 @@ export default async function AdminDashboardPage() {
       .map((lesson) => lesson.student_id)
   );
 
-  const lowBalíčky = (packages ?? []).filter(
+  const lowPackages = (packages ?? []).filter(
     (pkg) => (pkg.remaining_lessons ?? 0) > 0 && (pkg.remaining_lessons ?? 0) <= 2
   );
   const noUpcoming = (students ?? []).filter(
@@ -160,7 +160,7 @@ export default async function AdminDashboardPage() {
 
             <div className="mt-5 space-y-3">
               <div className="rounded-2xl bg-[#faf8f2] p-4">
-                <p className="font-medium">{lowBalíčky.length} {lowBalíčky.length === 1 ? "balíček s 1–2 zostávajúcimi hodinami" : "balíčky s 1–2 zostávajúcimi hodinami"}</p>
+                <p className="font-medium">{lowPackages.length} {lowPackages.length === 1 ? "balíček s 1–2 zostávajúcimi hodinami" : "balíčky s 1–2 zostávajúcimi hodinami"}</p>
                 <p className="mt-1 text-sm text-gray-500">Odporúčame kontaktovať študenta ohľadom pokračovania.</p>
               </div>
               <div className="rounded-2xl bg-[#faf8f2] p-4">
@@ -178,7 +178,7 @@ export default async function AdminDashboardPage() {
             <Package size={21} className="text-[#d7b56d]" />
             <p className="mt-5 text-sm text-white/50">Balíčky</p>
             <h2 className="mt-1 text-xl font-semibold">Prehľad pokračovania</h2>
-            <p className="mt-7 text-4xl font-semibold">{lowBalíčky.length}</p>
+            <p className="mt-7 text-4xl font-semibold">{lowPackages.length}</p>
             <p className="mt-2 text-sm text-white/65">Aktívne balíčky s poslednými 1–2 hodinami</p>
           </section>
         </div>

@@ -46,7 +46,7 @@ export default async function RequestChangePage({
   const { data: lesson, error } = await supabase
     .from("lessons")
     .select(
-      "id,student_id,scheduled_at,duration_minutes,status,language"
+      "id,student_id,scheduled_at,duration_minút,status,language"
     )
     .eq("id", id)
     .eq("student_id", user.id)
@@ -84,16 +84,16 @@ export default async function RequestChangePage({
           className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 transition hover:text-[#183f38]"
         >
           <ArrowLeft size={17} />
-          Back to my lessons
+          Späť na moje hodiny
         </Link>
 
         <section className="mt-7">
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
-            Schedule
+            Rozvrh
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Request a change
+            Požiadať o zmenu
           </h1>
 
           <p className="mt-3 max-w-2xl leading-7 text-gray-500">
@@ -107,7 +107,7 @@ export default async function RequestChangePage({
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-sm font-medium text-white/60">
-                Current lesson
+                Aktuálna hodina
               </p>
 
               <h2 className="mt-2 text-xl font-semibold">
@@ -127,7 +127,7 @@ export default async function RequestChangePage({
               </div>
 
               <p className="mt-3 text-sm text-white/60">
-                {lesson.duration_minutes || 60} minutes
+                {lesson.duration_minút || 60} minút
               </p>
             </div>
 
@@ -140,7 +140,7 @@ export default async function RequestChangePage({
         {pendingRequest ? (
           <section className="mt-6 rounded-3xl border border-[#dfe8e2] bg-white p-6 shadow-sm sm:p-8">
             <h2 className="text-xl font-semibold">
-              Change request pending
+              Žiadosť o zmenu čaká na vybavenie
             </h2>
 
             <p className="mt-2 leading-7 text-gray-500">
@@ -153,7 +153,7 @@ export default async function RequestChangePage({
               href="/lessons"
               className="mt-6 inline-flex rounded-2xl bg-[#183f38] px-5 py-3 font-semibold text-white"
             >
-              Back to my lessons
+              Späť na moje hodiny
             </Link>
           </section>
         ) : (

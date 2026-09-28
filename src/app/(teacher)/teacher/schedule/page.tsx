@@ -5,7 +5,7 @@ import {
   Video,
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseServerClient } from "@/lib/supabase/server";\nimport { formatLanguage } from "@/lib/portalLabels";
 import ScheduleRequestActions from "./ScheduleRequestActions";
 
 function formatDate(value: string) {
@@ -171,7 +171,7 @@ export default async function TeacherSchedulePage() {
                         </div>
 
                         <p className="mt-2 text-sm text-[#7e693a]/70">
-                          {lesson.language || "Jazyk"} hodina
+                          {formatLanguage(lesson.language)} hodina
                         </p>
 
                         <div className="mt-4 space-y-2 text-sm text-[#7e693a]">
@@ -286,7 +286,7 @@ export default async function TeacherSchedulePage() {
                                 : "text-gray-400"
                             }`}
                           >
-                            {lesson.language || "Jazyk"} ·{" "}
+                            {formatLanguage(lesson.language)} ·{" "}
                             {lesson.duration_minutes || 60} min
                           </p>
 

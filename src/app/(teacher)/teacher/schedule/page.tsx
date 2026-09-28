@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import RozvrhRequestActions from "./RozvrhRequestActions";
+import ScheduleRequestActions from "./ScheduleRequestActions";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("en-GB", {
@@ -35,11 +35,11 @@ function studentName(
   return (
     profile?.full_name?.trim() ||
     profile?.email ||
-    "Student"
+    "Študent"
   );
 }
 
-export default async function TeacherRozvrhPage() {
+export default async function TeacherSchedulePage() {
   const { user } = await requireRole("teacher");
   const supabase = await createSupabaseServerClient();
 
@@ -109,7 +109,7 @@ export default async function TeacherRozvrhPage() {
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
-            Rozvrh
+            Schedule
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -173,7 +173,7 @@ export default async function TeacherRozvrhPage() {
                         </div>
 
                         <p className="mt-2 text-sm text-[#7e693a]/70">
-                          {lesson.language || "Language"} lesson
+                          {lesson.language || "Jazyk"} lesson
                         </p>
 
                         <div className="mt-4 space-y-2 text-sm text-[#7e693a]">
@@ -197,7 +197,7 @@ export default async function TeacherRozvrhPage() {
                         )}
                       </div>
 
-                      <RozvrhRequestActions
+                      <ScheduleRequestActions
                         requestId={request.id}
                       />
                     </div>
@@ -217,7 +217,7 @@ export default async function TeacherRozvrhPage() {
             <div>
               <p className="text-sm text-gray-400">Upcoming</p>
               <h2 className="mt-1 text-xl font-semibold">
-                Rozvrhd lessons
+                Scheduled lessons
               </h2>
             </div>
 
@@ -277,7 +277,7 @@ export default async function TeacherRozvrhPage() {
                                   : "bg-[#eef3ef] text-[#527064]"
                               }`}
                             >
-                              {index === 0 ? "Next" : "Rozvrhd"}
+                              {index === 0 ? "Next" : "Scheduled"}
                             </span>
                           </div>
 

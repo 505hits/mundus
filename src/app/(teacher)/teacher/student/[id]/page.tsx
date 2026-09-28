@@ -322,7 +322,7 @@ async function renderStudentPage(
         <section className="mt-10">
           <div>
             <p className="text-sm text-gray-400">
-              History
+              História
             </p>
 
             <h2 className="mt-1 text-xl font-semibold">
@@ -355,9 +355,7 @@ async function renderStudentPage(
                   >
                     <div>
                       <p className="font-semibold">
-                        {lesson.lesson_type ||
-                          lesson.language ||
-                          "Hodina"}
+                        {formatLessonType(lesson.lesson_type) || formatLanguage(lesson.language) || "Hodina"}
                       </p>
 
                       <p className="mt-1 text-sm text-gray-400">

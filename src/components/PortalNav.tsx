@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import LogoutButton from "@/components/LogoutButton";
 import {
   BookOpen,
   ChartNoAxesColumnIncreasing,
@@ -42,7 +43,7 @@ export default function PortalNav() {
         <div className="sticky top-0 flex h-screen flex-col p-5">
           <Link
             href="/"
-            className="px-3 py-3 text-xl font-bold tracking-tight text-[#183f38]"
+            className="px-3 py-3 text-xl font-bold tracking-tight text-[#0a0a0f]"
           >
             mundus
           </Link>
@@ -54,7 +55,7 @@ export default function PortalNav() {
           <nav className="mt-3 space-y-1">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const active = pathname === item.href;
+              const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
 
               return (
                 <Link
@@ -62,8 +63,8 @@ export default function PortalNav() {
                   href={item.href}
                   className={`flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-medium transition ${
                     active
-                      ? "bg-[#183f38] text-white"
-                      : "text-gray-500 hover:bg-[#f4f6f3] hover:text-[#183f38]"
+                      ? "bg-[#0a0a0f] text-white"
+                      : "text-gray-500 hover:bg-[#f4f6f3] hover:text-[#0a0a0f]"
                   }`}
                 >
                   <Icon size={18} />
@@ -73,8 +74,9 @@ export default function PortalNav() {
             })}
           </nav>
 
-          <div className="mt-auto rounded-2xl bg-[#f4f6f3] p-4">
-            <p className="text-sm font-semibold text-[#183f38]">
+          <div className="mt-auto space-y-3">
+            <div className="rounded-2xl bg-[#f4f6f3] p-4">
+            <p className="text-sm font-semibold text-[#0a0a0f]">
               Need help?
             </p>
 
@@ -82,22 +84,25 @@ export default function PortalNav() {
               Contact Mundus Languages and we&apos;ll be happy to help.
             </p>
           </div>
+            <LogoutButton />
+          </div>
         </div>
       </aside>
 
       {/* Mobile bottom navigation */}
+      <div className="fixed right-4 top-4 z-50 lg:hidden"><LogoutButton compact /></div>
       <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-black/5 bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
         <div className="mx-auto grid max-w-lg grid-cols-4">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const active = pathname === item.href;
+            const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
 
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 className={`flex flex-col items-center justify-center gap-1 py-3 text-[11px] font-medium ${
-                  active ? "text-[#183f38]" : "text-gray-400"
+                  active ? "text-[#0a0a0f]" : "text-gray-400"
                 }`}
               >
                 <div

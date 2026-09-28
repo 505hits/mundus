@@ -6,7 +6,7 @@ import {
   Users,
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseServerClient } from "@/lib/supabase/server";\nimport { formatLanguage } from "@/lib/portalLabels";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("sk-SK", {
@@ -116,7 +116,7 @@ export default async function TeacherStudentsPage() {
       studentMap.set(lesson.student_id, {
         id: lesson.student_id,
         name: getName(student),
-        language: lesson.language || "Jazyk",
+        language: formatLanguage(lesson.language),
         nextLesson: isFuture ? lesson.scheduled_at : null,
         remaining:
           packageMap.get(lesson.student_id)?.remaining ?? 0,

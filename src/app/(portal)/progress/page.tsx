@@ -1,6 +1,6 @@
 import Link from "next/link";
 import {
-  ArrowZostáva,
+  ArrowLeft,
   BookOpen,
   CalendarDays,
   CheckCircle2,
@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { formatLanguage, formatLessonType, formatProgressLabel } from "@/lib/portalLabels";
 
 export default async function ProgressPage() {
   const { user } = await requireRole("student");
@@ -51,21 +50,21 @@ export default async function ProgressPage() {
     (lesson) => lesson.status === "completed"
   );
 
-  const activeBalíčky = packages ?? [];
+  const activePackages = packages ?? [];
   const teacherReports = reports ?? [];
   const latestReport = teacherReports[0] ?? null;
 
-  const totalLessons = activeBalíčky.reduce(
+  const totalLessons = activePackages.reduce(
     (sum, pkg) => sum + (pkg.total_lessons ?? 0),
     0
   );
 
-  const usedLessons = activeBalíčky.reduce(
+  const usedLessons = activePackages.reduce(
     (sum, pkg) => sum + (pkg.used_lessons ?? 0),
     0
   );
 
-  const remainingLessons = activeBalíčky.reduce(
+  const remainingLessons = activePackages.reduce(
     (sum, pkg) => sum + (pkg.remaining_lessons ?? 0),
     0
   );
@@ -80,14 +79,14 @@ export default async function ProgressPage() {
 
   const language =
     allLessons.find((lesson) => lesson.language)?.language ||
-    "Váš jazyk";
+    "Your language";
 
   const nextFocus =
     latestReport?.next_focus ||
-    "Lektor doplní ďalšie zameranie po hodine.";
+    "Your teacher will add your next learning focus after a lesson.";
 
   function formatDate(value: string) {
-    return new Intl.DateTimeFormat("sk-SK", {
+    return new Intl.DateTimeFormat("en-GB", {
       day: "numeric",
       month: "long",
       year: "numeric",
@@ -104,10 +103,12 @@ export default async function ProgressPage() {
             href="/dashboard"
             className="flex items-center gap-2 text-sm font-medium transition hover:text-[#9a8049]"
           >
-            <ArrowZostáva size={17} />Prehľad</Link>
+            <ArrowLeft size={17} />
+            Dashboard
+          </Link>
 
           <p className="text-sm font-semibold">
-            Vzdelávací portál Mundus
+            Mundus Learning Portal
           </p>
         </div>
       </header>
@@ -116,34 +117,37 @@ export default async function ProgressPage() {
         {/* Intro */}
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
-            Môj pokrok
+            My progress
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Pozrite sa, ako napredujete
+            See how far you&apos;ve come
           </h1>
 
           <p className="mt-2 max-w-2xl text-gray-500">
-            Sledujte svoje reálne študijné aktivity v Mundus a najnovšiu spätnú väzbu od lektora.
+            Follow your real Mundus learning activity and see the latest
+            feedback from your teacher.
           </p>
         </section>
 
-        {/* Aktuálne učenie */}
+        {/* Current learning */}
         <section className="mt-8 rounded-3xl bg-[#183f38] p-6 text-white shadow-sm sm:p-8">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <p className="text-sm font-medium text-white/55">
-                Aktuálne učenie
+                Current learning
               </p>
 
               <div className="mt-3 flex items-end gap-3">
                 <span className="text-4xl font-semibold">
-                  {formatLanguage(language)}
+                  {language}
                 </span>
               </div>
 
               <p className="mt-4 max-w-xl text-sm leading-6 text-white/60">
-                Váš pokrok vychádza z hodín a záznamov lektora uložených vo vašom účte Mundus. Úroveň CEFR zobrazíme iba vtedy, keď ju máte zaznamenanú v hodnotení.
+                Your progress here is based on lessons and teacher reports
+                recorded in your Mundus account. A CEFR level is shown only
+                when Mundus has a recorded assessment for you.
               </p>
             </div>
 
@@ -166,7 +170,7 @@ export default async function ProgressPage() {
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
-              Absolvované hodiny
+              Lessons completed
             </p>
           </article>
 
@@ -181,7 +185,7 @@ export default async function ProgressPage() {
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
-              Zostávajúce hodiny
+              Lessons remaining
             </p>
           </article>
 
@@ -196,7 +200,7 @@ export default async function ProgressPage() {
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
-              Záznamy lektora
+              Teacher reports
             </p>
           </article>
         </section>
@@ -207,11 +211,11 @@ export default async function ProgressPage() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-sm text-gray-400">
-                  Aktuálny balíček
+                  Current package
                 </p>
 
                 <h2 className="mt-1 text-xl font-semibold">
-                  Pokrok v balíčku
+                  Your lesson progress
                 </h2>
               </div>
 
@@ -232,7 +236,7 @@ export default async function ProgressPage() {
 
             <div className="mt-3 flex flex-wrap justify-between gap-2 text-sm text-gray-500">
               <span>
-                {usedLessons} z {totalLessons} hodín absolvovaných
+                {usedLessons} of {totalLessons} lessons completed
               </span>
 
               <span>{packageProgress}%</span>
@@ -240,7 +244,7 @@ export default async function ProgressPage() {
           </section>
         )}
 
-        {/* Ďalšie zameranie */}
+        {/* Next focus */}
         <section className="mt-6 rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
           <div className="flex items-start gap-4">
             <div className="rounded-2xl bg-[#faf6eb] p-3 text-[#9a8049]">
@@ -249,7 +253,7 @@ export default async function ProgressPage() {
 
             <div>
               <p className="text-sm text-gray-400">
-                Ďalšie zameranie
+                Next focus
               </p>
 
               <h2 className="mt-1 text-xl font-semibold">
@@ -258,24 +262,25 @@ export default async function ProgressPage() {
 
               {!latestReport && (
                 <p className="mt-3 text-sm leading-6 text-gray-500">
-                  Lektor zatiaľ nepridal ďalšie zameranie. Zobrazí sa po uložení záznamu z hodiny.
+                  Your teacher has not added a learning focus yet. It will
+                  appear here after a report is saved.
                 </p>
               )}
             </div>
           </div>
         </section>
 
-        {/* Najnovšia spätná väzba od lektora */}
+        {/* Latest teacher feedback */}
         <section className="mt-6 rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-sm text-gray-400">
-                Najnovšia spätná väzba od lektora
+                Latest teacher feedback
               </p>
 
               <h2 className="mt-1 text-xl font-semibold">
                 {latestReport?.topic ||
-                  "Zatiaľ bez záznamu od lektora"}
+                  "No teacher report yet"}
               </h2>
             </div>
 
@@ -288,7 +293,7 @@ export default async function ProgressPage() {
             <>
               {latestReport.progress && (
                 <span className="mt-5 inline-flex rounded-full bg-[#eef3ef] px-3 py-1.5 text-xs font-semibold text-[#527064]">
-                  {formatProgressLabel(latestReport.progress)}
+                  {latestReport.progress}
                 </span>
               )}
 
@@ -298,13 +303,16 @@ export default async function ProgressPage() {
                 </p>
               ) : (
                 <p className="mt-5 text-sm text-gray-500">
-                  Lektor zatiaľ nepridal poznámku určenú pre vás.
+                  Your teacher has not added a student-visible note to this
+                  report.
                 </p>
               )}
 
               {latestReport.homework && (
                 <div className="mt-6 rounded-2xl bg-[#f7f8f5] p-5">
-                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#9a8049]">Domáca úloha</p>
+                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#9a8049]">
+                    Homework
+                  </p>
 
                   <p className="mt-2 text-sm leading-6 text-gray-600">
                     {latestReport.homework}
@@ -313,25 +321,26 @@ export default async function ProgressPage() {
               )}
 
               <p className="mt-5 text-xs text-gray-400">
-                Aktualizované {formatDate(latestReport.updated_at)}
+                Updated {formatDate(latestReport.updated_at)}
               </p>
             </>
           ) : (
             <p className="mt-5 max-w-2xl text-sm leading-6 text-gray-500">
-              Najnovšia spätná väzba sa zobrazí po uložení záznamu z hodiny.
+              Your latest teacher feedback will appear here once your teacher
+              saves a lesson report.
             </p>
           )}
         </section>
 
-        {/* Dokončené hodiny */}
+        {/* Completed lessons */}
         <section className="mt-10">
           <div>
             <p className="text-sm text-gray-400">
-              Posledná aktivita
+              Recent activity
             </p>
 
             <h2 className="mt-1 text-xl font-semibold">
-              Dokončené hodiny
+              Completed lessons
             </h2>
           </div>
 
@@ -352,7 +361,7 @@ export default async function ProgressPage() {
                       <p className="font-semibold">
                         {lesson.lesson_type ||
                           lesson.language ||
-                          "Hodina"}
+                          "Lesson"}
                       </p>
 
                       <p className="mt-1 text-sm text-gray-400">
@@ -360,7 +369,9 @@ export default async function ProgressPage() {
                       </p>
                     </div>
 
-                    <span className="rounded-full bg-[#eef3ef] px-3 py-1.5 text-xs font-semibold text-[#527064]">Dokončená</span>
+                    <span className="rounded-full bg-[#eef3ef] px-3 py-1.5 text-xs font-semibold text-[#527064]">
+                      Completed
+                    </span>
                   </div>
                 )
               )}
@@ -368,18 +379,19 @@ export default async function ProgressPage() {
           ) : (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
               <p className="font-medium">
-                Zatiaľ nemáte dokončené hodiny
+                No completed lessons yet
               </p>
 
               <p className="mt-1 text-sm text-gray-400">
-                História hodín sa zobrazí po prvej dokončenej hodine.
+                Your lesson history will appear here after your first
+                completed lesson.
               </p>
             </div>
           )}
         </section>
 
         <p className="mt-8 text-center text-xs text-gray-400">
-          Vzdelávací portál Mundus
+          Mundus Learning Portal
         </p>
       </div>
     </main>

@@ -12,7 +12,7 @@ import {
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-export default async function PokrokPage() {
+export default async function ProgressPage() {
   const { user } = await requireRole("student");
   const supabase = await createSupabaseServerClient();
 
@@ -69,7 +69,7 @@ export default async function PokrokPage() {
     0
   );
 
-  const packagePokrok =
+  const packageProgress =
     totalLessons > 0
       ? Math.min(
           100,
@@ -108,7 +108,7 @@ export default async function PokrokPage() {
           </Link>
 
           <p className="text-sm font-semibold">
-            Mundus Learning Portal
+            Vzdelávací portál Mundus
           </p>
         </div>
       </header>
@@ -229,7 +229,7 @@ export default async function PokrokPage() {
               <div
                 className="h-full rounded-full bg-[#183f38]"
                 style={{
-                  width: `${packagePokrok}%`,
+                  width: `${packageProgress}%`,
                 }}
               />
             </div>
@@ -239,7 +239,7 @@ export default async function PokrokPage() {
                 {usedLessons} of {totalLessons} lessons completed
               </span>
 
-              <span>{packagePokrok}%</span>
+              <span>{packageProgress}%</span>
             </div>
           </section>
         )}

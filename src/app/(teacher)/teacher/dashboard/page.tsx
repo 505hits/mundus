@@ -76,7 +76,7 @@ export default async function TeacherDashboardPage() {
   ).toISOString();
 
   const { data: todayLessons } = await supabase
-    .from("hodín")
+    .from("lessons")
     .select(`
       id,
       student_id,
@@ -86,7 +86,7 @@ export default async function TeacherDashboardPage() {
       language,
       lesson_type,
       meet_link,
-      student:profiles!hodín_student_id_fkey (
+      student:profiles!lessons_student_id_fkey (
         full_name,
         email
       )
@@ -98,13 +98,13 @@ export default async function TeacherDashboardPage() {
     .order("scheduled_at", { ascending: true });
 
   const { data: upcomingLessons } = await supabase
-    .from("hodín")
+    .from("lessons")
     .select(`
       id,
       student_id,
       scheduled_at,
       language,
-      student:profiles!hodín_student_id_fkey (
+      student:profiles!lessons_student_id_fkey (
         full_name,
         email
       )
@@ -120,13 +120,13 @@ export default async function TeacherDashboardPage() {
       id,
       requested_by,
       preferred_at,
-      lesson:hodín!schedule_change_requests_lesson_id_fkey (
+      lesson:lessons!schedule_change_requests_lesson_id_fkey (
         id,
         teacher_id,
         student_id,
         scheduled_at,
         language,
-        student:profiles!hodín_student_id_fkey (
+        student:profiles!lessons_student_id_fkey (
           full_name,
           email
         )
@@ -147,7 +147,7 @@ export default async function TeacherDashboardPage() {
       );
     }) ?? [];
 
-  const uniqueŠtudenti = new Map<
+  const uniqueStudents = new Map<
     string,
     {
       id: string;
@@ -158,13 +158,13 @@ export default async function TeacherDashboardPage() {
   >();
 
   for (const lesson of upcomingLessons ?? []) {
-    if (uniqueŠtudenti.has(lesson.student_id)) continue;
+    if (uniqueStudents.has(lesson.student_id)) continue;
 
     const student = Array.isArray(lesson.student)
       ? lesson.student[0]
       : lesson.student;
 
-    uniqueŠtudenti.set(lesson.student_id, {
+    uniqueStudents.set(lesson.student_id, {
       id: lesson.student_id,
       name: getName(student),
       language: lesson.language || "Language",
@@ -172,7 +172,7 @@ export default async function TeacherDashboardPage() {
     });
   }
 
-  const students = Array.from(uniqueŠtudenti.values());
+  const students = Array.from(uniqueStudents.values());
 
   const teacherName =
     teacherProfile?.full_name?.trim() ||
@@ -193,7 +193,7 @@ export default async function TeacherDashboardPage() {
           <div className="flex items-center gap-3">
             <div className="hidden text-right sm:block">
               <p className="text-sm font-semibold">{teacherName}</p>
-              <p className="text-xs text-gray-400">Teacher Portal</p>
+              <p className="text-xs text-gray-400">Portál lektora</p>
             </div>
 
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#183f38] text-sm font-semibold text-white">
@@ -210,7 +210,7 @@ export default async function TeacherDashboardPage() {
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Ahoj, {firstName} 👋
+            Hi, {firstName} 👋
           </h1>
 
           <p className="mt-2 text-gray-500">
@@ -229,7 +229,7 @@ export default async function TeacherDashboardPage() {
               {todayLessons?.length ?? 0}
             </p>
 
-            <p className="mt-1 text-sm text-gray-500">hodín</p>
+            <p className="mt-1 text-sm text-gray-500">lessons</p>
           </article>
 
           <article className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
@@ -243,7 +243,7 @@ export default async function TeacherDashboardPage() {
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
-              študentov s naplánovanou hodinou
+              upcoming students
             </p>
           </article>
 
@@ -270,7 +270,7 @@ export default async function TeacherDashboardPage() {
             <div>
               <p className="text-sm text-gray-400">Rozvrh</p>
               <h2 className="mt-1 text-xl font-semibold">
-                Dnes&apos;s hodín
+                Dnes&apos;s lessons
               </h2>
             </div>
 
@@ -284,9 +284,9 @@ export default async function TeacherDashboardPage() {
 
           {!todayLessons?.length ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
-              <p className="font-medium">No hodín today</p>
+              <p className="font-medium">Dnes nemáte naplánované hodiny</p>
               <p className="mt-1 text-sm text-gray-400">
-                Your scheduled hodín for today will appear here.
+                Naplánované dnešné hodiny sa zobrazia tu.
               </p>
             </div>
           ) : (
@@ -325,7 +325,7 @@ export default async function TeacherDashboardPage() {
 
                             {index === 0 && (
                               <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold">
-                                Najbližšia
+                                Next
                               </span>
                             )}
                           </div>
@@ -414,7 +414,7 @@ export default async function TeacherDashboardPage() {
         <section className="mt-10">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-400">Študenti</p>
+              <p className="text-sm text-gray-400">Students</p>
               <h2 className="mt-1 text-xl font-semibold">
                 Moji študenti
               </h2>
@@ -425,9 +425,9 @@ export default async function TeacherDashboardPage() {
 
           {students.length === 0 ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
-              <p className="font-medium">No študentov s naplánovanou hodinou</p>
+              <p className="font-medium">No upcoming students</p>
               <p className="mt-1 text-sm text-gray-400">
-                Študenti with upcoming hodín will appear here.
+                Students with upcoming lessons will appear here.
               </p>
             </div>
           ) : (
@@ -446,7 +446,7 @@ export default async function TeacherDashboardPage() {
                     <p className="font-semibold">{student.name}</p>
 
                     <p className="mt-1 text-sm text-gray-400">
-                      {student.language} · Najbližšia:{" "}
+                      {student.language} · Next:{" "}
                       {formatShortDate(student.nextLesson)} ·{" "}
                       {formatTime(student.nextLesson)}
                     </p>

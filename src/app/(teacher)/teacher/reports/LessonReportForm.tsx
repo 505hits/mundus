@@ -26,17 +26,17 @@ export default function LessonReportForm({
   studentId,
   existingReport,
 }: Props) {
-  const [topic, setTopic] = useState(existingReport?.topic ?? "");
-  const [progress, setProgress] = useState(
+  const [topic, setTéma] = useState(existingReport?.topic ?? "");
+  const [progress, setPokrok] = useState(
     existingReport?.progress ?? "Good progress"
   );
   const [studentNote, setStudentNote] = useState(
     existingReport?.student_note ?? ""
   );
-  const [homework, setHomework] = useState(
+  const [homework, setDomáca úloha] = useState(
     existingReport?.homework ?? ""
   );
-  const [nextFocus, setNextFocus] = useState(
+  const [nextZameranie, setNajbližšiaZameranie] = useState(
     existingReport?.next_focus ?? ""
   );
   const [privateNote, setPrivateNote] = useState(
@@ -44,12 +44,12 @@ export default function LessonReportForm({
   );
 
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(Boolean(existingReport));
+  const [saved, setUložené] = useState(Boolean(existingReport));
   const [error, setError] = useState("");
 
   async function saveReport() {
     setSaving(true);
-    setSaved(false);
+    setUložené(false);
     setError("");
 
     const supabase = createSupabaseBrowserClient();
@@ -76,7 +76,7 @@ export default function LessonReportForm({
           progress: progress || null,
           student_note: studentNote.trim() || null,
           homework: homework.trim() || null,
-          next_focus: nextFocus.trim() || null,
+          next_focus: nextZameranie.trim() || null,
           private_teacher_note: privateNote.trim() || null,
           updated_at: new Date().toISOString(),
         },
@@ -91,7 +91,7 @@ export default function LessonReportForm({
       return;
     }
 
-    setSaved(true);
+    setUložené(true);
     setSaving(false);
   }
 
@@ -102,17 +102,17 @@ export default function LessonReportForm({
           Lesson topic
           <input
             value={topic}
-            onChange={(event) => setTopic(event.target.value)}
+            onChange={(event) => setTéma(event.target.value)}
             placeholder="e.g. Past tense & conversation"
             className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none transition focus:border-[#183f38]"
           />
         </label>
 
         <label className="text-sm font-medium">
-          Progress
+          Pokrok
           <select
             value={progress}
-            onChange={(event) => setProgress(event.target.value)}
+            onChange={(event) => setPokrok(event.target.value)}
             className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#183f38]"
           >
             <option>Good progress</option>
@@ -133,27 +133,27 @@ export default function LessonReportForm({
         </label>
 
         <label className="text-sm font-medium">
-          Homework
+          Domáca úloha
           <input
             value={homework}
-            onChange={(event) => setHomework(event.target.value)}
+            onChange={(event) => setDomáca úloha(event.target.value)}
             placeholder="Optional"
             className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#183f38]"
           />
         </label>
 
         <label className="text-sm font-medium">
-          Next focus
+          Najbližšia focus
           <input
-            value={nextFocus}
-            onChange={(event) => setNextFocus(event.target.value)}
+            value={nextZameranie}
+            onChange={(event) => setNajbližšiaZameranie(event.target.value)}
             placeholder="e.g. Speaking confidence"
             className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#183f38]"
           />
         </label>
 
         <label className="text-sm font-medium md:col-span-2">
-          Private teacher note
+          Súkromná poznámka lektora
           <textarea
             value={privateNote}
             onChange={(event) => setPrivateNote(event.target.value)}
@@ -173,7 +173,7 @@ export default function LessonReportForm({
         >
           <Save size={17} />
           {saving
-            ? "Saving..."
+            ? "Ukladám..."
             : existingReport
               ? "Update report"
               : "Save lesson report"}
@@ -182,7 +182,7 @@ export default function LessonReportForm({
         {saved && !saving && (
           <span className="flex items-center gap-1.5 text-sm font-medium text-[#527064]">
             <CheckCircle2 size={17} />
-            Saved
+            Uložené
           </span>
         )}
 

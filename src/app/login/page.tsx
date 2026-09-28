@@ -7,7 +7,7 @@ import { createSupabaseBrowserClient } from "@/lib/supabase";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [password, setHeslo] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -81,7 +81,7 @@ window.location.href = "/dashboard";
 
         <div className="relative z-10 max-w-lg">
           <p className="mb-5 text-sm font-semibold uppercase tracking-[0.2em] text-[#d7b56d]">
-            Mundus vzdelávací portál
+            Vzdelávací portál Mundus
           </p>
 
           <h1 className="text-5xl font-semibold leading-tight text-white">
@@ -116,11 +116,11 @@ window.location.href = "/dashboard";
           </div>
 
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#8a7445]">
-            Learning Portal
+            Vzdelávací portál
           </p>
 
           <h2 className="mt-3 text-4xl font-semibold tracking-tight text-[#163f3a]">
-            Welcome back
+            Vitajte späť
           </h2>
 
           <p className="mt-3 text-base leading-7 text-gray-500">
@@ -130,7 +130,7 @@ window.location.href = "/dashboard";
           <form onSubmit={handleLogin} className="mt-9 space-y-5">
             <label className="block">
               <span className="text-sm font-medium text-gray-700">
-                Email address
+                E-mailová adresa
               </span>
 
               <input

@@ -83,7 +83,7 @@ export default async function DashboardPage() {
 
   const latestReport = teacherReports[0] ?? null;
 
-  const latestDomáca úloha =
+  const latestHomework =
     teacherReports.find(
       (report) => report.homework?.trim()
     )?.homework?.trim() || null;
@@ -263,7 +263,7 @@ export default async function DashboardPage() {
                 </div>
 
                 <p className="mt-3 text-sm text-gray-400">
-                  {usedLessons} of {totalLessons} hodín absolvovaných
+                  {usedLessons} z {totalLessons} hodín absolvovaných
                 </p>
               </>
             ) : (
@@ -302,8 +302,7 @@ export default async function DashboardPage() {
               </p>
             ) : (
               <p className="mt-5 text-sm leading-6 text-gray-500">
-                Your level and progress will appear here as your teacher
-                adds assessments and lesson reports.
+                Vaša úroveň a pokrok sa budú zobrazovať podľa hodnotení a záznamov od lektora.
               </p>
             )}
 
@@ -325,7 +324,7 @@ export default async function DashboardPage() {
                 </p>
 
                 <h2 className="mt-1 text-xl font-semibold">
-                  {latestDomáca úloha
+                  {latestHomework
                     ? "Vaša posledná domáca úloha"
                     : "Zatiaľ nemáte domácu úlohu"}
                 </h2>
@@ -337,14 +336,14 @@ export default async function DashboardPage() {
             </div>
 
             <p className="mt-5 text-sm leading-6 text-gray-500">
-              {latestDomáca úloha
-                ? latestDomáca úloha
+              {latestHomework
+                ? latestHomework
                 : "Nové úlohy od lektora sa zobrazia po uložení záznamu z hodiny."}
             </p>
 
             {latestReport?.updated_at && (
               <p className="mt-4 text-xs text-gray-400">
-                Updated{" "}
+                Aktualizované{" "}
                 {new Intl.DateTimeFormat("en-GB", {
                   day: "numeric",
                   month: "long",
@@ -391,7 +390,7 @@ export default async function DashboardPage() {
                 >
                   <div>
                     <p className="font-medium">
-                      {lesson.language || "Jazyk"} lesson
+                      {lesson.language || "Jazyk"} hodina
                     </p>
 
                     <p className="mt-1 text-sm text-gray-400">

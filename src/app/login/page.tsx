@@ -7,7 +7,7 @@ import { createSupabaseBrowserClient } from "@/lib/supabase";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
-  const [password, setHeslo] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -146,7 +146,7 @@ window.location.href = "/dashboard";
 
             <label className="block">
               <span className="text-sm font-medium text-gray-700">
-                Password
+                Heslo
               </span>
 
               <input

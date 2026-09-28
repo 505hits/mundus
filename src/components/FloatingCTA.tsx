@@ -2,12 +2,24 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function FloatingCTA() {
     const { t } = useLanguage();
+    const pathname = usePathname();
     const [isVisible, setIsVisible] = useState(false);
+
+    const isPortalRoute =
+        pathname === "/login" ||
+        pathname === "/pending-approval" ||
+        pathname === "/dashboard" ||
+        pathname.startsWith("/lessons") ||
+        pathname.startsWith("/learning") ||
+        pathname.startsWith("/progress") ||
+        pathname.startsWith("/teacher") ||
+        pathname.startsWith("/admin");
 
     useEffect(() => {
         const handleScroll = () => {
@@ -18,6 +30,10 @@ export default function FloatingCTA() {
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
+
+    if (isPortalRoute) {
+        return null;
+    }
 
     return (
         <AnimatePresence>

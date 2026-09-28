@@ -35,12 +35,12 @@ function getStudentName(
   return profile?.full_name?.trim() || profile?.email || "Študent";
 }
 
-export default async function TeacherReportsPage() {
+export default async function TeacherZáznamyPage() {
   const { user } = await requireRole("teacher");
   const supabase = await createSupabaseServerClient();
 
-  const { data: lessons, error: lessonsError } = await supabase
-    .from("lessons")
+  const { data: hodín, error: hodínError } = await supabase
+    .from("hodín")
     .select(`
       id,
       student_id,
@@ -48,7 +48,7 @@ export default async function TeacherReportsPage() {
       language,
       lesson_type,
       status,
-      student:profiles!lessons_student_id_fkey (
+      student:profiles!hodín_student_id_fkey (
         full_name,
         email
       )
@@ -58,7 +58,7 @@ export default async function TeacherReportsPage() {
     .order("scheduled_at", { ascending: false })
     .limit(20);
 
-  const lessonIds = (lessons ?? []).map((lesson) => lesson.id);
+  const lessonIds = (hodín ?? []).map((lesson) => lesson.id);
 
   const { data: reports, error: reportsError } = lessonIds.length
     ? await supabase
@@ -82,13 +82,13 @@ export default async function TeacherReportsPage() {
     (reports ?? []).map((report) => [report.lesson_id, report])
   );
 
-  const recentLessons = lessons ?? [];
+  const recentLessons = hodín ?? [];
 
-  const completedReports = recentLessons.filter((lesson) =>
+  const completedZáznamy = recentLessons.filter((lesson) =>
     reportMap.has(lesson.id)
   ).length;
 
-  const missingReports = recentLessons.length - completedReports;
+  const missingZáznamy = recentLessons.length - completedZáznamy;
 
   return (
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
@@ -105,7 +105,7 @@ export default async function TeacherReportsPage() {
           </p>
         </section>
 
-        {(lessonsError || reportsError) && (
+        {(hodínError || reportsError) && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             Nepodarilo sa načítať všetky záznamy z hodín. Obnovte stránku alebo to skúste o chvíľu znova.
           </div>
@@ -128,7 +128,7 @@ export default async function TeacherReportsPage() {
             <AlertCircle size={20} className="text-[#9a8049]" />
 
             <p className="mt-4 text-3xl font-semibold text-[#7e693a]">
-              {missingReports}
+              {missingZáznamy}
             </p>
 
             <p className="mt-1 text-sm text-[#7e693a]/70">
@@ -140,7 +140,7 @@ export default async function TeacherReportsPage() {
             <CheckCircle2 size={20} className="text-[#9a8049]" />
 
             <p className="mt-4 text-3xl font-semibold">
-              {completedReports}
+              {completedZáznamy}
             </p>
 
             <p className="mt-1 text-sm text-gray-500">

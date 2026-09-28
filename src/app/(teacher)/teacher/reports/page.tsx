@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import LessonReportForm from "./LessonReportForm";
+import HodinaReportForm from "./HodinaReportForm";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("en-GB", {
@@ -81,13 +81,13 @@ export default async function TeacherReportsPage() {
     (reports ?? []).map((report) => [report.lesson_id, report])
   );
 
-  const recentLessons = lessons ?? [];
+  const recentHodinas = lessons ?? [];
 
-  const completedReports = recentLessons.filter((lesson) =>
+  const completedReports = recentHodinas.filter((lesson) =>
     reportMap.has(lesson.id)
   ).length;
 
-  const missingReports = recentLessons.length - completedReports;
+  const missingReports = recentHodinas.length - completedReports;
 
   return (
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
@@ -117,7 +117,7 @@ export default async function TeacherReportsPage() {
             <ClipboardList size={20} className="text-[#9a8049]" />
 
             <p className="mt-4 text-3xl font-semibold">
-              {recentLessons.length}
+              {recentHodinas.length}
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
@@ -152,26 +152,26 @@ export default async function TeacherReportsPage() {
 
         <section className="mt-8">
           <p className="text-sm text-gray-400">
-            Recent activity
+            Posledná aktivita
           </p>
 
           <h2 className="mt-1 text-xl font-semibold">
-            Completed lessons
+            Dokončené hodiny
           </h2>
 
-          {recentLessons.length === 0 ? (
+          {recentHodinas.length === 0 ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
               <p className="font-medium">
                 Zatiaľ nemáte dokončené hodiny
               </p>
 
               <p className="mt-1 text-sm text-gray-400">
-                Reports will become available after completed lessons.
+                Záznamy bude možné vyplniť po dokončení hodiny.
               </p>
             </div>
           ) : (
             <div className="mt-4 space-y-4">
-              {recentLessons.map((lesson) => {
+              {recentHodinas.map((lesson) => {
                 const student = Array.isArray(lesson.student)
                   ? lesson.student[0]
                   : lesson.student;
@@ -202,14 +202,14 @@ export default async function TeacherReportsPage() {
                             }`}
                           >
                             {report
-                              ? "Report completed"
-                              : "Report needed"}
+                              ? "Záznam vyplnený"
+                              : "Treba doplniť záznam"}
                           </span>
                         </div>
 
                         <p className="mt-2 text-sm text-gray-500">
-                          {lesson.language || "Language"} ·{" "}
-                          {lesson.lesson_type || "Lesson"}
+                          {lesson.language || "Jazyk"} ·{" "}
+                          {lesson.lesson_type || "Hodina"}
                         </p>
 
                         <div className="mt-2 flex items-center gap-2 text-sm text-gray-400">
@@ -219,7 +219,7 @@ export default async function TeacherReportsPage() {
                         </div>
                       </div>
 
-                      <LessonReportForm
+                      <HodinaReportForm
                         lessonId={lesson.id}
                         studentId={lesson.student_id}
                         existingReport={report ?? null}

@@ -14,6 +14,8 @@ export default function FloatingCTA() {
 
     const isPortalRoute =
         pathname === "/login" ||
+        pathname === "/forgot-password" ||
+        pathname === "/reset-password" ||
         pathname === "/pending-approval" ||
         pathname === "/dashboard" ||
         pathname.startsWith("/lessons") ||

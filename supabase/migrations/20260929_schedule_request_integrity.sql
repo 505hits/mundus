@@ -16,9 +16,10 @@ as $$
 declare
   linked_student_id uuid;
   linked_status text;
+  linked_scheduled_at timestamptz;
 begin
-  select student_id, status
-  into linked_student_id, linked_status
+  select student_id, status, scheduled_at
+  into linked_student_id, linked_status, linked_scheduled_at
   from public.lessons
   where id = new.lesson_id;
 
@@ -32,6 +33,10 @@ begin
 
   if linked_status not in ('scheduled', 'rescheduled') then
     raise exception 'Only an active upcoming lesson can be rescheduled';
+  end if;
+
+  if linked_scheduled_at <= now() then
+    raise exception 'Past lessons cannot be rescheduled';
   end if;
 
   if new.preferred_at <= now() then

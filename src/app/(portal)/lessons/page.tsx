@@ -9,6 +9,7 @@ import {
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatLanguage, formatLessonStatus } from "@/lib/portalLabels";
+import StudentScheduleRequestActions from "./StudentScheduleRequestActions";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("sk-SK", {
@@ -46,7 +47,7 @@ export default async function LessonsPage() {
       .order("scheduled_at", { ascending: true }),
     supabase
       .from("schedule_change_requests")
-      .select("lesson_id,preferred_at")
+      .select("id,lesson_id,preferred_at,requested_by")
       .eq("student_id", user.id)
       .eq("status", "pending"),
   ]);
@@ -55,7 +56,7 @@ export default async function LessonsPage() {
   const pendingRequestMap = new Map(
     (pendingRequests ?? []).map((request) => [
       request.lesson_id,
-      request.preferred_at,
+      request,
     ])
   );
   const pendingLessonIds = new Set(pendingRequestMap.keys());
@@ -213,27 +214,38 @@ export default async function LessonsPage() {
                         </button>
                       )}
 
-                      {pendingLessonIds.has(lesson.id) ? (
-                        <div
-                          className={`rounded-2xl border px-4 py-3 text-sm font-medium ${
-                            index === 0
-                              ? "border-white/20 bg-white/5 text-white/75"
-                              : "border-[#c6a65b]/20 bg-[#faf6eb] text-[#9a8049]"
-                          }`}
-                        >
-                          <div className="flex items-center justify-center gap-2">
-                            <RefreshCw size={16} />
-                            Žiadosť čaká na vybavenie
-                          </div>
-                          {pendingRequestMap.get(lesson.id) && (
+                      {pendingLessonIds.has(lesson.id) ? (() => {
+                        const request = pendingRequestMap.get(lesson.id)!;
+                        const requestedByStudent = request.requested_by === user.id;
+
+                        return (
+                          <div
+                            className={`rounded-2xl border px-4 py-3 text-sm font-medium ${
+                              index === 0
+                                ? "border-white/20 bg-white/5 text-white/80"
+                                : "border-[#c6a65b]/20 bg-[#faf6eb] text-[#9a8049]"
+                            }`}
+                          >
+                            <div className="flex items-center justify-center gap-2">
+                              <RefreshCw size={16} />
+                              {requestedByStudent
+                                ? "Vaša žiadosť čaká na vybavenie"
+                                : "Lektor navrhol nový termín"}
+                            </div>
+
                             <p className={`mt-1 text-center text-xs ${
                               index === 0 ? "text-white/55" : "text-[#9a8049]/75"
                             }`}>
-                              Navrhovaný termín: {formatDate(pendingRequestMap.get(lesson.id)!)} ·{" "}
-                              {formatTime(pendingRequestMap.get(lesson.id)!)}
+                              Navrhovaný termín: {formatDate(request.preferred_at)} ·{" "}
+                              {formatTime(request.preferred_at)}
                             </p>
-                          )}
-                        </div>
+
+                            {!requestedByStudent && (
+                              <StudentScheduleRequestActions requestId={request.id} />
+                            )}
+                          </div>
+                        );
+                      })()
                       ) : (
                         <Link
                           href={`/lessons/${lesson.id}/request-change`}

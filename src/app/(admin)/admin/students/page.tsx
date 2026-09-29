@@ -2,6 +2,7 @@ import { AlertCircle, BookOpen, Users } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatLanguage, formatProfileStatus } from "@/lib/portalLabels";
+import StudentStatusAction from "./StudentStatusAction";
 
 function formatDateTime(value: string) {
   return new Intl.DateTimeFormat("sk-SK", {
@@ -113,7 +114,7 @@ export default async function AdminStudentsPage() {
           ) : (
             <div className="divide-y divide-gray-100">
               {studentRows.map((student) => (
-                <div key={student.id} className="grid gap-4 px-5 py-5 lg:grid-cols-[1.4fr_1fr_0.7fr_1.2fr_0.8fr] lg:items-center lg:px-6">
+                <div key={student.id} className="grid gap-4 px-5 py-5 lg:grid-cols-[1.4fr_1fr_0.7fr_1.2fr_0.8fr_0.9fr] lg:items-center lg:px-6">
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
                       <p className="font-semibold">{student.full_name?.trim() || student.email || "Študent"}</p>
@@ -143,6 +144,12 @@ export default async function AdminStudentsPage() {
                     <span className="rounded-full bg-[#eef3ef] px-3 py-1 text-xs font-semibold capitalize text-[#527064]">
                       {formatProfileStatus(student.status)}
                     </span>
+                  </div>
+                  <div>
+                    <StudentStatusAction
+                      studentId={student.id}
+                      status={student.status}
+                    />
                   </div>
                 </div>
               ))}

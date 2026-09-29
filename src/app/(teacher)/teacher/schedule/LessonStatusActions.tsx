@@ -7,6 +7,7 @@ import { createSupabaseBrowserClient } from "@/lib/supabase";
 
 type Props = {
   lessonId: string;
+  scheduledAt: string;
 };
 
 const statusOptions = [
@@ -17,7 +18,10 @@ const statusOptions = [
   { value: "teacher_cancelled", label: "Zrušená lektorom" },
 ];
 
-export default function LessonStatusActions({ lessonId }: Props) {
+export default function LessonStatusActions({
+  lessonId,
+  scheduledAt,
+}: Props) {
   const router = useRouter();
   const [status, setStatus] = useState("completed");
   const [saving, setSaving] = useState(false);
@@ -26,8 +30,21 @@ export default function LessonStatusActions({ lessonId }: Props) {
   async function saveStatus() {
     if (saving) return;
 
-    setSaving(true);
     setError("");
+
+    if (
+      (status === "completed" || status === "student_no_show") &&
+      new Date(scheduledAt).getTime() > Date.now()
+    ) {
+      setError(
+        status === "completed"
+          ? "Budúcu hodinu nie je možné označiť ako dokončenú."
+          : "Budúcu hodinu nie je možné označiť ako neprítomnosť študenta."
+      );
+      return;
+    }
+
+    setSaving(true);
 
     const supabase = createSupabaseBrowserClient();
 

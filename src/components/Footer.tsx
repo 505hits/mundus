@@ -14,12 +14,6 @@ const stagger = {
 
 import { useLanguage } from "@/context/LanguageContext";
 
-const footerLinks = {
-    Languages: "Languages",
-    Company: "Company",
-    Support: "Support",
-    Legal: "Legal",
-};
 
 export default function Footer() {
     const { t } = useLanguage();

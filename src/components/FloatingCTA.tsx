@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -45,13 +46,13 @@ export default function FloatingCTA() {
                     transition={{ type: "spring", stiffness: 260, damping: 20 }}
                     className="fixed bottom-8 right-8 z-40"
                 >
-                    <a
+                    <Link
                         href="/#booking"
                         className="flex items-center gap-2 bg-[#2F3AA2] text-white px-6 py-4 rounded-full font-semibold shadow-lg shadow-blue-900/20 hover:shadow-xl hover:bg-[#252E82] hover:scale-105 transition-all transform"
                     >
                         <span>{t.nav.book}</span>
                         <ArrowRight size={20} />
-                    </a>
+                    </Link>
                 </motion.div>
             )}
         </AnimatePresence>

@@ -124,6 +124,7 @@ async function renderStudentPage(
     profileResult,
     lessonsResult,
     packagesResult,
+    reportsResult,
   ] = await Promise.all([
     supabase
       .from("profiles")
@@ -153,11 +154,20 @@ async function renderStudentPage(
       )
       .eq("student_id", studentId)
       .eq("status", "active"),
+
+    supabase
+      .from("lesson_reports")
+      .select("id,topic,student_note,updated_at")
+      .eq("teacher_id", teacherId)
+      .eq("student_id", studentId)
+      .order("updated_at", { ascending: false })
+      .limit(1),
   ]);
 
   const profile = profileResult.data;
   const lessons = lessonsResult.data ?? [];
   const packages = packagesResult.data ?? [];
+  const latestReport = reportsResult.data?.[0] ?? null;
 
   if (!profile) {
     notFound();
@@ -400,10 +410,25 @@ async function renderStudentPage(
           </div>
 
           <div className="mt-5 rounded-2xl bg-[#f7f8f5] p-5">
-            <p className="text-sm leading-6 text-gray-500">
-              Poznámky pre študenta sa zobrazia po uložení záznamu z hodiny.
-              note system is connected.
-            </p>
+            {latestReport?.student_note?.trim() ? (
+              <>
+                {latestReport.topic?.trim() && (
+                  <p className="text-sm font-semibold text-[#183f38]">
+                    {latestReport.topic}
+                  </p>
+                )}
+                <p className="mt-2 text-sm leading-6 text-gray-500">
+                  {latestReport.student_note}
+                </p>
+                <p className="mt-3 text-xs text-gray-400">
+                  Aktualizované {formatShortDate(latestReport.updated_at)}
+                </p>
+              </>
+            ) : (
+              <p className="text-sm leading-6 text-gray-500">
+                Zatiaľ nie je uložená žiadna poznámka pre študenta.
+              </p>
+            )}
           </div>
         </section>
       </div>

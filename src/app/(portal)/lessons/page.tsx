@@ -33,15 +33,28 @@ export default async function LessonsPage() {
   const { user } = await requireRole("student");
   const supabase = await createSupabaseServerClient();
 
-  const { data: lessons, error: lessonsError } = await supabase
-    .from("lessons")
-    .select(
-      "id,scheduled_at,duration_minutes,status,lesson_type,meet_link,language"
-    )
-    .eq("student_id", user.id)
-    .order("scheduled_at", { ascending: true });
+  const [
+    { data: lessons, error: lessonsError },
+    { data: pendingRequests, error: requestsError },
+  ] = await Promise.all([
+    supabase
+      .from("lessons")
+      .select(
+        "id,scheduled_at,duration_minutes,status,lesson_type,meet_link,language"
+      )
+      .eq("student_id", user.id)
+      .order("scheduled_at", { ascending: true }),
+    supabase
+      .from("schedule_change_requests")
+      .select("lesson_id")
+      .eq("student_id", user.id)
+      .eq("status", "pending"),
+  ]);
 
   const allLessons = lessons ?? [];
+  const pendingLessonIds = new Set(
+    (pendingRequests ?? []).map((request) => request.lesson_id)
+  );
 
   const upcomingLessons = allLessons.filter(
     (lesson) =>
@@ -87,7 +100,7 @@ export default async function LessonsPage() {
           </p>
         </section>
 
-        {lessonsError && (
+        {(lessonsError || requestsError) && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             Nepodarilo sa načítať vaše hodiny. Obnovte stránku alebo to skúste o chvíľu znova.
           </div>
@@ -196,17 +209,30 @@ export default async function LessonsPage() {
                         </button>
                       )}
 
-                      <Link
-                        href={`/lessons/${lesson.id}/request-change`}
-                        className={`flex items-center justify-center gap-2 rounded-2xl border px-4 py-3 text-sm font-medium ${
-                          index === 0
-                            ? "border-white/20 text-white"
-                            : "border-black/10 text-[#183f38]"
-                        }`}
-                      >
-                        <RefreshCw size={16} />
-                        Požiadať o zmenu
-                      </Link>
+                      {pendingLessonIds.has(lesson.id) ? (
+                        <div
+                          className={`flex items-center justify-center gap-2 rounded-2xl border px-4 py-3 text-sm font-medium ${
+                            index === 0
+                              ? "border-white/20 bg-white/5 text-white/75"
+                              : "border-[#c6a65b]/20 bg-[#faf6eb] text-[#9a8049]"
+                          }`}
+                        >
+                          <RefreshCw size={16} />
+                          Žiadosť čaká na vybavenie
+                        </div>
+                      ) : (
+                        <Link
+                          href={`/lessons/${lesson.id}/request-change`}
+                          className={`flex items-center justify-center gap-2 rounded-2xl border px-4 py-3 text-sm font-medium ${
+                            index === 0
+                              ? "border-white/20 text-white"
+                              : "border-black/10 text-[#183f38]"
+                          }`}
+                        >
+                          <RefreshCw size={16} />
+                          Požiadať o zmenu
+                        </Link>
+                      )}
                     </div>
                   </div>
                 </article>

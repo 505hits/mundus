@@ -116,3 +116,11 @@ export function formatPackageType(value: string | null | undefined) {
 
   return value.replaceAll("_", " ");
 }
+
+
+export function formatLessonCount(count: number) {
+  const absolute = Math.abs(count);
+  if (absolute === 1) return `${count} hodina`;
+  if (absolute >= 2 && absolute <= 4) return `${count} hodiny`;
+  return `${count} hodín`;
+}

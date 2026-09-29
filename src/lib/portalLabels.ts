@@ -79,3 +79,17 @@ export function formatProgressLabel(value: string | null | undefined) {
 
   return labels[value.trim().toLowerCase()] || value;
 }
+
+
+export function formatProfileStatus(value: string | null | undefined) {
+  if (!value) return "Neznámy stav";
+
+  const labels: Record<string, string> = {
+    active: "Aktívny",
+    pending: "Čaká na schválenie",
+    inactive: "Neaktívny",
+    suspended: "Pozastavený",
+  };
+
+  return labels[value.trim().toLowerCase()] || value.replaceAll("_", " ");
+}

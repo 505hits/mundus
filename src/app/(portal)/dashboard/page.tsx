@@ -229,7 +229,7 @@ export default async function DashboardPage() {
                 )}
 
                 <Link
-                  href="/lessons"
+                  href={`/lessons/${nextLesson.id}/request-change`}
                   className="rounded-2xl border border-white/20 px-5 py-3.5 text-center font-medium text-white"
                 >
                   Požiadať o zmenu

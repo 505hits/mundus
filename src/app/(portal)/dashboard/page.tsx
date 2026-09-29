@@ -35,10 +35,10 @@ export default async function DashboardPage() {
   const supabase = await createSupabaseServerClient();
 
   const [
-    { data: profile },
-    { data: packages },
-    { data: lessons },
-    { data: reports },
+    { data: profile, error: profileError },
+    { data: packages, error: packagesError },
+    { data: lessons, error: lessonsError },
+    { data: reports, error: reportsError },
   ] = await Promise.all([
     supabase
       .from("profiles")
@@ -74,6 +74,10 @@ export default async function DashboardPage() {
       .order("updated_at", { ascending: false })
       .limit(5),
   ]);
+
+  const hasLoadError = Boolean(
+    profileError || packagesError || lessonsError || reportsError
+  );
 
   const activePackages = packages ?? [];
   const upcomingLessons = lessons ?? [];
@@ -161,6 +165,12 @@ export default async function DashboardPage() {
             Váš prehľad učenia v Mundus.
           </p>
         </section>
+
+        {hasLoadError && (
+          <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+            Niektoré údaje sa nepodarilo načítať. Obnovte stránku alebo to skúste o chvíľu znova.
+          </div>
+        )}
 
         <div className="mt-8 grid gap-6 lg:grid-cols-3">
           {/* Najbližšia hodina */}

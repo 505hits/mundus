@@ -1,4 +1,5 @@
 import {
+  AlertCircle,
   CalendarDays,
   Clock3,
   RefreshCw,
@@ -8,6 +9,7 @@ import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatLanguage } from "@/lib/portalLabels";
 import ScheduleRequestActions from "./ScheduleRequestActions";
+import LessonStatusActions from "./LessonStatusActions";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("sk-SK", {
@@ -67,6 +69,33 @@ export default async function TeacherSchedulePage() {
     .gte("scheduled_at", now)
     .order("scheduled_at", { ascending: true })
     .limit(20);
+
+  const sevenDaysAgo = new Date(
+    Date.now() - 7 * 24 * 60 * 60 * 1000
+  ).toISOString();
+
+  const { data: overdueLessons, error: overdueError } = await supabase
+    .from("lessons")
+    .select(`
+      id,
+      student_id,
+      scheduled_at,
+      duration_minutes,
+      status,
+      language,
+      lesson_type,
+      meet_link,
+      student:profiles!lessons_student_id_fkey (
+        full_name,
+        email
+      )
+    `)
+    .eq("teacher_id", user.id)
+    .in("status", ["scheduled", "rescheduled"])
+    .gte("scheduled_at", sevenDaysAgo)
+    .lt("scheduled_at", now)
+    .order("scheduled_at", { ascending: false })
+    .limit(10);
 
   const { data: requests } = await supabase
     .from("schedule_change_requests")
@@ -211,6 +240,61 @@ export default async function TeacherSchedulePage() {
           <p className="mt-3 text-xs text-gray-400">
             Pôvodný termín zostáva potvrdený, kým nebude zmena schválená.
           </p>
+        </section>
+
+        <section className="mt-10">
+          <div className="flex items-center gap-2">
+            <AlertCircle size={20} className="text-[#9a8049]" />
+            <div>
+              <p className="text-sm text-gray-400">Po hodine</p>
+              <h2 className="mt-1 text-xl font-semibold">
+                Hodiny na uzavretie
+              </h2>
+            </div>
+          </div>
+
+          {overdueError ? (
+            <div className="mt-4 rounded-3xl border border-red-200 bg-red-50 p-5 text-sm text-red-700">
+              Nepodarilo sa načítať hodiny, ktoré treba uzavrieť. Obnovte stránku a skúste to znova.
+            </div>
+          ) : !overdueLessons?.length ? (
+            <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
+              <p className="font-medium">Všetky posledné hodiny sú uzavreté</p>
+              <p className="mt-1 text-sm text-gray-400">
+                Po skončení hodiny tu môžete potvrdiť jej výsledný stav.
+              </p>
+            </div>
+          ) : (
+            <div className="mt-4 space-y-3">
+              {overdueLessons.map((lesson) => {
+                const student = Array.isArray(lesson.student)
+                  ? lesson.student[0]
+                  : lesson.student;
+
+                return (
+                  <article
+                    key={lesson.id}
+                    className="rounded-3xl border border-[#c6a65b]/20 bg-[#faf6eb] p-5 shadow-sm sm:p-6"
+                  >
+                    <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+                      <div>
+                        <p className="font-semibold text-[#7e693a]">
+                          {studentName(student)}
+                        </p>
+                        <p className="mt-2 text-sm text-[#7e693a]/70">
+                          {formatLanguage(lesson.language)} ·{" "}
+                          {formatDate(lesson.scheduled_at)} ·{" "}
+                          {formatTime(lesson.scheduled_at)}
+                        </p>
+                      </div>
+
+                      <LessonStatusActions lessonId={lesson.id} />
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          )}
         </section>
 
         <section className="mt-10">

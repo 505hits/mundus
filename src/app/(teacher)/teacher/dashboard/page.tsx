@@ -326,7 +326,7 @@ export default async function TeacherDashboardPage() {
 
                             {index === 0 && (
                               <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold">
-                                Next
+                                Najbližšia
                               </span>
                             )}
                           </div>

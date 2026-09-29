@@ -9,6 +9,7 @@ import {
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import RequestChangeForm from "./RequestChangeForm";
+import { formatLanguage } from "@/lib/portalLabels";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("sk-SK", {
@@ -109,7 +110,7 @@ export default async function RequestChangePage({
               </p>
 
               <h2 className="mt-2 text-xl font-semibold">
-                {lesson.language || "Jazyk"} hodina
+                {formatLanguage(lesson.language)} hodina
               </h2>
 
               <div className="mt-5 flex flex-wrap gap-4 text-sm text-white/75">

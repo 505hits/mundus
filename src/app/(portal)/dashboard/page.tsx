@@ -52,9 +52,7 @@ export default async function DashboardPage() {
         "id,total_lessons,remaining_lessons,used_lessons,status"
       )
       .eq("student_id", user.id)
-      .eq("status", "active")
-      .order("purchased_at", { ascending: false })
-      .limit(1),
+      .eq("status", "active"),
 
     supabase
       .from("lessons")
@@ -77,7 +75,7 @@ export default async function DashboardPage() {
       .limit(5),
   ]);
 
-  const activePackage = packages?.[0] ?? null;
+  const activePackages = packages ?? [];
   const upcomingLessons = lessons ?? [];
   const nextLesson = upcomingLessons[0] ?? null;
   const teacherReports = reports ?? [];
@@ -95,10 +93,18 @@ export default async function DashboardPage() {
   const firstName =
     profile?.full_name?.trim().split(/\s+/)[0] || "";
 
-  const totalLessons = activePackage?.total_lessons ?? 0;
-  const usedLessons = activePackage?.used_lessons ?? 0;
-  const remainingLessons =
-    activePackage?.remaining_lessons ?? 0;
+  const totalLessons = activePackages.reduce(
+    (sum, pkg) => sum + (pkg.total_lessons ?? 0),
+    0
+  );
+  const usedLessons = activePackages.reduce(
+    (sum, pkg) => sum + (pkg.used_lessons ?? 0),
+    0
+  );
+  const remainingLessons = activePackages.reduce(
+    (sum, pkg) => sum + (pkg.remaining_lessons ?? 0),
+    0
+  );
 
   const progress =
     totalLessons > 0
@@ -244,7 +250,7 @@ export default async function DashboardPage() {
               Aktuálny balíček
             </p>
 
-            {activePackage ? (
+            {activePackages.length > 0 ? (
               <>
                 <div className="mt-4 flex items-end gap-2">
                   <span className="text-5xl font-semibold tracking-tight">

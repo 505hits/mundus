@@ -1,7 +1,7 @@
 import { AlertCircle, CheckCircle2, Package, RefreshCw } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { formatPackageStatus } from "@/lib/portalLabels";
+import { formatPackageStatus, formatPackageType } from "@/lib/portalLabels";
 
 function formatDate(value: string | null) {
   if (!value) return "—";
@@ -85,11 +85,13 @@ export default async function AdminPackagesPage() {
                 const used = item.used_lessons ?? 0;
                 const remaining = item.remaining_lessons ?? 0;
                 const percentage = purchased > 0 ? Math.min(100, Math.round((used / purchased) * 100)) : 0;
-                const warning = remaining <= 2;
+                const warning = item.status === "active" && remaining <= 2;
                 const displayStatus =
-                  remaining === 0 ? "Je čas pokračovať" :
-                  item.status === "active" && remaining <= 2 ? "Čoskoro pokračovanie" :
-                  formatPackageStatus(item.status);
+                  item.status === "active" && remaining === 0
+                    ? "Je čas pokračovať"
+                    : item.status === "active" && remaining <= 2
+                      ? "Čoskoro pokračovanie"
+                      : formatPackageStatus(item.status);
 
                 return (
                   <div key={item.id} className="grid gap-4 px-5 py-5 lg:grid-cols-[1.5fr_0.8fr_0.7fr_0.7fr_0.9fr_1fr] lg:items-center lg:px-6">
@@ -98,7 +100,7 @@ export default async function AdminPackagesPage() {
                         {student?.full_name?.trim() || student?.email || "Študent"}
                       </p>
                       <p className="mt-1 text-sm text-gray-400">
-                        {item.package_type || "Balíček hodín"} · {formatDate(item.purchased_at)}
+                        {formatPackageType(item.package_type)} · {formatDate(item.purchased_at)}
                       </p>
                       <div className="mt-3 h-1.5 max-w-[180px] overflow-hidden rounded-full bg-gray-100">
                         <div className="h-full rounded-full bg-[#183f38]" style={{ width: `${percentage}%` }} />

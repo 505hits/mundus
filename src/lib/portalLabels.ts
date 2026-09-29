@@ -93,3 +93,23 @@ export function formatProfileStatus(value: string | null | undefined) {
 
   return labels[value.trim().toLowerCase()] || value.replaceAll("_", " ");
 }
+
+export function formatPackageType(value: string | null | undefined) {
+  if (!value) return "Balíček hodín";
+
+  const normalized = value.trim().toLowerCase();
+  const direct: Record<string, string> = {
+    "1_lesson": "1 hodina",
+    "5_lessons": "Balíček 5 hodín",
+    "10_lessons": "Balíček 10 hodín",
+    "20_lessons": "Balíček 20 hodín",
+    "30_lessons": "Balíček 30 hodín",
+  };
+
+  if (direct[normalized]) return direct[normalized];
+
+  const lessonMatch = normalized.match(/^(\d+)[_-]?(?:lessons?|hours?)$/);
+  if (lessonMatch) return `Balíček ${lessonMatch[1]} hodín`;
+
+  return value.replaceAll("_", " ");
+}

@@ -230,11 +230,11 @@ export default async function TeacherDashboardPage() {
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Ahoj, {firstName} 👋
+            Vitajte, {firstName} 👋
           </h1>
 
           <p className="mt-2 text-gray-500">
-            Tu nájdete prehľad dnešných hodín a študentov.
+            Tu nájdete prehľad dnešných hodín, študentov a žiadostí o zmenu termínu.
           </p>
         </section>
 

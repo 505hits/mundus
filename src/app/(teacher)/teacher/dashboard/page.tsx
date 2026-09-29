@@ -398,8 +398,7 @@ export default async function TeacherDashboardPage() {
               </h3>
 
               <p className="mt-2 text-sm leading-6 text-[#7e693a]/75">
-                Review the requested lesson times before confirming any
-                changes.
+                Skontrolujte navrhované termíny pred potvrdením zmeny.
               </p>
 
               <Link

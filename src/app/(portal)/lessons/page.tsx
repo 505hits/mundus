@@ -70,7 +70,7 @@ export default async function LessonsPage() {
           className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 transition hover:text-[#183f38]"
         >
           <ArrowLeft size={17} />
-          Back to dashboard
+          Späť na prehľad
         </Link>
 
         <section className="mt-7">
@@ -214,7 +214,7 @@ export default async function LessonsPage() {
               />
 
               <h3 className="mt-4 font-semibold">
-                No naplánovaných lessons
+                Zatiaľ nemáte naplánované hodiny
               </h3>
 
               <p className="mt-2 text-sm text-gray-500">

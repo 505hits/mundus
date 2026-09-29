@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, PauseCircle } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 
 type Props = {
@@ -18,15 +18,7 @@ export default function TeacherApprovalAction({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-  if (status === "active") {
-    return (
-      <span className="text-xs font-medium text-gray-400">
-        Schválený
-      </span>
-    );
-  }
-
-  async function approve() {
+  async function updateStatus(nextStatus: "active" | "inactive") {
     if (saving) return;
 
     setSaving(true);
@@ -37,7 +29,7 @@ export default function TeacherApprovalAction({
     const { data: updatedTeacher, error: updateError } = await supabase
       .from("profiles")
       .update({
-        status: "active",
+        status: nextStatus,
         updated_at: new Date().toISOString(),
       })
       .eq("id", teacherId)
@@ -47,7 +39,9 @@ export default function TeacherApprovalAction({
 
     if (updateError || !updatedTeacher) {
       setError(
-        "Účet lektora sa nepodarilo schváliť. Skúste to prosím znova."
+        nextStatus === "active"
+          ? "Účet lektora sa nepodarilo schváliť. Skúste to prosím znova."
+          : "Účet lektora sa nepodarilo deaktivovať. Skúste to prosím znova."
       );
       setSaving(false);
       return;
@@ -59,15 +53,27 @@ export default function TeacherApprovalAction({
 
   return (
     <div>
-      <button
-        type="button"
-        onClick={approve}
-        disabled={saving}
-        className="inline-flex items-center gap-2 rounded-xl bg-[#183f38] px-3 py-2 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
-      >
-        <CheckCircle2 size={15} />
-        {saving ? "Schvaľujem..." : "Schváliť účet"}
-      </button>
+      {status === "active" ? (
+        <button
+          type="button"
+          onClick={() => updateStatus("inactive")}
+          disabled={saving}
+          className="inline-flex items-center gap-2 rounded-xl border border-black/10 bg-white px-3 py-2 text-xs font-semibold text-[#7e693a] disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          <PauseCircle size={15} />
+          {saving ? "Deaktivujem..." : "Deaktivovať"}
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={() => updateStatus("active")}
+          disabled={saving}
+          className="inline-flex items-center gap-2 rounded-xl bg-[#183f38] px-3 py-2 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          <CheckCircle2 size={15} />
+          {saving ? "Schvaľujem..." : "Schváliť účet"}
+        </button>
+      )}
 
       {error && (
         <p className="mt-2 max-w-xs text-xs text-red-700">

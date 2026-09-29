@@ -360,7 +360,10 @@ export default async function TeacherSchedulePage() {
                         </p>
                       </div>
 
-                      <LessonStatusActions lessonId={lesson.id} />
+                      <LessonStatusActions
+                        lessonId={lesson.id}
+                        scheduledAt={lesson.scheduled_at}
+                      />
                     </div>
                   </article>
                 );

@@ -235,7 +235,7 @@ export default async function TeacherStudentsPage() {
                           </h2>
 
                           <span className="rounded-full bg-[#eef3ef] px-2.5 py-1 text-xs font-semibold text-[#527064]">
-                            Active
+                            Aktívny
                           </span>
                         </div>
 

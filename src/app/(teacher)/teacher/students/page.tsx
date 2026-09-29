@@ -111,6 +111,7 @@ export default async function TeacherStudentsPage() {
       : lesson.student;
 
     const isFuture =
+      ["scheduled", "rescheduled"].includes(lesson.status) &&
       new Date(lesson.scheduled_at).getTime() >= Date.now();
 
     if (!existing) {

@@ -135,14 +135,14 @@ export default async function AdminTeachersPage() {
                   >
                     <div>
                       <p className="font-semibold">
-                        {teacher.full_name?.trim() || teacher.email || "Teacher"}
+                        {teacher.full_name?.trim() || teacher.email || "Lektor"}
                       </p>
                       <p className="mt-1 text-sm text-gray-400">
                         {teacher.languages}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 lg:hidden">Email</p>
+                      <p className="text-xs text-gray-400 lg:hidden">E-mail</p>
                       <p className="mt-1 truncate text-sm lg:mt-0">
                         {teacher.email || "—"}
                       </p>

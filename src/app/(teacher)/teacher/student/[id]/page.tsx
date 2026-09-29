@@ -324,11 +324,11 @@ async function renderStudentPage(
         <section className="mt-10">
           <div>
             <p className="text-sm text-gray-400">
-              History
+              História
             </p>
 
             <h2 className="mt-1 text-xl font-semibold">
-              Recent lessons
+              Posledné hodiny
             </h2>
           </div>
 
@@ -370,7 +370,7 @@ async function renderStudentPage(
                     </div>
 
                     <span className="rounded-full bg-[#eef3ef] px-3 py-1.5 text-xs font-semibold text-[#527064]">
-                      Completed
+                      Dokončená
                     </span>
                   </div>
                 )

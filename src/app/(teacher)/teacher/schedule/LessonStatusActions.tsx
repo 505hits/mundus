@@ -31,16 +31,18 @@ export default function LessonStatusActions({ lessonId }: Props) {
 
     const supabase = createSupabaseBrowserClient();
 
-    const { error: updateError } = await supabase
+    const { data: updatedLesson, error: updateError } = await supabase
       .from("lessons")
       .update({
         status,
         updated_at: new Date().toISOString(),
       })
       .eq("id", lessonId)
-      .in("status", ["scheduled", "rescheduled"]);
+      .in("status", ["scheduled", "rescheduled"])
+      .select("id")
+      .maybeSingle();
 
-    if (updateError) {
+    if (updateError || !updatedLesson) {
       setError(
         "Stav hodiny sa nepodarilo uložiť. Skúste to prosím znova."
       );

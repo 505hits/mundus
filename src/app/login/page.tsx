@@ -46,8 +46,14 @@ if (profileError || !profile) {
   return;
 }
 
-if (profile.role === "admin" && profile.status === "active") {
-  window.location.href = "/admin/dashboard";
+if (profile.role === "admin") {
+  if (profile.status === "active") {
+    window.location.href = "/admin/dashboard";
+  } else {
+    await supabase.auth.signOut();
+    setError("Váš administrátorský účet momentálne nie je aktívny.");
+    setLoading(false);
+  }
   return;
 }
 
@@ -60,7 +66,20 @@ if (profile.role === "teacher") {
   return;
 }
 
-window.location.href = "/dashboard";
+if (profile.role === "student") {
+  if (profile.status === "active") {
+    window.location.href = "/dashboard";
+  } else {
+    await supabase.auth.signOut();
+    setError("Váš študentský účet momentálne nie je aktívny. Kontaktujte prosím Mundus Languages.");
+    setLoading(false);
+  }
+  return;
+}
+
+await supabase.auth.signOut();
+setError("Tento účet nemá platný typ používateľa. Kontaktujte prosím Mundus Languages.");
+setLoading(false);
 }
   return (
     <main className="min-h-screen bg-[#f7f8f5] flex">

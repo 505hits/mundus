@@ -122,6 +122,11 @@ export default async function TeacherDashboardPage() {
     .gte("scheduled_at", now.toISOString())
     .order("scheduled_at", { ascending: true });
 
+  const { data: assignedLessonStudents } = await supabase
+    .from("lessons")
+    .select("student_id")
+    .eq("teacher_id", user.id);
+
   const { data: pendingRequests } = await supabase
     .from("schedule_change_requests")
     .select(`
@@ -181,6 +186,9 @@ export default async function TeacherDashboardPage() {
   }
 
   const students = Array.from(uniqueStudents.values());
+  const assignedStudentCount = new Set(
+    (assignedLessonStudents ?? []).map((lesson) => lesson.student_id)
+  ).size;
 
   const teacherName =
     teacherProfile?.full_name?.trim() ||
@@ -247,11 +255,11 @@ export default async function TeacherDashboardPage() {
             </div>
 
             <p className="mt-3 text-3xl font-semibold">
-              {students.length}
+              {assignedStudentCount}
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
-              študentov s naplánovanou hodinou
+              priradených študentov
             </p>
           </article>
 

@@ -2,14 +2,21 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
+import { canAcceptTeacherInvitation, portalDestination } from "@/lib/account-policy";
+import { purchaseReturnPath } from "@/lib/purchase-intent";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [nextPath, setNextPath] = useState<string | null>(null);
+
+  useEffect(() => {
+    setNextPath(purchaseReturnPath(new URLSearchParams(window.location.search).get("next")));
+  }, []);
 
   async function handleLogin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -23,64 +30,41 @@ export default function LoginPage() {
     const supabase = createSupabaseBrowserClient();
     setLoading(true);
 
-const { data, error } = await supabase.auth.signInWithPassword({
-  email,
-      password,
-    });
-
-    if (error) {
-      setError("Nesprávny e-mail alebo heslo. Skontrolujte údaje a skúste to znova.");
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error || !data.user) {
+        setError("Nesprávny e-mail alebo heslo. Skontrolujte údaje a overenie e-mailu.");
+        return;
+      }
+      if (!data.user.email_confirmed_at) {
+        setError("Najprv potvrďte svoju e-mailovú adresu cez odkaz v e-maile.");
+        return;
+      }
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles").select("role, status").eq("id", data.user.id).single();
+      if (profileError || !profile) {
+        setError("Nepodarilo sa načítať váš Mundus profil. Skúste to prosím znova.");
+        return;
+      }
+      if (profile.role === "teacher" && profile.status === "pending" && !canAcceptTeacherInvitation(data.user.app_metadata)) {
+        window.location.href = "/pending-approval";
+        return;
+      }
+      const destination = portalDestination(profile.role, profile.status);
+      if (destination === "/auth/error") {
+        setError("Váš účet zatiaľ nie je aktívny. Kontaktujte Mundus Languages.");
+        return;
+      }
+      const desired = purchaseReturnPath(new URLSearchParams(window.location.search).get("next"));
+      window.location.href = profile.role === "student" && data.user.user_metadata.signup_source === "self_service"
+        ? `/onboarding${desired ? `?next=${encodeURIComponent(desired)}` : ""}`
+        : profile.role === "student" && desired ? desired : destination;
+    } catch {
+      setError("Prihlásenie je momentálne nedostupné. Skúste to znova.");
+    } finally {
       setLoading(false);
-      return;
     }
-
-const { data: profile, error: profileError } = await supabase
-  .from("profiles")
-  .select("role, status")
-  .eq("id", data.user.id)
-  .single();
-
-if (profileError || !profile) {
-  setError("Nepodarilo sa načítať váš Mundus profil. Skúste to prosím znova.");
-  setLoading(false);
-  return;
-}
-
-if (profile.role === "admin") {
-  if (profile.status === "active") {
-    window.location.href = "/admin/dashboard";
-  } else {
-    await supabase.auth.signOut();
-    setError("Váš administrátorský účet momentálne nie je aktívny.");
-    setLoading(false);
   }
-  return;
-}
-
-if (profile.role === "teacher") {
-  if (profile.status === "active") {
-    window.location.href = "/teacher/dashboard";
-  } else {
-    window.location.href = "/pending-approval";
-  }
-  return;
-}
-
-if (profile.role === "student") {
-  if (profile.status === "active") {
-    window.location.href = "/dashboard";
-  } else {
-    await supabase.auth.signOut();
-    setError("Váš študentský účet momentálne nie je aktívny. Kontaktujte prosím Mundus Languages.");
-    setLoading(false);
-  }
-  return;
-}
-
-await supabase.auth.signOut();
-setError("Tento účet nemá platný typ používateľa. Kontaktujte prosím Mundus Languages.");
-setLoading(false);
-}
   return (
     <main className="min-h-screen bg-[#f7f8f5] flex">
       <section className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-[#163f3a] p-12 flex-col justify-between">
@@ -202,6 +186,11 @@ setLoading(false);
               {loading ? "Prihlasujem..." : "Prihlásiť sa"}
             </button>
           </form>
+
+          <p className="mt-6 text-center text-sm text-gray-600">
+            Ešte nemáte účet? <Link href={nextPath ? `/signup?next=${encodeURIComponent(nextPath)}` : "/signup"} className="font-semibold text-[#163f3a] underline">Vytvoriť študentský účet</Link>
+          </p>
+          <p className="mt-3 text-center text-xs text-gray-500">Lektorský účet získate cez e-mailovú pozvánku od Mundus.</p>
 
           <p className="mt-8 text-center text-sm text-gray-400">
             Potrebujete pomoc? Kontaktujte Mundus Languages.

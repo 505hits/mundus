@@ -1,0 +1,36 @@
+// Isolated PostgreSQL-compatible fixture; never connects to the Mundus database.
+import { PGlite } from '@electric-sql/pglite';
+import { readFileSync } from 'node:fs';
+import assert from 'node:assert/strict';
+const db = new PGlite();
+await db.exec(`
+create role anon; create role authenticated; create role service_role;
+create schema auth;
+create function auth.role() returns text language sql as $$ select nullif(current_setting('request.jwt.claim.role', true), '') $$;
+create function auth.uid() returns uuid language sql as $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
+create table auth.users(id uuid primary key, email_confirmed_at timestamptz, raw_app_meta_data jsonb);
+create table public.profiles(id uuid primary key references auth.users(id), email text, full_name text, role text, status text);
+grant usage on schema auth to authenticated, anon, service_role;
+grant select, insert, update, delete on public.profiles to authenticated;
+`);
+await db.exec(readFileSync(new URL('../supabase/migrations/202609290001_account_onboarding.sql', import.meta.url), 'utf8'));
+const u='11111111-1111-4111-8111-111111111111', v='22222222-2222-4222-8222-222222222222';
+await db.exec(`insert into auth.users values ('${u}',now(),'{}'), ('${v}',now(),'{}'); insert into profiles values ('${u}','a@example.com','Test','admin','active'), ('${v}','b@example.com','Other','teacher','active');`);
+assert.equal((await db.query(`select role from profiles where id='${u}'`)).rows[0].role,'student');
+await db.exec(`set request.jwt.claim.role='authenticated'; set request.jwt.claim.sub='${u}'; set role authenticated;`);
+await assert.rejects(db.exec(`update profiles set role='admin' where id='${u}'`),/cannot be changed/);
+await assert.rejects(db.exec(`update profiles set status='active', email='else@example.com' where id='${u}'`),/cannot be changed/);
+await assert.rejects(db.exec(`delete from profiles where id='${u}'`),/account service/);
+await assert.rejects(db.exec(`select public.mundus_accept_teacher_invitation('${u}')`),/permission denied/);
+await db.exec(`insert into student_onboarding values ('${u}','Angličtina','A1','Travel',now())`);
+await assert.rejects(db.exec(`insert into student_onboarding values ('${v}','Angličtina','A1','Travel',now())`),/row-level security/);
+await db.exec(`reset role; set request.jwt.claim.role='';`);
+await assert.rejects(db.exec(`update profiles set role='admin' where id='${u}'`),/cannot be changed/);
+await db.exec(`set request.jwt.claim.role='service_role'; update profiles set role='teacher',status='pending' where id='${u}'; update auth.users set raw_app_meta_data=jsonb_build_object('mundus_invited_role','teacher','mundus_invitation_expires_at', now()+interval '1 day') where id='${u}'; set role service_role; select public.mundus_accept_teacher_invitation('${u}'); reset role;`);
+assert.equal((await db.query(`select status from profiles where id='${u}'`)).rows[0].status,'active');
+await db.exec('set role service_role');
+await assert.rejects(db.exec(`select public.mundus_accept_teacher_invitation('${u}')`),/already accepted/);
+await db.exec(`reset role; update profiles set role='teacher',status='pending' where id='${v}'; update auth.users set raw_app_meta_data=jsonb_build_object('mundus_invited_role','teacher','mundus_invitation_expires_at', now()-interval '1 day') where id='${v}'; set role service_role;`);
+await assert.rejects(db.exec(`select public.mundus_accept_teacher_invitation('${v}')`),/expired/);
+console.log('PASS: forced student role, protected fields, delete prevention, RPC permissions, onboarding RLS, invitation activation, replay prevention, expiry');
+await db.close();

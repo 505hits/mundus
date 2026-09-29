@@ -8,6 +8,7 @@ import {
   ChartNoAxesColumnIncreasing,
   GraduationCap,
   Home,
+  Package,
 } from "lucide-react";
 
 const navItems = [
@@ -33,8 +34,9 @@ const navItems = [
   },
 ];
 
-export default function PortalNav() {
+export default function PortalNav({ paymentsEnabled }: { paymentsEnabled: boolean }) {
   const pathname = usePathname();
+  const items = paymentsEnabled ? [...navItems, { label: "Balíčky", href: "/packages", icon: Package }] : navItems;
 
   return (
     <>
@@ -53,7 +55,7 @@ export default function PortalNav() {
           </p>
 
           <nav className="mt-3 space-y-1">
-            {navItems.map((item) => {
+            {items.map((item) => {
               const Icon = item.icon;
               const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
 
@@ -92,8 +94,8 @@ export default function PortalNav() {
       {/* Mobile bottom navigation */}
       <div className="fixed right-4 top-4 z-50 lg:hidden"><LogoutButton compact /></div>
       <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-black/5 bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
-        <div className="mx-auto grid max-w-lg grid-cols-4">
-          {navItems.map((item) => {
+        <div className={`mx-auto grid max-w-lg ${paymentsEnabled ? "grid-cols-5" : "grid-cols-4"}`}>
+          {items.map((item) => {
             const Icon = item.icon;
             const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
 

@@ -11,6 +11,7 @@ import {
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatLanguage, formatLessonCount, formatLessonType } from "@/lib/portalLabels";
+import { paymentEnabled } from "@/lib/payments";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("sk-SK", {
@@ -278,6 +279,7 @@ export default async function DashboardPage() {
             <p className="text-sm font-medium text-gray-500">
               Aktuálny balíček
             </p>
+            {paymentEnabled() && <Link href="/packages" className="mt-2 inline-block text-sm font-semibold text-[#2F3AA2] underline">Zobraziť balíčky a platby</Link>}
 
             {activePackages.length > 0 ? (
               <>

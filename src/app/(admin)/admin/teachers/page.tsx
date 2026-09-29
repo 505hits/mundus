@@ -7,6 +7,7 @@ import {
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatLanguage, formatProfileStatus } from "@/lib/portalLabels";
+import InviteTeacherForm from "./invite/InviteTeacherForm";
 import TeacherApprovalAction from "./TeacherApprovalAction";
 
 export default async function AdminTeachersPage() {
@@ -105,6 +106,8 @@ export default async function AdminTeachersPage() {
             Reálne účty lektorov a aktuálna výučba.
           </p>
         </section>
+
+        <InviteTeacherForm enabled={process.env.MUNDUS_INVITATIONS_ENABLED === "true"} />
 
         {error && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">

@@ -1,6 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
+import { PACKAGE_LESSONS } from "@/lib/purchase-intent";
 import { useLanguage } from "@/context/LanguageContext";
 import { Star, Gift, Zap } from "lucide-react";
 
@@ -9,7 +11,7 @@ const fadeInUp = {
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
-export default function PricingSection() {
+export default function PricingSection({ paymentsAvailable = false, signupAvailable = false }: { paymentsAvailable?: boolean; signupAvailable?: boolean }) {
     const { t } = useLanguage();
 
     return (
@@ -117,12 +119,13 @@ export default function PricingSection() {
                                 <h3 className="text-2xl font-bold uppercase tracking-tight">{t.pricing.individual.title}</h3>
                             </div>
 
-                            <table className="w-full">
+                            <div className="overflow-x-auto"><table className="w-full min-w-[560px]">
                                 <thead>
                                     <tr className="border-b border-gray-100">
                                         <th className="text-left py-4 font-semibold text-gray-500">{t.pricing.individual.headers.package}</th>
                                         <th className="text-right py-4 font-semibold text-gray-500">{t.pricing.individual.headers.originalPrice}</th>
                                         <th className="text-right py-4 font-semibold text-blue-600">{t.pricing.individual.headers.launchPrice}</th>
+                                        <th className="py-4"><span className="sr-only">{t.pricing.individual.buyLabel}</span></th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-50">
@@ -131,14 +134,16 @@ export default function PricingSection() {
                                             <td className="py-4 font-medium text-gray-900">{row.package}</td>
                                             <td className="py-4 text-right text-gray-400 line-through">{row.originalPrice}</td>
                                             <td className="py-4 text-right font-bold text-blue-600 text-lg">{row.launchPrice}</td>
+                                            <td className="py-4 pl-3 text-right"><Link href={paymentsAvailable ? `/packages?selected=${PACKAGE_LESSONS[i]}` : "/contact"} className="inline-block rounded-lg bg-[#183f38] px-3 py-2 text-xs font-semibold text-white whitespace-nowrap hover:bg-[#2F3AA2]">{paymentsAvailable ? t.pricing.individual.buyLabel : t.pricing.individual.contactLabel}</Link></td>
                                         </tr>
                                     ))}
                                 </tbody>
-                            </table>
+                            </table></div>
                             <div className="mt-6 pt-6 border-t border-gray-100 text-sm text-gray-500 flex items-center gap-2">
                                 <Star size={18} className="text-purple-500" fill="currentColor" />
                                 {t.pricing.individual.note}
                             </div>
+                            <p className="mt-3 text-sm text-gray-500">{paymentsAvailable ? signupAvailable ? t.pricing.individual.paymentNote : t.pricing.individual.existingAccountNote : t.pricing.individual.offlineNote}</p>
                         </div>
                     </motion.div>
 
@@ -169,6 +174,7 @@ export default function PricingSection() {
                                     ))}
                                 </tbody>
                             </table>
+                            <p className="mt-5 text-sm leading-6 text-gray-300">{t.pricing.discounts.paymentNote}</p>
                         </div>
                     </motion.div>
                 </div>

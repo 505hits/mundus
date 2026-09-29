@@ -34,6 +34,7 @@ export async function proxy(request: NextRequest) {
   // receive the latest Supabase cookies.
   await supabase.auth.getUser();
 
+  response.headers.set("Cache-Control", "private, no-store");
   return response;
 }
 

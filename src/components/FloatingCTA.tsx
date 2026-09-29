@@ -3,8 +3,8 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function FloatingCTA() {
@@ -14,6 +14,10 @@ export default function FloatingCTA() {
 
     const isPortalRoute =
         pathname === "/login" ||
+        pathname === "/signup" ||
+        pathname === "/onboarding" ||
+        pathname === "/set-password" ||
+        pathname.startsWith("/auth/") ||
         pathname === "/forgot-password" ||
         pathname === "/reset-password" ||
         pathname === "/pending-approval" ||
@@ -21,6 +25,7 @@ export default function FloatingCTA() {
         pathname.startsWith("/lessons") ||
         pathname.startsWith("/learning") ||
         pathname.startsWith("/progress") ||
+        pathname.startsWith("/packages") ||
         pathname.startsWith("/teacher") ||
         pathname.startsWith("/admin");
 
@@ -49,7 +54,7 @@ export default function FloatingCTA() {
                     className="fixed bottom-8 right-8 z-40"
                 >
                     <Link
-                        href="/#booking"
+                        href="/prices"
                         className="flex items-center gap-2 bg-[#2F3AA2] text-white px-6 py-4 rounded-full font-semibold shadow-lg shadow-blue-900/20 hover:shadow-xl hover:bg-[#252E82] hover:scale-105 transition-all transform"
                     >
                         <span>{t.nav.book}</span>

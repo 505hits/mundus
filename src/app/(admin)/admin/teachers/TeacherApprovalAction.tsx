@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CheckCircle2, PauseCircle } from "lucide-react";
-import { createSupabaseBrowserClient } from "@/lib/supabase";
+import { updateAccountStatus } from "../account-status";
 
 type Props = {
   teacherId: string;
@@ -24,20 +24,9 @@ export default function TeacherApprovalAction({
     setSaving(true);
     setError("");
 
-    const supabase = createSupabaseBrowserClient();
+    const updated = await updateAccountStatus(teacherId, "teacher", nextStatus).catch(() => false);
 
-    const { data: updatedTeacher, error: updateError } = await supabase
-      .from("profiles")
-      .update({
-        status: nextStatus,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", teacherId)
-      .eq("role", "teacher")
-      .select("id")
-      .maybeSingle();
-
-    if (updateError || !updatedTeacher) {
+    if (!updated) {
       setError(
         nextStatus === "active"
           ? "Účet lektora sa nepodarilo schváliť. Skúste to prosím znova."

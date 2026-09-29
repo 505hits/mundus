@@ -16,6 +16,7 @@ export default function Navbar() {
         { name: t.nav.courses, href: "/#languages" },
         { name: t.nav.howItWorks, href: "/#how-it-works" },
         { name: t.nav.teachers, href: "/#teachers" },
+        { name: t.nav.prices, href: "/prices" },
         { name: t.nav.contact, href: "/contact" },
     ];
 
@@ -96,7 +97,7 @@ export default function Navbar() {
                             whileTap={{ scale: 0.98 }}
                         >
                             <Link
-                                href="/#booking"
+                                href="/prices"
                                 className="btn btn-primary !py-2.5 !px-5 !text-sm whitespace-nowrap"
                             >
                                 {t.nav.book}
@@ -202,7 +203,7 @@ export default function Navbar() {
                             className="mt-auto"
                         >
                             <Link
-                                href="/#booking"
+                                href="/prices"
                                 onClick={() => setIsMobileMenuOpen(false)}
                                 className="btn btn-primary w-full justify-center text-base py-3"
                             >

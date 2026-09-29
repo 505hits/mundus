@@ -8,6 +8,9 @@ import FeaturesBento from "@/components/FeaturesBento";
 import CalendlyWidget from "@/components/CalendlyWidget";
 import Footer from "@/components/Footer";
 import PricingSection from "@/components/PricingSection";
+import { paymentEnabled } from "@/lib/payments";
+
+export const dynamic = "force-dynamic";
 
 export default function Home() {
   return (
@@ -19,7 +22,7 @@ export default function Home() {
       <HowItWorks />
       <TeacherSection />
       <FeaturesBento />
-      <PricingSection />
+      <PricingSection paymentsAvailable={paymentEnabled()} signupAvailable={process.env.MUNDUS_SELF_SIGNUP_ENABLED === "true"} />
       <CalendlyWidget />
       <Footer />
     </main>

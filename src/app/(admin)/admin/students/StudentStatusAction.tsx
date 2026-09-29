@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CheckCircle2, PauseCircle } from "lucide-react";
-import { createSupabaseBrowserClient } from "@/lib/supabase";
+import { updateAccountStatus } from "../account-status";
 
 type Props = {
   studentId: string;
@@ -24,20 +24,9 @@ export default function StudentStatusAction({
     setSaving(true);
     setError("");
 
-    const supabase = createSupabaseBrowserClient();
+    const updated = await updateAccountStatus(studentId, "student", nextStatus).catch(() => false);
 
-    const { data: updatedStudent, error: updateError } = await supabase
-      .from("profiles")
-      .update({
-        status: nextStatus,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", studentId)
-      .eq("role", "student")
-      .select("id")
-      .maybeSingle();
-
-    if (updateError || !updatedStudent) {
+    if (!updated) {
       setError(
         nextStatus === "active"
           ? "Účet študenta sa nepodarilo aktivovať. Skúste to prosím znova."

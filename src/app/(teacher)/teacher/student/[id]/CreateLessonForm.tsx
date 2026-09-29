@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CalendarPlus } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
+import { formatLessonCount } from "@/lib/portalLabels";
 
 type PackageOption = {
   id: string;
@@ -246,8 +247,7 @@ export default function CreateLessonForm({
               >
                 {availablePackages.map((pkg) => (
                   <option key={pkg.id} value={pkg.id}>
-                    {pkg.total_lessons ?? "?"} hodín · zostáva{" "}
-                    {pkg.remaining_lessons ?? 0}
+                    {pkg.total_lessons == null ? "Neznámy balíček" : formatLessonCount(pkg.total_lessons)} · zostáva {formatLessonCount(pkg.remaining_lessons ?? 0)}
                   </option>
                 ))}
               </select>

@@ -245,8 +245,7 @@ export default async function LessonsPage() {
                             )}
                           </div>
                         );
-                      })()
-                      ) : (
+                      })() : (
                         <Link
                           href={`/lessons/${lesson.id}/request-change`}
                           className={`flex items-center justify-center gap-2 rounded-2xl border px-4 py-3 text-sm font-medium ${

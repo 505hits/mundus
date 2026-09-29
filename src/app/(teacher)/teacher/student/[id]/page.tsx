@@ -63,56 +63,21 @@ export default async function TeacherStudentPage({
 
   const supabase = await createSupabaseServerClient();
 
-  const { data: lessons } = await supabase
+  // The dynamic route contains the student ID. Verify that this teacher
+  // actually has at least one lesson with the student before showing data.
+  const { data: assignedLesson, error: assignmentError } = await supabase
     .from("lessons")
-    .select(`
-      id,
-      student_id,
-      teacher_id,
-      scheduled_at,
-      duration_minutes,
-      status,
-      language,
-      lesson_type,
-      meet_link,
-      student:profiles!lessons_student_id_fkey (
-        full_name,
-        email
-      )
-    `)
-    .eq("id", id)
+    .select("student_id")
+    .eq("student_id", id)
     .eq("teacher_id", user.id)
-    .single();
+    .limit(1)
+    .maybeSingle();
 
-  /*
-   * The query above is only used to verify that the route belongs
-   * to a lesson/student assigned to this teacher.
-   *
-   * We then use the student_id for the complete student view.
-   */
-  const studentId = lessons?.student_id;
-
-  if (!studentId) {
-    const { data: studentLesson } = await supabase
-      .from("lessons")
-      .select("student_id")
-      .eq("student_id", id)
-      .eq("teacher_id", user.id)
-      .limit(1)
-      .maybeSingle();
-
-    if (!studentLesson?.student_id) {
-      notFound();
-    }
-
-    return renderStudentPage(
-      supabase,
-      user.id,
-      studentLesson.student_id
-    );
+  if (assignmentError || !assignedLesson?.student_id) {
+    notFound();
   }
 
-  return renderStudentPage(supabase, user.id, studentId);
+  return renderStudentPage(supabase, user.id, assignedLesson.student_id);
 }
 
 async function renderStudentPage(

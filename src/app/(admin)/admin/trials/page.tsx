@@ -56,7 +56,7 @@ export default async function AdminTrialsPage() {
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">Úvodné hodiny</p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Úvodné hodiny</h1>
           <p className="mt-2 max-w-2xl text-gray-500">
-            Live trial lesson overview from the Mundus lesson schedule.
+            Prehľad úvodných hodín podľa aktuálneho rozvrhu Mundus.
           </p>
         </section>
 
@@ -70,7 +70,7 @@ export default async function AdminTrialsPage() {
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CalendarDays size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{upcoming.length}</p>
-            <p className="mt-1 text-sm text-gray-500">Upcoming trials</p>
+            <p className="mt-1 text-sm text-gray-500">Najbližšie úvodné hodiny</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CheckCircle2 size={20} className="text-[#2F3AA2]" />
@@ -85,14 +85,14 @@ export default async function AdminTrialsPage() {
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <UserPlus size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{converted.length}</p>
-            <p className="mt-1 text-sm text-gray-500">Active students after trial</p>
+            <p className="mt-1 text-sm text-gray-500">Aktívni študenti po úvodnej hodine</p>
           </div>
         </section>
 
         <section className="mt-8 space-y-3">
           {rows.length === 0 ? (
             <div className="rounded-3xl border border-black/5 bg-white p-8 text-center text-sm text-gray-500 shadow-sm">
-              No trial lessons have been added yet.
+              Zatiaľ neboli pridané žiadne úvodné hodiny.
             </div>
           ) : (
             rows.map((trial) => {
@@ -110,23 +110,23 @@ export default async function AdminTrialsPage() {
                   <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
-                        <h2 className="font-semibold">{displayName(student, "Student")}</h2>
+                        <h2 className="font-semibold">{displayName(student, "Študent")}</h2>
                         <span className={`rounded-full px-2.5 py-1 text-xs font-semibold capitalize ${
                           needsFollowUp
                             ? "bg-white text-[#2F3AA2]"
                             : "bg-[#eef0ff] text-[#2F3AA2]"
                         }`}>
-                          {needsFollowUp ? "Treba sa ozvať" : trial.status.replaceAll("_", " ")}
+                          {needsFollowUp ? "Treba sa ozvať" : formatLessonStatus(trial.status)}
                         </span>
                       </div>
-                      <p className="mt-2 text-sm text-gray-500">{trial.language || "Language not set"}</p>
+                      <p className="mt-2 text-sm text-gray-500">{formatLanguage(trial.language)}</p>
                       {trial.notes && <p className="mt-1 text-sm text-gray-400">{trial.notes}</p>}
                     </div>
 
                     <div className="grid gap-4 sm:grid-cols-2 lg:flex lg:items-center lg:gap-8">
                       <div>
                         <p className="text-xs text-gray-400">Lektor</p>
-                        <p className="mt-1 text-sm font-medium">{displayName(teacher, "Not assigned")}</p>
+                        <p className="mt-1 text-sm font-medium">{displayName(teacher, "Nepriradený")}</p>
                       </div>
                       <div>
                         <p className="text-xs text-gray-400">Úvodná hodina</p>

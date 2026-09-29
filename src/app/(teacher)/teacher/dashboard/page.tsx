@@ -61,22 +61,24 @@ export default async function TeacherDashboardPage() {
 
   const now = new Date();
 
-  const bratislavaDate = new Intl.DateTimeFormat("en-CA", {
+  const bratislavaDateFormatter = new Intl.DateTimeFormat("en-CA", {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
     timeZone: "Europe/Bratislava",
-  }).format(now);
+  });
+  const todayKey = bratislavaDateFormatter.format(now);
 
-  const startOfToday = new Date(
-    `${bratislavaDate}T00:00:00+02:00`
+  // Query a safe UTC window and filter by Europe/Bratislava below.
+  // This avoids a fixed +02:00 offset, which would break after DST changes.
+  const todayWindowStart = new Date(
+    now.getTime() - 36 * 60 * 60 * 1000
+  ).toISOString();
+  const todayWindowEnd = new Date(
+    now.getTime() + 36 * 60 * 60 * 1000
   ).toISOString();
 
-  const endOfToday = new Date(
-    `${bratislavaDate}T23:59:59+02:00`
-  ).toISOString();
-
-  const { data: todayLessons } = await supabase
+  const { data: todayLessonCandidates } = await supabase
     .from("lessons")
     .select(`
       id,
@@ -94,9 +96,14 @@ export default async function TeacherDashboardPage() {
     `)
     .eq("teacher_id", user.id)
     .in("status", ["scheduled", "rescheduled"])
-    .gte("scheduled_at", startOfToday)
-    .lte("scheduled_at", endOfToday)
+    .gte("scheduled_at", todayWindowStart)
+    .lte("scheduled_at", todayWindowEnd)
     .order("scheduled_at", { ascending: true });
+
+  const todayLessons = (todayLessonCandidates ?? []).filter(
+    (lesson) =>
+      bratislavaDateFormatter.format(new Date(lesson.scheduled_at)) === todayKey
+  );
 
   const { data: upcomingLessons } = await supabase
     .from("lessons")

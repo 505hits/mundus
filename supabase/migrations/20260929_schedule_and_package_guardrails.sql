@@ -77,6 +77,14 @@ begin
     raise exception 'Used and remaining lessons must equal package total';
   end if;
 
+  if new.remaining_lessons = 0 and new.status = 'active' then
+    new.status := 'completed';
+  end if;
+
+  if new.remaining_lessons > 0 and new.status = 'completed' then
+    raise exception 'A completed package cannot have remaining lessons';
+  end if;
+
   return new;
 end;
 $$;

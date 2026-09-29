@@ -44,7 +44,7 @@ export default async function AdminStudentsPage() {
     );
   }
 
-  const now = Date.now();
+  const now = new Date().getTime();
   const studentRows = (profiles ?? []).map((profile) => {
     const studentLessons = (lessons ?? []).filter((lesson) => lesson.student_id === profile.id);
     const nextLesson = studentLessons.find(

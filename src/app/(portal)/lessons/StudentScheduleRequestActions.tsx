@@ -24,7 +24,7 @@ export default function StudentScheduleRequestActions({
 
     const supabase = createSupabaseBrowserClient();
 
-    const { error: updateError } = await supabase
+    const { data: updatedRequest, error: updateError } = await supabase
       .from("schedule_change_requests")
       .update({
         status,
@@ -32,9 +32,11 @@ export default function StudentScheduleRequestActions({
         updated_at: new Date().toISOString(),
       })
       .eq("id", requestId)
-      .eq("status", "pending");
+      .eq("status", "pending")
+      .select("id")
+      .maybeSingle();
 
-    if (updateError) {
+    if (updateError || !updatedRequest) {
       setError("Odpoveď sa nepodarilo uložiť. Skúste to prosím znova.");
       setLoading(null);
       return;

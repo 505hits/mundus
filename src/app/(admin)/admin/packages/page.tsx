@@ -2,6 +2,7 @@ import { AlertCircle, CheckCircle2, Package, RefreshCw } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatPackageStatus, formatPackageType } from "@/lib/portalLabels";
+import AddPackageForm from "./AddPackageForm";
 
 function formatDate(value: string | null) {
   if (!value) return "—";
@@ -14,14 +15,25 @@ export default async function AdminPackagesPage() {
   await requireRole("admin");
   const supabase = await createSupabaseServerClient();
 
-  const { data: packages, error } = await supabase
-    .from("lesson_packages")
-    .select(`
-      id,student_id,package_type,total_lessons,used_lessons,remaining_lessons,
-      purchased_at,status,expires_at,
-      student:profiles!lesson_packages_student_id_fkey(full_name,email)
-    `)
-    .order("purchased_at", { ascending: false });
+  const [
+    { data: packages, error },
+    { data: students, error: studentsError },
+  ] = await Promise.all([
+    supabase
+      .from("lesson_packages")
+      .select(`
+        id,student_id,package_type,total_lessons,used_lessons,remaining_lessons,
+        purchased_at,status,expires_at,
+        student:profiles!lesson_packages_student_id_fkey(full_name,email)
+      `)
+      .order("purchased_at", { ascending: false }),
+    supabase
+      .from("profiles")
+      .select("id,full_name,email")
+      .eq("role", "student")
+      .eq("status", "active")
+      .order("full_name", { ascending: true }),
+  ]);
 
   const rows = packages ?? [];
   const active = rows.filter((item) => item.status === "active");
@@ -44,11 +56,13 @@ export default async function AdminPackagesPage() {
           </p>
         </section>
 
-        {error && (
+        {(error || studentsError) && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             Nepodarilo sa načítať údaje o balíčkoch. Obnovte stránku a skúste to znova.
           </div>
         )}
+
+        <AddPackageForm students={students ?? []} />
 
         <section className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">

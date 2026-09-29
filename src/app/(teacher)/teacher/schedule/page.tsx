@@ -136,6 +136,29 @@ export default async function TeacherSchedulePage() {
       );
     }) ?? [];
 
+  const outgoingRequests =
+    requests?.filter((request) => {
+      const lesson = Array.isArray(request.lesson)
+        ? request.lesson[0]
+        : request.lesson;
+
+      return (
+        lesson?.teacher_id === user.id &&
+        request.requested_by === user.id
+      );
+    }) ?? [];
+
+  const pendingLessonIds = new Set(
+    (requests ?? [])
+      .filter((request) => {
+        const lesson = Array.isArray(request.lesson)
+          ? request.lesson[0]
+          : request.lesson;
+        return lesson?.teacher_id === user.id;
+      })
+      .map((request) => request.lesson_id)
+  );
+
   return (
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
@@ -243,6 +266,53 @@ export default async function TeacherSchedulePage() {
             Pôvodný termín zostáva potvrdený, kým nebude zmena schválená.
           </p>
         </section>
+
+        {outgoingRequests.length > 0 && (
+          <section className="mt-8">
+            <p className="text-sm text-gray-400">Vaše návrhy</p>
+            <h2 className="mt-1 text-xl font-semibold">
+              Čakajú na potvrdenie študenta
+            </h2>
+
+            <div className="mt-4 space-y-3">
+              {outgoingRequests.map((request) => {
+                const lesson = Array.isArray(request.lesson)
+                  ? request.lesson[0]
+                  : request.lesson;
+
+                if (!lesson) return null;
+
+                const student = Array.isArray(lesson.student)
+                  ? lesson.student[0]
+                  : lesson.student;
+
+                return (
+                  <article
+                    key={request.id}
+                    className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm"
+                  >
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                      <div>
+                        <p className="font-semibold">
+                          {studentName(student)}
+                        </p>
+                        <p className="mt-1 text-sm text-gray-500">
+                          {formatLanguage(lesson.language)} · navrhovaný termín{" "}
+                          {formatDate(request.preferred_at)} ·{" "}
+                          {formatTime(request.preferred_at)}
+                        </p>
+                      </div>
+
+                      <span className="w-fit rounded-full bg-[#faf6eb] px-3 py-1.5 text-xs font-semibold text-[#9a8049]">
+                        Čaká na študenta
+                      </span>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </section>
+        )}
 
         <section className="mt-10">
           <div className="flex items-center gap-2">
@@ -427,6 +497,7 @@ export default async function TeacherSchedulePage() {
                     <ProposeScheduleChangeForm
                       lessonId={lesson.id}
                       studentId={lesson.student_id}
+                      hasPendingRequest={pendingLessonIds.has(lesson.id)}
                     />
                   </article>
                 );

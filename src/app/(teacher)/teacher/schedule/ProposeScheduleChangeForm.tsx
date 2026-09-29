@@ -8,6 +8,7 @@ import { createSupabaseBrowserClient } from "@/lib/supabase";
 type Props = {
   lessonId: string;
   studentId: string;
+  hasPendingRequest: boolean;
 };
 
 function getTimeZoneOffset(date: Date, timeZone: string) {
@@ -65,6 +66,7 @@ function bratislavaLocalToUtc(value: string) {
 export default function ProposeScheduleChangeForm({
   lessonId,
   studentId,
+  hasPendingRequest,
 }: Props) {
   const router = useRouter();
   const [preferredAt, setPreferredAt] = useState("");
@@ -151,6 +153,14 @@ export default function ProposeScheduleChangeForm({
     setSent(true);
     setSaving(false);
     router.refresh();
+  }
+
+  if (hasPendingRequest) {
+    return (
+      <div className="mt-3 rounded-2xl border border-[#c6a65b]/20 bg-[#faf6eb] p-4 text-sm text-[#7e693a]">
+        Pre túto hodinu už existuje čakajúca žiadosť o zmenu termínu.
+      </div>
+    );
   }
 
   return (

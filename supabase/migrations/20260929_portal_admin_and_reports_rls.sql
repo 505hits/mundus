@@ -120,3 +120,63 @@ for all
 to authenticated
 using (public.is_active_admin())
 with check (public.is_active_admin());
+
+
+-- Keep lessons and packages consistent.
+create or replace function public.validate_lesson_package_assignment()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  package_student_id uuid;
+  package_remaining integer;
+  package_status text;
+begin
+  if new.package_id is null then
+    return new;
+  end if;
+
+  select student_id, remaining_lessons, status
+  into package_student_id, package_remaining, package_status
+  from public.lesson_packages
+  where id = new.package_id;
+
+  if package_student_id is null then
+    raise exception 'Selected lesson package does not exist';
+  end if;
+
+  if package_student_id <> new.student_id then
+    raise exception 'Lesson package must belong to the same student';
+  end if;
+
+  if (
+    tg_op = 'INSERT'
+    or old.package_id is distinct from new.package_id
+  ) and package_status <> 'active' then
+    raise exception 'Only an active lesson package can be assigned';
+  end if;
+
+  if new.status = 'completed'
+     and (
+       tg_op = 'INSERT'
+       or old.status is distinct from 'completed'
+       or old.package_id is distinct from new.package_id
+     )
+     and coalesce(package_remaining, 0) <= 0 then
+    raise exception 'No lessons remain in the selected package';
+  end if;
+
+  return new;
+end;
+$$;
+
+drop trigger if exists a_validate_lesson_package_assignment
+on public.lessons;
+
+create trigger a_validate_lesson_package_assignment
+before insert or update of package_id, student_id, status
+on public.lessons
+for each row
+execute function public.validate_lesson_package_assignment();

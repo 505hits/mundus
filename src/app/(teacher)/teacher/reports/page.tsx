@@ -153,7 +153,7 @@ export default async function TeacherReportsPage() {
 
         <section className="mt-8">
           <p className="text-sm text-gray-400">
-            Recent activity
+            Posledná aktivita
           </p>
 
           <h2 className="mt-1 text-xl font-semibold">

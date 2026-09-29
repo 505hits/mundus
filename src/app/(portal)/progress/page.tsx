@@ -365,7 +365,7 @@ export default async function ProgressPage() {
                     </div>
 
                     <span className="rounded-full bg-[#eef3ef] px-3 py-1.5 text-xs font-semibold text-[#527064]">
-                      Completed
+                      Dokončená
                     </span>
                   </div>
                 )

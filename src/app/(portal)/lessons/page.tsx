@@ -65,7 +65,7 @@ export default async function LessonsPage() {
     (lesson) =>
       (lesson.status === "scheduled" ||
         lesson.status === "rescheduled") &&
-      new Date(lesson.scheduled_at).getTime() >= Date.now()
+      new Date(lesson.scheduled_at).getTime() >= new Date().getTime()
   );
 
   const pastLessons = allLessons
@@ -76,7 +76,7 @@ export default async function LessonsPage() {
         lesson.status === "teacher_cancelled" ||
         lesson.status === "student_cancelled" ||
         lesson.status === "late_cancellation" ||
-        new Date(lesson.scheduled_at).getTime() < Date.now()
+        new Date(lesson.scheduled_at).getTime() < new Date().getTime()
     )
     .reverse();
 

@@ -11,6 +11,7 @@ import { formatLanguage } from "@/lib/portalLabels";
 import ScheduleRequestActions from "./ScheduleRequestActions";
 import LessonStatusActions from "./LessonStatusActions";
 import EditLessonForm from "./EditLessonForm";
+import ProposeScheduleChangeForm from "./ProposeScheduleChangeForm";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("sk-SK", {
@@ -421,6 +422,11 @@ export default async function TeacherSchedulePage() {
                       lessonId={lesson.id}
                       scheduledAt={lesson.scheduled_at}
                       meetLink={lesson.meet_link}
+                    />
+
+                    <ProposeScheduleChangeForm
+                      lessonId={lesson.id}
+                      studentId={lesson.student_id}
                     />
                   </article>
                 );

@@ -3,10 +3,8 @@ import {
   ArrowLeft,
   BookOpen,
   CalendarDays,
-  CheckCircle2,
   Clock3,
   MessageCircle,
-  Target,
   TrendingUp,
   Video,
 } from "lucide-react";
@@ -148,7 +146,7 @@ async function renderStudentPage(
     .filter(
       (lesson) =>
         ["scheduled", "rescheduled"].includes(lesson.status) &&
-        new Date(lesson.scheduled_at).getTime() >= Date.now()
+        new Date(lesson.scheduled_at).getTime() >= new Date().getTime()
     )
     .sort(
       (a, b) =>

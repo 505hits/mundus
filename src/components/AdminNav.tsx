@@ -8,7 +8,6 @@ import {
   GraduationCap,
   Home,
   Package,
-  UserPlus,
   Users,
 } from "lucide-react";
 
@@ -32,11 +31,6 @@ const navItems = [
     name: "Hodiny",
     href: "/admin/lessons",
     icon: CalendarDays,
-  },
-  {
-    name: "Úvodné hodiny",
-    href: "/admin/trials",
-    icon: UserPlus,
   },
   {
     name: "Balíčky",

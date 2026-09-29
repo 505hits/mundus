@@ -108,7 +108,7 @@ export default async function DashboardPage() {
     latestReport?.next_focus?.trim() || null;
 
   const firstName =
-    profile?.full_name?.trim().split(/\s+/)[0] || "";
+    profile?.full_name?.trim().split(/\s+/)[0] || "študent";
 
   const totalLessons = activePackages.reduce(
     (sum, pkg) => sum + (pkg.total_lessons ?? 0),

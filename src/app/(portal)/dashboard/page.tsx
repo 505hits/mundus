@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { formatLanguage, formatLessonType } from "@/lib/portalLabels";
+import { formatLanguage, formatLessonCount, formatLessonType } from "@/lib/portalLabels";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("sk-SK", {
@@ -281,14 +281,13 @@ export default async function DashboardPage() {
 
             {activePackages.length > 0 ? (
               <>
-                <div className="mt-4 flex items-end gap-2">
-                  <span className="text-5xl font-semibold tracking-tight">
+                <div className="mt-4">
+                  <p className="text-5xl font-semibold tracking-tight">
                     {remainingLessons}
-                  </span>
-
-                  <span className="pb-1 text-gray-400">
-                    hodín zostáva
-                  </span>
+                  </p>
+                  <p className="mt-1 text-sm text-gray-400">
+                    Zostáva {formatLessonCount(remainingLessons)}
+                  </p>
                 </div>
 
                 <div className="mt-6 h-2 overflow-hidden rounded-full bg-[#edf0ec]">
@@ -299,8 +298,23 @@ export default async function DashboardPage() {
                 </div>
 
                 <p className="mt-3 text-sm text-gray-400">
-                  {usedLessons} z {totalLessons} hodín absolvovaných
+                  Absolvované: {formatLessonCount(usedLessons)} z {formatLessonCount(totalLessons)}
                 </p>
+
+                {remainingLessons <= 2 && (
+                  <div className="mt-5 rounded-2xl border border-[#c6a65b]/20 bg-[#faf6eb] p-4">
+                    <p className="font-semibold text-[#7e693a]">
+                      {remainingLessons === 0
+                        ? "Balíček je vyčerpaný"
+                        : remainingLessons === 1
+                          ? "Zostáva vám posledná hodina"
+                          : "Zostávajú vám posledné 2 hodiny"}
+                    </p>
+                    <p className="mt-1 text-sm leading-6 text-[#7e693a]/75">
+                      Ak chcete pokračovať bez prerušenia, ozvite sa Mundus Languages a pripravíme vám ďalší balíček.
+                    </p>
+                  </div>
+                )}
               </>
             ) : (
               <p className="mt-4 text-sm leading-6 text-gray-500">

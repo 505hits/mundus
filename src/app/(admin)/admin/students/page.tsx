@@ -80,7 +80,7 @@ export default async function AdminStudentsPage() {
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">Študenti</p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Správa študentov</h1>
-          <p className="mt-2 text-gray-500">Real student accounts, packages and upcoming lessons.</p>
+          <p className="mt-2 text-gray-500">Reálne účty študentov, balíčky a najbližšie hodiny.</p>
         </section>
 
         {profilesError && (

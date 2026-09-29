@@ -211,7 +211,7 @@ export default async function TeacherDashboardPage() {
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Hi, {firstName} 👋
+            Ahoj, {firstName} 👋
           </h1>
 
           <p className="mt-2 text-gray-500">
@@ -366,7 +366,7 @@ export default async function TeacherDashboardPage() {
                               : "bg-gray-100 text-gray-400"
                           }`}
                         >
-                          Meet link not added
+                          Odkaz na Meet zatiaľ nie je pridaný
                         </span>
                       )}
                     </div>
@@ -394,7 +394,7 @@ export default async function TeacherDashboardPage() {
               <h3 className="mt-3 font-semibold text-[#7e693a]">
                 {myPendingRequests.length === 1
                   ? "1 študent čaká na vašu odpoveď"
-                  : `${myPendingRequests.length} študenti čakajú na vašu odpoveď`}
+                  : `${myPendingRequests.length} študentov čaká na vašu odpoveď`}
               </h3>
 
               <p className="mt-2 text-sm leading-6 text-[#7e693a]/75">
@@ -406,7 +406,7 @@ export default async function TeacherDashboardPage() {
                 href="/teacher/schedule"
                 className="mt-5 inline-flex rounded-xl bg-[#183f38] px-4 py-2.5 text-sm font-semibold text-white"
               >
-                Review requests
+                Skontrolovať žiadosti
               </Link>
             </div>
           </section>
@@ -417,7 +417,7 @@ export default async function TeacherDashboardPage() {
             <div>
               <p className="text-sm text-gray-400">Študenti</p>
               <h2 className="mt-1 text-xl font-semibold">
-                My students
+                Moji študenti
               </h2>
             </div>
 

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import LogoutButton from "@/components/LogoutButton";
 
 export default function PendingApprovalPage() {
   return (
@@ -30,6 +31,10 @@ export default function PendingApprovalPage() {
         >
           Späť na Mundus Languages
         </Link>
+
+        <div className="mx-auto mt-4 max-w-[220px]">
+          <LogoutButton />
+        </div>
       </div>
     </main>
   );

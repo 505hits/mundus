@@ -7,6 +7,8 @@ import { createSupabaseBrowserClient } from "@/lib/supabase";
 
 type Props = {
   lessonId: string;
+  studentId: string;
+  packageId: string | null;
   scheduledAt: string;
 };
 
@@ -20,6 +22,8 @@ const statusOptions = [
 
 export default function LessonStatusActions({
   lessonId,
+  studentId,
+  packageId,
   scheduledAt,
 }: Props) {
   const router = useRouter();
@@ -47,6 +51,29 @@ export default function LessonStatusActions({
     setSaving(true);
 
     const supabase = createSupabaseBrowserClient();
+
+    if (status === "completed") {
+      if (!packageId) {
+        setError("K hodine nie je priradený balíček. Kontaktujte administrátora.");
+        setSaving(false);
+        return;
+      }
+
+      const { data: pkg, error: packageError } = await supabase
+        .from("lesson_packages")
+        .select("id")
+        .eq("id", packageId)
+        .eq("student_id", studentId)
+        .eq("status", "active")
+        .gt("remaining_lessons", 0)
+        .maybeSingle();
+
+      if (packageError || !pkg) {
+        setError("Hodinu nemožno dokončiť: balíček nemá voľný kredit alebo nepatrí tomuto študentovi.");
+        setSaving(false);
+        return;
+      }
+    }
 
     const { data: updatedLesson, error: updateError } = await supabase
       .from("lessons")

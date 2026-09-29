@@ -357,9 +357,9 @@ async function renderStudentPage(
                   >
                     <div>
                       <p className="font-semibold">
-                        {lesson.lesson_type ||
-                          lesson.language ||
-                          "Hodina"}
+                        {lesson.lesson_type
+                          ? formatLessonType(lesson.lesson_type)
+                          : formatLanguage(lesson.language)}
                       </p>
 
                       <p className="mt-1 text-sm text-gray-400">

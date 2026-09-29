@@ -9,6 +9,7 @@ import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatLanguage, formatLessonStatus } from "@/lib/portalLabels";
 import AdminCreateLessonForm from "./AdminCreateLessonForm";
+import AdminLessonActions from "./AdminLessonActions";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("sk-SK", {
@@ -130,7 +131,7 @@ export default async function AdminLessonsPage() {
                 const student = Array.isArray(lesson.student) ? lesson.student[0] : lesson.student;
                 const teacher = Array.isArray(lesson.teacher) ? lesson.teacher[0] : lesson.teacher;
                 return (
-                  <div key={lesson.id} className="grid gap-4 px-5 py-5 lg:grid-cols-[1.2fr_1fr_0.9fr_0.7fr_0.9fr_0.5fr] lg:items-center lg:px-6">
+                  <div key={lesson.id} className="grid gap-4 px-5 py-5 lg:grid-cols-[1.2fr_1fr_0.9fr_0.7fr_0.9fr_0.5fr_0.7fr] lg:items-center lg:px-6">
                     <div>
                       <p className="font-semibold">{name(student)}</p>
                       <p className="mt-1 text-sm text-gray-400">{formatLanguage(lesson.language)}</p>
@@ -158,6 +159,14 @@ export default async function AdminLessonsPage() {
                           <Video size={17} />
                         </a>
                       )}
+                    </div>
+                    <div>
+                      <AdminLessonActions
+                        lessonId={lesson.id}
+                        scheduledAt={lesson.scheduled_at}
+                        meetLink={lesson.meet_link}
+                        currentStatus={lesson.status}
+                      />
                     </div>
                   </div>
                 );

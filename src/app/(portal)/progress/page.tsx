@@ -17,8 +17,11 @@ export default async function ProgressPage() {
   const { user } = await requireRole("student");
   const supabase = await createSupabaseServerClient();
 
-  const [{ data: lessons }, { data: packages }, { data: reports }] =
-    await Promise.all([
+  const [
+    { data: lessons, error: lessonsError },
+    { data: packages, error: packagesError },
+    { data: reports, error: reportsError },
+  ] = await Promise.all([
       supabase
         .from("lessons")
         .select(
@@ -131,6 +134,12 @@ export default async function ProgressPage() {
         </section>
 
         {/* Aktuálne učenie */}
+        {(lessonsError || packagesError || reportsError) && (
+          <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+            Niektoré údaje o vašom pokroku sa nepodarilo načítať. Obnovte stránku alebo to skúste o chvíľu znova.
+          </div>
+        )}
+
         <section className="mt-8 rounded-3xl bg-[#183f38] p-6 text-white shadow-sm sm:p-8">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
             <div>

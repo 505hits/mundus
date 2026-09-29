@@ -169,7 +169,7 @@ export default async function TeacherSchedulePage() {
                           </p>
 
                           <span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-[#9a8049]">
-                            New request
+                            Nová žiadosť
                           </span>
                         </div>
 
@@ -209,7 +209,7 @@ export default async function TeacherSchedulePage() {
           )}
 
           <p className="mt-3 text-xs text-gray-400">
-            The original lesson stays confirmed until a change is accepted.
+            Pôvodný termín zostáva potvrdený, kým nebude zmena schválená.
           </p>
         </section>
 
@@ -327,7 +327,7 @@ export default async function TeacherSchedulePage() {
                               : "bg-gray-100 text-gray-400"
                           }`}
                         >
-                          Meet link not added
+                          Odkaz na Meet zatiaľ nie je pridaný
                         </span>
                       )}
                     </div>

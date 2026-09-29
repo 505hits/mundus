@@ -49,6 +49,16 @@ export default function PackageAdminActions({
       return;
     }
 
+    if (remainingValue > 0 && packageStatus === "completed") {
+      setError("Balíček so zostávajúcimi hodinami nemožno označiť ako dokončený.");
+      return;
+    }
+
+    const normalizedStatus =
+      remainingValue === 0 && packageStatus === "active"
+        ? "completed"
+        : packageStatus;
+
     setSaving(true);
 
     const supabase = createSupabaseBrowserClient();
@@ -58,7 +68,7 @@ export default function PackageAdminActions({
       .update({
         remaining_lessons: remainingValue,
         used_lessons: totalLessons - remainingValue,
-        status: packageStatus,
+        status: normalizedStatus,
       })
       .eq("id", packageId)
       .select("id")

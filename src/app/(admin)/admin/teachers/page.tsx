@@ -26,13 +26,28 @@ export default async function AdminTeachersPage() {
   ]);
 
   const now = new Date();
-  const day = now.getDay();
-  const mondayOffset = day === 0 ? -6 : 1 - day;
-  const weekStart = new Date(now);
-  weekStart.setHours(0, 0, 0, 0);
-  weekStart.setDate(now.getDate() + mondayOffset);
-  const weekEnd = new Date(weekStart);
-  weekEnd.setDate(weekStart.getDate() + 7);
+  const bratislavaDateKey = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Bratislava",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+
+  const todayKey = bratislavaDateKey.format(now);
+  const [year, month, dayOfMonth] = todayKey.split("-").map(Number);
+  const todayUtc = new Date(Date.UTC(year, month - 1, dayOfMonth));
+  const weekday = todayUtc.getUTCDay();
+  const mondayOffset = weekday === 0 ? -6 : 1 - weekday;
+  const mondayUtc = new Date(todayUtc);
+  mondayUtc.setUTCDate(todayUtc.getUTCDate() + mondayOffset);
+
+  const weekKeys = new Set(
+    Array.from({ length: 7 }, (_, index) => {
+      const date = new Date(mondayUtc);
+      date.setUTCDate(mondayUtc.getUTCDate() + index);
+      return date.toISOString().slice(0, 10);
+    })
+  );
 
   const teacherRows = (teachers ?? []).map((teacher) => {
     const teacherLessons = (lessons ?? []).filter(
@@ -41,10 +56,11 @@ export default async function AdminTeachersPage() {
     const studentCount = new Set(
       teacherLessons.map((lesson) => lesson.student_id)
     ).size;
-    const lessonsThisWeek = teacherLessons.filter((lesson) => {
-      const time = new Date(lesson.scheduled_at).getTime();
-      return time >= weekStart.getTime() && time < weekEnd.getTime();
-    }).length;
+    const lessonsThisWeek = teacherLessons.filter((lesson) =>
+      weekKeys.has(
+        bratislavaDateKey.format(new Date(lesson.scheduled_at))
+      )
+    ).length;
     const languages = Array.from(
       new Set(
         teacherLessons

@@ -138,7 +138,7 @@ export default function AdminLessonActions({
     setSaving(true);
     const supabase = createSupabaseBrowserClient();
 
-    const { error: updateError } = await supabase
+    const { data: updatedLesson, error: updateError } = await supabase
       .from("lessons")
       .update({
         scheduled_at: selectedDate.toISOString(),
@@ -146,9 +146,11 @@ export default function AdminLessonActions({
         status: nextStatus,
         updated_at: new Date().toISOString(),
       })
-      .eq("id", lessonId);
+      .eq("id", lessonId)
+      .select("id")
+      .maybeSingle();
 
-    if (updateError) {
+    if (updateError || !updatedLesson) {
       setError("Hodinu sa nepodarilo aktualizovať. Skúste to prosím znova.");
       setSaving(false);
       return;

@@ -3,6 +3,9 @@ name: Portal build check
 on:
   workflow_dispatch:
   push:
+    branches:
+      - mundus-portal
+  push:
     branches: [mundus-portal]
 
 jobs:

@@ -121,13 +121,13 @@ export default async function AdminDashboardPage() {
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
-            Mundus administrácia
+            Administrácia Mundus
           </p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
             Vitajte, {firstName}
           </h1>
           <p className="mt-2 text-gray-500">
-            Aktuálny prehľad študentov, lektorov a dnešných hodín.
+            Aktuálny prehľad študentov, lektorov, balíčkov a dnešných hodín.
           </p>
         </section>
 

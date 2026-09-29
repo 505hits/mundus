@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CalendarPlus } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
+import { formatLessonCount } from "@/lib/portalLabels";
 
 type PersonOption = {
   id: string;
@@ -317,8 +318,7 @@ export default function AdminCreateLessonForm({
             ) : (
               studentPackages.map((pkg) => (
                 <option key={pkg.id} value={pkg.id}>
-                  {pkg.total_lessons ?? "?"} hodín · zostáva{" "}
-                  {pkg.remaining_lessons ?? 0}
+                  {pkg.total_lessons == null ? "Neznámy balíček" : formatLessonCount(pkg.total_lessons)} · zostáva {formatLessonCount(pkg.remaining_lessons ?? 0)}
                 </option>
               ))
             )}

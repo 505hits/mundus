@@ -3,6 +3,7 @@ import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatPackageStatus, formatPackageType } from "@/lib/portalLabels";
 import AddPackageForm from "./AddPackageForm";
+import PackageAdminActions from "./PackageAdminActions";
 
 function formatDate(value: string | null) {
   if (!value) return "—";
@@ -108,7 +109,7 @@ export default async function AdminPackagesPage() {
                       : formatPackageStatus(item.status);
 
                 return (
-                  <div key={item.id} className="grid gap-4 px-5 py-5 lg:grid-cols-[1.5fr_0.8fr_0.7fr_0.7fr_0.9fr_1fr] lg:items-center lg:px-6">
+                  <div key={item.id} className="grid gap-4 px-5 py-5 lg:grid-cols-[1.5fr_0.7fr_0.7fr_0.7fr_0.9fr_1fr_0.8fr] lg:items-center lg:px-6">
                     <div>
                       <p className="font-semibold">
                         {student?.full_name?.trim() || student?.email || "Študent"}
@@ -144,6 +145,12 @@ export default async function AdminPackagesPage() {
                     <div className="text-sm text-gray-400">
                       {item.expires_at ? `Platí do ${formatDate(item.expires_at)}` : "Bez expirácie"}
                     </div>
+                    <PackageAdminActions
+                      packageId={item.id}
+                      totalLessons={purchased}
+                      remainingLessons={remaining}
+                      status={item.status}
+                    />
                   </div>
                 );
               })}

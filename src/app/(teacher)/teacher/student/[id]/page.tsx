@@ -265,13 +265,13 @@ async function renderStudentPage(
             <TrendingUp size={19} className="text-[#9a8049]" />
 
             <p className="mt-4 text-sm text-gray-400">
-              Learning activity
+              Aktivita študenta
             </p>
 
             <p className="mt-1 text-sm font-semibold">
               {completedLessons.length > 0
                 ? "Prebiehajúca výučba"
-                : "Getting started"}
+                : "Začiatok výučby"}
             </p>
           </article>
         </div>
@@ -314,7 +314,7 @@ async function renderStudentPage(
                 </a>
               ) : (
                 <span className="rounded-xl bg-white/10 px-5 py-3 text-sm text-white/60">
-                  Meet link not added
+                  Odkaz na Meet zatiaľ nie je pridaný
                 </span>
               )}
             </div>
@@ -359,7 +359,7 @@ async function renderStudentPage(
                       <p className="font-semibold">
                         {lesson.lesson_type ||
                           lesson.language ||
-                          "Lesson"}
+                          "Hodina"}
                       </p>
 
                       <p className="mt-1 text-sm text-gray-400">

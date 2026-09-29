@@ -21,6 +21,22 @@ type Props = {
   existingReport: ExistingReport | null;
 };
 
+function normalizeProgress(value: string | null | undefined) {
+  const normalized = value?.trim().toLowerCase();
+
+  const map: Record<string, string> = {
+    "good progress": "good_progress",
+    "dobrý pokrok": "good_progress",
+    "normal progress": "normal_progress",
+    "bežný pokrok": "normal_progress",
+    "needs attention": "needs_attention",
+    "vyžaduje pozornosť": "needs_attention",
+    improving: "good_progress",
+  };
+
+  return (normalized && map[normalized]) || "good_progress";
+}
+
 export default function LessonReportForm({
   lessonId,
   studentId,
@@ -28,7 +44,7 @@ export default function LessonReportForm({
 }: Props) {
   const [topic, setTopic] = useState(existingReport?.topic ?? "");
   const [progress, setProgress] = useState(
-    existingReport?.progress ?? "Dobrý pokrok"
+    normalizeProgress(existingReport?.progress)
   );
   const [studentNote, setStudentNote] = useState(
     existingReport?.student_note ?? ""
@@ -115,9 +131,9 @@ export default function LessonReportForm({
             onChange={(event) => setProgress(event.target.value)}
             className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#183f38]"
           >
-            <option>Dobrý pokrok</option>
-            <option>Bežný pokrok</option>
-            <option>Vyžaduje pozornosť</option>
+            <option value="good_progress">Dobrý pokrok</option>
+            <option value="normal_progress">Bežný pokrok</option>
+            <option value="needs_attention">Vyžaduje pozornosť</option>
           </select>
         </label>
 

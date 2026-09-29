@@ -146,7 +146,7 @@ export default async function TeacherReportsPage() {
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
-              Completed reports
+              Hotové záznamy
             </p>
           </div>
         </section>
@@ -167,7 +167,7 @@ export default async function TeacherReportsPage() {
               </p>
 
               <p className="mt-1 text-sm text-gray-400">
-                Reports will become available after completed lessons.
+                Záznamy bude možné pridávať po dokončení hodín.
               </p>
             </div>
           ) : (

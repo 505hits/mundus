@@ -34,16 +34,18 @@ export default function TeacherApprovalAction({
 
     const supabase = createSupabaseBrowserClient();
 
-    const { error: updateError } = await supabase
+    const { data: updatedTeacher, error: updateError } = await supabase
       .from("profiles")
       .update({
         status: "active",
         updated_at: new Date().toISOString(),
       })
       .eq("id", teacherId)
-      .eq("role", "teacher");
+      .eq("role", "teacher")
+      .select("id")
+      .maybeSingle();
 
-    if (updateError) {
+    if (updateError || !updatedTeacher) {
       setError(
         "Účet lektora sa nepodarilo schváliť. Skúste to prosím znova."
       );

@@ -146,7 +146,7 @@ export default async function AdminDashboardPage() {
           <section className="rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-400">Priority</p>
+                <p className="text-sm text-gray-400">Priorita</p>
                 <h2 className="mt-1 text-xl font-semibold">Vyžaduje pozornosť</h2>
               </div>
               <AlertCircle size={21} className="text-[#9a8049]" />

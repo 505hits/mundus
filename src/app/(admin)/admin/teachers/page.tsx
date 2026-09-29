@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { formatLanguage, formatProfileStatus } from "@/lib/portalLabels";
 
 export default async function AdminTeachersPage() {
   await requireRole("admin");
@@ -55,7 +56,7 @@ export default async function AdminTeachersPage() {
       ...teacher,
       studentCount,
       lessonsThisWeek,
-      languages: languages.length ? languages.join(", ") : "—",
+      languages: languages.length ? languages.map((language) => formatLanguage(language)).join(", ") : "—",
     };
   });
 
@@ -156,12 +157,12 @@ export default async function AdminTeachersPage() {
                     <div>
                       <p className="text-xs text-gray-400 lg:hidden">Tento týždeň</p>
                       <p className="mt-1 text-sm font-medium lg:mt-0">
-                        {teacher.lessonsThisWeek} lessons
+                        {teacher.lessonsThisWeek} hodín
                       </p>
                     </div>
                     <div>
                       <span className="rounded-full bg-[#eef3ef] px-3 py-1 text-xs font-semibold capitalize text-[#527064]">
-                        {teacher.status || "pending"}
+                        {formatProfileStatus(teacher.status)}
                       </span>
                     </div>
                   </div>

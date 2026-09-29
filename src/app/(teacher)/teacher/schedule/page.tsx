@@ -10,6 +10,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatLanguage } from "@/lib/portalLabels";
 import ScheduleRequestActions from "./ScheduleRequestActions";
 import LessonStatusActions from "./LessonStatusActions";
+import EditLessonForm from "./EditLessonForm";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("sk-SK", {
@@ -415,6 +416,12 @@ export default async function TeacherSchedulePage() {
                         </span>
                       )}
                     </div>
+
+                    <EditLessonForm
+                      lessonId={lesson.id}
+                      scheduledAt={lesson.scheduled_at}
+                      meetLink={lesson.meet_link}
+                    />
                   </article>
                 );
               })}

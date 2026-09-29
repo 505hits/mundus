@@ -89,7 +89,7 @@ export default async function DashboardPage() {
       (report) => report.homework?.trim()
     )?.homework?.trim() || null;
 
-  const latestNextFocus =
+  const latestNajbližšiaFocus =
     latestReport?.next_focus?.trim() || null;
 
   const firstName =
@@ -157,7 +157,7 @@ export default async function DashboardPage() {
         </section>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-3">
-          {/* Next lesson */}
+          {/* Najbližšia lesson */}
           <section className="rounded-3xl bg-[#183f38] p-6 text-white shadow-sm lg:col-span-2 sm:p-8">
             <div className="flex items-start justify-between gap-4">
               <div>
@@ -294,11 +294,11 @@ export default async function DashboardPage() {
               </div>
             </div>
 
-            {latestNextFocus ? (
+            {latestNajbližšiaFocus ? (
               <p className="mt-5 text-sm leading-6 text-gray-500">
                 Ďalšie zameranie:{" "}
                 <span className="font-medium text-[#183f38]">
-                  {latestNextFocus}
+                  {latestNajbližšiaFocus}
                 </span>
               </p>
             ) : (
@@ -402,7 +402,7 @@ export default async function DashboardPage() {
 
                   {index === 0 ? (
                     <span className="rounded-full bg-[#eef3ef] px-3 py-1.5 text-xs font-semibold">
-                      Next
+                      Najbližšia
                     </span>
                   ) : (
                     <ChevronRight

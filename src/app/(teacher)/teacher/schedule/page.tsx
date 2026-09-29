@@ -174,7 +174,7 @@ export default async function TeacherSchedulePage() {
                         </div>
 
                         <p className="mt-2 text-sm text-[#7e693a]/70">
-                          {formatLanguage(lesson.language)} lesson
+                          {formatLanguage(lesson.language)} hodina
                         </p>
 
                         <div className="mt-4 space-y-2 text-sm text-[#7e693a]">
@@ -228,7 +228,7 @@ export default async function TeacherSchedulePage() {
           {!lessons?.length ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
               <p className="font-medium">
-                No upcoming lessons
+                Žiadne najbližšie hodiny
               </p>
               <p className="mt-1 text-sm text-gray-400">
                 Vaše potvrdené hodiny sa zobrazia tu.

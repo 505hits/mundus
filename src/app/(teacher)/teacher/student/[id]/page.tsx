@@ -14,6 +14,7 @@ import { notFound } from "next/navigation";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatLanguage, formatLessonType } from "@/lib/portalLabels";
+import CreateLessonForm from "./CreateLessonForm";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -190,12 +191,12 @@ async function renderStudentPage(
   const language =
     nextLesson?.language ||
     lessons[0]?.language ||
-    "Jazyk";
+    "";
 
   const lessonType =
     nextLesson?.lesson_type ||
     lessons[0]?.lesson_type ||
-    "Individuálna hodina";
+    "regular";
 
   return (
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
@@ -320,6 +321,13 @@ async function renderStudentPage(
             </div>
           </section>
         )}
+
+        <CreateLessonForm
+          studentId={studentId}
+          language={language}
+          lessonType={lessonType}
+          packages={packages}
+        />
 
         <section className="mt-10">
           <div>

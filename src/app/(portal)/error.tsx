@@ -20,7 +20,9 @@ export default function StudentPortalError({
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-red-700">
           <AlertCircle size={24} />
         </div>
-        <h1 className="mt-5 text-2xl font-semibold">Niečo sa nepodarilo načítať</h1>
+        <h1 className="mt-5 text-2xl font-semibold">
+          Niečo sa nepodarilo načítať
+        </h1>
         <p className="mt-2 leading-7 text-gray-500">
           Vaše údaje zostali v bezpečí. Skúste stránku načítať znova.
         </p>

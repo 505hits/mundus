@@ -28,11 +28,11 @@ export default async function AdminDashboardPage() {
   const supabase = await createSupabaseServerClient();
 
   const [
-    { data: students },
-    { data: teachers },
+    { data: students, error: studentsError },
+    { data: teachers, error: teachersError },
     { data: lessons, error: lessonsError },
-    { data: packages },
-    { data: requests },
+    { data: packages, error: packagesError },
+    { data: requests, error: requestsError },
   ] = await Promise.all([
     supabase.from("profiles").select("id").eq("role", "student").eq("status", "active"),
     supabase.from("profiles").select("id").eq("role", "teacher").eq("status", "active"),
@@ -53,6 +53,14 @@ export default async function AdminDashboardPage() {
       .select("id,status")
       .eq("status", "pending"),
   ]);
+
+  const hasLoadError = Boolean(
+    studentsError ||
+      teachersError ||
+      lessonsError ||
+      packagesError ||
+      requestsError
+  );
 
   const now = new Date();
   const dateKey = new Intl.DateTimeFormat("en-CA", {
@@ -105,7 +113,7 @@ export default async function AdminDashboardPage() {
           </p>
         </section>
 
-        {lessonsError && (
+        {hasLoadError && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             Niektoré údaje sa nepodarilo načítať. Obnovte stránku a skúste to znova.
           </div>

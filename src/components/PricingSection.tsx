@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
-import { Check, Star, Gift, Zap } from "lucide-react";
+import { Star, Gift, Zap } from "lucide-react";
 
 const fadeInUp = {
     hidden: { opacity: 0, y: 20 },

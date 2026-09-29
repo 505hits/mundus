@@ -8,6 +8,7 @@ import {
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatLanguage, formatLessonStatus } from "@/lib/portalLabels";
+import AdminCreateLessonForm from "./AdminCreateLessonForm";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("sk-SK", {
@@ -35,15 +36,38 @@ export default async function AdminLessonsPage() {
   await requireRole("admin");
   const supabase = await createSupabaseServerClient();
 
-  const { data: lessons, error } = await supabase
-    .from("lessons")
-    .select(`
-      id,scheduled_at,duration_minutes,status,language,meet_link,
-      student:profiles!lessons_student_id_fkey(full_name,email),
-      teacher:profiles!lessons_teacher_id_fkey(full_name,email)
-    `)
-    .order("scheduled_at", { ascending: false })
-    .limit(100);
+  const [
+    { data: lessons, error },
+    { data: students, error: studentsError },
+    { data: teachers, error: teachersError },
+    { data: packages, error: packagesError },
+  ] = await Promise.all([
+    supabase
+      .from("lessons")
+      .select(`
+        id,scheduled_at,duration_minutes,status,language,meet_link,
+        student:profiles!lessons_student_id_fkey(full_name,email),
+        teacher:profiles!lessons_teacher_id_fkey(full_name,email)
+      `)
+      .order("scheduled_at", { ascending: false })
+      .limit(100),
+    supabase
+      .from("profiles")
+      .select("id,full_name,email")
+      .eq("role", "student")
+      .eq("status", "active")
+      .order("full_name", { ascending: true }),
+    supabase
+      .from("profiles")
+      .select("id,full_name,email")
+      .eq("role", "teacher")
+      .eq("status", "active")
+      .order("full_name", { ascending: true }),
+    supabase
+      .from("lesson_packages")
+      .select("id,student_id,total_lessons,remaining_lessons")
+      .eq("status", "active"),
+  ]);
 
   const rows = lessons ?? [];
   const now = new Date();
@@ -67,11 +91,17 @@ export default async function AdminLessonsPage() {
           <p className="mt-2 text-gray-500">Reálny prehľad hodín študentov a lektorov Mundus.</p>
         </section>
 
-        {error && (
+        {(error || studentsError || teachersError || packagesError) && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             Nepodarilo sa načítať údaje o hodinách. Obnovte stránku a skúste to znova.
           </div>
         )}
+
+        <AdminCreateLessonForm
+          students={students ?? []}
+          teachers={teachers ?? []}
+          packages={packages ?? []}
+        />
 
         <section className="mt-8 grid gap-4 sm:grid-cols-3">
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">

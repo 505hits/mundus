@@ -98,7 +98,7 @@ export default async function AdminStudentsPage() {
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <BookOpen size={20} className="text-[#9a8049]" />
             <p className="mt-4 text-3xl font-semibold">{renewalSoon}</p>
-            <p className="mt-1 text-sm text-gray-500">Renewal approaching</p>
+            <p className="mt-1 text-sm text-gray-500">Blíži sa pokračovanie</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <AlertCircle size={20} className="text-[#9a8049]" />
@@ -116,7 +116,7 @@ export default async function AdminStudentsPage() {
                 <div key={student.id} className="grid gap-4 px-5 py-5 lg:grid-cols-[1.4fr_1fr_0.7fr_1.2fr_0.8fr] lg:items-center lg:px-6">
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
-                      <p className="font-semibold">{student.full_name?.trim() || student.email || "Student"}</p>
+                      <p className="font-semibold">{student.full_name?.trim() || student.email || "Študent"}</p>
                       {student.status === "active" && student.remaining > 0 && student.remaining <= 2 && (
                         <span className="rounded-full bg-[#faf1d9] px-2.5 py-1 text-xs font-semibold text-[#9a8049]">
                           Blíži sa pokračovanie

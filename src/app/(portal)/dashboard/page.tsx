@@ -39,6 +39,7 @@ export default async function DashboardPage() {
     { data: packages, error: packagesError },
     { data: lessons, error: lessonsError },
     { data: reports, error: reportsError },
+    { data: pendingRequests, error: requestsError },
   ] = await Promise.all([
     supabase
       .from("profiles")
@@ -73,16 +74,28 @@ export default async function DashboardPage() {
       .eq("student_id", user.id)
       .order("updated_at", { ascending: false })
       .limit(5),
+
+    supabase
+      .from("schedule_change_requests")
+      .select("lesson_id,preferred_at")
+      .eq("student_id", user.id)
+      .eq("status", "pending"),
   ]);
 
   const hasLoadError = Boolean(
-    profileError || packagesError || lessonsError || reportsError
+    profileError || packagesError || lessonsError || reportsError || requestsError
   );
 
   const activePackages = packages ?? [];
   const upcomingLessons = lessons ?? [];
   const nextLesson = upcomingLessons[0] ?? null;
   const teacherReports = reports ?? [];
+  const pendingRequestMap = new Map(
+    (pendingRequests ?? []).map((request) => [
+      request.lesson_id,
+      request.preferred_at,
+    ])
+  );
 
   const latestReport = teacherReports[0] ?? null;
 
@@ -244,12 +257,18 @@ export default async function DashboardPage() {
                   </button>
                 )}
 
-                <Link
-                  href={`/lessons/${nextLesson.id}/request-change`}
-                  className="rounded-2xl border border-white/20 px-5 py-3.5 text-center font-medium text-white"
-                >
-                  Požiadať o zmenu
-                </Link>
+                {pendingRequestMap.has(nextLesson.id) ? (
+                  <div className="rounded-2xl border border-white/20 bg-white/5 px-5 py-3.5 text-center font-medium text-white/80">
+                    Zmena termínu čaká na schválenie
+                  </div>
+                ) : (
+                  <Link
+                    href={`/lessons/${nextLesson.id}/request-change`}
+                    className="rounded-2xl border border-white/20 px-5 py-3.5 text-center font-medium text-white"
+                  >
+                    Požiadať o zmenu
+                  </Link>
+                )}
               </div>
             )}
           </section>

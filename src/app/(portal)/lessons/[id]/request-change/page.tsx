@@ -64,7 +64,7 @@ export default async function RequestChangePage({
     notFound();
   }
 
-  if (new Date(lesson.scheduled_at).getTime() < Date.now()) {
+  if (new Date(lesson.scheduled_at).getTime() < new Date().getTime()) {
     notFound();
   }
 

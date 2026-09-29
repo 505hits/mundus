@@ -46,7 +46,7 @@ export default async function AdminLessonsPage() {
     supabase
       .from("lessons")
       .select(`
-        id,scheduled_at,duration_minutes,status,language,meet_link,
+        id,student_id,package_id,scheduled_at,duration_minutes,status,language,meet_link,
         student:profiles!lessons_student_id_fkey(full_name,email),
         teacher:profiles!lessons_teacher_id_fkey(full_name,email)
       `)
@@ -163,6 +163,8 @@ export default async function AdminLessonsPage() {
                     <div>
                       <AdminLessonActions
                         lessonId={lesson.id}
+                        studentId={lesson.student_id}
+                        packageId={lesson.package_id}
                         scheduledAt={lesson.scheduled_at}
                         meetLink={lesson.meet_link}
                         currentStatus={lesson.status}

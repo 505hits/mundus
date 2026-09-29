@@ -88,13 +88,13 @@ export default async function AdminPackagesPage() {
                 const displayStatus =
                   remaining === 0 ? "Je čas pokračovať" :
                   item.status === "active" && remaining <= 2 ? "Čoskoro pokračovanie" :
-                  item.status || "Unknown";
+                  item.status || "Neznámy stav";
 
                 return (
                   <div key={item.id} className="grid gap-4 px-5 py-5 lg:grid-cols-[1.5fr_0.8fr_0.7fr_0.7fr_0.9fr_1fr] lg:items-center lg:px-6">
                     <div>
                       <p className="font-semibold">
-                        {student?.full_name?.trim() || student?.email || "Student"}
+                        {student?.full_name?.trim() || student?.email || "Študent"}
                       </p>
                       <p className="mt-1 text-sm text-gray-400">
                         {item.package_type || "Balíček hodín"} · {formatDate(item.purchased_at)}
@@ -125,7 +125,7 @@ export default async function AdminPackagesPage() {
                       </span>
                     </div>
                     <div className="text-sm text-gray-400">
-                      {item.expires_at ? `Expires ${formatDate(item.expires_at)}` : "Bez expirácie"}
+                      {item.expires_at ? `Platí do ${formatDate(item.expires_at)}` : "Bez expirácie"}
                     </div>
                   </div>
                 );

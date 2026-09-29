@@ -121,7 +121,7 @@ export default async function LessonsPage() {
 
                         {index === 0 && (
                           <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/80">
-                            Next
+                            Najbližšia
                           </span>
                         )}
 
@@ -133,7 +133,7 @@ export default async function LessonsPage() {
                                 : "bg-[#fff7e6] text-[#9a8049]"
                             }`}
                           >
-                            Rescheduled
+                            Presunutá
                           </span>
                         )}
                       </div>

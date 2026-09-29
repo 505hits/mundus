@@ -55,6 +55,7 @@ export default async function TeacherSchedulePage() {
     .select(`
       id,
       student_id,
+      package_id,
       scheduled_at,
       duration_minutes,
       status,
@@ -362,6 +363,8 @@ export default async function TeacherSchedulePage() {
 
                       <LessonStatusActions
                         lessonId={lesson.id}
+                        studentId={lesson.student_id}
+                        packageId={lesson.package_id}
                         scheduledAt={lesson.scheduled_at}
                       />
                     </div>

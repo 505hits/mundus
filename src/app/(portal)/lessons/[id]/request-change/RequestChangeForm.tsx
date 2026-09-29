@@ -10,6 +10,61 @@ type RequestChangeFormProps = {
   studentId: string;
 };
 
+function getTimeZoneOffset(date: Date, timeZone: string) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(date);
+
+  const values = Object.fromEntries(
+    parts
+      .filter((part) => part.type !== "literal")
+      .map((part) => [part.type, Number(part.value)])
+  );
+
+  return (
+    Date.UTC(
+      values.year,
+      values.month - 1,
+      values.day,
+      values.hour,
+      values.minute,
+      values.second
+    ) - date.getTime()
+  );
+}
+
+function bratislavaLocalToUtc(value: string) {
+  const [datePart, timePart] = value.split("T");
+  const [year, month, day] = datePart.split("-").map(Number);
+  const [hour, minute] = timePart.split(":").map(Number);
+
+  const localAsUtc = new Date(
+    Date.UTC(year, month - 1, day, hour, minute, 0)
+  );
+
+  let offset = getTimeZoneOffset(localAsUtc, "Europe/Bratislava");
+  let result = new Date(localAsUtc.getTime() - offset);
+
+  const correctedOffset = getTimeZoneOffset(
+    result,
+    "Europe/Bratislava"
+  );
+
+  if (correctedOffset !== offset) {
+    offset = correctedOffset;
+    result = new Date(localAsUtc.getTime() - offset);
+  }
+
+  return result;
+}
+
 export default function RequestChangeForm({
   lessonId,
   studentId,
@@ -30,9 +85,12 @@ export default function RequestChangeForm({
       return;
     }
 
-    const selectedDate = new Date(preferredAt);
+    const selectedDate = bratislavaLocalToUtc(preferredAt);
 
-    if (selectedDate.getTime() <= Date.now()) {
+    if (
+      Number.isNaN(selectedDate.getTime()) ||
+      selectedDate.getTime() <= Date.now()
+    ) {
       setErrorMessage("Vyberte prosím budúci dátum a čas.");
       return;
     }
@@ -173,7 +231,7 @@ export default function RequestChangeForm({
         </div>
 
         <p className="mt-5 text-xs leading-5 text-gray-400">
-          Odoslaním žiadosti sa potvrdený termín automaticky nemení. Termín sa zmení až po schválení žiadosti.
+          Čas zadávate v časovom pásme Bratislava. Odoslaním žiadosti sa potvrdený termín automaticky nemení. Termín sa zmení až po schválení žiadosti.
         </p>
       </form>
     </section>

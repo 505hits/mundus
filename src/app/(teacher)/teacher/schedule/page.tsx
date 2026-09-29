@@ -82,6 +82,7 @@ export default async function TeacherSchedulePage() {
     .select(`
       id,
       student_id,
+      package_id,
       scheduled_at,
       duration_minutes,
       status,

@@ -132,10 +132,14 @@ export default function AdminLessonActions({
     }
 
     if (
-      nextStatus === "completed" &&
+      (nextStatus === "completed" || nextStatus === "student_no_show") &&
       selectedDate.getTime() > Date.now()
     ) {
-      setError("Budúcu hodinu nie je možné označiť ako dokončenú.");
+      setError(
+        nextStatus === "completed"
+          ? "Budúcu hodinu nie je možné označiť ako dokončenú."
+          : "Budúcu hodinu nie je možné označiť ako neprítomnosť študenta."
+      );
       return;
     }
 

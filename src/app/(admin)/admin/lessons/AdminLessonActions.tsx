@@ -7,6 +7,8 @@ import { createSupabaseBrowserClient } from "@/lib/supabase";
 
 type Props = {
   lessonId: string;
+  studentId: string;
+  packageId: string | null;
   scheduledAt: string;
   meetLink: string | null;
   currentStatus: string;
@@ -82,6 +84,8 @@ function bratislavaLocalToUtc(value: string) {
 
 export default function AdminLessonActions({
   lessonId,
+  studentId,
+  packageId,
   scheduledAt,
   meetLink,
   currentStatus,
@@ -137,6 +141,29 @@ export default function AdminLessonActions({
 
     setSaving(true);
     const supabase = createSupabaseBrowserClient();
+
+    if (nextStatus === "completed" && currentStatus !== "completed") {
+      if (!packageId) {
+        setError("K hodine nie je priradený balíček.");
+        setSaving(false);
+        return;
+      }
+
+      const { data: pkg, error: packageError } = await supabase
+        .from("lesson_packages")
+        .select("id")
+        .eq("id", packageId)
+        .eq("student_id", studentId)
+        .eq("status", "active")
+        .gt("remaining_lessons", 0)
+        .maybeSingle();
+
+      if (packageError || !pkg) {
+        setError("Hodinu nemožno dokončiť: balíček nemá voľný kredit alebo nepatrí tomuto študentovi.");
+        setSaving(false);
+        return;
+      }
+    }
 
     const { data: updatedLesson, error: updateError } = await supabase
       .from("lessons")

@@ -89,16 +89,19 @@ export default function Navbar() {
                     {/* Desktop CTA */}
                     <div className="hidden xl:flex items-center">
                         <Link href="/login" className="mr-4 whitespace-nowrap text-sm font-semibold text-gray-900 hover:text-primary">
-                            Dashboard
+                            Prihlásenie
                         </Link>
-                        <motion.a
-                            href="/#booking"
-                            className="btn btn-primary !py-2.5 !px-5 !text-sm whitespace-nowrap"
+                        <motion.div
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                         >
-                            {t.nav.book}
-                        </motion.a>
+                            <Link
+                                href="/#booking"
+                                className="btn btn-primary !py-2.5 !px-5 !text-sm whitespace-nowrap"
+                            >
+                                {t.nav.book}
+                            </Link>
+                        </motion.div>
                     </div>
 
                     {/* Mobile Menu Button - Visible ONLY on small screens */}
@@ -132,8 +135,8 @@ export default function Navbar() {
                                 onClick={() => setIsMobileMenuOpen(false)}
                                 className="flex items-center justify-between border-b border-gray-100 py-3 text-2xl font-medium text-gray-900"
                             >
-                                Dashboard
-                                <ArrowRight size={20} className="text-gray-400" />
+                            Prihlásenie
+                        <ArrowRight size={20} className="text-gray-400" />
                             </Link>
                             {navLinks.map((link, i) => (
                                 <motion.div
@@ -174,7 +177,7 @@ export default function Navbar() {
                                 transition={{ delay: 0.4 }}
                                 className="flex items-center gap-3 justify-center bg-gray-50 p-3 rounded-xl"
                             >
-                                <span className="text-sm font-semibold text-gray-500">Language:</span>
+                                <span className="text-sm font-semibold text-gray-500">Jazyk:</span>
                                 <div className="flex items-center gap-2 bg-white rounded-full p-1 shadow-sm border border-gray-100">
                                     <button
                                         onClick={() => setLanguage("en")}
@@ -198,13 +201,13 @@ export default function Navbar() {
                             transition={{ delay: 0.4 }}
                             className="mt-auto"
                         >
-                            <a
+                            <Link
                                 href="/#booking"
                                 onClick={() => setIsMobileMenuOpen(false)}
                                 className="btn btn-primary w-full justify-center text-base py-3"
                             >
                                 {t.nav.book}
-                            </a>
+                            </Link>
                             <p className="mt-6 text-center text-gray-500 text-sm">
                                 {t.nav.needHelp} <a href="mailto:support@mundus.com" className="text-primary underline">{t.nav.contactUs}</a>
                             </p>

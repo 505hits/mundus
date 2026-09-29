@@ -1,6 +1,7 @@
 import { AlertCircle, CheckCircle2, Package, RefreshCw } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { formatPackageStatus } from "@/lib/portalLabels";
 
 function formatDate(value: string | null) {
   if (!value) return "—";
@@ -88,7 +89,7 @@ export default async function AdminPackagesPage() {
                 const displayStatus =
                   remaining === 0 ? "Je čas pokračovať" :
                   item.status === "active" && remaining <= 2 ? "Čoskoro pokračovanie" :
-                  item.status || "Neznámy stav";
+                  formatPackageStatus(item.status);
 
                 return (
                   <div key={item.id} className="grid gap-4 px-5 py-5 lg:grid-cols-[1.5fr_0.8fr_0.7fr_0.7fr_0.9fr_1fr] lg:items-center lg:px-6">

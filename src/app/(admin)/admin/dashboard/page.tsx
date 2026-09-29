@@ -88,7 +88,7 @@ export default async function AdminDashboardPage() {
   const pendingRequests = requests?.length ?? 0;
 
   const firstName =
-    profile?.full_name?.trim()?.split(/\s+/)[0] || "Admin";
+    profile?.full_name?.trim()?.split(/\s+/)[0] || "Administrátor";
 
   return (
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">

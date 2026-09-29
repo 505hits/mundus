@@ -58,7 +58,7 @@ export function formatPackageStatus(value: string | null | undefined) {
   const labels: Record<string, string> = {
     active: "Aktívny",
     completed: "Dokončený",
-    expired: "Expirovaný",
+    expired: "Po platnosti",
     cancelled: "Zrušený",
   };
 

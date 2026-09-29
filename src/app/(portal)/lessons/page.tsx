@@ -33,7 +33,7 @@ export default async function LessonsPage() {
   const { user } = await requireRole("student");
   const supabase = await createSupabaseServerClient();
 
-  const { data: lessons } = await supabase
+  const { data: lessons, error: lessonsError } = await supabase
     .from("lessons")
     .select(
       "id,scheduled_at,duration_minutes,status,lesson_type,meet_link,language"
@@ -86,6 +86,12 @@ export default async function LessonsPage() {
             Pozrite si najbližšie hodiny, pripojte sa na hodinu alebo požiadajte o zmenu termínu.
           </p>
         </section>
+
+        {lessonsError && (
+          <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+            Nepodarilo sa načítať vaše hodiny. Obnovte stránku alebo to skúste o chvíľu znova.
+          </div>
+        )}
 
         <section className="mt-8">
           <div className="flex items-end justify-between gap-4">

@@ -403,10 +403,10 @@ export default async function DashboardPage() {
             )}
 
             <Link
-              href="/progress"
+              href="/learning"
               className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#9a8049]"
             >
-              Zobraziť pokrok
+              Zobraziť úlohy a poznámky
               <ChevronRight size={16} />
             </Link>
           </section>

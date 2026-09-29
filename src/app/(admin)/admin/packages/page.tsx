@@ -28,7 +28,7 @@ export default async function AdminPackagesPage() {
   const renewalSoon = active.filter(
     (item) => (item.remaining_lessons ?? 0) > 0 && (item.remaining_lessons ?? 0) <= 2
   );
-  const renewalDue = rows.filter(
+  const renewalDue = active.filter(
     (item) => (item.remaining_lessons ?? 0) === 0
   );
   const totalUsed = rows.reduce((sum, item) => sum + (item.used_lessons ?? 0), 0);

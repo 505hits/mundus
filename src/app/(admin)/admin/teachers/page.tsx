@@ -7,6 +7,7 @@ import {
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatLanguage, formatProfileStatus } from "@/lib/portalLabels";
+import TeacherApprovalAction from "./TeacherApprovalAction";
 
 export default async function AdminTeachersPage() {
   await requireRole("admin");
@@ -132,7 +133,7 @@ export default async function AdminTeachersPage() {
                 {teacherRows.map((teacher) => (
                   <div
                     key={teacher.id}
-                    className="grid gap-4 px-5 py-5 lg:grid-cols-[1.4fr_1fr_0.8fr_0.9fr_0.8fr] lg:items-center lg:px-6"
+                    className="grid gap-4 px-5 py-5 lg:grid-cols-[1.4fr_1fr_0.8fr_0.9fr_0.8fr_1fr] lg:items-center lg:px-6"
                   >
                     <div>
                       <p className="font-semibold">
@@ -164,6 +165,12 @@ export default async function AdminTeachersPage() {
                       <span className="rounded-full bg-[#eef3ef] px-3 py-1 text-xs font-semibold capitalize text-[#527064]">
                         {formatProfileStatus(teacher.status)}
                       </span>
+                    </div>
+                    <div>
+                      <TeacherApprovalAction
+                        teacherId={teacher.id}
+                        status={teacher.status}
+                      />
                     </div>
                   </div>
                 ))}

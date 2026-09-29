@@ -105,6 +105,9 @@ begin
     raise exception 'Schedule request details cannot be changed while responding';
   end if;
 
+  new.responded_at := now();
+  new.updated_at := now();
+
   return new;
 end;
 $$;

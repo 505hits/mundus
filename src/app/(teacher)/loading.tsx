@@ -1,4 +1,4 @@
-export default function PortalLoading() {
+export default function TeacherPortalLoading() {
   return (
     <main className="min-h-screen bg-[#f7f8f5] px-5 py-10 text-[#183f38]">
       <div className="mx-auto max-w-7xl">

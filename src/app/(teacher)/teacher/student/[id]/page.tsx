@@ -206,7 +206,7 @@ async function renderStudentPage(
             className="flex items-center gap-2 text-sm font-medium"
           >
             <ArrowLeft size={17} />
-            Môj študents
+            Moji študenti
           </Link>
 
           <p className="text-sm font-semibold">
@@ -227,7 +227,7 @@ async function renderStudentPage(
             </h1>
 
             <p className="mt-2 text-gray-500">
-              {language} · {lessonType}
+              {formatLanguage(language)} · {formatLessonType(lessonType)}
             </p>
           </div>
 

@@ -187,6 +187,23 @@ export default function AdminCreateLessonForm({
 
     const supabase = createSupabaseBrowserClient();
 
+    const { data: selectedPackage, error: packageError } = await supabase
+      .from("lesson_packages")
+      .select("id")
+      .eq("id", effectivePackageId)
+      .eq("student_id", studentId)
+      .eq("status", "active")
+      .gt("remaining_lessons", 0)
+      .maybeSingle();
+
+    if (packageError || !selectedPackage) {
+      setError(
+        "Vybraný balíček už nemá voľný kredit alebo nepatrí tomuto študentovi."
+      );
+      setSaving(false);
+      return;
+    }
+
     const { error: insertError } = await supabase
       .from("lessons")
       .insert({

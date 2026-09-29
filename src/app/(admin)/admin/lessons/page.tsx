@@ -28,7 +28,7 @@ function formatTime(value: string) {
 }
 
 function name(profile: { full_name?: string | null; email?: string | null } | null | undefined) {
-  return profile?.full_name?.trim() || profile?.email || "Unknown";
+  return profile?.full_name?.trim() || profile?.email || "Neznáme";
 }
 
 export default async function AdminLessonsPage() {
@@ -64,7 +64,7 @@ export default async function AdminLessonsPage() {
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">Hodiny</p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Správa hodín</h1>
-          <p className="mt-2 text-gray-500">Real lessons across Mundus students and teachers.</p>
+          <p className="mt-2 text-gray-500">Reálny prehľad hodín študentov a lektorov Mundus.</p>
         </section>
 
         {error && (
@@ -82,18 +82,18 @@ export default async function AdminLessonsPage() {
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CheckCircle2 size={20} className="text-[#9a8049]" />
             <p className="mt-4 text-3xl font-semibold">{completed.length}</p>
-            <p className="mt-1 text-sm text-gray-500">Completed in loaded history</p>
+            <p className="mt-1 text-sm text-gray-500">Dokončené v načítanej histórii</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <AlertCircle size={20} className="text-[#9a8049]" />
             <p className="mt-4 text-3xl font-semibold">{attention.length}</p>
-            <p className="mt-1 text-sm text-gray-500">Cancelled / no-show</p>
+            <p className="mt-1 text-sm text-gray-500">Zrušené / nedostavenie sa</p>
           </div>
         </section>
 
         <section className="mt-8 overflow-hidden rounded-3xl border border-black/5 bg-white shadow-sm">
           {rows.length === 0 ? (
-            <div className="p-8 text-center text-sm text-gray-500">No lessons have been recorded yet.</div>
+            <div className="p-8 text-center text-sm text-gray-500">Zatiaľ neboli zaznamenané žiadne hodiny.</div>
           ) : (
             <div className="divide-y divide-gray-100">
               {rows.map((lesson) => {
@@ -119,12 +119,12 @@ export default async function AdminLessonsPage() {
                     </div>
                     <div>
                       <span className="inline-flex rounded-full bg-[#eef3ef] px-3 py-1 text-xs font-semibold capitalize text-[#527064]">
-                        {lesson.status.replaceAll("_", " ")}
+                        {formatLessonStatus(lesson.status)}
                       </span>
                     </div>
                     <div>
                       {lesson.meet_link && (
-                        <a href={lesson.meet_link} target="_blank" rel="noreferrer" aria-label="Open meeting" className="inline-flex rounded-xl p-2 text-[#183f38] hover:bg-[#eef3ef]">
+                        <a href={lesson.meet_link} target="_blank" rel="noreferrer" aria-label="Otvoriť online hodinu" className="inline-flex rounded-xl p-2 text-[#183f38] hover:bg-[#eef3ef]">
                           <Video size={17} />
                         </a>
                       )}

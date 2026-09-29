@@ -5,8 +5,6 @@ on:
   push:
     branches:
       - mundus-portal
-  push:
-    branches: [mundus-portal]
 
 jobs:
   build:

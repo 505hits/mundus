@@ -46,15 +46,19 @@ export default async function LessonsPage() {
       .order("scheduled_at", { ascending: true }),
     supabase
       .from("schedule_change_requests")
-      .select("lesson_id")
+      .select("lesson_id,preferred_at")
       .eq("student_id", user.id)
       .eq("status", "pending"),
   ]);
 
   const allLessons = lessons ?? [];
-  const pendingLessonIds = new Set(
-    (pendingRequests ?? []).map((request) => request.lesson_id)
+  const pendingRequestMap = new Map(
+    (pendingRequests ?? []).map((request) => [
+      request.lesson_id,
+      request.preferred_at,
+    ])
   );
+  const pendingLessonIds = new Set(pendingRequestMap.keys());
 
   const upcomingLessons = allLessons.filter(
     (lesson) =>
@@ -211,14 +215,24 @@ export default async function LessonsPage() {
 
                       {pendingLessonIds.has(lesson.id) ? (
                         <div
-                          className={`flex items-center justify-center gap-2 rounded-2xl border px-4 py-3 text-sm font-medium ${
+                          className={`rounded-2xl border px-4 py-3 text-sm font-medium ${
                             index === 0
                               ? "border-white/20 bg-white/5 text-white/75"
                               : "border-[#c6a65b]/20 bg-[#faf6eb] text-[#9a8049]"
                           }`}
                         >
-                          <RefreshCw size={16} />
-                          Žiadosť čaká na vybavenie
+                          <div className="flex items-center justify-center gap-2">
+                            <RefreshCw size={16} />
+                            Žiadosť čaká na vybavenie
+                          </div>
+                          {pendingRequestMap.get(lesson.id) && (
+                            <p className={`mt-1 text-center text-xs ${
+                              index === 0 ? "text-white/55" : "text-[#9a8049]/75"
+                            }`}>
+                              Navrhovaný termín: {formatDate(pendingRequestMap.get(lesson.id)!)} ·{" "}
+                              {formatTime(pendingRequestMap.get(lesson.id)!)}
+                            </p>
+                          )}
                         </div>
                       ) : (
                         <Link

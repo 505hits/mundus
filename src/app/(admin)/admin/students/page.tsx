@@ -1,7 +1,7 @@
 import { AlertCircle, BookOpen, Users } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { formatLanguage } from "@/lib/portalLabels";
+import { formatLanguage, formatProfileStatus } from "@/lib/portalLabels";
 
 function formatDateTime(value: string) {
   return new Intl.DateTimeFormat("sk-SK", {
@@ -60,7 +60,7 @@ export default async function AdminStudentsPage() {
     return {
       ...profile,
       language: nextLesson?.language || latestWithLanguage?.language ? formatLanguage(nextLesson?.language || latestWithLanguage?.language) : "—",
-      teacher: teacher?.full_name?.trim() || teacher?.email || "Not assigned",
+      teacher: teacher?.full_name?.trim() || teacher?.email || "Nepriradený",
       remaining,
       nextLesson: nextLesson?.scheduled_at ?? null,
     };
@@ -103,7 +103,7 @@ export default async function AdminStudentsPage() {
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <AlertCircle size={20} className="text-[#9a8049]" />
             <p className="mt-4 text-3xl font-semibold">{needsAttention}</p>
-            <p className="mt-1 text-sm text-gray-500">Need attention</p>
+            <p className="mt-1 text-sm text-gray-500">Vyžaduje pozornosť</p>
           </div>
         </section>
 
@@ -141,7 +141,7 @@ export default async function AdminStudentsPage() {
                   </div>
                   <div>
                     <span className="rounded-full bg-[#eef3ef] px-3 py-1 text-xs font-semibold capitalize text-[#527064]">
-                      {student.status || "active"}
+                      {formatProfileStatus(student.status)}
                     </span>
                   </div>
                 </div>

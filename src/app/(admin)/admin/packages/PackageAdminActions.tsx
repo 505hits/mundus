@@ -53,16 +53,18 @@ export default function PackageAdminActions({
 
     const supabase = createSupabaseBrowserClient();
 
-    const { error: updateError } = await supabase
+    const { data: updatedPackage, error: updateError } = await supabase
       .from("lesson_packages")
       .update({
         remaining_lessons: remainingValue,
         used_lessons: totalLessons - remainingValue,
         status: packageStatus,
       })
-      .eq("id", packageId);
+      .eq("id", packageId)
+      .select("id")
+      .maybeSingle();
 
-    if (updateError) {
+    if (updateError || !updatedPackage) {
       setError(
         "Balíček sa nepodarilo aktualizovať. Skúste to prosím znova."
       );

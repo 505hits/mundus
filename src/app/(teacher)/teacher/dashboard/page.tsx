@@ -189,6 +189,10 @@ export default async function TeacherDashboardPage() {
   const assignedStudentCount = new Set(
     (assignedLessonStudents ?? []).map((lesson) => lesson.student_id)
   ).size;
+  const nextTodayLessonId =
+    todayLessons.find(
+      (lesson) => new Date(lesson.scheduled_at).getTime() >= now.getTime()
+    )?.id ?? null;
 
   const teacherName =
     teacherProfile?.full_name?.trim() ||
@@ -307,7 +311,7 @@ export default async function TeacherDashboardPage() {
             </div>
           ) : (
             <div className="mt-4 space-y-3">
-              {todayLessons.map((lesson, index) => {
+              {todayLessons.map((lesson) => {
                 const student = Array.isArray(lesson.student)
                   ? lesson.student[0]
                   : lesson.student;
@@ -316,7 +320,7 @@ export default async function TeacherDashboardPage() {
                   <article
                     key={lesson.id}
                     className={`rounded-3xl border p-5 shadow-sm sm:p-6 ${
-                      index === 0
+                      lesson.id === nextTodayLessonId
                         ? "border-[#183f38]/10 bg-[#183f38] text-white"
                         : "border-black/5 bg-white"
                     }`}
@@ -325,7 +329,7 @@ export default async function TeacherDashboardPage() {
                       <div className="flex items-center gap-4">
                         <div
                           className={`flex h-14 w-14 items-center justify-center rounded-2xl text-sm font-semibold ${
-                            index === 0
+                            lesson.id === nextTodayLessonId
                               ? "bg-white/10"
                               : "bg-[#eef3ef] text-[#183f38]"
                           }`}
@@ -339,7 +343,7 @@ export default async function TeacherDashboardPage() {
                               {getName(student)}
                             </h3>
 
-                            {index === 0 && (
+                            {lesson.id === nextTodayLessonId && (
                               <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold">
                                 Najbližšia
                               </span>
@@ -348,7 +352,7 @@ export default async function TeacherDashboardPage() {
 
                           <p
                             className={`mt-1 text-sm ${
-                              index === 0
+                              lesson.id === nextTodayLessonId
                                 ? "text-white/60"
                                 : "text-gray-400"
                             }`}
@@ -365,7 +369,7 @@ export default async function TeacherDashboardPage() {
                           target="_blank"
                           rel="noreferrer"
                           className={`flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold ${
-                            index === 0
+                            lesson.id === nextTodayLessonId
                               ? "bg-white text-[#183f38]"
                               : "bg-[#eef3ef] text-[#183f38]"
                           }`}
@@ -376,7 +380,7 @@ export default async function TeacherDashboardPage() {
                       ) : (
                         <span
                           className={`rounded-xl px-4 py-3 text-sm ${
-                            index === 0
+                            lesson.id === nextTodayLessonId
                               ? "bg-white/10 text-white/60"
                               : "bg-gray-100 text-gray-400"
                           }`}

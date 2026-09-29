@@ -180,3 +180,43 @@ before insert or update of package_id, student_id, status
 on public.lessons
 for each row
 execute function public.validate_lesson_package_assignment();
+
+
+-- Let teachers work with packages and create future lessons only for
+-- students they are already assigned to through an existing lesson.
+create or replace function public.teacher_is_assigned_to_student(target_student_id uuid)
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1
+    from public.lessons
+    where teacher_id = auth.uid()
+      and student_id = target_student_id
+  );
+$$;
+
+revoke all on function public.teacher_is_assigned_to_student(uuid) from public;
+grant execute on function public.teacher_is_assigned_to_student(uuid) to authenticated;
+
+alter table public.lesson_packages enable row level security;
+
+drop policy if exists "Teachers can view assigned student packages" on public.lesson_packages;
+create policy "Teachers can view assigned student packages"
+on public.lesson_packages
+for select
+to authenticated
+using (public.teacher_is_assigned_to_student(student_id));
+
+drop policy if exists "Teachers can create lessons for assigned students" on public.lessons;
+create policy "Teachers can create lessons for assigned students"
+on public.lessons
+for insert
+to authenticated
+with check (
+  teacher_id = auth.uid()
+  and public.teacher_is_assigned_to_student(student_id)
+);

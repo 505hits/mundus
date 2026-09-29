@@ -23,6 +23,24 @@ function getName(profile: { full_name?: string | null; email?: string | null } |
   return profile?.full_name?.trim() || profile?.email || fallback;
 }
 
+function packageAlertLabel(count: number) {
+  if (count === 1) return "1 balíček s 1–2 zostávajúcimi hodinami";
+  if (count >= 2 && count <= 4) return `${count} balíčky s 1–2 zostávajúcimi hodinami`;
+  return `${count} balíčkov s 1–2 zostávajúcimi hodinami`;
+}
+
+function requestAlertLabel(count: number) {
+  if (count === 1) return "1 čakajúca žiadosť o zmenu termínu";
+  if (count >= 2 && count <= 4) return `${count} čakajúce žiadosti o zmenu termínu`;
+  return `${count} čakajúcich žiadostí o zmenu termínu`;
+}
+
+function noUpcomingLabel(count: number) {
+  if (count === 1) return "1 aktívny študent bez naplánovanej ďalšej hodiny";
+  if (count >= 2 && count <= 4) return `${count} aktívni študenti bez naplánovanej ďalšej hodiny`;
+  return `${count} aktívnych študentov bez naplánovanej ďalšej hodiny`;
+}
+
 export default async function AdminDashboardPage() {
   const { profile } = await requireRole("admin");
   const supabase = await createSupabaseServerClient();
@@ -154,15 +172,15 @@ export default async function AdminDashboardPage() {
 
             <div className="mt-5 space-y-3">
               <div className="rounded-2xl bg-[#faf8f2] p-4">
-                <p className="font-medium">{lowPackages.length} {lowPackages.length === 1 ? "balíček s 1–2 zostávajúcimi hodinami" : "balíčky s 1–2 zostávajúcimi hodinami"}</p>
+                <p className="font-medium">{packageAlertLabel(lowPackages.length)}</p>
                 <p className="mt-1 text-sm text-gray-500">Odporúčame kontaktovať študenta ohľadom pokračovania.</p>
               </div>
               <div className="rounded-2xl bg-[#faf8f2] p-4">
-                <p className="font-medium">{pendingRequests} {pendingRequests === 1 ? "čakajúca žiadosť o zmenu termínu" : "čakajúcich žiadostí o zmenu termínu"}</p>
+                <p className="font-medium">{requestAlertLabel(pendingRequests)}</p>
                 <p className="mt-1 text-sm text-gray-500">Čaká sa na kontrolu alebo odpoveď lektora.</p>
               </div>
               <div className="rounded-2xl bg-[#faf8f2] p-4">
-                <p className="font-medium">{noUpcoming} {noUpcoming === 1 ? "aktívny študent bez naplánovanej ďalšej hodiny" : "aktívnych študentov bez naplánovanej ďalšej hodiny"}</p>
+                <p className="font-medium">{noUpcomingLabel(noUpcoming)}</p>
                 <p className="mt-1 text-sm text-gray-500">Môže byť potrebné dohodnúť ďalší termín.</p>
               </div>
             </div>

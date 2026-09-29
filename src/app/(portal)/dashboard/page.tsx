@@ -185,8 +185,7 @@ export default async function DashboardPage() {
                     </div>
 
                     <p className="mt-4 text-sm text-white/60">
-                      {nextLesson.duration_minutes || 60}-minute Mundus
-                      lesson
+                      {nextLesson.duration_minutes || 60} minút · Mundus
                     </p>
                   </>
                 ) : (
@@ -265,7 +264,7 @@ export default async function DashboardPage() {
                 </div>
 
                 <p className="mt-3 text-sm text-gray-400">
-                  {usedLessons} of {totalLessons} hodín absolvovaných
+                  {usedLessons} z {totalLessons} hodín absolvovaných
                 </p>
               </>
             ) : (

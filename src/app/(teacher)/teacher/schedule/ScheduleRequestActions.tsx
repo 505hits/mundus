@@ -26,7 +26,7 @@ export default function ScheduleRequestActions({
 
     const supabase = createSupabaseBrowserClient();
 
-    const { error } = await supabase
+    const { data: updatedRequest, error } = await supabase
       .from("schedule_change_requests")
       .update({
         status,
@@ -34,9 +34,11 @@ export default function ScheduleRequestActions({
         updated_at: new Date().toISOString(),
       })
       .eq("id", requestId)
-      .eq("status", "pending");
+      .eq("status", "pending")
+      .select("id")
+      .maybeSingle();
 
-    if (error) {
+    if (error || !updatedRequest) {
       setErrorMessage(
         "Žiadosť sa nepodarilo aktualizovať. Skúste to prosím znova."
       );

@@ -71,10 +71,13 @@ export function formatProgressLabel(value: string | null | undefined) {
 
   const labels: Record<string, string> = {
     "good progress": "Dobrý pokrok",
+    good_progress: "Dobrý pokrok",
     "normal progress": "Bežný pokrok",
+    normal_progress: "Bežný pokrok",
     "needs attention": "Vyžaduje pozornosť",
-    "improving": "Zlepšuje sa",
-    "stable": "Stabilný pokrok",
+    needs_attention: "Vyžaduje pozornosť",
+    improving: "Zlepšuje sa",
+    stable: "Stabilný pokrok",
   };
 
   return labels[value.trim().toLowerCase()] || value;

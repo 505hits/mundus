@@ -454,7 +454,7 @@ export default async function TeacherDashboardPage() {
               {students.slice(0, 6).map((student, index) => (
                 <Link
                   key={student.id}
-                  href="/teacher/students"
+                  href={`/teacher/student/${student.id}`}
                   className={`flex items-center justify-between gap-4 p-5 transition hover:bg-[#fafbf9] sm:p-6 ${
                     index !== Math.min(students.length, 6) - 1
                       ? "border-b border-gray-100"

@@ -1,9 +1,11 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { canAcceptTeacherInvitation } from "@/lib/account-policy";
+import { purchaseReturnPath } from "@/lib/purchase-intent";
 
 export type MundusRole = "student" | "teacher" | "admin";
 
-export async function requireRole(requiredRole: MundusRole) {
+export async function requireRole(requiredRole: MundusRole, returnTo?: string) {
   const supabase = await createSupabaseServerClient();
 
   const {
@@ -12,8 +14,11 @@ export async function requireRole(requiredRole: MundusRole) {
   } = await supabase.auth.getUser();
 
   if (userError || !user) {
-    redirect("/login");
+    const safeReturn = purchaseReturnPath(returnTo);
+    redirect(safeReturn ? `/login?next=${encodeURIComponent(safeReturn)}` : "/login");
   }
+
+  if (!user.email_confirmed_at) redirect("/auth/error");
 
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
@@ -26,6 +31,7 @@ export async function requireRole(requiredRole: MundusRole) {
   }
 
   if (profile.role === "teacher" && profile.status !== "active") {
+    if (profile.status === "pending" && canAcceptTeacherInvitation(user.app_metadata)) redirect("/set-password");
     redirect("/pending-approval");
   }
 

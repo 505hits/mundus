@@ -13,12 +13,6 @@ const stagger = {
     visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
 };
 
-const languages = [
-    { name: "English", native: "English", code: "gb", delay: 0 },
-    { name: "Spanish", native: "Español", code: "es", delay: 0.2 },
-    { name: "Italian", native: "Italiano", code: "it", delay: 0.4 },
-    // Portuguese removed as requested
-];
 
 const floatingFlags = [
     { code: "gb", x: "5%", y: "15%", delay: 0, size: 50 },

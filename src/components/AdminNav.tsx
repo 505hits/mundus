@@ -8,45 +8,41 @@ import {
   GraduationCap,
   Home,
   Package,
-  UserPlus,
+  CreditCard,
   Users,
 } from "lucide-react";
 
 const navItems = [
   {
-    name: "Home",
+    name: "Domov",
     href: "/admin/dashboard",
     icon: Home,
   },
   {
-    name: "Students",
+    name: "Študenti",
     href: "/admin/students",
     icon: Users,
   },
   {
-    name: "Teachers",
+    name: "Lektori",
     href: "/admin/teachers",
     icon: GraduationCap,
   },
   {
-    name: "Lessons",
+    name: "Hodiny",
     href: "/admin/lessons",
     icon: CalendarDays,
   },
   {
-    name: "Trials",
-    href: "/admin/trials",
-    icon: UserPlus,
-  },
-  {
-    name: "Packages",
+    name: "Balíčky",
     href: "/admin/packages",
     icon: Package,
   },
 ];
 
-export default function AdminNav() {
+export default function AdminNav({ paymentsEnabled = false }: { paymentsEnabled?: boolean }) {
   const pathname = usePathname();
+  const items = paymentsEnabled ? [...navItems, { name: "Platby", href: "/admin/payments", icon: CreditCard }] : navItems;
 
   return (
     <>
@@ -61,13 +57,13 @@ export default function AdminNav() {
           </Link>
 
           <p className="mt-1 text-xs font-medium uppercase tracking-[0.16em] text-[#2F3AA2]">
-            Admin Portal
+            Admin portál
           </p>
         </div>
 
         <nav className="flex-1 px-3">
           <div className="space-y-1">
-            {navItems.map((item) => {
+            {items.map((item) => {
               const Icon = item.icon;
 
               const active =
@@ -101,7 +97,7 @@ export default function AdminNav() {
               Anikó
             </p>
             <p className="mt-1 text-xs text-gray-400">
-              Mundus administrator
+              Administrátor Mundus
             </p>
           </div>
         </div>
@@ -112,7 +108,7 @@ export default function AdminNav() {
       <div className="fixed right-4 top-4 z-50 lg:hidden"><LogoutButton compact /></div>
       <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-black/5 bg-white/95 px-2 py-2 backdrop-blur lg:hidden">
         <div className="mx-auto flex max-w-xl items-center justify-around">
-          {navItems.map((item) => {
+          {items.map((item) => {
             const Icon = item.icon;
 
             const active =

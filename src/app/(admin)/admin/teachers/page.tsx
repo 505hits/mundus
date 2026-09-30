@@ -6,6 +6,9 @@ import {
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { formatLanguage, formatProfileStatus } from "@/lib/portalLabels";
+import InviteTeacherForm from "./invite/InviteTeacherForm";
+import TeacherApprovalAction from "./TeacherApprovalAction";
 
 export default async function AdminTeachersPage() {
   await requireRole("admin");
@@ -24,13 +27,28 @@ export default async function AdminTeachersPage() {
   ]);
 
   const now = new Date();
-  const day = now.getDay();
-  const mondayOffset = day === 0 ? -6 : 1 - day;
-  const weekStart = new Date(now);
-  weekStart.setHours(0, 0, 0, 0);
-  weekStart.setDate(now.getDate() + mondayOffset);
-  const weekEnd = new Date(weekStart);
-  weekEnd.setDate(weekStart.getDate() + 7);
+  const bratislavaDateKey = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Bratislava",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+
+  const todayKey = bratislavaDateKey.format(now);
+  const [year, month, dayOfMonth] = todayKey.split("-").map(Number);
+  const todayUtc = new Date(Date.UTC(year, month - 1, dayOfMonth));
+  const weekday = todayUtc.getUTCDay();
+  const mondayOffset = weekday === 0 ? -6 : 1 - weekday;
+  const mondayUtc = new Date(todayUtc);
+  mondayUtc.setUTCDate(todayUtc.getUTCDate() + mondayOffset);
+
+  const weekKeys = new Set(
+    Array.from({ length: 7 }, (_, index) => {
+      const date = new Date(mondayUtc);
+      date.setUTCDate(mondayUtc.getUTCDate() + index);
+      return date.toISOString().slice(0, 10);
+    })
+  );
 
   const teacherRows = (teachers ?? []).map((teacher) => {
     const teacherLessons = (lessons ?? []).filter(
@@ -39,10 +57,11 @@ export default async function AdminTeachersPage() {
     const studentCount = new Set(
       teacherLessons.map((lesson) => lesson.student_id)
     ).size;
-    const lessonsThisWeek = teacherLessons.filter((lesson) => {
-      const time = new Date(lesson.scheduled_at).getTime();
-      return time >= weekStart.getTime() && time < weekEnd.getTime();
-    }).length;
+    const lessonsThisWeek = teacherLessons.filter((lesson) =>
+      weekKeys.has(
+        bratislavaDateKey.format(new Date(lesson.scheduled_at))
+      )
+    ).length;
     const languages = Array.from(
       new Set(
         teacherLessons
@@ -55,7 +74,7 @@ export default async function AdminTeachersPage() {
       ...teacher,
       studentCount,
       lessonsThisWeek,
-      languages: languages.length ? languages.join(", ") : "—",
+      languages: languages.length ? languages.map((language) => formatLanguage(language)).join(", ") : "—",
     };
   });
 
@@ -78,19 +97,21 @@ export default async function AdminTeachersPage() {
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
-            Teachers
+            Lektori
           </p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Teacher management
+            Správa lektorov
           </h1>
           <p className="mt-2 text-gray-500">
-            Real teacher accounts and current teaching activity.
+            Reálne účty lektorov a aktuálna výučba.
           </p>
         </section>
 
+        <InviteTeacherForm enabled={process.env.MUNDUS_INVITATIONS_ENABLED === "true"} />
+
         {error && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            We couldn&apos;t load teacher accounts. Please refresh and try again.
+            Nepodarilo sa načítať účty lektorov. Obnovte stránku a skúste to znova.
           </div>
         )}
 
@@ -98,32 +119,32 @@ export default async function AdminTeachersPage() {
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <GraduationCap size={20} className="text-[#9a8049]" />
             <p className="mt-4 text-3xl font-semibold">{activeTeachers}</p>
-            <p className="mt-1 text-sm text-gray-500">Active teachers</p>
+            <p className="mt-1 text-sm text-gray-500">Aktívni lektori</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <Users size={20} className="text-[#9a8049]" />
             <p className="mt-4 text-3xl font-semibold">{assignedStudents}</p>
-            <p className="mt-1 text-sm text-gray-500">Assigned students</p>
+            <p className="mt-1 text-sm text-gray-500">Priradení študenti</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CalendarDays size={20} className="text-[#9a8049]" />
             <p className="mt-4 text-3xl font-semibold">{lessonsThisWeek}</p>
-            <p className="mt-1 text-sm text-gray-500">Lessons this week</p>
+            <p className="mt-1 text-sm text-gray-500">Hodiny tento týždeň</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <AlertCircle size={20} className="text-[#9a8049]" />
             <p className="mt-4 text-3xl font-semibold">{pendingTeachers}</p>
-            <p className="mt-1 text-sm text-gray-500">Pending / inactive</p>
+            <p className="mt-1 text-sm text-gray-500">Čakajúci / neaktívni</p>
           </div>
         </section>
 
         <section className="mt-10">
-          <p className="text-sm text-gray-400">Team</p>
-          <h2 className="mt-1 text-xl font-semibold">Teacher accounts</h2>
+          <p className="text-sm text-gray-400">Tím</p>
+          <h2 className="mt-1 text-xl font-semibold">Účty lektorov</h2>
 
           {teacherRows.length === 0 ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 text-sm text-gray-500 shadow-sm">
-              No teacher accounts yet.
+              Zatiaľ nie sú vytvorené žiadne účty lektorov.
             </div>
           ) : (
             <div className="mt-4 overflow-hidden rounded-3xl border border-black/5 bg-white shadow-sm">
@@ -131,38 +152,44 @@ export default async function AdminTeachersPage() {
                 {teacherRows.map((teacher) => (
                   <div
                     key={teacher.id}
-                    className="grid gap-4 px-5 py-5 lg:grid-cols-[1.4fr_1fr_0.8fr_0.9fr_0.8fr] lg:items-center lg:px-6"
+                    className="grid gap-4 px-5 py-5 lg:grid-cols-[1.4fr_1fr_0.8fr_0.9fr_0.8fr_1fr] lg:items-center lg:px-6"
                   >
                     <div>
                       <p className="font-semibold">
-                        {teacher.full_name?.trim() || teacher.email || "Teacher"}
+                        {teacher.full_name?.trim() || teacher.email || "Lektor"}
                       </p>
                       <p className="mt-1 text-sm text-gray-400">
                         {teacher.languages}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 lg:hidden">Email</p>
+                      <p className="text-xs text-gray-400 lg:hidden">E-mail</p>
                       <p className="mt-1 truncate text-sm lg:mt-0">
                         {teacher.email || "—"}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 lg:hidden">Students</p>
+                      <p className="text-xs text-gray-400 lg:hidden">Študenti</p>
                       <p className="mt-1 text-sm font-medium lg:mt-0">
                         {teacher.studentCount}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 lg:hidden">This week</p>
+                      <p className="text-xs text-gray-400 lg:hidden">Tento týždeň</p>
                       <p className="mt-1 text-sm font-medium lg:mt-0">
-                        {teacher.lessonsThisWeek} lessons
+                        {teacher.lessonsThisWeek} hodín
                       </p>
                     </div>
                     <div>
                       <span className="rounded-full bg-[#eef3ef] px-3 py-1 text-xs font-semibold capitalize text-[#527064]">
-                        {teacher.status || "pending"}
+                        {formatProfileStatus(teacher.status)}
                       </span>
+                    </div>
+                    <div>
+                      <TeacherApprovalAction
+                        teacherId={teacher.id}
+                        status={teacher.status}
+                      />
                     </div>
                   </div>
                 ))}

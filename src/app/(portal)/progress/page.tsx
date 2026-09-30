@@ -11,13 +11,17 @@ import {
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { formatLanguage, formatLessonType, formatProgressLabel } from "@/lib/portalLabels";
 
 export default async function ProgressPage() {
   const { user } = await requireRole("student");
   const supabase = await createSupabaseServerClient();
 
-  const [{ data: lessons }, { data: packages }, { data: reports }] =
-    await Promise.all([
+  const [
+    { data: lessons, error: lessonsError },
+    { data: packages, error: packagesError },
+    { data: reports, error: reportsError },
+  ] = await Promise.all([
       supabase
         .from("lessons")
         .select(
@@ -79,14 +83,14 @@ export default async function ProgressPage() {
 
   const language =
     allLessons.find((lesson) => lesson.language)?.language ||
-    "Your language";
+    "Váš jazyk";
 
   const nextFocus =
     latestReport?.next_focus ||
-    "Your teacher will add your next learning focus after a lesson.";
+    "Lektor doplní ďalšie zameranie po hodine.";
 
   function formatDate(value: string) {
-    return new Intl.DateTimeFormat("en-GB", {
+    return new Intl.DateTimeFormat("sk-SK", {
       day: "numeric",
       month: "long",
       year: "numeric",
@@ -104,11 +108,11 @@ export default async function ProgressPage() {
             className="flex items-center gap-2 text-sm font-medium transition hover:text-[#9a8049]"
           >
             <ArrowLeft size={17} />
-            Dashboard
+            Prehľad
           </Link>
 
           <p className="text-sm font-semibold">
-            Mundus Learning Portal
+            Vzdelávací portál Mundus
           </p>
         </div>
       </header>
@@ -117,37 +121,40 @@ export default async function ProgressPage() {
         {/* Intro */}
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
-            My progress
+            Môj pokrok
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            See how far you&apos;ve come
+            Pozrite sa, ako napredujete
           </h1>
 
           <p className="mt-2 max-w-2xl text-gray-500">
-            Follow your real Mundus learning activity and see the latest
-            feedback from your teacher.
+            Sledujte svoje reálne študijné aktivity v Mundus a najnovšiu spätnú väzbu od lektora.
           </p>
         </section>
 
-        {/* Current learning */}
+        {/* Aktuálne učenie */}
+        {(lessonsError || packagesError || reportsError) && (
+          <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+            Niektoré údaje o vašom pokroku sa nepodarilo načítať. Obnovte stránku alebo to skúste o chvíľu znova.
+          </div>
+        )}
+
         <section className="mt-8 rounded-3xl bg-[#183f38] p-6 text-white shadow-sm sm:p-8">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <p className="text-sm font-medium text-white/55">
-                Current learning
+                Aktuálne učenie
               </p>
 
               <div className="mt-3 flex items-end gap-3">
                 <span className="text-4xl font-semibold">
-                  {language}
+                  {formatLanguage(language)}
                 </span>
               </div>
 
               <p className="mt-4 max-w-xl text-sm leading-6 text-white/60">
-                Your progress here is based on lessons and teacher reports
-                recorded in your Mundus account. A CEFR level is shown only
-                when Mundus has a recorded assessment for you.
+                Váš pokrok vychádza z hodín a záznamov lektora uložených vo vašom účte Mundus. Úroveň CEFR zobrazíme iba vtedy, keď ju máte zaznamenanú v hodnotení.
               </p>
             </div>
 
@@ -170,7 +177,7 @@ export default async function ProgressPage() {
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
-              Lessons completed
+              Dokončené hodiny
             </p>
           </article>
 
@@ -185,7 +192,7 @@ export default async function ProgressPage() {
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
-              Lessons remaining
+              Zostávajúce hodiny
             </p>
           </article>
 
@@ -200,7 +207,7 @@ export default async function ProgressPage() {
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
-              Teacher reports
+              Záznamy lektora
             </p>
           </article>
         </section>
@@ -211,11 +218,11 @@ export default async function ProgressPage() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-sm text-gray-400">
-                  Current package
+                  Aktuálny balíček
                 </p>
 
                 <h2 className="mt-1 text-xl font-semibold">
-                  Your lesson progress
+                  Váš pokrok v balíčku
                 </h2>
               </div>
 
@@ -236,7 +243,7 @@ export default async function ProgressPage() {
 
             <div className="mt-3 flex flex-wrap justify-between gap-2 text-sm text-gray-500">
               <span>
-                {usedLessons} of {totalLessons} lessons completed
+                {usedLessons} z {totalLessons} hodín absolvovaných
               </span>
 
               <span>{packageProgress}%</span>
@@ -244,7 +251,7 @@ export default async function ProgressPage() {
           </section>
         )}
 
-        {/* Next focus */}
+        {/* Ďalšie zameranie */}
         <section className="mt-6 rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
           <div className="flex items-start gap-4">
             <div className="rounded-2xl bg-[#faf6eb] p-3 text-[#9a8049]">
@@ -253,7 +260,7 @@ export default async function ProgressPage() {
 
             <div>
               <p className="text-sm text-gray-400">
-                Next focus
+                Ďalšie zameranie
               </p>
 
               <h2 className="mt-1 text-xl font-semibold">
@@ -262,25 +269,24 @@ export default async function ProgressPage() {
 
               {!latestReport && (
                 <p className="mt-3 text-sm leading-6 text-gray-500">
-                  Your teacher has not added a learning focus yet. It will
-                  appear here after a report is saved.
+                  Lektor zatiaľ nepridal ďalšie zameranie. Zobrazí sa po uložení záznamu z hodiny.
                 </p>
               )}
             </div>
           </div>
         </section>
 
-        {/* Latest teacher feedback */}
+        {/* Najnovšia spätná väzba od lektora */}
         <section className="mt-6 rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-sm text-gray-400">
-                Latest teacher feedback
+                Najnovšia spätná väzba od lektora
               </p>
 
               <h2 className="mt-1 text-xl font-semibold">
                 {latestReport?.topic ||
-                  "No teacher report yet"}
+                  "Zatiaľ bez záznamu od lektora"}
               </h2>
             </div>
 
@@ -293,7 +299,7 @@ export default async function ProgressPage() {
             <>
               {latestReport.progress && (
                 <span className="mt-5 inline-flex rounded-full bg-[#eef3ef] px-3 py-1.5 text-xs font-semibold text-[#527064]">
-                  {latestReport.progress}
+                  {formatProgressLabel(latestReport.progress)}
                 </span>
               )}
 
@@ -303,15 +309,14 @@ export default async function ProgressPage() {
                 </p>
               ) : (
                 <p className="mt-5 text-sm text-gray-500">
-                  Your teacher has not added a student-visible note to this
-                  report.
+                  Lektor zatiaľ nepridal poznámku určenú pre vás.
                 </p>
               )}
 
               {latestReport.homework && (
                 <div className="mt-6 rounded-2xl bg-[#f7f8f5] p-5">
                   <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#9a8049]">
-                    Homework
+                    Domáca úloha
                   </p>
 
                   <p className="mt-2 text-sm leading-6 text-gray-600">
@@ -321,26 +326,25 @@ export default async function ProgressPage() {
               )}
 
               <p className="mt-5 text-xs text-gray-400">
-                Updated {formatDate(latestReport.updated_at)}
+                Aktualizované {formatDate(latestReport.updated_at)}
               </p>
             </>
           ) : (
             <p className="mt-5 max-w-2xl text-sm leading-6 text-gray-500">
-              Your latest teacher feedback will appear here once your teacher
-              saves a lesson report.
+              Najnovšia spätná väzba sa zobrazí po uložení záznamu z hodiny.
             </p>
           )}
         </section>
 
-        {/* Completed lessons */}
+        {/* Dokončené hodiny */}
         <section className="mt-10">
           <div>
             <p className="text-sm text-gray-400">
-              Recent activity
+              Posledná aktivita
             </p>
 
             <h2 className="mt-1 text-xl font-semibold">
-              Completed lessons
+              Dokončené hodiny
             </h2>
           </div>
 
@@ -359,9 +363,9 @@ export default async function ProgressPage() {
                   >
                     <div>
                       <p className="font-semibold">
-                        {lesson.lesson_type ||
-                          lesson.language ||
-                          "Lesson"}
+                        {lesson.lesson_type
+                          ? formatLessonType(lesson.lesson_type)
+                          : formatLanguage(lesson.language)}
                       </p>
 
                       <p className="mt-1 text-sm text-gray-400">
@@ -370,7 +374,7 @@ export default async function ProgressPage() {
                     </div>
 
                     <span className="rounded-full bg-[#eef3ef] px-3 py-1.5 text-xs font-semibold text-[#527064]">
-                      Completed
+                      Dokončená
                     </span>
                   </div>
                 )
@@ -379,19 +383,18 @@ export default async function ProgressPage() {
           ) : (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
               <p className="font-medium">
-                No completed lessons yet
+                Zatiaľ nemáte dokončené hodiny
               </p>
 
               <p className="mt-1 text-sm text-gray-400">
-                Your lesson history will appear here after your first
-                completed lesson.
+                História hodín sa zobrazí po prvej dokončenej hodine.
               </p>
             </div>
           )}
         </section>
 
         <p className="mt-8 text-center text-xs text-gray-400">
-          Mundus Learning Portal
+          Vzdelávací portál Mundus
         </p>
       </div>
     </main>

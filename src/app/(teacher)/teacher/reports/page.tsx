@@ -6,10 +6,11 @@ import {
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { formatLanguage, formatLessonType } from "@/lib/portalLabels";
 import LessonReportForm from "./LessonReportForm";
 
 function formatDate(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     day: "numeric",
     month: "long",
     timeZone: "Europe/Bratislava",
@@ -17,7 +18,7 @@ function formatDate(value: string) {
 }
 
 function formatTime(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -31,7 +32,7 @@ function getStudentName(
     | null
     | undefined
 ) {
-  return profile?.full_name?.trim() || profile?.email || "Student";
+  return profile?.full_name?.trim() || profile?.email || "Študent";
 }
 
 export default async function TeacherReportsPage() {
@@ -94,23 +95,21 @@ export default async function TeacherReportsPage() {
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
-            Reports
+            Záznamy
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Lesson reports
+            Záznamy z hodín
           </h1>
 
           <p className="mt-2 max-w-2xl text-gray-500">
-            Add a short update after each completed lesson so the student&apos;s
-            learning journey stays up to date.
+            Po každej dokončenej hodine pridajte krátky záznam, aby mal študent aktuálny prehľad o svojom napredovaní.
           </p>
         </section>
 
         {(lessonsError || reportsError) && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            We couldn&apos;t load all lesson report data. Please refresh the
-            page or try again shortly.
+            Nepodarilo sa načítať všetky záznamy z hodín. Obnovte stránku alebo to skúste o chvíľu znova.
           </div>
         )}
 
@@ -123,7 +122,7 @@ export default async function TeacherReportsPage() {
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
-              Recent lessons
+              Posledné hodiny
             </p>
           </div>
 
@@ -135,7 +134,7 @@ export default async function TeacherReportsPage() {
             </p>
 
             <p className="mt-1 text-sm text-[#7e693a]/70">
-              Reports needed
+              Chýbajúce záznamy
             </p>
           </div>
 
@@ -147,28 +146,28 @@ export default async function TeacherReportsPage() {
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
-              Completed reports
+              Hotové záznamy
             </p>
           </div>
         </section>
 
         <section className="mt-8">
           <p className="text-sm text-gray-400">
-            Recent activity
+            Posledná aktivita
           </p>
 
           <h2 className="mt-1 text-xl font-semibold">
-            Completed lessons
+            Dokončené hodiny
           </h2>
 
           {recentLessons.length === 0 ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
               <p className="font-medium">
-                No completed lessons yet
+                Zatiaľ nemáte dokončené hodiny
               </p>
 
               <p className="mt-1 text-sm text-gray-400">
-                Reports will become available after completed lessons.
+                Záznamy bude možné pridávať po dokončení hodín.
               </p>
             </div>
           ) : (
@@ -204,14 +203,14 @@ export default async function TeacherReportsPage() {
                             }`}
                           >
                             {report
-                              ? "Report completed"
-                              : "Report needed"}
+                              ? "Záznam vyplnený"
+                              : "Treba doplniť záznam"}
                           </span>
                         </div>
 
                         <p className="mt-2 text-sm text-gray-500">
-                          {lesson.language || "Language"} ·{" "}
-                          {lesson.lesson_type || "Lesson"}
+                          {formatLanguage(lesson.language)} ·{" "}
+                          {formatLessonType(lesson.lesson_type)}
                         </p>
 
                         <div className="mt-2 flex items-center gap-2 text-sm text-gray-400">

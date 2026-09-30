@@ -10,6 +10,61 @@ type RequestChangeFormProps = {
   studentId: string;
 };
 
+function getTimeZoneOffset(date: Date, timeZone: string) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(date);
+
+  const values = Object.fromEntries(
+    parts
+      .filter((part) => part.type !== "literal")
+      .map((part) => [part.type, Number(part.value)])
+  );
+
+  return (
+    Date.UTC(
+      values.year,
+      values.month - 1,
+      values.day,
+      values.hour,
+      values.minute,
+      values.second
+    ) - date.getTime()
+  );
+}
+
+function bratislavaLocalToUtc(value: string) {
+  const [datePart, timePart] = value.split("T");
+  const [year, month, day] = datePart.split("-").map(Number);
+  const [hour, minute] = timePart.split(":").map(Number);
+
+  const localAsUtc = new Date(
+    Date.UTC(year, month - 1, day, hour, minute, 0)
+  );
+
+  let offset = getTimeZoneOffset(localAsUtc, "Europe/Bratislava");
+  let result = new Date(localAsUtc.getTime() - offset);
+
+  const correctedOffset = getTimeZoneOffset(
+    result,
+    "Europe/Bratislava"
+  );
+
+  if (correctedOffset !== offset) {
+    offset = correctedOffset;
+    result = new Date(localAsUtc.getTime() - offset);
+  }
+
+  return result;
+}
+
 export default function RequestChangeForm({
   lessonId,
   studentId,
@@ -26,14 +81,17 @@ export default function RequestChangeForm({
     event.preventDefault();
 
     if (!preferredAt) {
-      setErrorMessage("Please choose your preferred date and time.");
+      setErrorMessage("Vyberte si prosím preferovaný dátum a čas.");
       return;
     }
 
-    const selectedDate = new Date(preferredAt);
+    const selectedDate = bratislavaLocalToUtc(preferredAt);
 
-    if (selectedDate.getTime() <= Date.now()) {
-      setErrorMessage("Please choose a future date and time.");
+    if (
+      Number.isNaN(selectedDate.getTime()) ||
+      selectedDate.getTime() <= Date.now()
+    ) {
+      setErrorMessage("Vyberte prosím budúci dátum a čas.");
       return;
     }
 
@@ -55,7 +113,7 @@ export default function RequestChangeForm({
 
     if (error) {
       setErrorMessage(
-        "We couldn't send your request. Please try again."
+        "Žiadosť sa nepodarilo odoslať. Skúste to prosím znova."
       );
       setSubmitting(false);
       return;
@@ -74,13 +132,11 @@ export default function RequestChangeForm({
         </div>
 
         <h2 className="mt-5 text-2xl font-semibold">
-          Request sent
+          Žiadosť odoslaná
         </h2>
 
         <p className="mt-2 leading-7 text-gray-500">
-          Your teacher can now review your schedule change request.
-          Your current lesson stays confirmed until the change is
-          accepted.
+          Lektor teraz môže vašu žiadosť skontrolovať. Pôvodný termín zostáva platný, kým nebude zmena schválená.
         </p>
 
         <button
@@ -88,7 +144,7 @@ export default function RequestChangeForm({
           onClick={() => router.push("/lessons")}
           className="mt-6 rounded-2xl bg-[#183f38] px-5 py-3 font-semibold text-white"
         >
-          Back to my lessons
+          Späť na moje hodiny
         </button>
       </section>
     );
@@ -103,10 +159,10 @@ export default function RequestChangeForm({
 
         <div>
           <p className="text-sm text-gray-400">
-            Preferred new time
+            Preferovaný nový termín
           </p>
           <h2 className="font-semibold">
-            When would work better?
+            Kedy by vám to vyhovovalo viac?
           </h2>
         </div>
       </div>
@@ -116,7 +172,7 @@ export default function RequestChangeForm({
           htmlFor="preferredAt"
           className="text-sm font-semibold"
         >
-          New date and time
+          Nový dátum a čas
         </label>
 
         <input
@@ -132,9 +188,9 @@ export default function RequestChangeForm({
           htmlFor="message"
           className="mt-6 block text-sm font-semibold"
         >
-          Message to your teacher{" "}
+          Správa pre lektora{" "}
           <span className="font-normal text-gray-400">
-            (optional)
+            (voliteľné)
           </span>
         </label>
 
@@ -143,7 +199,7 @@ export default function RequestChangeForm({
           rows={4}
           value={message}
           onChange={(event) => setMessage(event.target.value)}
-          placeholder="For example: Would Tuesday evening work instead?"
+          placeholder="Napríklad: Vyhovoval by vám namiesto toho utorok večer?"
           className="mt-2 w-full resize-none rounded-2xl border border-black/10 bg-white px-4 py-3.5 outline-none transition focus:border-[#183f38]"
         />
 
@@ -161,7 +217,7 @@ export default function RequestChangeForm({
           >
             <Send size={17} />
 
-            {submitting ? "Sending..." : "Send request"}
+            {submitting ? "Odosielam..." : "Odoslať žiadosť"}
           </button>
 
           <button
@@ -170,14 +226,12 @@ export default function RequestChangeForm({
             disabled={submitting}
             className="rounded-2xl border border-black/10 px-5 py-3.5 font-medium text-[#183f38]"
           >
-            Cancel
+            Zrušiť
           </button>
         </div>
 
         <p className="mt-5 text-xs leading-5 text-gray-400">
-          Sending a request does not automatically change your
-          confirmed lesson. The schedule changes only after the
-          request is accepted.
+          Čas zadávate v časovom pásme Bratislava. Odoslaním žiadosti sa potvrdený termín automaticky nemení. Termín sa zmení až po schválení žiadosti.
         </p>
       </form>
     </section>

@@ -3,23 +3,23 @@ import {
   ArrowLeft,
   BookOpen,
   CalendarDays,
-  CheckCircle2,
   Clock3,
   MessageCircle,
-  Target,
   TrendingUp,
   Video,
 } from "lucide-react";
 import { notFound } from "next/navigation";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { formatLanguage, formatLessonType } from "@/lib/portalLabels";
+import CreateLessonForm from "./CreateLessonForm";
 
 type Props = {
   params: Promise<{ id: string }>;
 };
 
 function formatDate(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -28,7 +28,7 @@ function formatDate(value: string) {
 }
 
 function formatShortDate(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     day: "numeric",
     month: "short",
     timeZone: "Europe/Bratislava",
@@ -36,7 +36,7 @@ function formatShortDate(value: string) {
 }
 
 function formatTime(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -50,7 +50,7 @@ function getName(
     | null
     | undefined
 ) {
-  return profile?.full_name?.trim() || profile?.email || "Student";
+  return profile?.full_name?.trim() || profile?.email || "Študent";
 }
 
 export default async function TeacherStudentPage({
@@ -61,56 +61,21 @@ export default async function TeacherStudentPage({
 
   const supabase = await createSupabaseServerClient();
 
-  const { data: lessons } = await supabase
+  // The dynamic route contains the student ID. Verify that this teacher
+  // actually has at least one lesson with the student before showing data.
+  const { data: assignedLesson, error: assignmentError } = await supabase
     .from("lessons")
-    .select(`
-      id,
-      student_id,
-      teacher_id,
-      scheduled_at,
-      duration_minutes,
-      status,
-      language,
-      lesson_type,
-      meet_link,
-      student:profiles!lessons_student_id_fkey (
-        full_name,
-        email
-      )
-    `)
-    .eq("id", id)
+    .select("student_id")
+    .eq("student_id", id)
     .eq("teacher_id", user.id)
-    .single();
+    .limit(1)
+    .maybeSingle();
 
-  /*
-   * The query above is only used to verify that the route belongs
-   * to a lesson/student assigned to this teacher.
-   *
-   * We then use the student_id for the complete student view.
-   */
-  const studentId = lessons?.student_id;
-
-  if (!studentId) {
-    const { data: studentLesson } = await supabase
-      .from("lessons")
-      .select("student_id")
-      .eq("student_id", id)
-      .eq("teacher_id", user.id)
-      .limit(1)
-      .maybeSingle();
-
-    if (!studentLesson?.student_id) {
-      notFound();
-    }
-
-    return renderStudentPage(
-      supabase,
-      user.id,
-      studentLesson.student_id
-    );
+  if (assignmentError || !assignedLesson?.student_id) {
+    notFound();
   }
 
-  return renderStudentPage(supabase, user.id, studentId);
+  return renderStudentPage(supabase, user.id, assignedLesson.student_id);
 }
 
 async function renderStudentPage(
@@ -122,6 +87,7 @@ async function renderStudentPage(
     profileResult,
     lessonsResult,
     packagesResult,
+    reportsResult,
   ] = await Promise.all([
     supabase
       .from("profiles")
@@ -151,11 +117,20 @@ async function renderStudentPage(
       )
       .eq("student_id", studentId)
       .eq("status", "active"),
+
+    supabase
+      .from("lesson_reports")
+      .select("id,topic,student_note,updated_at")
+      .eq("teacher_id", teacherId)
+      .eq("student_id", studentId)
+      .order("updated_at", { ascending: false })
+      .limit(1),
   ]);
 
   const profile = profileResult.data;
   const lessons = lessonsResult.data ?? [];
   const packages = packagesResult.data ?? [];
+  const latestReport = reportsResult.data?.[0] ?? null;
 
   if (!profile) {
     notFound();
@@ -171,7 +146,7 @@ async function renderStudentPage(
     .filter(
       (lesson) =>
         ["scheduled", "rescheduled"].includes(lesson.status) &&
-        new Date(lesson.scheduled_at).getTime() >= Date.now()
+        new Date(lesson.scheduled_at).getTime() >= new Date().getTime()
     )
     .sort(
       (a, b) =>
@@ -189,12 +164,12 @@ async function renderStudentPage(
   const language =
     nextLesson?.language ||
     lessons[0]?.language ||
-    "Language";
+    "";
 
   const lessonType =
     nextLesson?.lesson_type ||
     lessons[0]?.lesson_type ||
-    "Individual lesson";
+    "regular";
 
   return (
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
@@ -205,11 +180,11 @@ async function renderStudentPage(
             className="flex items-center gap-2 text-sm font-medium"
           >
             <ArrowLeft size={17} />
-            My students
+            Moji študenti
           </Link>
 
           <p className="text-sm font-semibold">
-            Student overview
+            Prehľad študenta
           </p>
         </div>
       </header>
@@ -218,7 +193,7 @@ async function renderStudentPage(
         <section className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
-              My student
+              Môj študent
             </p>
 
             <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -226,12 +201,12 @@ async function renderStudentPage(
             </h1>
 
             <p className="mt-2 text-gray-500">
-              {language} · {lessonType}
+              {formatLanguage(language)} · {formatLessonType(lessonType)}
             </p>
           </div>
 
           <span className="w-fit rounded-full bg-[#eaf4ed] px-3 py-1.5 text-xs font-semibold text-[#527064]">
-            Active student
+            Aktívny študent
           </span>
         </section>
 
@@ -240,7 +215,7 @@ async function renderStudentPage(
             <BookOpen size={19} className="text-[#9a8049]" />
 
             <p className="mt-4 text-sm text-gray-400">
-              Lessons completed
+              Dokončené hodiny
             </p>
 
             <p className="mt-1 text-2xl font-semibold">
@@ -252,7 +227,7 @@ async function renderStudentPage(
             <CalendarDays size={19} className="text-[#9a8049]" />
 
             <p className="mt-4 text-sm text-gray-400">
-              Lessons remaining
+              Zostávajúce hodiny
             </p>
 
             <p className="mt-1 text-2xl font-semibold">
@@ -264,13 +239,13 @@ async function renderStudentPage(
             <TrendingUp size={19} className="text-[#9a8049]" />
 
             <p className="mt-4 text-sm text-gray-400">
-              Learning activity
+              Aktivita študenta
             </p>
 
             <p className="mt-1 text-sm font-semibold">
               {completedLessons.length > 0
-                ? "Lessons in progress"
-                : "Getting started"}
+                ? "Prebiehajúca výučba"
+                : "Začiatok výučby"}
             </p>
           </article>
         </div>
@@ -280,12 +255,12 @@ async function renderStudentPage(
             <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm text-white/55">
-                  Next lesson
+                  Najbližšia hodina
                 </p>
 
                 <h2 className="mt-2 text-2xl font-semibold">
-                  {nextLesson.language || language} ·{" "}
-                  {nextLesson.lesson_type || "Lesson"}
+                  {formatLanguage(nextLesson.language || language)} ·{" "}
+                  {formatLessonType(nextLesson.lesson_type)}
                 </h2>
 
                 <div className="mt-4 flex flex-wrap gap-4 text-sm text-white/65">
@@ -309,36 +284,43 @@ async function renderStudentPage(
                   className="flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 font-semibold text-[#183f38]"
                 >
                   <Video size={18} />
-                  Join lesson
+                  Pripojiť sa na hodinu
                 </a>
               ) : (
                 <span className="rounded-xl bg-white/10 px-5 py-3 text-sm text-white/60">
-                  Meet link not added
+                  Odkaz na Meet zatiaľ nie je pridaný
                 </span>
               )}
             </div>
           </section>
         )}
 
+        <CreateLessonForm
+          studentId={studentId}
+          language={language}
+          lessonType={lessonType}
+          packages={packages}
+        />
+
         <section className="mt-10">
           <div>
             <p className="text-sm text-gray-400">
-              History
+              História
             </p>
 
             <h2 className="mt-1 text-xl font-semibold">
-              Recent lessons
+              Posledné hodiny
             </h2>
           </div>
 
           {completedLessons.length === 0 ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
               <p className="font-medium">
-                No completed lessons yet
+                Zatiaľ žiadne dokončené hodiny
               </p>
 
               <p className="mt-1 text-sm text-gray-400">
-                Completed lessons will appear here.
+                Dokončené hodiny sa zobrazia tu.
               </p>
             </div>
           ) : (
@@ -356,9 +338,9 @@ async function renderStudentPage(
                   >
                     <div>
                       <p className="font-semibold">
-                        {lesson.lesson_type ||
-                          lesson.language ||
-                          "Lesson"}
+                        {lesson.lesson_type
+                          ? formatLessonType(lesson.lesson_type)
+                          : formatLanguage(lesson.language)}
                       </p>
 
                       <p className="mt-1 text-sm text-gray-400">
@@ -369,7 +351,7 @@ async function renderStudentPage(
                     </div>
 
                     <span className="rounded-full bg-[#eef3ef] px-3 py-1.5 text-xs font-semibold text-[#527064]">
-                      Completed
+                      Dokončená
                     </span>
                   </div>
                 )
@@ -386,15 +368,30 @@ async function renderStudentPage(
             />
 
             <h2 className="text-lg font-semibold">
-              Student notes
+              Poznámky pre študenta
             </h2>
           </div>
 
           <div className="mt-5 rounded-2xl bg-[#f7f8f5] p-5">
-            <p className="text-sm leading-6 text-gray-500">
-              Student notes will appear here once the teacher
-              note system is connected.
-            </p>
+            {latestReport?.student_note?.trim() ? (
+              <>
+                {latestReport.topic?.trim() && (
+                  <p className="text-sm font-semibold text-[#183f38]">
+                    {latestReport.topic}
+                  </p>
+                )}
+                <p className="mt-2 text-sm leading-6 text-gray-500">
+                  {latestReport.student_note}
+                </p>
+                <p className="mt-3 text-xs text-gray-400">
+                  Aktualizované {formatShortDate(latestReport.updated_at)}
+                </p>
+              </>
+            ) : (
+              <p className="text-sm leading-6 text-gray-500">
+                Zatiaľ nie je uložená žiadna poznámka pre študenta.
+              </p>
+            )}
           </div>
         </section>
       </div>

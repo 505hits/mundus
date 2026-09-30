@@ -8,33 +8,35 @@ import {
   ChartNoAxesColumnIncreasing,
   GraduationCap,
   Home,
+  Package,
 } from "lucide-react";
 
 const navItems = [
   {
-    label: "Home",
+    label: "Domov",
     href: "/dashboard",
     icon: Home,
   },
   {
-    label: "Lessons",
+    label: "Hodiny",
     href: "/lessons",
     icon: GraduationCap,
   },
   {
-    label: "Learning",
+    label: "Učenie",
     href: "/learning",
     icon: BookOpen,
   },
   {
-    label: "Progress",
+    label: "Pokrok",
     href: "/progress",
     icon: ChartNoAxesColumnIncreasing,
   },
 ];
 
-export default function PortalNav() {
+export default function PortalNav({ paymentsEnabled }: { paymentsEnabled: boolean }) {
   const pathname = usePathname();
+  const items = paymentsEnabled ? [...navItems, { label: "Balíčky", href: "/packages", icon: Package }] : navItems;
 
   return (
     <>
@@ -49,11 +51,11 @@ export default function PortalNav() {
           </Link>
 
           <p className="mt-6 px-3 text-xs font-semibold uppercase tracking-[0.14em] text-gray-400">
-            Learning Portal
+            Vzdelávací portál
           </p>
 
           <nav className="mt-3 space-y-1">
-            {navItems.map((item) => {
+            {items.map((item) => {
               const Icon = item.icon;
               const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
 
@@ -77,11 +79,11 @@ export default function PortalNav() {
           <div className="mt-auto space-y-3">
             <div className="rounded-2xl bg-[#f4f6f3] p-4">
             <p className="text-sm font-semibold text-[#0a0a0f]">
-              Need help?
+              Potrebujete pomoc?
             </p>
 
             <p className="mt-1 text-xs leading-5 text-gray-500">
-              Contact Mundus Languages and we&apos;ll be happy to help.
+              Kontaktujte Mundus Languages a radi vám pomôžeme.
             </p>
           </div>
             <LogoutButton />
@@ -92,8 +94,8 @@ export default function PortalNav() {
       {/* Mobile bottom navigation */}
       <div className="fixed right-4 top-4 z-50 lg:hidden"><LogoutButton compact /></div>
       <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-black/5 bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
-        <div className="mx-auto grid max-w-lg grid-cols-4">
-          {navItems.map((item) => {
+        <div className={`mx-auto grid max-w-lg ${paymentsEnabled ? "grid-cols-5" : "grid-cols-4"}`}>
+          {items.map((item) => {
             const Icon = item.icon;
             const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
 

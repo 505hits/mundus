@@ -26,7 +26,7 @@ export default function ScheduleRequestActions({
 
     const supabase = createSupabaseBrowserClient();
 
-    const { error } = await supabase
+    const { data: updatedRequest, error } = await supabase
       .from("schedule_change_requests")
       .update({
         status,
@@ -34,11 +34,13 @@ export default function ScheduleRequestActions({
         updated_at: new Date().toISOString(),
       })
       .eq("id", requestId)
-      .eq("status", "pending");
+      .eq("status", "pending")
+      .select("id")
+      .maybeSingle();
 
-    if (error) {
+    if (error || !updatedRequest) {
       setErrorMessage(
-        "We couldn't update this request. Please try again."
+        "Žiadosť sa nepodarilo aktualizovať. Skúste to prosím znova."
       );
       setLoading(null);
       return;
@@ -57,7 +59,7 @@ export default function ScheduleRequestActions({
           className="flex items-center gap-2 rounded-xl bg-[#183f38] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#12332d] disabled:cursor-not-allowed disabled:opacity-60"
         >
           <Check size={16} />
-          {loading === "accepted" ? "Accepting..." : "Accept"}
+          {loading === "accepted" ? "Schvaľujem..." : "Schváliť"}
         </button>
 
         <button
@@ -68,8 +70,8 @@ export default function ScheduleRequestActions({
         >
           <X size={16} />
           {loading === "declined"
-            ? "Declining..."
-            : "Keep original"}
+            ? "Zamietam..."
+            : "Ponechať pôvodný termín"}
         </button>
       </div>
 

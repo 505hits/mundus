@@ -1,4 +1,5 @@
 import {
+  AlertCircle,
   CalendarDays,
   Clock3,
   RefreshCw,
@@ -6,10 +7,14 @@ import {
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { formatLanguage } from "@/lib/portalLabels";
 import ScheduleRequestActions from "./ScheduleRequestActions";
+import LessonStatusActions from "./LessonStatusActions";
+import EditLessonForm from "./EditLessonForm";
+import ProposeScheduleChangeForm from "./ProposeScheduleChangeForm";
 
 function formatDate(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -18,7 +23,7 @@ function formatDate(value: string) {
 }
 
 function formatTime(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -35,7 +40,7 @@ function studentName(
   return (
     profile?.full_name?.trim() ||
     profile?.email ||
-    "Student"
+    "Študent"
   );
 }
 
@@ -50,6 +55,7 @@ export default async function TeacherSchedulePage() {
     .select(`
       id,
       student_id,
+      package_id,
       scheduled_at,
       duration_minutes,
       status,
@@ -66,6 +72,34 @@ export default async function TeacherSchedulePage() {
     .gte("scheduled_at", now)
     .order("scheduled_at", { ascending: true })
     .limit(20);
+
+  const sevenDaysAgo = new Date(
+    new Date().getTime() - 7 * 24 * 60 * 60 * 1000
+  ).toISOString();
+
+  const { data: overdueLessons, error: overdueError } = await supabase
+    .from("lessons")
+    .select(`
+      id,
+      student_id,
+      package_id,
+      scheduled_at,
+      duration_minutes,
+      status,
+      language,
+      lesson_type,
+      meet_link,
+      student:profiles!lessons_student_id_fkey (
+        full_name,
+        email
+      )
+    `)
+    .eq("teacher_id", user.id)
+    .in("status", ["scheduled", "rescheduled"])
+    .gte("scheduled_at", sevenDaysAgo)
+    .lt("scheduled_at", now)
+    .order("scheduled_at", { ascending: false })
+    .limit(10);
 
   const { data: requests } = await supabase
     .from("schedule_change_requests")
@@ -104,20 +138,43 @@ export default async function TeacherSchedulePage() {
       );
     }) ?? [];
 
+  const outgoingRequests =
+    requests?.filter((request) => {
+      const lesson = Array.isArray(request.lesson)
+        ? request.lesson[0]
+        : request.lesson;
+
+      return (
+        lesson?.teacher_id === user.id &&
+        request.requested_by === user.id
+      );
+    }) ?? [];
+
+  const pendingLessonIds = new Set(
+    (requests ?? [])
+      .filter((request) => {
+        const lesson = Array.isArray(request.lesson)
+          ? request.lesson[0]
+          : request.lesson;
+        return lesson?.teacher_id === user.id;
+      })
+      .map((request) => request.lesson_id)
+  );
+
   return (
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
-            Schedule
+            Rozvrh
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Your lessons
+            Vaše hodiny
           </h1>
 
           <p className="mt-2 text-gray-500">
-            Manage your upcoming lessons and student schedule requests.
+            Majte prehľad o najbližších hodinách a žiadostiach študentov o zmenu termínu.
           </p>
         </section>
 
@@ -125,7 +182,7 @@ export default async function TeacherSchedulePage() {
           <div className="flex items-center gap-2">
             <RefreshCw size={19} className="text-[#9a8049]" />
             <h2 className="text-xl font-semibold">
-              Change requests
+              Žiadosti o zmenu termínu
             </h2>
 
             {teacherRequests.length > 0 && (
@@ -137,9 +194,9 @@ export default async function TeacherSchedulePage() {
 
           {teacherRequests.length === 0 ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
-              <p className="font-medium">No pending requests</p>
+              <p className="font-medium">Žiadne čakajúce žiadosti</p>
               <p className="mt-1 text-sm text-gray-400">
-                Student schedule-change requests will appear here.
+                Žiadosti študentov o zmenu termínu sa zobrazia tu.
               </p>
             </div>
           ) : (
@@ -168,23 +225,23 @@ export default async function TeacherSchedulePage() {
                           </p>
 
                           <span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-[#9a8049]">
-                            New request
+                            Nová žiadosť
                           </span>
                         </div>
 
                         <p className="mt-2 text-sm text-[#7e693a]/70">
-                          {lesson.language || "Language"} lesson
+                          {formatLanguage(lesson.language)} hodina
                         </p>
 
                         <div className="mt-4 space-y-2 text-sm text-[#7e693a]">
                           <p>
-                            <strong>Current:</strong>{" "}
+                            <strong>Aktuálne:</strong>{" "}
                             {formatDate(lesson.scheduled_at)} ·{" "}
                             {formatTime(lesson.scheduled_at)}
                           </p>
 
                           <p>
-                            <strong>Requested:</strong>{" "}
+                            <strong>Navrhovaný termín:</strong>{" "}
                             {formatDate(request.preferred_at)} ·{" "}
                             {formatTime(request.preferred_at)}
                           </p>
@@ -208,16 +265,123 @@ export default async function TeacherSchedulePage() {
           )}
 
           <p className="mt-3 text-xs text-gray-400">
-            The original lesson stays confirmed until a change is accepted.
+            Pôvodný termín zostáva potvrdený, kým nebude zmena schválená.
           </p>
+        </section>
+
+        {outgoingRequests.length > 0 && (
+          <section className="mt-8">
+            <p className="text-sm text-gray-400">Vaše návrhy</p>
+            <h2 className="mt-1 text-xl font-semibold">
+              Čakajú na potvrdenie študenta
+            </h2>
+
+            <div className="mt-4 space-y-3">
+              {outgoingRequests.map((request) => {
+                const lesson = Array.isArray(request.lesson)
+                  ? request.lesson[0]
+                  : request.lesson;
+
+                if (!lesson) return null;
+
+                const student = Array.isArray(lesson.student)
+                  ? lesson.student[0]
+                  : lesson.student;
+
+                return (
+                  <article
+                    key={request.id}
+                    className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm"
+                  >
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                      <div>
+                        <p className="font-semibold">
+                          {studentName(student)}
+                        </p>
+                        <p className="mt-1 text-sm text-gray-500">
+                          {formatLanguage(lesson.language)} · navrhovaný termín{" "}
+                          {formatDate(request.preferred_at)} ·{" "}
+                          {formatTime(request.preferred_at)}
+                        </p>
+                      </div>
+
+                      <span className="w-fit rounded-full bg-[#faf6eb] px-3 py-1.5 text-xs font-semibold text-[#9a8049]">
+                        Čaká na študenta
+                      </span>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
+        <section className="mt-10">
+          <div className="flex items-center gap-2">
+            <AlertCircle size={20} className="text-[#9a8049]" />
+            <div>
+              <p className="text-sm text-gray-400">Po hodine</p>
+              <h2 className="mt-1 text-xl font-semibold">
+                Hodiny na uzavretie
+              </h2>
+            </div>
+          </div>
+
+          {overdueError ? (
+            <div className="mt-4 rounded-3xl border border-red-200 bg-red-50 p-5 text-sm text-red-700">
+              Nepodarilo sa načítať hodiny, ktoré treba uzavrieť. Obnovte stránku a skúste to znova.
+            </div>
+          ) : !overdueLessons?.length ? (
+            <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
+              <p className="font-medium">Všetky posledné hodiny sú uzavreté</p>
+              <p className="mt-1 text-sm text-gray-400">
+                Po skončení hodiny tu môžete potvrdiť jej výsledný stav.
+              </p>
+            </div>
+          ) : (
+            <div className="mt-4 space-y-3">
+              {overdueLessons.map((lesson) => {
+                const student = Array.isArray(lesson.student)
+                  ? lesson.student[0]
+                  : lesson.student;
+
+                return (
+                  <article
+                    key={lesson.id}
+                    className="rounded-3xl border border-[#c6a65b]/20 bg-[#faf6eb] p-5 shadow-sm sm:p-6"
+                  >
+                    <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+                      <div>
+                        <p className="font-semibold text-[#7e693a]">
+                          {studentName(student)}
+                        </p>
+                        <p className="mt-2 text-sm text-[#7e693a]/70">
+                          {formatLanguage(lesson.language)} ·{" "}
+                          {formatDate(lesson.scheduled_at)} ·{" "}
+                          {formatTime(lesson.scheduled_at)}
+                        </p>
+                      </div>
+
+                      <LessonStatusActions
+                        lessonId={lesson.id}
+                        studentId={lesson.student_id}
+                        packageId={lesson.package_id}
+                        scheduledAt={lesson.scheduled_at}
+                      />
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          )}
         </section>
 
         <section className="mt-10">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-400">Upcoming</p>
+              <p className="text-sm text-gray-400">Najbližšie</p>
               <h2 className="mt-1 text-xl font-semibold">
-                Scheduled lessons
+                Naplánované hodiny
               </h2>
             </div>
 
@@ -227,10 +391,10 @@ export default async function TeacherSchedulePage() {
           {!lessons?.length ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
               <p className="font-medium">
-                No upcoming lessons
+                Žiadne najbližšie hodiny
               </p>
               <p className="mt-1 text-sm text-gray-400">
-                Your confirmed lessons will appear here.
+                Vaše potvrdené hodiny sa zobrazia tu.
               </p>
             </div>
           ) : (
@@ -277,7 +441,7 @@ export default async function TeacherSchedulePage() {
                                   : "bg-[#eef3ef] text-[#527064]"
                               }`}
                             >
-                              {index === 0 ? "Next" : "Scheduled"}
+                              {index === 0 ? "Najbližšia" : "Naplánovaná"}
                             </span>
                           </div>
 
@@ -288,7 +452,7 @@ export default async function TeacherSchedulePage() {
                                 : "text-gray-400"
                             }`}
                           >
-                            {lesson.language || "Language"} ·{" "}
+                            {formatLanguage(lesson.language)} ·{" "}
                             {lesson.duration_minutes || 60} min
                           </p>
 
@@ -316,7 +480,7 @@ export default async function TeacherSchedulePage() {
                           }`}
                         >
                           <Video size={17} />
-                          Join lesson
+                          Pripojiť sa na hodinu
                         </a>
                       ) : (
                         <span
@@ -326,10 +490,22 @@ export default async function TeacherSchedulePage() {
                               : "bg-gray-100 text-gray-400"
                           }`}
                         >
-                          Meet link not added
+                          Odkaz na Meet zatiaľ nie je pridaný
                         </span>
                       )}
                     </div>
+
+                    <EditLessonForm
+                      lessonId={lesson.id}
+                      scheduledAt={lesson.scheduled_at}
+                      meetLink={lesson.meet_link}
+                    />
+
+                    <ProposeScheduleChangeForm
+                      lessonId={lesson.id}
+                      studentId={lesson.student_id}
+                      hasPendingRequest={pendingLessonIds.has(lesson.id)}
+                    />
                   </article>
                 );
               })}

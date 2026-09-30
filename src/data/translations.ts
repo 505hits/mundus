@@ -5,9 +5,10 @@ export const translations = {
             courses: "Courses",
             howItWorks: "How it works",
             teachers: "Teachers",
+            prices: "Prices",
             features: "Features",
             contact: "Contact",
-            book: "Book my first lesson",
+            book: "View lesson packages",
             needHelp: "Need help?",
             contactUs: "Contact us",
         },
@@ -16,7 +17,7 @@ export const translations = {
             titleBefore: "Learn languages with",
             nativeSpeakers: "native speakers",
             subtitle: "Experience immersive 1-on-1 sessions with native experts. Fluid, fast, and tailored to your goals.",
-            ctaPrimary: "Book my first lesson for free",
+            ctaPrimary: "Explore lesson packages",
             ctaSecondary: "See how it works",
             interactive: "Interactive Logic",
             students: "200+ students",
@@ -184,29 +185,45 @@ export const translations = {
                     package: "Package",
                     online: "ONLINE",
                     originalPrice: "Original Price",
-                    launchPrice: "\"Only For U\" Launch Price"
+                    launchPrice: "First package (10% off)"
                 },
                 rows: [
                     {
                         package: "1× 60 min",
                         originalPrice: "€ 28",
-                        launchPrice: "€ 25"
+                        launchPrice: "€ 25.20"
+                    },
+                    {
+                        package: "5× 60 min Pack",
+                        originalPrice: "€ 135",
+                        launchPrice: "€ 121.50"
                     },
                     {
                         package: "10× 60 min Pack",
                         originalPrice: "€ 260",
-                        launchPrice: "€ 235"
+                        launchPrice: "€ 234"
                     },
                     {
                         package: "20× 60 min Pack",
                         originalPrice: "€ 490",
-                        launchPrice: "€ 440"
+                        launchPrice: "€ 441"
+                    },
+                    {
+                        package: "30× 60 min Pack",
+                        originalPrice: "€ 705",
+                        launchPrice: "€ 634.50"
                     }
                 ],
-                note: "🆓 Trial 30-min lesson = free"
+                note: "First-package offer applies to eligible student accounts.",
+                buyLabel: "Choose package",
+                contactLabel: "Contact us",
+                paymentNote: "Sign in or create a student account to confirm your price and pay securely.",
+                existingAccountNote: "Existing students can sign in to pay online. New students can contact us to create an account.",
+                offlineNote: "Online payment is coming soon. Contact us to arrange lessons."
             },
             discounts: {
                 title: "FRIEND & FAMILY DISCOUNTS",
+                paymentNote: "Ask us about these offers before paying. They are arranged individually and are not applied automatically in online Checkout.",
                 headers: {
                     type: "Type",
                     description: "Description",
@@ -247,10 +264,10 @@ export const translations = {
             }
         },
         booking: {
-            label: "Book now",
-            titleStart: "Schedule your",
-            titleEnd: "first lesson",
-            subtitle: "Select a time that works for you and start speaking immediately.",
+            label: "Questions?",
+            titleStart: "Talk through your",
+            titleEnd: "learning goals",
+            subtitle: "Book a short information call to discuss the right language and package. Lesson purchases are handled separately.",
         },
         contact: {
             label: "Get in touch",
@@ -297,9 +314,10 @@ export const translations = {
             courses: "Kurzy",
             howItWorks: "Ako to funguje",
             teachers: "Lektori",
+            prices: "Cenník",
             features: "Výhody",
             contact: "Kontakt",
-            book: "Rezervovať prvú lekciu",
+            book: "Pozrieť balíčky",
             needHelp: "Potrebujete pomoc?",
             contactUs: "Kontaktujte nás",
         },
@@ -308,7 +326,7 @@ export const translations = {
             titleBefore: "Učte sa jazyky s",
             nativeSpeakers: "native spíkrami",
             subtitle: "Zažite pohlcujúce lekcie 1 na 1 s rodenými expertmi. Plynulé, rýchle a prispôsobené vašim cieľom.",
-            ctaPrimary: "Rezervovať prvú lekciu zdarma",
+            ctaPrimary: "Vybrať balíček hodín",
             ctaSecondary: "Ako to funguje",
             interactive: "Interaktívna výučba",
             students: "200+ študentov",
@@ -476,29 +494,45 @@ export const translations = {
                     package: "Balíček",
                     online: "ONLINE",
                     originalPrice: "Pôvodná cena",
-                    launchPrice: "\"Only For U\" Uvádzacia cena"
+                    launchPrice: "Prvý balíček (zľava 10 %)"
                 },
                 rows: [
                     {
                         package: "1× 60 min",
-                        originalPrice: "€ 28",
-                        launchPrice: "€ 25"
+                        originalPrice: "28 €",
+                        launchPrice: "25,20 €"
                     },
                     {
-                        package: "10× 60 min Pack",
-                        originalPrice: "€ 260",
-                        launchPrice: "€ 235"
+                        package: "5× 60 min balíček",
+                        originalPrice: "135 €",
+                        launchPrice: "121,50 €"
                     },
                     {
-                        package: "20× 60 min Pack",
-                        originalPrice: "€ 490",
-                        launchPrice: "€ 440"
+                        package: "10× 60 min balíček",
+                        originalPrice: "260 €",
+                        launchPrice: "234 €"
+                    },
+                    {
+                        package: "20× 60 min balíček",
+                        originalPrice: "490 €",
+                        launchPrice: "441 €"
+                    },
+                    {
+                        package: "30× 60 min balíček",
+                        originalPrice: "705 €",
+                        launchPrice: "634,50 €"
                     }
                 ],
-                note: "🆓 Skúšobná 30-min lekcia = zdarma"
+                note: "Zľava na prvý balíček platí pre oprávnené študentské účty.",
+                buyLabel: "Vybrať balíček",
+                contactLabel: "Kontaktovať nás",
+                paymentNote: "Po prihlásení alebo vytvorení študentského účtu uvidíte konečnú cenu a môžete zaplatiť online.",
+                existingAccountNote: "Existujúci študenti sa môžu prihlásiť a zaplatiť online. Novým študentom pomôžeme vytvoriť účet po kontakte s nami.",
+                offlineNote: "Online platby pripravujeme. Ak máte záujem o hodiny, kontaktujte nás."
             },
             discounts: {
                 title: "ZĽAVY PRE PRIATEĽOV A RODINU",
+                paymentNote: "O tieto zľavy nás požiadajte pred platbou. Riešime ich individuálne a pri online platbe sa nepripočítajú automaticky.",
                 headers: {
                     type: "Typ",
                     description: "Popis",
@@ -539,10 +573,10 @@ export const translations = {
             }
         },
         booking: {
-            label: "Rezervovať",
-            titleStart: "Naplánujte si",
-            titleEnd: "prvú lekciu",
-            subtitle: "Vyberte si čas, ktorý vám vyhovuje, a začnite hovoriť okamžite.",
+            label: "Máte otázky?",
+            titleStart: "Porozprávajme sa o",
+            titleEnd: "vašich cieľoch",
+            subtitle: "Rezervujte si krátky informačný hovor. O vhodnom jazyku a balíčku sa poradíme; hodiny sa kupujú osobitne.",
         },
         contact: {
             label: "Kontaktujte nás",

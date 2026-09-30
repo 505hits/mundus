@@ -10,9 +10,10 @@ import {
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { formatLanguage } from "@/lib/portalLabels";
 
 function formatTime(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -21,7 +22,7 @@ function formatTime(value: string) {
 }
 
 function formatShortDate(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     day: "numeric",
     month: "short",
     timeZone: "Europe/Bratislava",
@@ -34,7 +35,7 @@ function getName(
     | null
     | undefined
 ) {
-  return profile?.full_name?.trim() || profile?.email || "Student";
+  return profile?.full_name?.trim() || profile?.email || "Študent";
 }
 
 function getInitials(name: string) {
@@ -60,22 +61,24 @@ export default async function TeacherDashboardPage() {
 
   const now = new Date();
 
-  const bratislavaDate = new Intl.DateTimeFormat("en-CA", {
+  const bratislavaDateFormatter = new Intl.DateTimeFormat("en-CA", {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
     timeZone: "Europe/Bratislava",
-  }).format(now);
+  });
+  const todayKey = bratislavaDateFormatter.format(now);
 
-  const startOfToday = new Date(
-    `${bratislavaDate}T00:00:00+02:00`
+  // Query a safe UTC window and filter by Europe/Bratislava below.
+  // This avoids a fixed +02:00 offset, which would break after DST changes.
+  const todayWindowStart = new Date(
+    now.getTime() - 36 * 60 * 60 * 1000
+  ).toISOString();
+  const todayWindowEnd = new Date(
+    now.getTime() + 36 * 60 * 60 * 1000
   ).toISOString();
 
-  const endOfToday = new Date(
-    `${bratislavaDate}T23:59:59+02:00`
-  ).toISOString();
-
-  const { data: todayLessons } = await supabase
+  const { data: todayLessonCandidates } = await supabase
     .from("lessons")
     .select(`
       id,
@@ -93,9 +96,14 @@ export default async function TeacherDashboardPage() {
     `)
     .eq("teacher_id", user.id)
     .in("status", ["scheduled", "rescheduled"])
-    .gte("scheduled_at", startOfToday)
-    .lte("scheduled_at", endOfToday)
+    .gte("scheduled_at", todayWindowStart)
+    .lte("scheduled_at", todayWindowEnd)
     .order("scheduled_at", { ascending: true });
+
+  const todayLessons = (todayLessonCandidates ?? []).filter(
+    (lesson) =>
+      bratislavaDateFormatter.format(new Date(lesson.scheduled_at)) === todayKey
+  );
 
   const { data: upcomingLessons } = await supabase
     .from("lessons")
@@ -113,6 +121,11 @@ export default async function TeacherDashboardPage() {
     .in("status", ["scheduled", "rescheduled"])
     .gte("scheduled_at", now.toISOString())
     .order("scheduled_at", { ascending: true });
+
+  const { data: assignedLessonStudents } = await supabase
+    .from("lessons")
+    .select("student_id")
+    .eq("teacher_id", user.id);
 
   const { data: pendingRequests } = await supabase
     .from("schedule_change_requests")
@@ -167,18 +180,25 @@ export default async function TeacherDashboardPage() {
     uniqueStudents.set(lesson.student_id, {
       id: lesson.student_id,
       name: getName(student),
-      language: lesson.language || "Language",
+      language: formatLanguage(lesson.language),
       nextLesson: lesson.scheduled_at,
     });
   }
 
   const students = Array.from(uniqueStudents.values());
+  const assignedStudentCount = new Set(
+    (assignedLessonStudents ?? []).map((lesson) => lesson.student_id)
+  ).size;
+  const nextTodayLessonId =
+    todayLessons.find(
+      (lesson) => new Date(lesson.scheduled_at).getTime() >= now.getTime()
+    )?.id ?? null;
 
   const teacherName =
     teacherProfile?.full_name?.trim() ||
     teacherProfile?.email ||
     user.email ||
-    "Teacher";
+    "Lektor";
 
   const firstName = teacherName.split(" ")[0];
 
@@ -193,7 +213,7 @@ export default async function TeacherDashboardPage() {
           <div className="flex items-center gap-3">
             <div className="hidden text-right sm:block">
               <p className="text-sm font-semibold">{teacherName}</p>
-              <p className="text-xs text-gray-400">Teacher Portal</p>
+              <p className="text-xs text-gray-400">Portál lektora</p>
             </div>
 
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#183f38] text-sm font-semibold text-white">
@@ -206,22 +226,22 @@ export default async function TeacherDashboardPage() {
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
-            Teacher dashboard
+            Prehľad lektora
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Hi, {firstName} 👋
+            Vitajte, {firstName} 👋
           </h1>
 
           <p className="mt-2 text-gray-500">
-            Here&apos;s what&apos;s happening with your students today.
+            Tu nájdete prehľad dnešných hodín, študentov a žiadostí o zmenu termínu.
           </p>
         </section>
 
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
           <article className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-400">Today</p>
+              <p className="text-sm text-gray-400">Dnes</p>
               <CalendarDays size={19} className="text-[#9a8049]" />
             </div>
 
@@ -229,28 +249,28 @@ export default async function TeacherDashboardPage() {
               {todayLessons?.length ?? 0}
             </p>
 
-            <p className="mt-1 text-sm text-gray-500">lessons</p>
+            <p className="mt-1 text-sm text-gray-500">hodín</p>
           </article>
 
           <article className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-400">My students</p>
+              <p className="text-sm text-gray-400">Moji študenti</p>
               <Users size={19} className="text-[#9a8049]" />
             </div>
 
             <p className="mt-3 text-3xl font-semibold">
-              {students.length}
+              {assignedStudentCount}
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
-              upcoming students
+              priradených študentov
             </p>
           </article>
 
           <article className="rounded-3xl border border-[#c6a65b]/20 bg-[#faf6eb] p-5">
             <div className="flex items-center justify-between">
               <p className="text-sm text-[#7e693a]/70">
-                Change requests
+                Žiadosti o zmenu termínu
               </p>
               <Clock3 size={19} className="text-[#9a8049]" />
             </div>
@@ -260,7 +280,7 @@ export default async function TeacherDashboardPage() {
             </p>
 
             <p className="mt-1 text-sm text-[#7e693a]/70">
-              waiting for you
+              čakajú na vybavenie
             </p>
           </article>
         </div>
@@ -268,9 +288,9 @@ export default async function TeacherDashboardPage() {
         <section className="mt-10">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-400">Schedule</p>
+              <p className="text-sm text-gray-400">Rozvrh</p>
               <h2 className="mt-1 text-xl font-semibold">
-                Today&apos;s lessons
+                Dnešné hodiny
               </h2>
             </div>
 
@@ -278,20 +298,20 @@ export default async function TeacherDashboardPage() {
               href="/teacher/schedule"
               className="rounded-xl bg-[#183f38] px-4 py-2.5 text-sm font-semibold text-white"
             >
-              View schedule
+              Zobraziť rozvrh
             </Link>
           </div>
 
           {!todayLessons?.length ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
-              <p className="font-medium">No lessons today</p>
+              <p className="font-medium">Dnes nemáte naplánované hodiny</p>
               <p className="mt-1 text-sm text-gray-400">
-                Your scheduled lessons for today will appear here.
+                Naplánované dnešné hodiny sa zobrazia tu.
               </p>
             </div>
           ) : (
             <div className="mt-4 space-y-3">
-              {todayLessons.map((lesson, index) => {
+              {todayLessons.map((lesson) => {
                 const student = Array.isArray(lesson.student)
                   ? lesson.student[0]
                   : lesson.student;
@@ -300,7 +320,7 @@ export default async function TeacherDashboardPage() {
                   <article
                     key={lesson.id}
                     className={`rounded-3xl border p-5 shadow-sm sm:p-6 ${
-                      index === 0
+                      lesson.id === nextTodayLessonId
                         ? "border-[#183f38]/10 bg-[#183f38] text-white"
                         : "border-black/5 bg-white"
                     }`}
@@ -309,7 +329,7 @@ export default async function TeacherDashboardPage() {
                       <div className="flex items-center gap-4">
                         <div
                           className={`flex h-14 w-14 items-center justify-center rounded-2xl text-sm font-semibold ${
-                            index === 0
+                            lesson.id === nextTodayLessonId
                               ? "bg-white/10"
                               : "bg-[#eef3ef] text-[#183f38]"
                           }`}
@@ -323,21 +343,21 @@ export default async function TeacherDashboardPage() {
                               {getName(student)}
                             </h3>
 
-                            {index === 0 && (
+                            {lesson.id === nextTodayLessonId && (
                               <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold">
-                                Next
+                                Najbližšia
                               </span>
                             )}
                           </div>
 
                           <p
                             className={`mt-1 text-sm ${
-                              index === 0
+                              lesson.id === nextTodayLessonId
                                 ? "text-white/60"
                                 : "text-gray-400"
                             }`}
                           >
-                            {lesson.language || "Language"} ·{" "}
+                            {formatLanguage(lesson.language)} ·{" "}
                             {lesson.duration_minutes || 60} min
                           </p>
                         </div>
@@ -349,23 +369,23 @@ export default async function TeacherDashboardPage() {
                           target="_blank"
                           rel="noreferrer"
                           className={`flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold ${
-                            index === 0
+                            lesson.id === nextTodayLessonId
                               ? "bg-white text-[#183f38]"
                               : "bg-[#eef3ef] text-[#183f38]"
                           }`}
                         >
                           <Video size={17} />
-                          Join lesson
+                          Pripojiť sa na hodinu
                         </a>
                       ) : (
                         <span
                           className={`rounded-xl px-4 py-3 text-sm ${
-                            index === 0
+                            lesson.id === nextTodayLessonId
                               ? "bg-white/10 text-white/60"
                               : "bg-gray-100 text-gray-400"
                           }`}
                         >
-                          Meet link not added
+                          Odkaz na Meet zatiaľ nie je pridaný
                         </span>
                       )}
                     </div>
@@ -381,31 +401,30 @@ export default async function TeacherDashboardPage() {
             <div className="flex items-center gap-2">
               <AlertCircle size={20} className="text-[#9a8049]" />
               <h2 className="text-xl font-semibold">
-                Needs your attention
+                Vyžaduje vašu pozornosť
               </h2>
             </div>
 
             <div className="mt-4 rounded-3xl border border-[#c6a65b]/20 bg-[#faf6eb] p-6">
               <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#9a8049]">
-                Schedule changes
+                Zmeny termínov
               </p>
 
               <h3 className="mt-3 font-semibold text-[#7e693a]">
                 {myPendingRequests.length === 1
-                  ? "1 student is waiting for your response"
-                  : `${myPendingRequests.length} students are waiting for your response`}
+                  ? "1 študent čaká na vašu odpoveď"
+                  : `${myPendingRequests.length} študentov čaká na vašu odpoveď`}
               </h3>
 
               <p className="mt-2 text-sm leading-6 text-[#7e693a]/75">
-                Review the requested lesson times before confirming any
-                changes.
+                Skontrolujte navrhované termíny pred potvrdením zmeny.
               </p>
 
               <Link
                 href="/teacher/schedule"
                 className="mt-5 inline-flex rounded-xl bg-[#183f38] px-4 py-2.5 text-sm font-semibold text-white"
               >
-                Review requests
+                Skontrolovať žiadosti
               </Link>
             </div>
           </section>
@@ -414,9 +433,9 @@ export default async function TeacherDashboardPage() {
         <section className="mt-10">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-400">Students</p>
+              <p className="text-sm text-gray-400">Študenti</p>
               <h2 className="mt-1 text-xl font-semibold">
-                My students
+                Moji študenti
               </h2>
             </div>
 
@@ -425,9 +444,9 @@ export default async function TeacherDashboardPage() {
 
           {students.length === 0 ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
-              <p className="font-medium">No upcoming students</p>
+              <p className="font-medium">Žiadni študenti s naplánovanou hodinou</p>
               <p className="mt-1 text-sm text-gray-400">
-                Students with upcoming lessons will appear here.
+                Študenti s naplánovanou ďalšou hodinou sa zobrazia tu.
               </p>
             </div>
           ) : (
@@ -435,7 +454,7 @@ export default async function TeacherDashboardPage() {
               {students.slice(0, 6).map((student, index) => (
                 <Link
                   key={student.id}
-                  href="/teacher/students"
+                  href={`/teacher/student/${student.id}`}
                   className={`flex items-center justify-between gap-4 p-5 transition hover:bg-[#fafbf9] sm:p-6 ${
                     index !== Math.min(students.length, 6) - 1
                       ? "border-b border-gray-100"
@@ -446,7 +465,7 @@ export default async function TeacherDashboardPage() {
                     <p className="font-semibold">{student.name}</p>
 
                     <p className="mt-1 text-sm text-gray-400">
-                      {student.language} · Next:{" "}
+                      {student.language} · Najbližšia:{" "}
                       {formatShortDate(student.nextLesson)} ·{" "}
                       {formatTime(student.nextLesson)}
                     </p>

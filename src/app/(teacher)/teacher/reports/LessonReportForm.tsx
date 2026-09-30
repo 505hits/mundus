@@ -21,6 +21,22 @@ type Props = {
   existingReport: ExistingReport | null;
 };
 
+function normalizeProgress(value: string | null | undefined) {
+  const normalized = value?.trim().toLowerCase();
+
+  const map: Record<string, string> = {
+    "good progress": "good_progress",
+    "dobrý pokrok": "good_progress",
+    "normal progress": "normal_progress",
+    "bežný pokrok": "normal_progress",
+    "needs attention": "needs_attention",
+    "vyžaduje pozornosť": "needs_attention",
+    improving: "good_progress",
+  };
+
+  return (normalized && map[normalized]) || "good_progress";
+}
+
 export default function LessonReportForm({
   lessonId,
   studentId,
@@ -28,7 +44,7 @@ export default function LessonReportForm({
 }: Props) {
   const [topic, setTopic] = useState(existingReport?.topic ?? "");
   const [progress, setProgress] = useState(
-    existingReport?.progress ?? "Good progress"
+    normalizeProgress(existingReport?.progress)
   );
   const [studentNote, setStudentNote] = useState(
     existingReport?.student_note ?? ""
@@ -60,7 +76,7 @@ export default function LessonReportForm({
     } = await supabase.auth.getUser();
 
     if (userError || !user) {
-      setError("Your session has expired. Please sign in again.");
+      setError("Vaše prihlásenie vypršalo. Prihláste sa prosím znova.");
       setSaving(false);
       return;
     }
@@ -86,7 +102,7 @@ export default function LessonReportForm({
       );
 
     if (saveError) {
-      setError("We couldn't save the report. Please try again.");
+      setError("Záznam sa nepodarilo uložiť. Skúste to prosím znova.");
       setSaving(false);
       return;
     }
@@ -99,66 +115,66 @@ export default function LessonReportForm({
     <div className="rounded-2xl border border-black/5 bg-[#fafbf9] p-5">
       <div className="grid gap-5 md:grid-cols-2">
         <label className="text-sm font-medium">
-          Lesson topic
+          Téma hodiny
           <input
             value={topic}
             onChange={(event) => setTopic(event.target.value)}
-            placeholder="e.g. Past tense & conversation"
+            placeholder="napr. minulý čas a konverzácia"
             className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none transition focus:border-[#183f38]"
           />
         </label>
 
         <label className="text-sm font-medium">
-          Progress
+          Pokrok
           <select
             value={progress}
             onChange={(event) => setProgress(event.target.value)}
             className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#183f38]"
           >
-            <option>Good progress</option>
-            <option>Normal progress</option>
-            <option>Needs attention</option>
+            <option value="good_progress">Dobrý pokrok</option>
+            <option value="normal_progress">Bežný pokrok</option>
+            <option value="needs_attention">Vyžaduje pozornosť</option>
           </select>
         </label>
 
         <label className="text-sm font-medium md:col-span-2">
-          Student-visible note
+          Poznámka pre študenta
           <textarea
             value={studentNote}
             onChange={(event) => setStudentNote(event.target.value)}
             rows={3}
-            placeholder="What went well and what should the student focus on next?"
+            placeholder="Čo sa darilo a na čo by sa mal študent zamerať ďalej?"
             className="mt-2 w-full resize-none rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#183f38]"
           />
         </label>
 
         <label className="text-sm font-medium">
-          Homework
+          Domáca úloha
           <input
             value={homework}
             onChange={(event) => setHomework(event.target.value)}
-            placeholder="Optional"
+            placeholder="Voliteľné"
             className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#183f38]"
           />
         </label>
 
         <label className="text-sm font-medium">
-          Next focus
+          Ďalšie zameranie
           <input
             value={nextFocus}
             onChange={(event) => setNextFocus(event.target.value)}
-            placeholder="e.g. Speaking confidence"
+            placeholder="napr. istota pri rozprávaní"
             className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#183f38]"
           />
         </label>
 
         <label className="text-sm font-medium md:col-span-2">
-          Private teacher note
+          Súkromná poznámka lektora
           <textarea
             value={privateNote}
             onChange={(event) => setPrivateNote(event.target.value)}
             rows={2}
-            placeholder="Visible only to teachers and Mundus admin"
+            placeholder="Viditeľné iba pre lektorov a administrátora Mundus"
             className="mt-2 w-full resize-none rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#183f38]"
           />
         </label>
@@ -173,16 +189,16 @@ export default function LessonReportForm({
         >
           <Save size={17} />
           {saving
-            ? "Saving..."
+            ? "Ukladám..."
             : existingReport
-              ? "Update report"
-              : "Save lesson report"}
+              ? "Aktualizovať záznam"
+              : "Uložiť záznam z hodiny"}
         </button>
 
         {saved && !saving && (
           <span className="flex items-center gap-1.5 text-sm font-medium text-[#527064]">
             <CheckCircle2 size={17} />
-            Saved
+            Uložené
           </span>
         )}
 

@@ -123,7 +123,7 @@ const ReviewCard = ({ review }: { review: typeof reviewsSK[0] }) => (
                     />
                 ))}
             </div>
-            <p className="text-gray-700 text-[15px] leading-relaxed mb-6 line-clamp-4 italic">"{review.text}"</p>
+            <p className="text-gray-700 text-[15px] leading-relaxed mb-6 line-clamp-4 italic">&ldquo;{review.text}&rdquo;</p>
             <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#2F3AA2] to-[#4a58d6] flex items-center justify-center text-white font-bold text-sm shadow-md">
                     {review.name.charAt(0)}

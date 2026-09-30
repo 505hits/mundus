@@ -10,9 +10,11 @@ import {
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { formatLanguage, formatLessonCount, formatLessonType } from "@/lib/portalLabels";
+import { paymentEnabled } from "@/lib/payments";
 
 function formatDate(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -21,7 +23,7 @@ function formatDate(value: string) {
 }
 
 function formatTime(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("sk-SK", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -34,10 +36,11 @@ export default async function DashboardPage() {
   const supabase = await createSupabaseServerClient();
 
   const [
-    { data: profile },
-    { data: packages },
-    { data: lessons },
-    { data: reports },
+    { data: profile, error: profileError },
+    { data: packages, error: packagesError },
+    { data: lessons, error: lessonsError },
+    { data: reports, error: reportsError },
+    { data: pendingRequests, error: requestsError },
   ] = await Promise.all([
     supabase
       .from("profiles")
@@ -51,9 +54,7 @@ export default async function DashboardPage() {
         "id,total_lessons,remaining_lessons,used_lessons,status"
       )
       .eq("student_id", user.id)
-      .eq("status", "active")
-      .order("purchased_at", { ascending: false })
-      .limit(1),
+      .eq("status", "active"),
 
     supabase
       .from("lessons")
@@ -74,12 +75,28 @@ export default async function DashboardPage() {
       .eq("student_id", user.id)
       .order("updated_at", { ascending: false })
       .limit(5),
+
+    supabase
+      .from("schedule_change_requests")
+      .select("lesson_id,preferred_at")
+      .eq("student_id", user.id)
+      .eq("status", "pending"),
   ]);
 
-  const activePackage = packages?.[0] ?? null;
+  const hasLoadError = Boolean(
+    profileError || packagesError || lessonsError || reportsError || requestsError
+  );
+
+  const activePackages = packages ?? [];
   const upcomingLessons = lessons ?? [];
   const nextLesson = upcomingLessons[0] ?? null;
   const teacherReports = reports ?? [];
+  const pendingRequestMap = new Map(
+    (pendingRequests ?? []).map((request) => [
+      request.lesson_id,
+      request.preferred_at,
+    ])
+  );
 
   const latestReport = teacherReports[0] ?? null;
 
@@ -92,12 +109,20 @@ export default async function DashboardPage() {
     latestReport?.next_focus?.trim() || null;
 
   const firstName =
-    profile?.full_name?.trim().split(/\s+/)[0] || "there";
+    profile?.full_name?.trim().split(/\s+/)[0] || "študent";
 
-  const totalLessons = activePackage?.total_lessons ?? 0;
-  const usedLessons = activePackage?.used_lessons ?? 0;
-  const remainingLessons =
-    activePackage?.remaining_lessons ?? 0;
+  const totalLessons = activePackages.reduce(
+    (sum, pkg) => sum + (pkg.total_lessons ?? 0),
+    0
+  );
+  const usedLessons = activePackages.reduce(
+    (sum, pkg) => sum + (pkg.used_lessons ?? 0),
+    0
+  );
+  const remainingLessons = activePackages.reduce(
+    (sum, pkg) => sum + (pkg.remaining_lessons ?? 0),
+    0
+  );
 
   const progress =
     totalLessons > 0
@@ -121,7 +146,7 @@ export default async function DashboardPage() {
           <div className="flex items-center gap-3">
             <div className="hidden text-right sm:block">
               <p className="text-sm font-semibold text-[#183f38]">
-                Student Portal
+                Portál študenta
               </p>
 
               <p className="text-xs text-gray-400">
@@ -143,32 +168,38 @@ export default async function DashboardPage() {
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
-            My learning
+            Moje učenie
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Welcome back, {firstName} 👋
+            Vitajte späť, {firstName} 👋
           </h1>
 
           <p className="mt-2 text-gray-500">
-            Your Mundus learning overview.
+            Váš prehľad učenia v Mundus.
           </p>
         </section>
 
+        {hasLoadError && (
+          <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+            Niektoré údaje sa nepodarilo načítať. Obnovte stránku alebo to skúste o chvíľu znova.
+          </div>
+        )}
+
         <div className="mt-8 grid gap-6 lg:grid-cols-3">
-          {/* Next lesson */}
+          {/* Najbližšia hodina */}
           <section className="rounded-3xl bg-[#183f38] p-6 text-white shadow-sm lg:col-span-2 sm:p-8">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-sm font-medium text-white/60">
-                  Your next lesson
+                  Vaša najbližšia hodina
                 </p>
 
                 {nextLesson ? (
                   <>
                     <h2 className="mt-3 text-2xl font-semibold">
-                      {nextLesson.language || "Language"} ·{" "}
-                      {nextLesson.lesson_type || "Lesson"}
+                      {formatLanguage(nextLesson.language)} ·{" "}
+                      {formatLessonType(nextLesson.lesson_type)}
                     </h2>
 
                     <div className="mt-5 flex flex-wrap gap-4 text-sm text-white/75">
@@ -184,18 +215,17 @@ export default async function DashboardPage() {
                     </div>
 
                     <p className="mt-4 text-sm text-white/60">
-                      {nextLesson.duration_minutes || 60}-minute Mundus
-                      lesson
+                      {nextLesson.duration_minutes || 60} minút · Mundus
                     </p>
                   </>
                 ) : (
                   <>
                     <h2 className="mt-3 text-2xl font-semibold">
-                      No lesson scheduled yet
+                      Zatiaľ nemáte naplánovanú hodinu
                     </h2>
 
                     <p className="mt-4 text-sm text-white/60">
-                      Your next confirmed lesson will appear here.
+                      Vaša najbližšia potvrdená hodina sa zobrazí tu.
                     </p>
                   </>
                 )}
@@ -216,7 +246,7 @@ export default async function DashboardPage() {
                     className="flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3.5 font-semibold text-[#183f38]"
                   >
                     <Video size={18} />
-                    Join lesson
+                    Pripojiť sa na hodinu
                   </a>
                 ) : (
                   <button
@@ -224,16 +254,22 @@ export default async function DashboardPage() {
                     className="flex cursor-not-allowed items-center justify-center gap-2 rounded-2xl bg-white/70 px-5 py-3.5 font-semibold text-[#183f38]/60"
                   >
                     <Video size={18} />
-                    Meet link coming soon
+                    Odkaz na hodinu zatiaľ nie je pridaný
                   </button>
                 )}
 
-                <Link
-                  href="/lessons"
-                  className="rounded-2xl border border-white/20 px-5 py-3.5 text-center font-medium text-white"
-                >
-                  Request a change
-                </Link>
+                {pendingRequestMap.has(nextLesson.id) ? (
+                  <div className="rounded-2xl border border-white/20 bg-white/5 px-5 py-3.5 text-center font-medium text-white/80">
+                    Zmena termínu čaká na schválenie
+                  </div>
+                ) : (
+                  <Link
+                    href={`/lessons/${nextLesson.id}/request-change`}
+                    className="rounded-2xl border border-white/20 px-5 py-3.5 text-center font-medium text-white"
+                  >
+                    Požiadať o zmenu
+                  </Link>
+                )}
               </div>
             )}
           </section>
@@ -241,19 +277,19 @@ export default async function DashboardPage() {
           {/* Package */}
           <section className="rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
             <p className="text-sm font-medium text-gray-500">
-              Current package
+              Aktuálny balíček
             </p>
+            {paymentEnabled() && <Link href="/packages" className="mt-2 inline-block text-sm font-semibold text-[#2F3AA2] underline">Zobraziť balíčky a platby</Link>}
 
-            {activePackage ? (
+            {activePackages.length > 0 ? (
               <>
-                <div className="mt-4 flex items-end gap-2">
-                  <span className="text-5xl font-semibold tracking-tight">
+                <div className="mt-4">
+                  <p className="text-5xl font-semibold tracking-tight">
                     {remainingLessons}
-                  </span>
-
-                  <span className="pb-1 text-gray-400">
-                    lessons left
-                  </span>
+                  </p>
+                  <p className="mt-1 text-sm text-gray-400">
+                    Zostáva {formatLessonCount(remainingLessons)}
+                  </p>
                 </div>
 
                 <div className="mt-6 h-2 overflow-hidden rounded-full bg-[#edf0ec]">
@@ -264,12 +300,27 @@ export default async function DashboardPage() {
                 </div>
 
                 <p className="mt-3 text-sm text-gray-400">
-                  {usedLessons} of {totalLessons} lessons completed
+                  Absolvované: {formatLessonCount(usedLessons)} z {formatLessonCount(totalLessons)}
                 </p>
+
+                {remainingLessons <= 2 && (
+                  <div className="mt-5 rounded-2xl border border-[#c6a65b]/20 bg-[#faf6eb] p-4">
+                    <p className="font-semibold text-[#7e693a]">
+                      {remainingLessons === 0
+                        ? "Balíček je vyčerpaný"
+                        : remainingLessons === 1
+                          ? "Zostáva vám posledná hodina"
+                          : "Zostávajú vám posledné 2 hodiny"}
+                    </p>
+                    <p className="mt-1 text-sm leading-6 text-[#7e693a]/75">
+                      Ak chcete pokračovať bez prerušenia, ozvite sa Mundus Languages a pripravíme vám ďalší balíček.
+                    </p>
+                  </div>
+                )}
               </>
             ) : (
               <p className="mt-4 text-sm leading-6 text-gray-500">
-                No active lesson package is assigned yet.
+                Zatiaľ nemáte priradený aktívny balíček hodín.
               </p>
             )}
           </section>
@@ -281,11 +332,11 @@ export default async function DashboardPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-400">
-                  Progress
+                  Pokrok
                 </p>
 
                 <h2 className="mt-1 text-2xl font-semibold">
-                  Learning journey
+                  Vaše napredovanie
                 </h2>
               </div>
 
@@ -296,15 +347,14 @@ export default async function DashboardPage() {
 
             {latestNextFocus ? (
               <p className="mt-5 text-sm leading-6 text-gray-500">
-                Next focus:{" "}
+                Ďalšie zameranie:{" "}
                 <span className="font-medium text-[#183f38]">
                   {latestNextFocus}
                 </span>
               </p>
             ) : (
               <p className="mt-5 text-sm leading-6 text-gray-500">
-                Your level and progress will appear here as your teacher
-                adds assessments and lesson reports.
+                Vaša úroveň a pokrok sa budú zobrazovať podľa hodnotení a záznamov od lektora.
               </p>
             )}
 
@@ -312,7 +362,7 @@ export default async function DashboardPage() {
               href="/progress"
               className="mt-6 flex items-center gap-2 text-sm font-semibold text-[#9a8049]"
             >
-              View my progress
+              Zobraziť môj pokrok
               <ChevronRight size={16} />
             </Link>
           </section>
@@ -322,13 +372,13 @@ export default async function DashboardPage() {
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="text-sm text-gray-400">
-                  Homework
+                  Domáca úloha
                 </p>
 
                 <h2 className="mt-1 text-xl font-semibold">
                   {latestHomework
-                    ? "Your latest homework"
-                    : "No homework yet"}
+                    ? "Vaša posledná domáca úloha"
+                    : "Zatiaľ nemáte domácu úlohu"}
                 </h2>
               </div>
 
@@ -340,13 +390,13 @@ export default async function DashboardPage() {
             <p className="mt-5 text-sm leading-6 text-gray-500">
               {latestHomework
                 ? latestHomework
-                : "New assignments from your teacher will appear here after a lesson report is saved."}
+                : "Nové úlohy od lektora sa zobrazia po uložení záznamu z hodiny."}
             </p>
 
             {latestReport?.updated_at && (
               <p className="mt-4 text-xs text-gray-400">
-                Updated{" "}
-                {new Intl.DateTimeFormat("en-GB", {
+                Aktualizované{" "}
+                {new Intl.DateTimeFormat("sk-SK", {
                   day: "numeric",
                   month: "long",
                   timeZone: "Europe/Bratislava",
@@ -355,10 +405,10 @@ export default async function DashboardPage() {
             )}
 
             <Link
-              href="/progress"
+              href="/learning"
               className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#9a8049]"
             >
-              View learning progress
+              Zobraziť úlohy a poznámky
               <ChevronRight size={16} />
             </Link>
           </section>
@@ -369,11 +419,11 @@ export default async function DashboardPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-400">
-                Schedule
+                Rozvrh
               </p>
 
               <h2 className="mt-1 text-xl font-semibold">
-                Upcoming lessons
+                Najbližšie hodiny
               </h2>
             </div>
 
@@ -392,7 +442,7 @@ export default async function DashboardPage() {
                 >
                   <div>
                     <p className="font-medium">
-                      {lesson.language || "Language"} lesson
+                      {formatLanguage(lesson.language)} hodina
                     </p>
 
                     <p className="mt-1 text-sm text-gray-400">
@@ -403,7 +453,7 @@ export default async function DashboardPage() {
 
                   {index === 0 ? (
                     <span className="rounded-full bg-[#eef3ef] px-3 py-1.5 text-xs font-semibold">
-                      Next
+                      Najbližšia
                     </span>
                   ) : (
                     <ChevronRight
@@ -416,7 +466,7 @@ export default async function DashboardPage() {
             </div>
           ) : (
             <p className="mt-6 text-sm text-gray-500">
-              No upcoming lessons scheduled.
+              Nemáte naplánované ďalšie hodiny.
             </p>
           )}
         </section>

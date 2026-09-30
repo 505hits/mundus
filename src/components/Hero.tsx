@@ -123,7 +123,7 @@ export default function Hero() {
                     className="hero-cta mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 relative z-20"
                 >
                     <motion.a
-                        href="#booking"
+                        href="#pricing"
                         whileHover={{ scale: 1.02, y: -2 }}
                         whileTap={{ scale: 0.98 }}
                         className="btn w-full sm:w-auto justify-center text-white font-semibold"

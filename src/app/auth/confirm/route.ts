@@ -7,11 +7,15 @@ export async function GET(request: NextRequest) {
   const type = request.nextUrl.searchParams.get("type");
   // Fixed destinations: no caller-controlled redirect or arbitrary OTP type.
   if (token_hash && (type === "signup" || type === "invite" || type === "recovery")) {
-    const supabase = await createSupabaseServerClient();
-    const { error } = await supabase.auth.verifyOtp({ token_hash, type });
-    if (!error) {
-      const next = purchaseReturnPath(request.nextUrl.searchParams.get("next"));
-      return NextResponse.redirect(new URL(type === "recovery" ? "/reset-password" : type === "invite" ? "/set-password" : next ? `/onboarding?next=${encodeURIComponent(next)}` : "/onboarding", request.url));
+    try {
+      const supabase = await createSupabaseServerClient();
+      const { error } = await supabase.auth.verifyOtp({ token_hash, type });
+      if (!error) {
+        const next = purchaseReturnPath(request.nextUrl.searchParams.get("next"));
+        return NextResponse.redirect(new URL(type === "recovery" ? "/reset-password" : type === "invite" ? "/set-password" : next ? `/onboarding?next=${encodeURIComponent(next)}` : "/onboarding", request.url));
+      }
+    } catch {
+      // Configuration or network failure must not turn an email link into a server error.
     }
   }
   return NextResponse.redirect(new URL("/auth/error", request.url));

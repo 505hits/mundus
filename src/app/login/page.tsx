@@ -21,17 +21,18 @@ export default function LoginPage() {
   async function handleLogin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
+    if (loading) return;
     setError("");
     if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY) {
       setError("Prihlásenie je momentálne nedostupné. Prosím, kontaktujte nás.");
       return;
     }
 
-    const supabase = createSupabaseBrowserClient();
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      const supabase = createSupabaseBrowserClient();
+      const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
       if (error || !data.user) {
         setError("Nesprávny e-mail alebo heslo. Skontrolujte údaje a overenie e-mailu.");
         return;

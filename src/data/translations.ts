@@ -138,47 +138,6 @@ export const translations = {
             titleStart: "Simple, transparent",
             titleEnd: "pricing",
             subtitle: "Choose the package that suits your learning style.",
-            group: {
-                title: "GROUP COURSES (6–10 students)",
-                headers: {
-                    language: "Language",
-                    format: "Format",
-                    duration: "Duration",
-                    price: "Price",
-                    launchPrice: "\"Only For U\" Launch Price"
-                },
-                rows: [
-                    {
-                        language: "English / Spanish / Italian / Russian / German / Chinese / Ukrainian / Slovak",
-                        format: "1 month / 8 lessons",
-                        duration: "",
-                        originalPrice: "€ 110",
-                        launchPrice: ""
-                    },
-                    {
-                        language: "",
-                        format: "3 months / 24 lessons",
-                        duration: "",
-                        originalPrice: "€ 295",
-                        launchPrice: ""
-                    },
-                    {
-                        language: "",
-                        format: "6 months / 48 lessons",
-                        duration: "",
-                        originalPrice: "€ 540",
-                        launchPrice: ""
-                    },
-                    {
-                        language: "Business / Exam Prep",
-                        format: "12 weeks",
-                        duration: "",
-                        originalPrice: "€ 350",
-                        launchPrice: "€ 315"
-                    }
-                ],
-                note: "🎁 Includes e-materials, certificate, placement test & feedback session."
-            },
             individual: {
                 title: "INDIVIDUAL (1-ON-1) LESSONS",
                 headers: {
@@ -221,47 +180,6 @@ export const translations = {
                 existingAccountNote: "Existing students can sign in to pay online. New students can contact us to create an account.",
                 offlineNote: "Online payment is coming soon. Contact us to arrange lessons."
             },
-            discounts: {
-                title: "FRIEND & FAMILY DISCOUNTS",
-                paymentNote: "Ask us about these offers before paying. They are arranged individually and are not applied automatically in online Checkout.",
-                headers: {
-                    type: "Type",
-                    description: "Description",
-                    discount: "Discount"
-                },
-                rows: [
-                    {
-                        type: "Bring a Friend",
-                        description: "You both enrol → each saves",
-                        discount: "€ 30"
-                    },
-                    {
-                        type: "Sibling Deal",
-                        description: "Two siblings join same course →",
-                        discount: "-15% total"
-                    },
-                    {
-                        type: "Couple / Family Pack",
-                        description: "Learn together →",
-                        discount: "-10% each"
-                    },
-                    {
-                        type: "Student Discount",
-                        description: "Valid student ID",
-                        discount: "-5%"
-                    },
-                    {
-                        type: "Multi-Language Bundle",
-                        description: "Enrol in 2 languages →",
-                        discount: "-15%"
-                    },
-                    {
-                        type: "Loyal Learner",
-                        description: "Renew next term →",
-                        discount: "-8%"
-                    }
-                ]
-            }
         },
         booking: {
             label: "Questions?",
@@ -447,47 +365,6 @@ export const translations = {
             titleStart: "Jednoduchý, transparentný",
             titleEnd: "cenník",
             subtitle: "Vyberte si balíček, ktorý vyhovuje vášmu štýlu učenia.",
-            group: {
-                title: "SKUPINOVÉ KURZY (6–10 študentov)",
-                headers: {
-                    language: "Jazyk",
-                    format: "Formát",
-                    duration: "Trvanie",
-                    price: "Cena",
-                    launchPrice: "\"Only For U\" Uvádzacia cena"
-                },
-                rows: [
-                    {
-                        language: "Anglický / Španielsky / Taliansky / Ruský / Nemecký / Čínsky / Ukrajinský / Slovenský",
-                        format: "1 mesiac / 8 lekcií",
-                        duration: "",
-                        originalPrice: "€ 110",
-                        launchPrice: ""
-                    },
-                    {
-                        language: "",
-                        format: "3 mesiace / 24 lekcií",
-                        duration: "",
-                        originalPrice: "€ 295",
-                        launchPrice: ""
-                    },
-                    {
-                        language: "",
-                        format: "6 mesiacov / 48 lekcií",
-                        duration: "",
-                        originalPrice: "€ 540",
-                        launchPrice: ""
-                    },
-                    {
-                        language: "Business / Príprava na skúšky",
-                        format: "12 týždňov",
-                        duration: "",
-                        originalPrice: "€ 350",
-                        launchPrice: "€ 315"
-                    }
-                ],
-                note: "🎁 Zahŕňa e-materiály, certifikát, zaraďovací test a feedback."
-            },
             individual: {
                 title: "INDIVIDUÁLNE (1-ON-1) LEKCIE",
                 headers: {
@@ -530,47 +407,6 @@ export const translations = {
                 existingAccountNote: "Existujúci študenti sa môžu prihlásiť a zaplatiť online. Novým študentom pomôžeme vytvoriť účet po kontakte s nami.",
                 offlineNote: "Online platby pripravujeme. Ak máte záujem o hodiny, kontaktujte nás."
             },
-            discounts: {
-                title: "ZĽAVY PRE PRIATEĽOV A RODINU",
-                paymentNote: "O tieto zľavy nás požiadajte pred platbou. Riešime ich individuálne a pri online platbe sa nepripočítajú automaticky.",
-                headers: {
-                    type: "Typ",
-                    description: "Popis",
-                    discount: "Zľava"
-                },
-                rows: [
-                    {
-                        type: "Priveď priateľa",
-                        description: "Obaja sa zapíšete → každý ušetrí",
-                        discount: "€ 30"
-                    },
-                    {
-                        type: "Súrodenecká zľava",
-                        description: "Dvaja súrodenci v rovnakom kurze →",
-                        discount: "-15% celkovo"
-                    },
-                    {
-                        type: "Pár / Rodinný balík",
-                        description: "Učte sa spolu →",
-                        discount: "-10% každý"
-                    },
-                    {
-                        type: "Študentská zľava",
-                        description: "Platný študentský preukaz",
-                        discount: "-5%"
-                    },
-                    {
-                        type: "Viacjazyčný balík",
-                        description: "Zápis na 2 jazyky →",
-                        discount: "-15%"
-                    },
-                    {
-                        type: "Verný študent",
-                        description: "Obnovenie ďalšieho semestra →",
-                        discount: "-8%"
-                    }
-                ]
-            }
         },
         booking: {
             label: "Máte otázky?",

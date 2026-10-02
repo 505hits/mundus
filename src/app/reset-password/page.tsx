@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
+import { preparePasswordRecovery } from "@/lib/password-recovery";
+import { validPassword } from "@/lib/account-policy";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 
 export default function ResetPasswordPage() {
@@ -11,15 +13,40 @@ export default function ResetPasswordPage() {
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
 
+  const [ready, setReady] = useState(false);
+  const [linkError, setLinkError] = useState("");
+  const preparation = useRef<Promise<void> | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!preparation.current) {
+      preparation.current = (async () => {
+        try {
+          const supabase = createSupabaseBrowserClient();
+          await preparePasswordRecovery(supabase.auth, new URL(window.location.href));
+        } finally {
+          // Remove one-time codes and tokens even when the link is invalid.
+          window.history.replaceState(null, "", "/reset-password");
+        }
+      })();
+    }
+    void preparation.current.then(() => {
+      if (!cancelled) setReady(true);
+    }).catch(() => {
+      if (!cancelled) setLinkError("Odkaz nie je platný alebo vypršal. Požiadajte o nový odkaz na obnovu hesla.");
+    });
+    return () => { cancelled = true; };
+  }, []);
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (loading) return;
+    if (loading || !ready) return;
 
     setError("");
     setSaved(false);
 
-    if (password.length < 8) {
-      setError("Nové heslo musí mať aspoň 8 znakov.");
+    if (!validPassword(password)) {
+      setError("Nové heslo musí mať 10 až 128 znakov.");
       return;
     }
 
@@ -30,19 +57,19 @@ export default function ResetPasswordPage() {
 
     setLoading(true);
 
-    const supabase = createSupabaseBrowserClient();
-    const { error: updateError } = await supabase.auth.updateUser({
-      password,
-    });
-
-    if (updateError) {
-      setError("Heslo sa nepodarilo zmeniť. Otvorte odkaz z e-mailu znova alebo požiadajte o nový.");
+    try {
+      const supabase = createSupabaseBrowserClient();
+      const { error: updateError } = await supabase.auth.updateUser({ password });
+      if (updateError) {
+        setError("Heslo sa nepodarilo zmeniť. Otvorte odkaz z e-mailu znova alebo požiadajte o nový.");
+        return;
+      }
+      setSaved(true);
+    } catch {
+      setError("Heslo sa nepodarilo uložiť. Skúste to prosím znova.");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    setSaved(true);
-    setLoading(false);
   }
 
   return (
@@ -56,7 +83,11 @@ export default function ResetPasswordPage() {
           Nastaviť nové heslo
         </h1>
 
-        {saved ? (
+        {linkError ? (
+          <div className="mt-7"><p role="alert" className="text-sm text-red-700">{linkError}</p><Link href="/forgot-password" className="mt-4 inline-block font-semibold underline">Poslať nový odkaz</Link></div>
+        ) : !ready ? (
+          <p role="status" className="mt-7 text-sm text-gray-500">Overujem odkaz…</p>
+        ) : saved ? (
           <>
             <div className="mt-7 rounded-2xl bg-[#eef3ef] p-5">
               <p className="font-semibold">Heslo bolo zmenené</p>
@@ -81,7 +112,8 @@ export default function ResetPasswordPage() {
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 required
-                minLength={8}
+                minLength={10}
+                maxLength={128}
                 autoComplete="new-password"
                 className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 outline-none focus:border-[#163f3a]"
               />
@@ -94,7 +126,8 @@ export default function ResetPasswordPage() {
                 value={confirmPassword}
                 onChange={(event) => setConfirmPassword(event.target.value)}
                 required
-                minLength={8}
+                minLength={10}
+                maxLength={128}
                 autoComplete="new-password"
                 className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 outline-none focus:border-[#163f3a]"
               />

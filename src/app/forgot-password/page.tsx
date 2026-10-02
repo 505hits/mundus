@@ -18,23 +18,21 @@ export default function ForgotPasswordPage() {
     setSent(false);
     setLoading(true);
 
-    const supabase = createSupabaseBrowserClient();
-
-    const { error: resetError } = await supabase.auth.resetPasswordForEmail(
-      email.trim(),
-      {
+    try {
+      const supabase = createSupabaseBrowserClient();
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.trim(), {
         redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (resetError) {
+        setError("E-mail na obnovu hesla sa nepodarilo odoslať. Skúste to prosím znova.");
+        return;
       }
-    );
-
-    if (resetError) {
-      setError("E-mail na obnovu hesla sa nepodarilo odoslať. Skúste to prosím znova.");
+      setSent(true);
+    } catch {
+      setError("Obnova hesla je momentálne nedostupná. Skúste to prosím znova.");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    setSent(true);
-    setLoading(false);
   }
 
   return (

@@ -23,8 +23,11 @@ export default async function PackagesPage({ searchParams }: PageProps) {
     enabled ? supabase.from("payment_orders").select("id,package_lessons,stripe_session_id")
       .eq("student_id", user.id).eq("status", "pending").maybeSingle() : Promise.resolve({ data: null, error: null }),
   ]);
-  const unavailable = !!(packageError || orderError || discountError || paidError || pendingError);
-  const first = !unavailable && !paidOrders?.length &&
+  const { data: identityEligible, error: identityError } = enabled
+    ? await supabase.rpc("mundus_first_discount_eligible", { buyer_id: user.id })
+    : { data: false, error: null };
+  const unavailable = !!(packageError || orderError || discountError || paidError || pendingError || identityError);
+  const first = !unavailable && identityEligible === true && !paidOrders?.length &&
     (discountSetting?.first_package_allowed ?? !packages?.length);
   const totalRemaining = (packages ?? []).filter(p => p.status === "active").reduce((sum, item) => sum + (item.remaining_lessons ?? 0), 0);
 
@@ -32,11 +35,12 @@ export default async function PackagesPage({ searchParams }: PageProps) {
     <p className="text-sm font-semibold uppercase tracking-[0.15em] text-[#9a8049]">Moje balíčky</p>
     <h1 className="mt-2 text-3xl font-semibold">Hodiny a platby</h1>
     <p className="mt-3 text-gray-600">Zostáva vám <strong>{totalRemaining} {totalRemaining === 1 ? "hodina" : "hodín"}</strong>. Nový balíček si vyberiete nižšie.</p>
+    <div className="mt-5 rounded-2xl border border-[#2F3AA2]/20 bg-[#f0f2ff] p-5"><p className="font-semibold text-[#2F3AA2]">Prvý balíček −10 %. Iba raz na osobu.</p><p className="mt-2 text-sm text-gray-600">Kontrolujeme celé meno a overený e-mail. Ďalší účet ani zmena údajov neobnovuje nárok na zľavu. Ak sa vaše meno zhoduje s iným klientom, kontaktujte Mundus na overenie.</p></div>
     {selectedLessons && enabled && <p role="status" className="mt-5 rounded-2xl bg-blue-50 p-4 text-sm text-blue-900">Vybrali ste si {selectedLessons} {selectedLessons === 1 ? "hodinu" : "hodín"}. Skontrolujte cenu podľa svojho účtu a pokračujte tlačidlom pri balíčku.</p>}
     {!enabled && <p className="mt-6 rounded-2xl bg-amber-50 p-4 text-sm text-amber-900">Online platby pripravujeme. Ak chcete pokračovať vo výučbe, kontaktujte Mundus Languages.</p>}
     {unavailable && <p role="alert" className="mt-6 rounded-2xl bg-red-50 p-4 text-sm text-red-700">Stav účtu sa nepodarilo overiť. Skúste obnoviť stránku pred začatím platby.</p>}
     {cancelled && <p role="status" className="mt-6 rounded-2xl bg-gray-100 p-4 text-sm">Platbu ste nedokončili. Balíček sa nepripísal.</p>}
-    {problem && <p role="alert" className="mt-6 rounded-2xl bg-red-50 p-4 text-sm text-red-700">{problem === "pending" ? "Už máte otvorenú platbu. Môžete ju zrušiť nižšie." : problem === "processing" ? "Platba sa už spracúva. Počkajte na potvrdenie." : "Platbu sa teraz nepodarilo spracovať. Skúste to znova neskôr."}</p>}
+    {problem && <p role="alert" className="mt-6 rounded-2xl bg-red-50 p-4 text-sm text-red-700">{problem === "price-changed" ? "Nárok na zľavu sa medzičasom zmenil. Skontrolujte aktuálnu cenu a potvrďte výber znova." : problem === "pending" ? "Už máte otvorenú platbu. Môžete ju zrušiť nižšie." : problem === "processing" ? "Platba sa už spracúva. Počkajte na potvrdenie." : "Platbu sa teraz nepodarilo spracovať. Skúste to znova neskôr."}</p>}
     {pendingOrder && <div className="mt-6 rounded-2xl bg-amber-50 p-4 text-sm text-amber-900"><p>Máte otvorenú platbu za {pendingOrder.package_lessons} hodín. Po jej dokončení sa balíček pripíše automaticky.</p>
       {pendingOrder.stripe_session_id && <form action={resumePackageCheckout} className="mt-3"><input type="hidden" name="order_id" value={pendingOrder.id} /><button className="rounded-lg bg-[#183f38] px-4 py-2 font-semibold text-white">Pokračovať v platbe</button></form>}
       {pendingOrder.stripe_session_id && <form action={cancelPackageCheckout} className="mt-3"><input type="hidden" name="order_id" value={pendingOrder.id} /><button className="font-semibold underline">Zrušiť otvorenú platbu</button></form>}
@@ -49,7 +53,7 @@ export default async function PackagesPage({ searchParams }: PageProps) {
           <p className="mt-3 text-3xl font-semibold">{euro(shown)}</p>
           {first && <p className="mt-1 text-sm text-gray-500">Prvý balíček: zľava 10 % · bežne {euro(amountCents)}</p>}
           <p className="mt-3 text-sm text-gray-500">Individuálne online hodiny po 60 minút</p>
-          <form action={startPackageCheckout} className="mt-6"><input type="hidden" name="lessons" value={lessons} />
+          <form action={startPackageCheckout} className="mt-6"><input type="hidden" name="lessons" value={lessons} /><input type="hidden" name="expected_amount" value={shown} />
             <button disabled={!enabled || unavailable || !!pendingOrder} className="w-full rounded-xl bg-[#183f38] px-4 py-3 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50">{pendingOrder ? "Čaká sa na platbu" : "Kúpiť balíček"}</button>
           </form>
         </article>;

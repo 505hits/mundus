@@ -24,6 +24,11 @@ export async function startPackageCheckout(form: FormData) {
     redirect(pending ? "/packages?problem=pending" : "/packages?problem=checkout");
   }
 
+  if (Number(form.get("expected_amount")) !== order.amount_cents) {
+    await admin.rpc("mundus_close_payment_order", { order_id: order.id, session_id: null, new_status: "failed" });
+    redirect("/packages?problem=price-changed");
+  }
+
   let checkout: Awaited<ReturnType<typeof stripe.checkout.sessions.create>>;
   try {
     checkout = await stripe.checkout.sessions.create({

@@ -1,10 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Link from "next/link";
-import { PACKAGE_LESSONS } from "@/lib/purchase-intent";
+import PurchasePackages from "@/components/PurchasePackages";
 import { useLanguage } from "@/context/LanguageContext";
-import { Star, Gift, Zap } from "lucide-react";
+import { Gift, Zap } from "lucide-react";
 
 const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
@@ -46,6 +45,8 @@ export default function PricingSection({ paymentsAvailable = false, signupAvaila
                         {t.pricing.subtitle}
                     </p>
                 </motion.div>
+
+                <PurchasePackages paymentsAvailable={paymentsAvailable} signupAvailable={signupAvailable} />
 
                 {/* Group Courses */}
                 <motion.div
@@ -102,51 +103,7 @@ export default function PricingSection({ paymentsAvailable = false, signupAvaila
                     </div>
                 </motion.div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {/* Individual Lessons */}
-                    <motion.div
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true, margin: "-50px" }}
-                        variants={fadeInUp}
-                        className="bg-white rounded-3xl border border-gray-100 shadow-xl shadow-blue-100/50 overflow-hidden flex flex-col"
-                    >
-                        <div className="p-8 md:p-10 flex-1">
-                            <div className="flex items-center gap-3 mb-8">
-                                <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center text-purple-600">
-                                    <UserIcon />
-                                </div>
-                                <h3 className="text-2xl font-bold uppercase tracking-tight">{t.pricing.individual.title}</h3>
-                            </div>
-
-                            <div className="overflow-x-auto"><table className="w-full min-w-[560px]">
-                                <thead>
-                                    <tr className="border-b border-gray-100">
-                                        <th className="text-left py-4 font-semibold text-gray-500">{t.pricing.individual.headers.package}</th>
-                                        <th className="text-right py-4 font-semibold text-gray-500">{t.pricing.individual.headers.originalPrice}</th>
-                                        <th className="text-right py-4 font-semibold text-blue-600">{t.pricing.individual.headers.launchPrice}</th>
-                                        <th className="py-4"><span className="sr-only">{t.pricing.individual.buyLabel}</span></th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-50">
-                                    {t.pricing.individual.rows.map((row, i) => (
-                                        <tr key={i}>
-                                            <td className="py-4 font-medium text-gray-900">{row.package}</td>
-                                            <td className="py-4 text-right text-gray-400 line-through">{row.originalPrice}</td>
-                                            <td className="py-4 text-right font-bold text-blue-600 text-lg">{row.launchPrice}</td>
-                                            <td className="py-4 pl-3 text-right"><Link href={paymentsAvailable ? `/packages?selected=${PACKAGE_LESSONS[i]}` : "/contact"} className="inline-block rounded-lg bg-[#183f38] px-3 py-2 text-xs font-semibold text-white whitespace-nowrap hover:bg-[#2F3AA2]">{paymentsAvailable ? t.pricing.individual.buyLabel : t.pricing.individual.contactLabel}</Link></td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table></div>
-                            <div className="mt-6 pt-6 border-t border-gray-100 text-sm text-gray-500 flex items-center gap-2">
-                                <Star size={18} className="text-purple-500" fill="currentColor" />
-                                {t.pricing.individual.note}
-                            </div>
-                            <p className="mt-3 text-sm text-gray-500">{paymentsAvailable ? signupAvailable ? t.pricing.individual.paymentNote : t.pricing.individual.existingAccountNote : t.pricing.individual.offlineNote}</p>
-                        </div>
-                    </motion.div>
-
+                <div className="grid grid-cols-1 gap-8">
                     {/* Discounts */}
                     <motion.div
                         initial="hidden"
@@ -186,12 +143,6 @@ export default function PricingSection({ paymentsAvailable = false, signupAvaila
 function UsersIcon() {
     return (
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
-    );
-}
-
-function UserIcon() {
-    return (
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
     );
 }
 

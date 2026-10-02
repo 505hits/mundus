@@ -12,6 +12,6 @@ export default function OnboardingForm({ next }: { next: string | null }) {
     <label className="block text-sm">Aká je vaša približná úroveň?<select name="level" defaultValue="Neviem posúdiť" required className={input}>{STUDENT_LEVELS.map(level => <option key={level}>{level}</option>)}</select></label>
     <label className="block text-sm">Čo by ste chceli zlepšiť?<textarea name="goal" required minLength={3} maxLength={1000} rows={3} placeholder="Napríklad: chcem sa istejšie dohovoriť na dovolenke." className={input} /></label>
     {state.error && <p role="alert" className="text-sm text-red-700">{state.error}</p>}
-    <button disabled={pending} className="w-full rounded-xl bg-[#163f3a] p-3.5 font-semibold text-white disabled:opacity-50">{pending ? "Ukladám…" : "Uložiť a pokračovať"}</button>
+    <button disabled={pending} className="w-full rounded-xl bg-[#2F3AA2] p-3.5 font-semibold text-white disabled:opacity-50">{pending ? "Ukladám…" : "Uložiť a pokračovať"}</button>
   </form>;
 }

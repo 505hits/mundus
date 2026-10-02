@@ -17,6 +17,7 @@ export default function Navbar() {
         { name: t.nav.howItWorks, href: "/#how-it-works" },
         { name: t.nav.teachers, href: "/#teachers" },
         { name: t.nav.prices, href: "/prices" },
+        { name: language === "sk" ? "Kúpiť hodiny" : "Buy lessons", href: "/#buy-packages" },
         { name: t.nav.contact, href: "/contact" },
     ];
 

@@ -36,9 +36,9 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#f7f8f5] px-6 py-12 text-[#163f3a]">
+    <main className="flex min-h-screen items-center justify-center bg-[#FAFAF9] px-6 py-12 text-[#2F3AA2]">
       <div className="w-full max-w-md rounded-3xl border border-black/5 bg-white p-7 shadow-sm sm:p-9">
-        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#8a7445]">
+        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
           Mundus portál
         </p>
 
@@ -68,7 +68,7 @@ export default function ForgotPasswordPage() {
                 required
                 autoComplete="email"
                 placeholder="meno@email.com"
-                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 outline-none focus:border-[#163f3a]"
+                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 outline-none focus:border-[#2F3AA2]"
               />
             </label>
 
@@ -81,7 +81,7 @@ export default function ForgotPasswordPage() {
             <button
               type="submit"
               disabled={loading}
-              className="mt-5 w-full rounded-2xl bg-[#163f3a] px-5 py-3.5 font-semibold text-white disabled:opacity-60"
+              className="mt-5 w-full rounded-2xl bg-[#2F3AA2] px-5 py-3.5 font-semibold text-white disabled:opacity-60"
             >
               {loading ? "Odosielam..." : "Poslať odkaz na obnovu"}
             </button>
@@ -90,7 +90,7 @@ export default function ForgotPasswordPage() {
 
         <Link
           href="/login"
-          className="mt-6 inline-flex text-sm font-medium text-[#163f3a] hover:underline"
+          className="mt-6 inline-flex text-sm font-medium text-[#2F3AA2] hover:underline"
         >
           ← Späť na prihlásenie
         </Link>

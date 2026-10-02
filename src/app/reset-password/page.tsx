@@ -73,9 +73,9 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#f7f8f5] px-6 py-12 text-[#163f3a]">
+    <main className="flex min-h-screen items-center justify-center bg-[#FAFAF9] px-6 py-12 text-[#2F3AA2]">
       <div className="w-full max-w-md rounded-3xl border border-black/5 bg-white p-7 shadow-sm sm:p-9">
-        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#8a7445]">
+        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
           Mundus portál
         </p>
 
@@ -98,7 +98,7 @@ export default function ResetPasswordPage() {
 
             <Link
               href="/login"
-              className="mt-6 inline-flex w-full justify-center rounded-2xl bg-[#163f3a] px-5 py-3.5 font-semibold text-white"
+              className="mt-6 inline-flex w-full justify-center rounded-2xl bg-[#2F3AA2] px-5 py-3.5 font-semibold text-white"
             >
               Prejsť na prihlásenie
             </Link>
@@ -115,7 +115,7 @@ export default function ResetPasswordPage() {
                 minLength={10}
                 maxLength={128}
                 autoComplete="new-password"
-                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 outline-none focus:border-[#163f3a]"
+                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 outline-none focus:border-[#2F3AA2]"
               />
             </label>
 
@@ -129,7 +129,7 @@ export default function ResetPasswordPage() {
                 minLength={10}
                 maxLength={128}
                 autoComplete="new-password"
-                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 outline-none focus:border-[#163f3a]"
+                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 outline-none focus:border-[#2F3AA2]"
               />
             </label>
 
@@ -142,7 +142,7 @@ export default function ResetPasswordPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-2xl bg-[#163f3a] px-5 py-3.5 font-semibold text-white disabled:opacity-60"
+              className="w-full rounded-2xl bg-[#2F3AA2] px-5 py-3.5 font-semibold text-white disabled:opacity-60"
             >
               {loading ? "Ukladám..." : "Uložiť nové heslo"}
             </button>

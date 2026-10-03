@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import { assessmentBank } from '../src/lib/assessment-catalog.ts';
 import { scorePlacement } from '../src/lib/placement.ts';
-const placement=assessmentBank('es','placement'),progress=assessmentBank('es','progress');
+const placement=assessmentBank('it','placement'),progress=assessmentBank('it','progress');
 for(const bank of [placement,progress]) {
-  assert.equal(bank.language,'Španielčina');assert.equal(bank.voice,'es-ES');
+  assert.equal(bank.language,'Taliančina');assert.equal(bank.voice,'it-IT');
   assert.equal(bank.questions.length,24);assert.equal(new Set(bank.questions.map(q=>q.id)).size,24);
   for(const band of ['A1','A2','B1','B2','C1','C2']) {
     assert.equal(bank.questions.filter(q=>q.band===band).length,4);
@@ -23,6 +23,6 @@ for(const bank of [placement,progress]) {
 assert.ok(progress.questions.every(q=>placement.questions.every(p=>p.prompt!==q.prompt)));
 assert.ok(progress.questions.filter(q=>q.audio).every(q=>placement.questions.every(p=>p.audio!==q.audio)));
 assert.notEqual(placement.version,progress.version);
-for(const code of ['en','de'])assert.notEqual(placement.version,assessmentBank(code,'placement').version);
+for(const code of ['en','de','es'])assert.notEqual(placement.version,assessmentBank(code,'placement').version);
 assert.throws(()=>assessmentBank('pt','placement'));
-console.log('PASS: Spanish placement/progress separation, all bands/skills, voices, answer structure and foundation-gap scoring');
+console.log('PASS: Italian placement/progress separation, all bands/skills, voices, answer structure and foundation-gap scoring');

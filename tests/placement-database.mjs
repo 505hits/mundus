@@ -10,6 +10,7 @@ grant usage on schema auth to authenticated; grant select on profiles,lessons to
 insert into profiles values('${student}','student','active'),('${other}','student','active'),('${teacher}','teacher','active'),('${outsider}','teacher','active'),('${admin}','admin','active');
 insert into lessons values('${student}','${teacher}');`);
 await db.exec(readFileSync(new URL('../supabase/migrations/202610030002_placement_results.sql',import.meta.url),'utf8'));
+await db.exec(readFileSync(new URL('../supabase/migrations/202610030003_progress_assessments.sql',import.meta.url),'utf8'));
 await db.exec(`set role service_role; insert into placement_results(student_id,language,test_version,score,band_scores,skill_scores,recommendation) values('${student}','Angličtina','english-2',12,'[3,3,3,3,0,0]','{"grammar":6,"reading":3,"listening":3}','B2'); reset role;`);
 async function login(id){await db.exec(`reset role; set request.jwt.claim.sub='${id}'; set role authenticated;`);}
 await login(student);assert.equal((await db.query('select * from placement_results')).rows.length,1);
@@ -22,4 +23,8 @@ await login(admin);assert.equal((await db.query('select * from placement_results
 await db.exec(`reset role; update profiles set status='inactive' where id='${teacher}'`);
 await login(teacher);assert.equal((await db.query('select * from placement_results')).rows.length,0);
 await db.exec('reset role; set role anon');await assert.rejects(db.query('select * from placement_results'),/permission denied/);
+await db.exec(`reset role; set role service_role; insert into placement_results(student_id,language,test_version,assessment_kind,score,band_scores,skill_scores,recommendation) values('${student}','Angličtina','english-progress-1','progress',24,'[4,4,4,4,4,4]','{"grammar":12,"reading":6,"listening":6}','C2'); reset role;`);
+await login(student);
+assert.equal((await db.query("select score from placement_results where assessment_kind='placement'")).rows[0].score,12,'progress does not replace placement');
+assert.equal((await db.query("select score from placement_results where assessment_kind='progress'")).rows[0].score,24);
 console.log('PASS: placement ownership, assigned teacher access, inactive access and client forgery prevention');await db.close();

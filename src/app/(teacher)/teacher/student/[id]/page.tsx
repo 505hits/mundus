@@ -175,6 +175,7 @@ async function renderStudentPage(
   return (
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
       <PlacementResults studentId={studentId} />
+      <PlacementResults studentId={studentId} kind="progress" />
       <header className="border-b border-black/5 bg-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
           <Link

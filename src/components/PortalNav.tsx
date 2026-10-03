@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 const navItems = [
+  { label: "Kontrolný test", href: "/progress-test", icon: ChartNoAxesColumnIncreasing },
   { label: "Vstupný test", href: "/level-test", icon: BookOpen },
   {
     label: "Domov",
@@ -95,7 +96,7 @@ export default function PortalNav({ paymentsEnabled }: { paymentsEnabled: boolea
       {/* Mobile bottom navigation */}
       <div className="fixed right-4 top-4 z-50 lg:hidden"><LogoutButton compact /></div>
       <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-black/5 bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
-        <div className={`mx-auto grid max-w-lg ${paymentsEnabled ? "grid-cols-5" : "grid-cols-4"}`}>
+        <div className="mx-auto flex max-w-3xl overflow-x-auto">
           {items.map((item) => {
             const Icon = item.icon;
             const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
@@ -104,7 +105,7 @@ export default function PortalNav({ paymentsEnabled }: { paymentsEnabled: boolea
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex flex-col items-center justify-center gap-1 py-3 text-[11px] font-medium ${
+                className={`flex min-w-[80px] flex-1 flex-col items-center justify-center gap-1 whitespace-nowrap py-3 text-[11px] font-medium ${
                   active ? "text-[#0a0a0f]" : "text-gray-400"
                 }`}
               >

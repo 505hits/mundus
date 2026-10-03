@@ -26,21 +26,23 @@ export const PLACEMENT_QUESTIONS = [
   { id: "c2-listen", band: "C2", skill: "listening", audio: "One could hardly accuse the board of undue haste. By the time it finally endorsed the reform, the circumstances that had made it necessary had all but disappeared.", prompt: "What attitude does the speaker convey?", options: ["Admiration for the board's speed", "Concern that reform was premature", "An ironic criticism of the board's delay", "Approval of rejecting the reform"], answer: 2 },
 ] as const;
 
-export function scorePlacement(answers: unknown) {
-  if (!Array.isArray(answers) || answers.length !== PLACEMENT_QUESTIONS.length ||
-    answers.some((answer, index) => !Number.isInteger(answer) || answer < 0 || answer >= PLACEMENT_QUESTIONS[index].options.length)) {
+export type AssessmentQuestion = { id: string; band: string; prompt: string; options: readonly string[]; answer: number; skill?: string; audio?: string };
+
+export function scorePlacement(answers: unknown, questions: readonly AssessmentQuestion[] = PLACEMENT_QUESTIONS) {
+  if (!Array.isArray(answers) || answers.length !== questions.length ||
+    answers.some((answer, index) => !Number.isInteger(answer) || answer < 0 || answer >= questions[index].options.length)) {
     throw new Error("Answer every question");
   }
   const bands = ["A1", "A2", "B1", "B2", "C1", "C2"] as const;
-  const bandScores = bands.map(band => PLACEMENT_QUESTIONS.reduce((sum, q, index) => sum + Number(q.band === band && answers[index] === q.answer), 0));
+  const bandScores = bands.map(band => questions.reduce((sum, q, index) => sum + Number(q.band === band && answers[index] === q.answer), 0));
   let recommendation = "Začiatočník / preveriť A1";
   for (let index = 0; index < bands.length; index++) {
     if (bandScores[index] < 3) break;
     recommendation = bands[index];
   }
   const skillScores = { grammar: 0, reading: 0, listening: 0 };
-  PLACEMENT_QUESTIONS.forEach((q,index) => {
-    const skill = "skill" in q ? "listening" : q.id.endsWith("-3") ? "reading" : "grammar";
+  questions.forEach((q,index) => {
+    const skill = q.skill === "listening" ? "listening" : q.id.endsWith("-3") ? "reading" : "grammar";
     skillScores[skill] += Number(answers[index] === q.answer);
   });
   return { skillScores, score: bandScores.reduce((sum, value) => sum + value, 0), bandScores, recommendation };

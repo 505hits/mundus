@@ -1,0 +1,62 @@
+import type { AssessmentQuestion } from "./placement";
+type Row = readonly [string, readonly string[], number, string?];
+function bank(rows: Row[]): readonly AssessmentQuestion[] {
+  const bands = ["A1", "A2", "B1", "B2", "C1", "C2"];
+  return rows.map(([prompt, options, answer, audio], index) => ({
+    id: `${bands[Math.floor(index / 4)].toLowerCase()}-${index % 4 === 3 ? "listen" : index % 4 + 1}`,
+    band: bands[Math.floor(index / 4)], prompt, options, answer,
+    ...(audio ? { audio, skill: "listening" } : {}),
+  }));
+}
+export const FRENCH_PLACEMENT = bank([
+  ["Je ___ slovaque.", ["est", "suis", "es", "êtes"], 1],
+  ["C'est ___ voiture rouge.", ["un", "du", "une", "des"], 2],
+  ["Julie habite à Lyon et travaille dans une librairie. Où habite Julie ?", ["À Paris", "À Lyon", "À Lille", "À Nice"], 1],
+  ["À quelle heure commence le cours ?", ["À huit heures", "À neuf heures", "À dix heures", "À onze heures"], 1, "Bonjour. Notre cours de français commence aujourd'hui à neuf heures du matin."],
+  ["Hier, nous ___ au cinéma.", ["allons", "irons", "sommes allés", "aller"], 2],
+  ["Ce billet est ___ que l'autre.", ["plus cher", "très cher", "cher plus", "plus chèrement"], 0],
+  ["La bibliothèque ouvre du mardi au dimanche. Elle est fermée le lundi. Quand peux-tu y aller ?", ["Le lundi matin", "Uniquement le lundi", "Tous les lundis", "Le mercredi après-midi"], 3],
+  ["Pourquoi Paul arrivera-t-il en retard ?", ["Il a perdu ses clés", "Son train a du retard", "Il doit faire les courses", "Il est malade"], 1, "J'arriverai avec vingt minutes de retard. Mon train est arrêté en gare. Attends-moi devant le café."],
+  ["Quand j'étais enfant, j'___ au parc chaque dimanche.", ["irai", "allais", "aller", "irons"], 1],
+  ["Je voudrais que vous ___ demain.", ["venez", "viendrez", "venir", "veniez"], 3],
+  ["Malgré la pluie, Léa est sortie se promener. Qu'a-t-elle fait ?", ["Elle est restée chez elle", "Elle a attendu le soleil", "Elle a marché même s'il pleuvait", "Elle a annulé sa promenade"], 2],
+  ["Que fera la personne avant de visiter le musée ?", ["Elle retrouvera son frère", "Elle achètera un livre", "Elle rentrera chez elle", "Elle prendra un taxi"], 0, "Avant de visiter le musée, je retrouverai mon frère devant la gare. Ensuite, nous irons voir l'exposition ensemble."],
+  ["Si j'avais plus de temps, je ___ un autre métier.", ["choisis", "choisirai", "choisirais", "choisir"], 2],
+  ["Bien qu'il ___ fatigué, il continue à travailler.", ["est", "soit", "sera", "être"], 1],
+  ["Le projet réduira la consommation à long terme, mais demande un investissement initial important. Quel obstacle est mentionné ?", ["Il ne réduit aucune consommation", "Il coûte cher au départ", "Il ne nécessite aucun financement", "Il ne fonctionne qu'une journée"], 1],
+  ["Pourquoi chaque équipe devra-t-elle trouver sa propre organisation ?", ["L'entreprise va fermer", "Tout le monde travaillera moins", "Certaines tâches exigent une présence sur place", "Personne ne veut travailler à distance"], 2, "Le travail à distance offre de la souplesse. Toutefois, certaines tâches nécessitent une présence dans les locaux. Chaque équipe devra donc définir une organisation adaptée."],
+  ["Si j'avais connu les risques, je ___ ce contrat.", ["ne signerai pas", "ne signe pas", "n'aurais pas signé", "ne signant pas"], 2],
+  ["La décision est toujours en suspens. Cela signifie qu'elle ___.", ["est définitive", "n'a pas encore été prise", "a été annulée pour toujours", "n'est plus nécessaire"], 1],
+  ["L'autrice reconnaît les progrès accomplis, mais doute que leurs bénéfices soient répartis équitablement. Que remet-elle en question ?", ["L'existence de tout progrès", "L'équité de la répartition des bénéfices", "La nécessité d'étudier la société", "La possibilité de s'améliorer"], 1],
+  ["Que suggère le discours à propos de la consultation ?", ["Elle a entièrement déterminé la décision", "Elle a été annulée", "Elle a peu pesé sur une décision déjà définie", "Elle aura lieu le mois prochain"], 2, "La consultation a été présentée comme une occasion d'écouter les citoyens. Pourtant, les grandes lignes du projet étaient arrêtées avant même l'arrivée des premières contributions."],
+  ["Quelle phrase exprime un accord accompagné de réserves ?", ["J'approuve sans la moindre objection.", "J'y consens, non sans quelques réticences.", "Je rejette catégoriquement la proposition.", "On ne m'a pas demandé mon avis."], 1],
+  ["Son compliment cachait une pique. Qu'est-ce que cela implique ?", ["Il était entièrement bienveillant", "Il contenait une critique discrète mais blessante", "Il était prononcé trop doucement", "Il concernait uniquement le sport"], 1],
+  ["La critique décrit l'essai comme une façade brillante soutenue par un raisonnement fragile. Que reproche-t-elle à l'ouvrage ?", ["La forme convainc davantage que les arguments", "Les arguments sont trop solides", "Il décrit un bâtiment", "Elle en approuve tous les aspects"], 0],
+  ["Quelle attitude le locuteur exprime-t-il ?", ["De l'admiration pour la rapidité du comité", "La crainte d'une décision précipitée", "Une critique ironique de la lenteur du comité", "De la satisfaction face à l'absence de réforme"], 2, "Reprocher au comité une hâte excessive serait pour le moins audacieux. Lorsqu'il a enfin adopté la réforme, les circonstances qui l'avaient rendue nécessaire avaient déjà disparu."],
+]);
+export const FRENCH_PROGRESS = bank([
+  ["Mes amis ___ à Bordeaux.", ["habite", "habites", "habitons", "habitent"], 3],
+  ["J'ai deux ___ noirs.", ["chat", "chats", "chatte", "chaton"], 1],
+  ["Emma a un chien et trois chats. Combien de chats a-t-elle ?", ["Un", "Deux", "Trois", "Aucun"], 2],
+  ["Où travaille Marc ?", ["À l'hôpital", "À la banque", "À l'école", "Au restaurant"], 3, "Je m'appelle Marc. Je suis cuisinier et je travaille dans un restaurant près de chez moi."],
+  ["Samedi dernier, elle ___ sa grand-mère.", ["rend visite demain à", "rendra visite à", "a rendu visite à", "rendre visite à"], 2],
+  ["Aujourd'hui, il fait ___ froid qu'hier.", ["plus", "très", "beaucoup de", "le plus de"], 0],
+  ["L'entrée coûte douze euros en ligne et quinze euros au guichet. Où coûte-t-elle moins cher ?", ["Au guichet", "En ligne", "Le prix est le même", "Seulement le matin"], 1],
+  ["Quand faut-il prendre une veste ?", ["Cette nuit", "La semaine prochaine", "Demain", "En été"], 2, "Prends une veste demain. Il fera chaud le matin, mais la température baissera nettement en soirée."],
+  ["Ce tableau ___ par une artiste locale.", ["a peint", "a été peint", "peignant", "a peindre"], 1],
+  ["Il faut que nous ___ à l'heure.", ["arrivons", "arriver", "arrivions", "arriverons arrivant"], 2],
+  ["Nora va habituellement au travail à vélo. Aujourd'hui, elle prend le bus parce qu'il pleut. Pourquoi n'utilise-t-elle pas son vélo ?", ["Il est cassé", "Elle l'a vendu", "Il pleut", "Elle ne sait pas en faire"], 2],
+  ["Pourquoi le jour de la réunion a-t-il changé ?", ["La salle était déjà réservée", "Le directeur était malade", "Personne ne voulait venir", "Le bâtiment était fermé"], 0, "La réunion devait avoir lieu mardi. Comme la salle était déjà réservée, nous l'avons déplacée à mercredi."],
+  ["Je t'aurais aidé si tu me l'___ demandé.", ["as", "auras", "avais", "avoir"], 2],
+  ["Quoiqu'elle ___ très occupée, elle prend le temps de répondre.", ["est", "soit", "sera", "être"], 1],
+  ["Le service est pratique ; pourtant, certains utilisateurs craignent un usage non autorisé de leurs données. Quel contraste apparaît ?", ["La commodité et les inquiétudes sur la vie privée", "Le prix et la vitesse", "Les horaires et la distance", "La qualité et la variété"], 0],
+  ["Pourquoi l'atelier sera-t-il proposé de nouveau ?", ["Il était obligatoire", "Les avis des participants étaient positifs", "Il était gratuit", "Toutes les places étaient occupées"], 1, "Moins de personnes sont venues que prévu. En revanche, les participants ont donné des avis très positifs. Nous proposerons de nouveau l'atelier en améliorant la communication."],
+  ["Quelle phrase présente un fait antérieur à une pensée passée ?", ["Je pensais qu'elle avait déjà téléphoné.", "Je pense qu'elle téléphonera demain.", "Je téléphonerai quand j'aurai le temps.", "Elle téléphone en ce moment."], 0],
+  ["Tenir un résultat pour acquis signifie ___.", ["le rejeter immédiatement", "le considérer comme certain sans le vérifier", "le noter sur une feuille", "le calculer avec précision"], 1],
+  ["L'étude fournit des indices, non des preuves définitives : un échantillon aussi réduit ne permet pas de généraliser. Quelle attitude recommande cette remarque ?", ["Une certitude absolue", "De la prudence dans l'interprétation", "Le rejet de toute recherche", "L'indifférence à toutes les données"], 1],
+  ["Quel groupe n'est pas couvert par la garantie explicite ?", ["Les salariés en contrat à durée indéterminée", "La direction", "Les prestataires externes", "Tout le personnel"], 2, "La garantie qu'aucun poste ne serait supprimé concernait expressément les salariés en contrat à durée indéterminée. La situation des prestataires externes restait incertaine."],
+  ["Quelle phrase suggère qu'un échec a été évité de justesse ?", ["Le projet a échoué avant de commencer.", "Sans son intervention, le projet aurait échoué.", "Le succès était garanti dès le départ.", "Personne n'est intervenu dans le projet."], 1],
+  ["La promesse est restée lettre morte. Que signifie cette expression ?", ["Elle a été tenue en avance", "Elle n'a reçu aucune application concrète", "Elle a été prononcée à voix basse", "Elle était écrite à la main"], 1],
+  ["Le commentaire qualifie la réforme de triomphe de la mise en scène sur le fond. Que met-il en doute ?", ["Que les résultats justifient une présentation aussi emphatique", "Qu'elle ait été présentée au public", "Qu'elle possède une image publique", "Qu'elle ait été discutée dans la presse"], 0],
+  ["Comment la réponse est-elle jugée ?", ["Comme un exemple de tact", "Comme trop courte pour être évaluée", "Comme un geste ayant résolu le conflit", "Comme une intervention maladroite qui a détérioré les relations"], 3, "Qualifier cette réponse de diplomatique demanderait une bonne dose de bienveillance. En quelques phrases, elle a réussi à se mettre à dos ses critiques comme ceux qui étaient encore disposés à la soutenir."],
+]);

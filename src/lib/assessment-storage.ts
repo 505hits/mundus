@@ -12,6 +12,7 @@ export async function assessmentStorageReady(studentId: string, code = "en") {
     if(code === "de") { const {data,error:languageError}=await admin.rpc("mundus_german_assessments_ready"); return !languageError && data === true; }
     if(code === "es") { const {data,error:languageError}=await admin.rpc("mundus_spanish_assessments_ready"); return !languageError && data === true; }
     if(code === "it") { const {data,error:languageError}=await admin.rpc("mundus_italian_assessments_ready"); return !languageError && data === true; }
+    if(code === "fr") { const {data,error:languageError}=await admin.rpc("mundus_french_assessments_ready"); return !languageError && data === true; }
     return code === "en";
   } catch { return false; }
 }

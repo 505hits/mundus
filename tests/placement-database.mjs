@@ -16,6 +16,8 @@ await db.exec(readFileSync(new URL('../supabase/migrations/202610030010_spanish_
 await db.exec(readFileSync(new URL('../supabase/migrations/202610030010_spanish_assessments.sql',import.meta.url),'utf8'));
 await db.exec(readFileSync(new URL('../supabase/migrations/202610030011_italian_assessments.sql',import.meta.url),'utf8'));
 await db.exec(readFileSync(new URL('../supabase/migrations/202610030011_italian_assessments.sql',import.meta.url),'utf8'));
+await db.exec(readFileSync(new URL('../supabase/migrations/202610030012_french_assessments.sql',import.meta.url),'utf8'));
+await db.exec(readFileSync(new URL('../supabase/migrations/202610030012_french_assessments.sql',import.meta.url),'utf8'));
 await db.exec(`set role service_role; insert into placement_results(student_id,language,test_version,score,band_scores,skill_scores,recommendation) values('${student}','Angličtina','english-2',12,'[3,3,3,3,0,0]','{"grammar":6,"reading":3,"listening":3}','B2'); reset role;`);
 async function login(id){await db.exec(`reset role; set request.jwt.claim.sub='${id}'; set role authenticated;`);}
 await login(student);assert.equal((await db.query('select * from placement_results')).rows.length,1);
@@ -47,4 +49,10 @@ assert.equal((await db.query("select score from placement_results where language
 assert.equal((await db.query('select mundus_italian_assessments_ready() as ready')).rows[0].ready,true);
 await login(student);assert.equal((await db.query("select score from placement_results where language='Taliančina'")).rows[0].score,12);
 await assert.rejects(db.query('select mundus_italian_assessments_ready()'),/permission denied/);
+await db.exec(`reset role;set role service_role;insert into placement_results(student_id,language,test_version,assessment_kind,score,band_scores,skill_scores,recommendation) values('${student}','Francúzština','french-progress-1','progress',8,'[4,4,0,0,0,0]','{"grammar":4,"reading":2,"listening":2}','A2')`);
+assert.equal((await db.query("select score from placement_results where language='Francúzština'")).rows[0].score,8);
+assert.equal((await db.query("select score from placement_results where language='Taliančina'")).rows[0].score,12);
+assert.equal((await db.query('select mundus_french_assessments_ready() as ready')).rows[0].ready,true);
+await login(student);assert.equal((await db.query("select score from placement_results where language='Francúzština'")).rows[0].score,8);
+await assert.rejects(db.query('select mundus_french_assessments_ready()'),/permission denied/);
 console.log('PASS: placement ownership, assigned teacher access, inactive access and client forgery prevention');await db.close();

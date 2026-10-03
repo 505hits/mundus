@@ -12,5 +12,5 @@ for(const bank of [initial,progress]) {
 }
 assert.ok(progress.questions.every(q=>initial.questions.every(p=>p.prompt!==q.prompt)));
 assert.notEqual(initial.version,progress.version);assert.notEqual(initial.version,assessmentBank('en','placement').version);
-assert.throws(()=>assessmentBank('fr','placement'));assert.throws(()=>assessmentBank(null,'placement'));
+assert.throws(()=>assessmentBank('ru','placement'));assert.throws(()=>assessmentBank(null,'placement'));
 console.log('PASS: separate German placement/progress banks, all levels, native-language voice and unsupported language rejection');

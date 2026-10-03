@@ -7,9 +7,10 @@ import { accountOrigin } from "@/lib/account-config";
 import { PACKAGE_PRICES, paymentEnabled, stripeClient, stripeIntegrationIdentifier } from "@/lib/payments";
 
 export async function startPackageCheckout(form: FormData) {
-  const { user } = await requireRole("student");
-  if (!paymentEnabled()) redirect("/packages?problem=unavailable");
   const lessons = Number(form.get("lessons"));
+  const chosen = PACKAGE_PRICES.some(item => item.lessons === lessons);
+  const { user } = await requireRole("student", chosen ? `/packages?selected=${lessons}` : undefined);
+  if (!paymentEnabled()) redirect("/packages?problem=unavailable");
   if (!PACKAGE_PRICES.some(item => item.lessons === lessons)) redirect("/packages?problem=package");
   const origin = accountOrigin();
   const stripe = stripeClient();

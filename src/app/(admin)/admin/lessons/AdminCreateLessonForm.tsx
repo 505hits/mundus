@@ -1,7 +1,8 @@
 "use client";
+import { createLessonOnce, type LessonCreation } from "@/lib/lesson-creation";
 import { safeLessonLink } from "@/lib/lesson-link";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CalendarPlus } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
@@ -60,6 +61,8 @@ export default function AdminCreateLessonForm({
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
+  const busy = useRef(false);
+  const attempt = useRef<{ signature: string; id: string } | null>(null);
 
   const studentPackages = useMemo(
     () =>
@@ -77,7 +80,7 @@ export default function AdminCreateLessonForm({
       : studentPackages[0]?.id ?? "";
 
   async function createLesson() {
-    if (saving) return;
+    if (busy.current) return;
 
     setError("");
     setSaved(false);
@@ -131,49 +134,49 @@ export default function AdminCreateLessonForm({
       return;
     }
 
+    busy.current = true;
     setSaving(true);
 
     try {
       const supabase = createSupabaseBrowserClient();
 
-      const { data: selectedPackage, error: packageError } = await supabase
-        .from("lesson_packages")
-        .select("id")
-        .eq("id", effectivePackageId)
-        .eq("student_id", studentId)
-        .eq("status", "active")
-        .gt("remaining_lessons", 0)
-        .maybeSingle();
-
-      if (packageError || !selectedPackage) {
-        setError(
-          "Vybraný balíček už nemá voľný kredit alebo nepatrí tomuto študentovi."
-        );
-        return;
+      const details = {
+        student_id: studentId,
+        teacher_id: teacherId,
+        package_id: effectivePackageId,
+        scheduled_at: scheduledAt.toISOString(),
+        duration_minutes: durationMinutes,
+        status: "scheduled",
+        lesson_type: "regular",
+        meet_link: trimmedLink || null,
+        language,
+      };
+      const signature = JSON.stringify(details);
+      if (attempt.current?.signature !== signature) {
+        attempt.current = { signature, id: crypto.randomUUID() };
       }
+      const row = { ...details, id: attempt.current.id };
+      await createLessonOnce(row, async () => {
+        const { data, error } = await supabase.from("lessons")
+          .select("id,student_id,teacher_id,package_id,scheduled_at,duration_minutes,language,lesson_type,meet_link")
+          .eq("id", row.id).maybeSingle();
+        if (error) throw error;
+        return data as LessonCreation | null;
+      }, async () => {
+        const { data: selectedPackage, error: packageError } = await supabase
+          .from("lesson_packages").select("id")
+          .eq("id", effectivePackageId).eq("student_id", studentId)
+          .eq("status", "active").gt("remaining_lessons", 0).maybeSingle();
+        if (packageError || !selectedPackage) {
+          throw new Error("Vybraný balíček už nemá voľný kredit alebo nepatrí tomuto študentovi.");
+        }
+        const { error } = await supabase.from("lessons").insert({
+          ...row, updated_at: new Date().toISOString(),
+        }).select("id").single();
+        if (error) throw error;
+      });
 
-      const { error: insertError } = await supabase
-        .from("lessons")
-        .insert({
-          student_id: studentId,
-          teacher_id: teacherId,
-          scheduled_at: scheduledAt.toISOString(),
-          duration_minutes: durationMinutes,
-          status: "scheduled",
-          lesson_type: "regular",
-          meet_link: trimmedLink || null,
-          language,
-          package_id: effectivePackageId,
-          updated_at: new Date().toISOString(),
-        });
-
-      if (insertError) {
-        setError(
-          "Hodinu sa nepodarilo vytvoriť. Skontrolujte údaje a skúste to znova."
-        );
-        return;
-      }
-
+      attempt.current = null;
       setSaved(true);
       setDateTime("");
       setMeetLink("");
@@ -181,6 +184,7 @@ export default function AdminCreateLessonForm({
     } catch {
       setError("Uloženie sa nepodarilo. Skontrolujte pripojenie a skúste to znova.");
     } finally {
+      busy.current = false;
       setSaving(false);
     }
   }

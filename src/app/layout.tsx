@@ -5,12 +5,12 @@ import FloatingCTA from "@/components/FloatingCTA";
 import ClientProviders from "@/components/ClientProviders";
 
 export const metadata: Metadata = {
-  title: "Mundus | Learn Languages with Native Speakers",
-  description: "Experience immersive 1-on-1 language sessions with native experts. Learn English, Spanish, Italian, and Portuguese with personalized tutoring.",
-  keywords: ["language learning", "online tutoring", "native speakers", "English", "Spanish", "Italian", "Portuguese"],
+  title: "Mundus Languages | Online jazykové hodiny",
+  description: "Individuálne online jazykové hodiny. Vyberte si jazyk a balíček 60-minútových hodín, učte sa s lektorom a sledujte svoj pokrok.",
+  keywords: ["online jazykové hodiny", "angličtina", "nemčina", "španielčina", "taliančina", "francúzština", "portugalčina", "ruština", "turečtina"],
   openGraph: {
-    title: "Mundus | Learn Languages with Native Speakers",
-    description: "Experience immersive 1-on-1 language sessions with native experts.",
+    title: "Mundus Languages | Online jazykové hodiny",
+    description: "Individuálne online jazykové hodiny s lektorom a prehľadom o vašom pokroku.",
     type: "website",
   },
   verification: {
@@ -24,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="sk">
       <body className="antialiased">
         <ClientProviders>
           {children}

@@ -22,7 +22,6 @@ const statusOptions = [
 
 export default function LessonStatusActions({
   lessonId,
-  studentId,
   packageId,
   scheduledAt,
 }: Props) {
@@ -59,36 +58,23 @@ export default function LessonStatusActions({
           setError("K hodine nie je priradený balíček. Kontaktujte administrátora.");
           return;
         }
-
-        const { data: pkg, error: packageError } = await supabase
-          .from("lesson_packages")
-          .select("id")
-          .eq("id", packageId)
-          .eq("student_id", studentId)
-          .eq("status", "active")
-          .gt("remaining_lessons", 0)
-          .maybeSingle();
-
-        if (packageError || !pkg) {
-          setError("Hodinu nemožno dokončiť: balíček nemá voľný kredit alebo nepatrí tomuto študentovi.");
-          return;
-        }
       }
 
-      const { data: updatedLesson, error: updateError } = await supabase
-        .from("lessons")
-        .update({
-          status,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", lessonId)
-        .in("status", ["scheduled", "rescheduled"])
-        .select("id")
-        .maybeSingle();
+      const { data: updatedLesson, error: updateError } = status === "completed"
+        ? await supabase.rpc("mundus_complete_lesson", { target_lesson_id: lessonId })
+        : await supabase
+          .from("lessons")
+          .update({ status, updated_at: new Date().toISOString() })
+          .eq("id", lessonId)
+          .in("status", ["scheduled", "rescheduled"])
+          .select("id")
+          .maybeSingle();
 
       if (updateError || !updatedLesson) {
         setError(
-          "Stav hodiny sa nepodarilo uložiť. Skúste to prosím znova."
+          status === "completed"
+            ? "Hodinu sa nepodarilo dokončiť a overiť odpočítanie kreditu. Obnovte stránku alebo kontaktujte Mundus."
+            : "Stav hodiny sa nepodarilo uložiť. Skúste to prosím znova."
         );
         return;
       }

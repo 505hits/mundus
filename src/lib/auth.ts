@@ -27,7 +27,7 @@ export async function requireRole(requiredRole: MundusRole, returnTo?: string) {
     .single();
 
   if (profileError || !profile) {
-    redirect("/login");
+    throw new Error("Mundus account profile is unavailable");
   }
 
   if (profile.role === "teacher" && profile.status !== "active") {

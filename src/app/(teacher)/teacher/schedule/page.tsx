@@ -1,3 +1,4 @@
+import { teacherDirectory } from "@/lib/teacher-directory";
 import { safeLessonLink } from "@/lib/lesson-link";
 import {
   AlertCircle,
@@ -48,6 +49,7 @@ function studentName(
 export default async function TeacherSchedulePage() {
   const { user } = await requireRole("teacher");
   const supabase = await createSupabaseServerClient();
+  const studentDirectory = await teacherDirectory(supabase);
 
   const now = new Date().toISOString();
 
@@ -64,8 +66,7 @@ export default async function TeacherSchedulePage() {
       lesson_type,
       meet_link,
       student:profiles!lessons_student_id_fkey (
-        full_name,
-        email
+        full_name
       )
     `)
     .eq("teacher_id", user.id)
@@ -91,8 +92,7 @@ export default async function TeacherSchedulePage() {
       lesson_type,
       meet_link,
       student:profiles!lessons_student_id_fkey (
-        full_name,
-        email
+        full_name
       )
     `)
     .eq("teacher_id", user.id)
@@ -116,11 +116,11 @@ export default async function TeacherSchedulePage() {
       lesson:lessons!schedule_change_requests_lesson_id_fkey (
         id,
         teacher_id,
+        student_id,
         scheduled_at,
         language,
         student:profiles!lessons_student_id_fkey (
-          full_name,
-          email
+          full_name
         )
       )
     `)
@@ -209,9 +209,7 @@ export default async function TeacherSchedulePage() {
 
                 if (!lesson) return null;
 
-                const student = Array.isArray(lesson.student)
-                  ? lesson.student[0]
-                  : lesson.student;
+                const student = studentDirectory.get(lesson.student_id);
 
                 return (
                   <article
@@ -285,9 +283,7 @@ export default async function TeacherSchedulePage() {
 
                 if (!lesson) return null;
 
-                const student = Array.isArray(lesson.student)
-                  ? lesson.student[0]
-                  : lesson.student;
+                const student = studentDirectory.get(lesson.student_id);
 
                 return (
                   <article
@@ -342,9 +338,7 @@ export default async function TeacherSchedulePage() {
           ) : (
             <div className="mt-4 space-y-3">
               {overdueLessons.map((lesson) => {
-                const student = Array.isArray(lesson.student)
-                  ? lesson.student[0]
-                  : lesson.student;
+                const student = studentDirectory.get(lesson.student_id);
 
                 return (
                   <article
@@ -401,9 +395,7 @@ export default async function TeacherSchedulePage() {
           ) : (
             <div className="mt-4 space-y-3">
               {lessons.map((lesson, index) => {
-                const student = Array.isArray(lesson.student)
-                  ? lesson.student[0]
-                  : lesson.student;
+                const student = studentDirectory.get(lesson.student_id);
 
                 return (
                   <article

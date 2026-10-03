@@ -5,15 +5,19 @@ begin read only;
 -- Existing base tables and added feature tables.
 select name, to_regclass('public.'||name) is not null as exists
 from unnest(array['profiles','lessons','lesson_packages','lesson_reports','schedule_change_requests',
- 'student_onboarding','payment_orders','payment_discount_settings','placement_results','learning_files','notification_outbox','renewal_followups']) as name;
+ 'student_onboarding','payment_orders','payment_discount_settings','placement_results','learning_files','notification_outbox','renewal_followups','teacher_preferences']) as name;
 
 -- Verify row security and review existing policies, including old overlapping policies.
 select c.relname as table_name,c.relrowsecurity as rls_enabled
 from pg_class c join pg_namespace n on n.oid=c.relnamespace
 where n.nspname='public' and c.relname in ('profiles','lessons','lesson_packages','lesson_reports','schedule_change_requests',
- 'student_onboarding','payment_orders','payment_discount_settings','placement_results','learning_files','notification_outbox','renewal_followups');
+ 'student_onboarding','payment_orders','payment_discount_settings','placement_results','learning_files','notification_outbox','renewal_followups','teacher_preferences');
 select tablename,policyname,roles,cmd from pg_policies where schemaname='public'
-and tablename in ('profiles','lessons','lesson_packages','lesson_reports','schedule_change_requests','placement_results','learning_files','notification_outbox','renewal_followups');
+and tablename in ('profiles','lessons','lesson_packages','lesson_reports','schedule_change_requests','placement_results','learning_files','notification_outbox','renewal_followups','teacher_preferences');
+
+-- Teacher contact privacy must be active before launch.
+select to_regprocedure('public.teacher_student_directory()') is not null as teacher_directory_exists,
+ exists(select 1 from pg_policies where schemaname='public' and tablename='profiles' and policyname='teacher_student_contact_privacy' and permissive='RESTRICTIVE') as teacher_contact_privacy_exists;
 
 -- Student report access must use the safe own-account RPC, with direct private reads restricted.
 select to_regprocedure('public.student_lesson_reports()') is not null as student_report_rpc_exists,

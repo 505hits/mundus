@@ -1,3 +1,4 @@
+import { teacherDirectory } from "@/lib/teacher-directory";
 import {
   AlertCircle,
   CheckCircle2,
@@ -38,6 +39,7 @@ function getStudentName(
 export default async function TeacherReportsPage() {
   const { user } = await requireRole("teacher");
   const supabase = await createSupabaseServerClient();
+  const studentDirectory = await teacherDirectory(supabase);
 
   const { data: lessons, error: lessonsError } = await supabase
     .from("lessons")
@@ -49,8 +51,7 @@ export default async function TeacherReportsPage() {
       lesson_type,
       status,
       student:profiles!lessons_student_id_fkey (
-        full_name,
-        email
+        full_name
       )
     `)
     .eq("teacher_id", user.id)
@@ -173,9 +174,7 @@ export default async function TeacherReportsPage() {
           ) : (
             <div className="mt-4 space-y-4">
               {recentLessons.map((lesson) => {
-                const student = Array.isArray(lesson.student)
-                  ? lesson.student[0]
-                  : lesson.student;
+                const student = studentDirectory.get(lesson.student_id);
 
                 const report = reportMap.get(lesson.id);
 

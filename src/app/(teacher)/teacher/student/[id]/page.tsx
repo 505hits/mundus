@@ -93,10 +93,9 @@ async function renderStudentPage(
     reportsResult,
   ] = await Promise.all([
     supabase
-      .from("profiles")
-      .select("full_name, email")
+      .rpc("teacher_student_directory")
       .eq("id", studentId)
-      .single(),
+      .maybeSingle(),
 
     supabase
       .from("lessons")

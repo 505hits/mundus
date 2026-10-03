@@ -1,3 +1,4 @@
+import { teacherDirectory } from "@/lib/teacher-directory";
 import {
   BookOpen,
   Users,
@@ -19,6 +20,7 @@ function getName(
 export default async function TeacherStudentsPage() {
   const { user } = await requireRole("teacher");
   const supabase = await createSupabaseServerClient();
+  const studentDirectory = await teacherDirectory(supabase);
 
   const { data: lessons } = await supabase
     .from("lessons")
@@ -29,8 +31,7 @@ export default async function TeacherStudentsPage() {
       status,
       language,
       student:profiles!lessons_student_id_fkey (
-        full_name,
-        email
+        full_name
       )
     `)
     .eq("teacher_id", user.id)
@@ -87,9 +88,7 @@ export default async function TeacherStudentsPage() {
   for (const lesson of lessons ?? []) {
     const existing = studentMap.get(lesson.student_id);
 
-    const student = Array.isArray(lesson.student)
-      ? lesson.student[0]
-      : lesson.student;
+    const student = studentDirectory.get(lesson.student_id);
 
     const isFuture =
       ["scheduled", "rescheduled"].includes(lesson.status) &&

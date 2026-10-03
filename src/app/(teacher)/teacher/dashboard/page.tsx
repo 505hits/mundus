@@ -1,3 +1,4 @@
+import { teacherDirectory } from "@/lib/teacher-directory";
 import { safeLessonLink } from "@/lib/lesson-link";
 import Link from "next/link";
 import {
@@ -53,6 +54,7 @@ function getInitials(name: string) {
 export default async function TeacherDashboardPage() {
   const { user } = await requireRole("teacher");
   const supabase = await createSupabaseServerClient();
+  const studentDirectory = await teacherDirectory(supabase);
 
   const { data: teacherProfile } = await supabase
     .from("profiles")
@@ -91,8 +93,7 @@ export default async function TeacherDashboardPage() {
       lesson_type,
       meet_link,
       student:profiles!lessons_student_id_fkey (
-        full_name,
-        email
+        full_name
       )
     `)
     .eq("teacher_id", user.id)
@@ -114,8 +115,7 @@ export default async function TeacherDashboardPage() {
       scheduled_at,
       language,
       student:profiles!lessons_student_id_fkey (
-        full_name,
-        email
+        full_name
       )
     `)
     .eq("teacher_id", user.id)
@@ -141,8 +141,7 @@ export default async function TeacherDashboardPage() {
         scheduled_at,
         language,
         student:profiles!lessons_student_id_fkey (
-          full_name,
-          email
+          full_name
         )
       )
     `)
@@ -174,9 +173,7 @@ export default async function TeacherDashboardPage() {
   for (const lesson of upcomingLessons ?? []) {
     if (uniqueStudents.has(lesson.student_id)) continue;
 
-    const student = Array.isArray(lesson.student)
-      ? lesson.student[0]
-      : lesson.student;
+    const student = studentDirectory.get(lesson.student_id);
 
     uniqueStudents.set(lesson.student_id, {
       id: lesson.student_id,
@@ -313,9 +310,7 @@ export default async function TeacherDashboardPage() {
           ) : (
             <div className="mt-4 space-y-3">
               {todayLessons.map((lesson) => {
-                const student = Array.isArray(lesson.student)
-                  ? lesson.student[0]
-                  : lesson.student;
+                const student = studentDirectory.get(lesson.student_id);
 
                 return (
                   <article

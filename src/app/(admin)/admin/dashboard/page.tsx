@@ -144,6 +144,8 @@ export default async function AdminDashboardPage() {
           </p>
         </section>
 
+        <Link href="/admin/matching" className="mt-5 inline-block rounded-xl bg-[#2F3AA2] px-5 py-3 font-semibold text-white">Priradiť študenta k lektorovi</Link>
+
         {hasLoadError && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             Niektoré údaje sa nepodarilo načítať. Obnovte stránku a skúste to znova.

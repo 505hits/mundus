@@ -125,7 +125,7 @@ export default function RequestChangeForm({
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="mt-7">
+      <form onSubmit={handleSubmit} className="mt-7" aria-busy={submitting}>
         <label
           htmlFor="preferredAt"
           className="text-sm font-semibold"
@@ -134,6 +134,7 @@ export default function RequestChangeForm({
         </label>
 
         <input
+          disabled={submitting}
           id="preferredAt"
           type="datetime-local"
           required
@@ -153,6 +154,7 @@ export default function RequestChangeForm({
         </label>
 
         <textarea
+          disabled={submitting}
           id="message"
           rows={4}
           value={message}
@@ -162,7 +164,7 @@ export default function RequestChangeForm({
         />
 
         {errorMessage && (
-          <div className="mt-5 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div role="alert" className="mt-5 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
             {errorMessage}
           </div>
         )}

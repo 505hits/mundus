@@ -122,7 +122,7 @@ export default async function LessonsPage() {
             </div>
 
             <span className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold shadow-sm">
-              {upcomingLessons.length === 1 ? "1 naplánovaná" : upcomingLessons.length >= 2 && upcomingLessons.length <= 4 ? `${upcomingLessons.length} naplánované` : `${upcomingLessons.length} naplánovaných`}
+              {lessonsError ? "Rozvrh nedostupný" : upcomingLessons.length === 1 ? "1 naplánovaná" : upcomingLessons.length >= 2 && upcomingLessons.length <= 4 ? `${upcomingLessons.length} naplánované` : `${upcomingLessons.length} naplánovaných`}
             </span>
           </div>
 
@@ -246,7 +246,7 @@ export default async function LessonsPage() {
                             )}
                           </div>
                         );
-                      })() : (
+                      })() : requestsError ? <p className="text-center text-sm">Stav žiadosti sa nepodarilo načítať. Obnovte stránku pred žiadosťou o zmenu.</p> : (
                         <Link
                           href={`/lessons/${lesson.id}/request-change`}
                           className={`flex items-center justify-center gap-2 rounded-2xl border px-4 py-3 text-sm font-medium ${
@@ -272,11 +272,11 @@ export default async function LessonsPage() {
               />
 
               <h3 className="mt-4 font-semibold">
-                Zatiaľ nemáte naplánované hodiny
+                {lessonsError ? "Rozvrh sa nepodarilo načítať" : "Zatiaľ nemáte naplánované hodiny"}
               </h3>
 
               <p className="mt-2 text-sm text-gray-500">
-                Vaša najbližšia potvrdená hodina sa zobrazí tu.
+                {lessonsError ? "Obnovte stránku alebo to skúste o chvíľu znova." : "Vaša najbližšia potvrdená hodina sa zobrazí tu."}
               </p>
             </div>
           )}
@@ -316,7 +316,7 @@ export default async function LessonsPage() {
             </div>
           ) : (
             <p className="mt-5 rounded-3xl border border-black/5 bg-white p-6 text-sm text-gray-500 shadow-sm">
-              História vašich hodín sa zobrazí tu.
+              {lessonsError ? "Históriu hodín sa nepodarilo načítať. Obnovte stránku alebo to skúste o chvíľu znova." : "História vašich hodín sa zobrazí tu."}
             </p>
           )}
         </section>

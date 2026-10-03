@@ -13,22 +13,22 @@ export const translations = {
             contactUs: "Contact us",
         },
         hero: {
-            badge: "Hundreds of happy learners — and counting",
+            badge: "Personal online language lessons",
             titleBefore: "Learn languages with",
-            nativeSpeakers: "native speakers",
-            subtitle: "Experience immersive 1-on-1 sessions with native experts. Fluid, fast, and tailored to your goals.",
+            nativeSpeakers: "experienced teachers",
+            subtitle: "Individual online lessons tailored to your level, goals and schedule.",
             ctaPrimary: "Explore lesson packages",
             ctaSecondary: "See how it works",
             interactive: "Interactive Logic",
-            students: "200+ students",
-            rating: "4.9/5 rating",
+            students: "60-minute lessons",
+            rating: "Personal approach",
         },
         languageSelector: {
             badge: "Choose your language",
             title: "Choose the right course",
             titleBreak: "for your",
             goals: "goals",
-            subtitle: "Select your desired language and connect with native-speaking tutors from around the world.",
+            subtitle: "Choose your language. We will help you arrange lessons for your goals and level.",
         },
         howItWorks: {
             label: "Simple process",
@@ -38,8 +38,8 @@ export const translations = {
             steps: [
                 {
                     number: "01",
-                    title: "Take a quick test",
-                    description: "Find your level in just 2 minutes — no pressure, just a starting point.",
+                    title: "Tell us your goal",
+                    description: "Tell us your language, approximate level and goal. Your teacher will help confirm your level.",
                 },
                 {
                     number: "02",
@@ -49,12 +49,12 @@ export const translations = {
                 {
                     number: "03",
                     title: "Start learning online",
-                    description: "Access lessons anytime and join live video calls with native-speaking tutors.",
+                    description: "Arrange your lesson times with your teacher and join using the saved meeting link.",
                 },
                 {
                     number: "04",
                     title: "Improve every day",
-                    description: "Track your progress, unlock new topics, and stay consistent with smart reminders.",
+                    description: "Review your lesson feedback and homework with your teacher.",
                 },
             ]
         },
@@ -65,28 +65,28 @@ export const translations = {
             subtitle: "Not just another course — Mundus blends smart tools with real conversation.",
             items: [
                 {
-                    title: "Native-speaker interaction",
-                    description: "No extra apps or platforms — talk to real teachers directly inside Mundus.",
+                    title: "Personal teaching",
+                    description: "Meet your teacher online using the lesson meeting link.",
                 },
                 {
                     title: "Smart progress tracking",
                     description: "Track your learning journey and adapt lessons to your pace.",
                 },
                 {
-                    title: "24/7 availability",
-                    description: "Find tutors across all time zones, ready when you are.",
+                    title: "Flexible scheduling",
+                    description: "Arrange lesson times with your teacher according to your availability.",
                 },
                 {
-                    title: "Instant matching",
-                    description: "Get paired with the perfect tutor in seconds based on your goals.",
+                    title: "Teacher selection",
+                    description: "Mundus helps you find a suitable teacher according to your language, goals and availability.",
                 },
                 {
                     title: "Real conversations",
                     description: "Practice authentic dialogues, not scripted scenarios.",
                 },
                 {
-                    title: "Certified progress",
-                    description: "Receive a personalized certificate when you complete your course.",
+                    title: "Teacher feedback",
+                    description: "Discuss your progress and next learning goals with your teacher.",
                 },
             ]
         },
@@ -211,7 +211,7 @@ export const translations = {
             }
         },
         footer: {
-            brandDesc: "Master the world's most beautiful languages with native speakers. Immersive, personalized, and effective.",
+            brandDesc: "Personal online language lessons for conversation, work and travel.",
             headings: {
                 Languages: "Languages",
                 Company: "Company",
@@ -240,22 +240,22 @@ export const translations = {
             contactUs: "Kontaktujte nás",
         },
         hero: {
-            badge: "Stovky spokojných študentov — a rastieme",
+            badge: "Individuálna online výučba jazykov",
             titleBefore: "Učte sa jazyky s",
-            nativeSpeakers: "native spíkrami",
-            subtitle: "Zažite pohlcujúce lekcie 1 na 1 s rodenými expertmi. Plynulé, rýchle a prispôsobené vašim cieľom.",
+            nativeSpeakers: "skúsenými lektormi",
+            subtitle: "Individuálne online hodiny prispôsobené vašej úrovni, cieľom a časovým možnostiam.",
             ctaPrimary: "Vybrať balíček hodín",
             ctaSecondary: "Ako to funguje",
             interactive: "Interaktívna výučba",
-            students: "200+ študentov",
-            rating: "4.9/5 hodnotenie",
+            students: "60-minútové hodiny",
+            rating: "Osobný prístup",
         },
         languageSelector: {
             badge: "Vyberte si jazyk",
             title: "Vyberte si správny kurz",
             titleBreak: "pre vaše",
             goals: "ciele",
-            subtitle: "Vyberte si požadovaný jazyk a spojte sa s rodenými lektormi z celého sveta.",
+            subtitle: "Vyberte si jazyk. Pomôžeme vám dohodnúť výučbu podľa vašich cieľov a úrovne.",
         },
         howItWorks: {
             label: "Jednoduchý proces",
@@ -265,8 +265,8 @@ export const translations = {
             steps: [
                 {
                     number: "01",
-                    title: "Urobte si rýchly test",
-                    description: "Zistite svoju úroveň za 2 minúty — žiadny stres, len východiskový bod.",
+                    title: "Povedzte nám svoj cieľ",
+                    description: "Napíšte nám jazyk, približnú úroveň a cieľ. Vhodnú úroveň vám pomôže overiť lektor.",
                 },
                 {
                     number: "02",
@@ -276,12 +276,12 @@ export const translations = {
                 {
                     number: "03",
                     title: "Začnite sa učiť online",
-                    description: "Prístup k lekciám kedykoľvek a živé videohovory s rodenými lektormi.",
+                    description: "Termíny si dohodnete s lektorom a na hodinu sa pripojíte cez uložený odkaz.",
                 },
                 {
                     number: "04",
                     title: "Zlepšujte sa každý deň",
-                    description: "Sledujte svoj pokrok, odomykajte nové témy a buďte konzistentní vďaka smart pripomienkam.",
+                    description: "Sledujte spätnú väzbu z hodín a pracujte na domácich úlohách s lektorom.",
                 },
             ]
         },
@@ -292,28 +292,28 @@ export const translations = {
             subtitle: "Nie len ďalší kurz — Mundus spája smart nástroje so skutočnou konverzáciou.",
             items: [
                 {
-                    title: "Interakcia s rodeným hovorcom",
-                    description: "Žiadne ďalšie aplikácie alebo platformy — hovorte so skutočnými učiteľmi priamo v Mundus.",
+                    title: "Osobná výučba",
+                    description: "S lektorom sa stretnete online cez odkaz na hodinu.",
                 },
                 {
                     title: "Smart sledovanie pokroku",
                     description: "Sledujte svoju cestu učením a prispôsobte lekcie svojmu tempu.",
                 },
                 {
-                    title: "Dostupnosť 24/7",
-                    description: "Nájdite tútorov vo všetkých časových pásmach, pripravených keď ste vy.",
+                    title: "Flexibilné termíny",
+                    description: "Termíny hodín si dohodnete s lektorom podľa spoločných časových možností.",
                 },
                 {
-                    title: "Okamžité priradenie",
-                    description: "Získajte perfektného tútora za pár sekúnd na základe vašich cieľov.",
+                    title: "Výber lektora",
+                    description: "Pomôžeme vám vybrať lektora podľa jazyka, cieľov a dostupných termínov.",
                 },
                 {
                     title: "Skutočné konverzácie",
                     description: "Precvičujte autentické dialógy, nie napísané scenáre.",
                 },
                 {
-                    title: "Certifikovaný pokrok",
-                    description: "Získajte personalizovaný certifikát po dokončení kurzu.",
+                    title: "Spätná väzba od lektora",
+                    description: "S lektorom zhodnotíte svoj pokrok a ďalšie ciele výučby.",
                 },
             ]
         },
@@ -438,7 +438,7 @@ export const translations = {
             }
         },
         footer: {
-            brandDesc: "Osvojte si najkrajšie jazyky sveta s rodenými hovorcami. Pohlcujúce, personalizované a efektívne.",
+            brandDesc: "Individuálna online výučba jazykov pre konverzáciu, prácu a cestovanie.",
             headings: {
                 Languages: "Jazyky",
                 Company: "Spoločnosť",

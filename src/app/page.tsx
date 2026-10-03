@@ -1,6 +1,5 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import ReviewsMarquee from "@/components/ReviewsMarquee";
 import LanguageSelector from "@/components/LanguageSelector";
 import HowItWorks from "@/components/HowItWorks";
 import TeacherSection from "@/components/TeacherSection";
@@ -17,7 +16,6 @@ export default function Home() {
     <main className="min-h-screen">
       <Navbar />
       <Hero />
-      <ReviewsMarquee />
       <LanguageSelector />
       <HowItWorks />
       <TeacherSection />

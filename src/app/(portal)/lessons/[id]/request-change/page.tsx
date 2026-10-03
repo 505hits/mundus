@@ -51,11 +51,12 @@ export default async function RequestChangePage({
     )
     .eq("id", id)
     .eq("student_id", user.id)
-    .single();
+    .maybeSingle();
 
-  if (error || !lesson) {
-    notFound();
+  if (error) {
+    return <main className="mx-auto max-w-3xl px-5 py-10"><h1 className="text-2xl font-semibold">Hodinu sa nepodarilo načítať</h1><p role="alert" className="mt-4 text-gray-600">Obnovte stránku alebo to skúste o chvíľu znova. Pôvodný termín zostáva platný.</p><Link href="/lessons" className="mt-5 inline-block font-semibold underline">Späť na moje hodiny</Link></main>;
   }
+  if (!lesson) notFound();
 
   if (
     lesson.status !== "scheduled" &&
@@ -68,7 +69,7 @@ export default async function RequestChangePage({
     notFound();
   }
 
-  const { data: pendingRequest } = await supabase
+  const { data: pendingRequest, error: pendingError } = await supabase
     .from("schedule_change_requests")
     .select("id")
     .eq("lesson_id", lesson.id)
@@ -136,7 +137,7 @@ export default async function RequestChangePage({
           </div>
         </section>
 
-        {pendingRequest ? (
+        {pendingError ? <section role="alert" className="mt-6 rounded-3xl bg-white p-6 text-red-700"><h2 className="text-xl font-semibold">Stav žiadosti sa nepodarilo overiť</h2><p className="mt-2">Obnovte stránku alebo to skúste o chvíľu znova. Novú žiadosť môžete odoslať po overení stavu. Pôvodný termín zostáva platný.</p></section> : pendingRequest ? (
           <section className="mt-6 rounded-3xl border border-[#dfe8e2] bg-white p-6 shadow-sm sm:p-8">
             <h2 className="text-xl font-semibold">
               Žiadosť o zmenu čaká na vybavenie

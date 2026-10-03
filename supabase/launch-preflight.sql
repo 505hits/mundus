@@ -20,6 +20,10 @@ select to_regprocedure('public.student_lesson_reports()') is not null as student
  exists(select 1 from pg_policies where schemaname='public' and tablename='lesson_reports'
    and policyname='Report private fields require staff access' and permissive='RESTRICTIVE') as report_privacy_policy_exists;
 
+-- Every legacy portal table needs the restrictive session policy.
+select tablename,policyname,permissive from pg_policies where schemaname='public'
+and policyname='Active verified portal account required';
+
 -- Identify existing package/accounting triggers BEFORE adding any deduction logic.
 select c.relname as table_name,t.tgname as trigger_name,p.proname as function_name,t.tgenabled
 from pg_trigger t join pg_class c on c.oid=t.tgrelid join pg_namespace n on n.oid=c.relnamespace
@@ -49,5 +53,5 @@ select p.proname,has_function_privilege('anon',p.oid,'EXECUTE') as anon_execute,
  has_function_privilege('authenticated',p.oid,'EXECUTE') as client_execute
 from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public'
 and p.proname in ('mundus_reserve_payment_order','mundus_fulfill_payment_order','mundus_attach_checkout_session',
- 'claim_schedule_emails','retry_schedule_email','mundus_german_assessments_ready','student_lesson_reports');
+ 'claim_schedule_emails','retry_schedule_email','mundus_german_assessments_ready','student_lesson_reports','mundus_active_portal_account');
 commit;

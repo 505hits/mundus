@@ -12,15 +12,18 @@ create table lesson_reports(id uuid primary key,lesson_id uuid,student_id uuid,t
 grant usage on schema auth to authenticated,anon; grant select on profiles,lessons,lesson_reports to authenticated,anon;
 grant update on lesson_reports to authenticated;
 insert into profiles values('${student}','student','active'),('${other}','student','active'),('${teacher}','teacher','active'),('${outsider}','teacher','active'),('${admin}','admin','active');
-insert into auth.users values('${student}',now()),('${other}',now());
+insert into auth.users values('${student}',now()),('${other}',now()),('${teacher}',now()),('${outsider}',now()),('${admin}',now());
 insert into lessons values('${lesson}','${student}','${teacher}');
 insert into lesson_reports values('${lesson}','${lesson}','${student}','${teacher}','Practice','normal_progress','Shared feedback','Shared homework','Conversation','Staff secret',now());
+alter table lessons enable row level security;
+create policy lesson_read on lessons for select using(true);
 alter table lesson_reports enable row level security;
 -- Deliberately broad legacy policies must not leak private fields.
 create policy legacy_read on lesson_reports for select using(true);
 create policy teacher_update on lesson_reports for update to authenticated using(teacher_id=auth.uid()) with check(teacher_id=auth.uid());`);
 const migration=readFileSync(new URL('../supabase/migrations/202610030008_report_privacy.sql',import.meta.url),'utf8');
 await db.exec(migration); await db.exec(migration);
+await db.exec(readFileSync(new URL('../supabase/migrations/202610030009_portal_session_guards.sql',import.meta.url),'utf8'));
 async function login(id){await db.exec(`reset role; set request.jwt.claim.sub='${id}'; set role authenticated;`);}
 await login(student);
 assert.equal((await db.query('select * from lesson_reports')).rows.length,0,'direct student read cannot expose private fields');

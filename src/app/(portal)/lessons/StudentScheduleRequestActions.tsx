@@ -16,12 +16,15 @@ export default function StudentScheduleRequestActions({
   const [loading, setLoading] = useState<"accepted" | "declined" | null>(null);
   const [error, setError] = useState("");
 
+  const [saved, setSaved] = useState(false);
+
   async function respond(status: "accepted" | "declined") {
-    if (loading) return;
+    if (loading || saved) return;
 
     setLoading(status);
     setError("");
 
+    try {
     const supabase = createSupabaseBrowserClient();
 
     const { data: updatedRequest, error: updateError } = await supabase
@@ -42,7 +45,13 @@ export default function StudentScheduleRequestActions({
       return;
     }
 
+    setSaved(true);
     router.refresh();
+    } catch {
+      setError("Odpoveď sa nepodarilo uložiť. Skúste znova alebo kontaktujte Mundus.");
+    } finally {
+      setLoading(null);
+    }
   }
 
   return (
@@ -51,7 +60,7 @@ export default function StudentScheduleRequestActions({
         <button
           type="button"
           onClick={() => respond("accepted")}
-          disabled={loading !== null}
+          disabled={loading !== null || saved}
           className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#183f38] px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
         >
           <Check size={16} />
@@ -61,7 +70,7 @@ export default function StudentScheduleRequestActions({
         <button
           type="button"
           onClick={() => respond("declined")}
-          disabled={loading !== null}
+          disabled={loading !== null || saved}
           className="inline-flex items-center justify-center gap-2 rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm font-medium text-[#183f38] disabled:cursor-not-allowed disabled:opacity-60"
         >
           <X size={16} />
@@ -69,8 +78,10 @@ export default function StudentScheduleRequestActions({
         </button>
       </div>
 
+      {saved && <p role="status" className="mt-3 text-sm text-[#2F3AA2]">Odpoveď bola uložená. Aktuálny termín nájdete v rozvrhu.</p>}
+
       {error && (
-        <p className="mt-2 text-sm text-red-700">{error}</p>
+        <p role="alert" className="mt-2 text-sm text-red-700">{error}</p>
       )}
     </div>
   );

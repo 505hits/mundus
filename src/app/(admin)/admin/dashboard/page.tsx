@@ -1,3 +1,4 @@
+import { followupQueue } from "@/lib/followup-queue";
 import FollowupForm, { type Followup } from "./FollowupForm";
 import Link from "next/link";
 import { renewalAttention } from "@/lib/renewal-attention";
@@ -93,6 +94,7 @@ export default async function AdminDashboardPage() {
     day: "2-digit",
   });
   const todayKey = dateKey.format(now);
+  const contactQueue = studentsError || followupError ? null : followupQueue(students ?? [], followupRows, todayKey);
 
   const todayLessons = (lessons ?? []).filter(
     (lesson) =>
@@ -200,6 +202,13 @@ export default async function AdminDashboardPage() {
             <p className="mt-2 text-sm text-white/65">Aktívne balíčky s poslednými 1–2 hodinami</p>
           </section>
         </div>
+
+        <section className="mt-8 rounded-3xl border border-indigo-100 bg-white p-6 shadow-sm">
+          <h2 className="text-xl font-semibold text-[#2F3AA2]">Plán kontaktovania študentov</h2>
+          <p className="mt-2 text-sm text-gray-600">Otvorené záznamy podľa ďalšieho kontaktovania, aj po zakúpení nového balíčka. Dátumy sa posudzujú podľa Bratislavy. Uzavreté záznamy a neaktívne účty sa nezobrazujú.</p>
+          {contactQueue === null ? <p role="alert" className="mt-4 text-red-700">Plán kontaktovania sa nepodarilo načítať. Overte pripravenie databázy alebo obnovte stránku.</p> : !contactQueue.length ? <p className="mt-4 text-gray-600">Zatiaľ žiadne otvorené záznamy. Pridajte záznam pri študentovi v zozname pokračovania nižšie.</p> : <ul className="mt-4 divide-y divide-indigo-100">{contactQueue.map(({student,record,due})=><li key={student.id} className="py-4"><div className="flex flex-wrap items-center justify-between gap-3"><div><p className="font-semibold">{getName(student,"Študent")}</p><p className="break-all text-sm text-gray-600">{student.email||"E-mail nie je uvedený"}</p></div><span className={`rounded-full px-3 py-2 text-sm font-semibold ${due ? "bg-amber-50 text-amber-900" : "bg-indigo-50 text-[#2F3AA2]"}`}>{!record.next_followup ? "Doplniť dátum" : due ? "Ozvať sa dnes / po termíne" : "Naplánované"}</span></div><p className="mt-2 text-sm text-gray-600">{({to_contact:"Ozvať sa",contacted:"Kontaktovaný",waiting:"Čaká sa na odpoveď",later:"Ozvať sa neskôr"} as Record<string,string>)[record.status]||record.status}</p><FollowupForm key={`${student.id}:${record.updated_at}`} studentId={student.id} record={record}/></li>)}</ul>}
+          <p className="mt-4 text-sm text-gray-500">Ide o interný plán. Kontaktovanie vykonáte sami; žiadna správa sa automaticky neodosiela.</p>
+        </section>
 
         <section className="mt-8 rounded-3xl border border-indigo-100 bg-white p-6 shadow-sm">
           <h2 className="text-xl font-semibold text-[#2F3AA2]">Komu sa ozvať ohľadom pokračovania</h2>

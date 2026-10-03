@@ -1,3 +1,4 @@
+import ScheduleNotificationStatus from "@/components/ScheduleNotificationStatus";
 import {
   AlertCircle,
   CalendarDays,
@@ -85,6 +86,7 @@ export default async function AdminLessonsPage() {
 
   return (
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
+      <ScheduleNotificationStatus />
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">Hodiny</p>

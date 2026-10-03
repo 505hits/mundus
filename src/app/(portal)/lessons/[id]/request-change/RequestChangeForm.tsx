@@ -79,6 +79,7 @@ export default function RequestChangeForm({
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (submitting) return;
 
     if (!preferredAt) {
       setErrorMessage("Vyberte si prosím preferovaný dátum a čas.");
@@ -98,6 +99,7 @@ export default function RequestChangeForm({
     setSubmitting(true);
     setErrorMessage("");
 
+    try {
     const supabase = createSupabaseBrowserClient();
 
     const { error } = await supabase
@@ -122,6 +124,11 @@ export default function RequestChangeForm({
     setSuccess(true);
     setSubmitting(false);
     router.refresh();
+    } catch {
+      setErrorMessage("Žiadosť sa nepodarilo odoslať. Skúste znova alebo kontaktujte Mundus.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   if (success) {

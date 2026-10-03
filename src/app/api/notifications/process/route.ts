@@ -21,6 +21,15 @@ export async function GET(request:NextRequest) {
   let sent=0,failed=0;
   for(const job of jobs||[]) {
    try {
+    const {data:current,error:requestError}=await admin.from("schedule_change_requests").select("status,preferred_at,lesson_id,student_id").eq("id",job.request_id).single();
+    if(requestError || !current) throw new Error("Request unavailable");
+    const {data:lesson,error:lessonError}=await admin.from("lessons").select("teacher_id").eq("id",current.lesson_id).single();
+    if(lessonError || !lesson) throw new Error("Lesson unavailable");
+    if(current.status!==job.event || Date.parse(current.preferred_at)!==Date.parse(job.preferred_at) || ![current.student_id,lesson.teacher_id].includes(job.recipient_id)) {
+     const {error:skipError}=await admin.from("notification_outbox").update({status:"skipped",lease_until:null}).eq("id",job.id).eq("lease_token",job.lease_token);
+     if(skipError)throw skipError;
+     continue;
+    }
     // Recheck verified active recipient; queued email never follows an edited recipient identity.
     const {data:profile}=await admin.from("profiles").select("status,email,role").eq("id",job.recipient_id).single();
     const {data:auth}=await admin.auth.admin.getUserById(job.recipient_id);

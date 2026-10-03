@@ -11,7 +11,7 @@ grant usage on schema auth to authenticated;grant select on profiles,lessons to 
 insert into profiles values('${student}','student','active','student@example.com'),('${teacher}','teacher','active','teacher@example.com'),('${outsider}','teacher','active','other@example.com');
 insert into auth.users values('${student}',now()),('${teacher}',now()),('${outsider}',now());
 insert into lessons values('${lesson}','${student}','${teacher}');`);
-for(const name of ['202610030004_learning_files.sql','202610030005_schedule_email_outbox.sql'])await db.exec(readFileSync(new URL('../supabase/migrations/'+name,import.meta.url),'utf8'));
+for(const name of ['202610030004_learning_files.sql','202610030005_schedule_email_outbox.sql','202610030006_notification_recovery.sql'])await db.exec(readFileSync(new URL('../supabase/migrations/'+name,import.meta.url),'utf8'));
 await db.exec(`insert into schedule_change_requests values('${request}','${lesson}','${student}','pending',now()+interval '2 days');`);
 assert.equal((await db.query('select * from notification_outbox')).rows.length,2);
 await db.exec(`update schedule_change_requests set status='pending' where id='${request}'`);assert.equal((await db.query('select * from notification_outbox')).rows.length,2);
@@ -20,10 +20,16 @@ await db.exec('set role service_role');const first=(await db.query('select * fro
 assert.equal(first.length,2);assert.equal(second.length,2);assert.ok(first.every(a=>second.every(b=>a.id!==b.id)));
 assert.equal((await db.query('select * from claim_schedule_emails(2)')).rows.length,0);
 await db.query("update notification_outbox set lease_until=now()-interval '1 minute',attempts=5 where id=$1",[first[0].id]);await db.query('select * from claim_schedule_emails(2)');assert.equal((await db.query('select status from notification_outbox where id=$1',[first[0].id])).rows[0].status,'failed');
+assert.equal((await db.query('select retry_schedule_email($1) as retried',[first[0].id])).rows[0].retried,false,'obsolete pending notification cannot be retried after acceptance');
+await db.query("update notification_outbox set status='failed' where id=$1",[second[0].id]);
+const accepted=(await db.query("select id from notification_outbox where event='accepted' limit 1")).rows[0].id;
+await db.query("update notification_outbox set status='failed' where id=$1",[accepted]);
+assert.equal((await db.query('select retry_schedule_email($1) as retried',[accepted])).rows[0].retried,true);
+assert.equal((await db.query('select retry_schedule_email($1) as retried',[accepted])).rows[0].retried,false,'already queued notifications cannot be replayed');
 await db.exec(`insert into learning_files(student_id,uploaded_by,kind,title,object_path,file_name,mime_type,size_bytes) values('${student}','${teacher}','material','Lesson notes','private/path','notes.pdf','application/pdf',10)`);
 async function login(id){await db.exec(`reset role;set request.jwt.claim.sub='${id}';set role authenticated;`);}
 await login(student);assert.equal((await db.query('select * from learning_files')).rows.length,1);await assert.rejects(db.query("update learning_files set title='forged'"),/permission denied/);
-await assert.rejects(db.query('select * from notification_outbox'),/permission denied/);await assert.rejects(db.query('select * from claim_schedule_emails(2)'),/permission denied/);
+await assert.rejects(db.query('select * from notification_outbox'),/permission denied/);await assert.rejects(db.query('select * from claim_schedule_emails(2)'),/permission denied/);await assert.rejects(db.query('select retry_schedule_email($1)',[accepted]),/permission denied/);
 await login(teacher);assert.equal((await db.query('select * from learning_files')).rows.length,1);
 await login(outsider);assert.equal((await db.query('select * from learning_files')).rows.length,0);
 await db.exec('reset role');assert.equal((await db.query("select public from storage.buckets where id='mundus-learning'")).rows[0].public,false);

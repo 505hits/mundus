@@ -1,3 +1,4 @@
+import { missingLessonReports } from "@/lib/missing-reports";
 import { followupQueue } from "@/lib/followup-queue";
 import FollowupForm, { type Followup } from "./FollowupForm";
 import Link from "next/link";
@@ -86,7 +87,11 @@ export default async function AdminDashboardPage() {
 
   const { data: followups, error: followupError } = await supabase.from("renewal_followups").select("student_id,status,last_contact,next_followup,note,updated_at");
   const followupRows: Followup[] = followups ?? [];
+  const {data:recentCompleted,error:completedError}=await supabase.from("lessons").select("id,scheduled_at,status,language,student:profiles!lessons_student_id_fkey(full_name,email),teacher:profiles!lessons_teacher_id_fkey(full_name,email)").eq("status","completed").order("scheduled_at",{ascending:false}).limit(50);
+  const completedIds=(recentCompleted??[]).map(lesson=>lesson.id);
+  const {data:reportIds,error:reportError}=completedIds.length ? await supabase.from("lesson_reports").select("lesson_id").in("lesson_id",completedIds) : {data:[],error:null};
   const now = new Date();
+  const missingReports=completedError||reportError ? null : missingLessonReports(recentCompleted??[],reportIds??[],now.getTime());
   const dateKey = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Europe/Bratislava",
     year: "numeric",
@@ -202,6 +207,13 @@ export default async function AdminDashboardPage() {
             <p className="mt-2 text-sm text-white/65">Aktívne balíčky s poslednými 1–2 hodinami</p>
           </section>
         </div>
+
+        <section className="mt-8 rounded-3xl border border-indigo-100 bg-white p-6 shadow-sm">
+          <h2 className="text-xl font-semibold text-[#2F3AA2]">Dokončené hodiny bez záznamu lektora</h2>
+          <p className="mt-2 text-sm text-gray-600">Kontrola posledných 50 dokončených hodín. Záznam pomáha študentovi vidieť spätnú väzbu a ďalšie zameranie; jeho uloženie nemení zostatok balíčka.</p>
+          {missingReports === null ? <p role="alert" className="mt-4 text-red-700">Záznamy hodín sa nepodarilo overiť. Obnovte stránku.</p> : !missingReports.length ? <p className="mt-4 text-gray-600">Skontrolované dokončené hodiny majú uložený záznam alebo zatiaľ nemáte dokončené hodiny.</p> : <ul className="mt-4 divide-y divide-indigo-100">{missingReports.map(lesson=>{const student=Array.isArray(lesson.student)?lesson.student[0]:lesson.student;const teacher=Array.isArray(lesson.teacher)?lesson.teacher[0]:lesson.teacher;return <li key={lesson.id} className="flex flex-wrap items-center justify-between gap-3 py-4"><div><p className="font-semibold">{getName(student,"Študent")} · {formatLanguage(lesson.language)}</p><p className="mt-1 text-sm text-gray-600">{new Intl.DateTimeFormat("sk-SK",{dateStyle:"medium",timeStyle:"short",timeZone:"Europe/Bratislava"}).format(new Date(lesson.scheduled_at))} · Lektor: {getName(teacher,"Nepriradený")}</p></div><span className="rounded-full bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-900">Doplniť záznam</span></li>;})}</ul>}
+          <Link href="/admin/lessons" className="mt-5 inline-block font-semibold text-[#2F3AA2] underline">Otvoriť prehľad hodín</Link>
+        </section>
 
         <section className="mt-8 rounded-3xl border border-indigo-100 bg-white p-6 shadow-sm">
           <h2 className="text-xl font-semibold text-[#2F3AA2]">Plán kontaktovania študentov</h2>

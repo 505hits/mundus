@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { canAcceptTeacherInvitation, portalDestination, validEmail, validPassword } from "../src/lib/account-policy.ts";
+import { canAcceptTeacherInvitation, hasCompletedOnboarding, portalDestination, validEmail, validPassword } from "../src/lib/account-policy.ts";
 
 test("teacher access requires an unexpired, unconsumed trusted invitation", () => {
   const now = Date.parse("2026-09-29T00:00:00Z");
@@ -28,4 +28,9 @@ test("account inputs reject malformed email and short or oversized passwords", (
   assert.equal(validPassword("a".repeat(128)), true);
   assert.equal(validPassword("a".repeat(9)), false);
   assert.equal(validPassword("a".repeat(129)), false);
+});
+
+test("onboarding requires a real completion timestamp, not just an existing row", () => {
+  for (const record of [null, undefined, {}, {completed_at:null}, {completed_at:""}, {completed_at:"invalid"}]) assert.equal(hasCompletedOnboarding(record),false);
+  assert.equal(hasCompletedOnboarding({completed_at:"2026-10-03T00:00:00Z"}),true);
 });

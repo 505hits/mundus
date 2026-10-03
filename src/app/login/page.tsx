@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
-import { canAcceptTeacherInvitation, portalDestination } from "@/lib/account-policy";
+import { canAcceptTeacherInvitation, hasCompletedOnboarding, portalDestination } from "@/lib/account-policy";
 import { purchaseReturnPath } from "@/lib/purchase-intent";
 
 export default function LoginPage() {
@@ -66,7 +66,7 @@ export default function LoginPage() {
           setError("Nepodarilo sa overiť nastavenie účtu. Skúste to znova alebo kontaktujte Mundus.");
           return;
         }
-        needsOnboarding = !onboarding?.completed_at;
+        needsOnboarding = !hasCompletedOnboarding(onboarding);
       }
       window.location.href = needsOnboarding
         ? `/onboarding${desired ? `?next=${encodeURIComponent(desired)}` : ""}`

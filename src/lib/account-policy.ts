@@ -26,3 +26,7 @@ export function portalDestination(role: unknown, status: unknown) {
   if (role === "student") return "/dashboard";
   return "/auth/error";
 }
+
+export function hasCompletedOnboarding(record: { completed_at?: string | null } | null | undefined) {
+  return typeof record?.completed_at === "string" && !Number.isNaN(Date.parse(record.completed_at));
+}

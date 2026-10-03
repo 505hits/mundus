@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node tests/account-database.mjs && node --test tests/account-policy.test.mjs && node tests/payment-database.mjs && node tests/purchase-intent.mjs && node tests/password-recovery.mjs && node tests/discount-identity.mjs && node tests/placement.mjs && node tests/placement-database.mjs && node tests/progress-assessment.mjs && node tests/learning-files.mjs && node tests/learning-notifications-database.mjs && node tests/schedule-email.mjs && node tests/german-assessments.mjs && node tests/launch-check.mjs && node tests/lesson-time.mjs && node tests/report-privacy.mjs && node tests/portal-session-guards.mjs",
+    "test": "node tests/account-database.mjs && node --test tests/account-policy.test.mjs && node tests/payment-database.mjs && node tests/purchase-intent.mjs && node tests/password-recovery.mjs && node tests/discount-identity.mjs && node tests/placement.mjs && node tests/placement-database.mjs && node tests/progress-assessment.mjs && node tests/learning-files.mjs && node tests/learning-notifications-database.mjs && node tests/schedule-email.mjs && node tests/german-assessments.mjs && node tests/launch-check.mjs && node tests/lesson-time.mjs && node tests/report-privacy.mjs && node tests/portal-session-guards.mjs && node tests/assessment-audio.mjs",
     "launch:check": "node scripts/launch-check.mjs"
   },
   "dependencies": {

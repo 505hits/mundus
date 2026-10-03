@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { randomUUID } from "node:crypto";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { persistLearningMetadata } from "@/lib/learning-upload-persistence";
 import { allowedLearningFile, LEARNING_FILE_LIMIT } from "@/lib/learning-files";
 
 type State = { error?: string; success?: string };
@@ -37,8 +38,11 @@ export async function uploadLearningFile(_previous: State, form: FormData): Prom
   const objectPath=`${studentId}/${user.id}/${randomUUID()}`;
   const {error:uploadError}=await admin.storage.from("mundus-learning").upload(objectPath,bytes,{contentType:file.type,upsert:false});
   if(uploadError) return {error:"Súbor sa nepodarilo nahrať. Skúste znova."};
-  const {error}=await admin.from("learning_files").insert({student_id:studentId,uploaded_by:user.id,kind,title,object_path:objectPath,file_name:file.name.replace(/[\r\n/\\]/g,"_").slice(0,150),mime_type:file.type,size_bytes:file.size});
-  if(error){await admin.storage.from("mundus-learning").remove([objectPath]);return {error:"Súbor sa nepodarilo uložiť. Skúste znova."};}
+  const {error}=await persistLearningMetadata(
+   () => admin.from("learning_files").insert({student_id:studentId,uploaded_by:user.id,kind,title,object_path:objectPath,file_name:file.name.replace(/[\r\n/\\]/g,"_").slice(0,150),mime_type:file.type,size_bytes:file.size}),
+   () => admin.storage.from("mundus-learning").remove([objectPath]),
+  );
+  if(error) return {error:"Súbor sa nepodarilo uložiť. Skúste znova."};
   revalidatePath("/learning"); revalidatePath(`/teacher/student/${studentId}`);
   return {success:"Súbor bol uložený."};
  } catch{return {error:"Nahrávanie sa nepodarilo. Skúste znova alebo kontaktujte Mundus."};}

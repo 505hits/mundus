@@ -12,7 +12,7 @@ export default async function PackagesPage({ searchParams }: PageProps) {
   const enabled = paymentEnabled();
   const supabase = await createSupabaseServerClient();
   const [{ data: packages, error: packageError }, { data: orders, error: orderError }, { data: discountSetting, error: discountError }, { data: paidOrders, error: paidError }, { data: pendingOrder, error: pendingError }] = await Promise.all([
-    supabase.from("lesson_packages").select("id,remaining_lessons,total_lessons,purchased_at,status")
+    supabase.from("lesson_packages").select("id,remaining_lessons,used_lessons,total_lessons,purchased_at,status")
       .eq("student_id", user.id).order("purchased_at", { ascending: false }),
     enabled ? supabase.from("payment_orders").select("id,package_lessons,amount_cents,status,created_at,stripe_session_id")
       .eq("student_id", user.id).order("created_at", { ascending: false }).limit(10) : Promise.resolve({ data: [], error: null }),
@@ -35,6 +35,7 @@ export default async function PackagesPage({ searchParams }: PageProps) {
     <p className="text-sm font-semibold uppercase tracking-[0.15em] text-[#9a8049]">Moje balíčky</p>
     <h1 className="mt-2 text-3xl font-semibold">Hodiny a platby</h1>
     <p className="mt-3 text-gray-600">Zostáva vám <strong>{totalRemaining} {totalRemaining === 1 ? "hodina" : "hodín"}</strong>. Nový balíček si vyberiete nižšie.</p>
+    {packages && packages.length > 0 && <section className="mt-6 rounded-2xl border border-gray-200 bg-white p-5"><h2 className="text-xl font-semibold">Vaše zakúpené balíčky</h2><ul className="mt-4 space-y-3">{packages.map(pkg => <li key={pkg.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-gray-50 p-4"><div><p className="font-semibold">{pkg.total_lessons} hodín · {pkg.status === "active" ? "Aktívny" : pkg.status === "completed" ? "Vyčerpaný" : "Neaktívny"}</p><p className="mt-1 text-sm text-gray-600">Využité: {pkg.used_lessons ?? 0} · Zostáva: {pkg.remaining_lessons ?? 0}</p></div><a href={enabled ? "#available-packages" : "/contact"} className="text-sm font-semibold text-[#2F3AA2] underline">Kúpiť ďalší balíček</a></li>)}</ul></section>}
     <div className="mt-5 rounded-2xl border border-[#2F3AA2]/20 bg-[#f0f2ff] p-5"><p className="font-semibold text-[#2F3AA2]">Prvý balíček −10 %. Iba raz na osobu.</p><p className="mt-2 text-sm text-gray-600">Kontrolujeme celé meno a overený e-mail. Ďalší účet ani zmena údajov neobnovuje nárok na zľavu. Ak sa vaše meno zhoduje s iným klientom, kontaktujte Mundus na overenie.</p></div>
     {selectedLessons && enabled && <p role="status" className="mt-5 rounded-2xl bg-blue-50 p-4 text-sm text-blue-900">Vybrali ste si {selectedLessons} {selectedLessons === 1 ? "hodinu" : "hodín"}. Skontrolujte cenu podľa svojho účtu a pokračujte tlačidlom pri balíčku.</p>}
     {!enabled && <p className="mt-6 rounded-2xl bg-amber-50 p-4 text-sm text-amber-900">Online platby pripravujeme. Ak chcete pokračovať vo výučbe, kontaktujte Mundus Languages.</p>}
@@ -46,7 +47,7 @@ export default async function PackagesPage({ searchParams }: PageProps) {
       {pendingOrder.stripe_session_id && <form action={resumePackageCheckout} className="mt-3"><input type="hidden" name="order_id" value={pendingOrder.id} /><button className="rounded-lg bg-[#183f38] px-4 py-2 font-semibold text-white">Pokračovať v platbe</button></form>}
       {pendingOrder.stripe_session_id && <form action={cancelPackageCheckout} className="mt-3"><input type="hidden" name="order_id" value={pendingOrder.id} /><button className="font-semibold underline">Zrušiť otvorenú platbu</button></form>}
     </div>}
-    <section className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-label="Balíčky hodín">
+    <section id="available-packages" className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-label="Balíčky hodín">
       {PACKAGE_PRICES.map(({ lessons, amountCents }) => {
         const shown = first ? amountCents * 9 / 10 : amountCents;
         return <article key={lessons} className={`rounded-3xl border bg-white p-6 shadow-sm ${selectedLessons === lessons ? "border-[#2F3AA2] ring-2 ring-[#2F3AA2]/20" : "border-black/5"}`}>

@@ -1,3 +1,4 @@
+import LearningFiles from "@/components/LearningFiles";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -37,6 +38,7 @@ export default async function LearningPage() {
 
   return (
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
+      <div className="mx-auto max-w-6xl px-5"><LearningFiles studentId={user.id} /></div>
       <header className="border-b border-black/5 bg-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
           <Link

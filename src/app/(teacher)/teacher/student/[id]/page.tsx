@@ -1,3 +1,4 @@
+import LearningFiles from "@/components/LearningFiles";
 import PlacementResults from "@/components/PlacementResults";
 import Link from "next/link";
 import {
@@ -174,6 +175,7 @@ async function renderStudentPage(
 
   return (
     <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
+      <LearningFiles studentId={studentId} teacher />
       <PlacementResults studentId={studentId} />
       <PlacementResults studentId={studentId} kind="progress" />
       <header className="border-b border-black/5 bg-white">

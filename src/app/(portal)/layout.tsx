@@ -1,12 +1,11 @@
 import PortalNav from "@/components/PortalNav";
-import { requireRole } from "@/lib/auth";
 
 export default async function PortalLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  await requireRole("student");
+  // Each page authorizes before reading data; route-specific redirects retain purchase intent.
 
   return (
     <div className="min-h-screen bg-[#f7f8f5] lg:flex">

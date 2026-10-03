@@ -12,8 +12,6 @@ import {
 } from "lucide-react";
 
 const navItems = [
-  { label: "Kontrolný test", href: "/progress-test", icon: ChartNoAxesColumnIncreasing },
-  { label: "Vstupný test", href: "/level-test", icon: BookOpen },
   {
     label: "Domov",
     href: "/dashboard",
@@ -34,6 +32,8 @@ const navItems = [
     href: "/progress",
     icon: ChartNoAxesColumnIncreasing,
   },
+  { label: "Vstupný test", href: "/level-test", icon: BookOpen },
+  { label: "Kontrolný test", href: "/progress-test", icon: ChartNoAxesColumnIncreasing },
 ];
 
 export default function PortalNav({ paymentsEnabled }: { paymentsEnabled: boolean }) {

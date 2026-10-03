@@ -53,7 +53,7 @@ export default async function TeacherSchedulePage() {
 
   const now = new Date().toISOString();
 
-  const { data: lessons } = await supabase
+  const { data: lessons, error: lessonsError } = await supabase
     .from("lessons")
     .select(`
       id,
@@ -102,7 +102,7 @@ export default async function TeacherSchedulePage() {
     .order("scheduled_at", { ascending: false })
     .limit(10);
 
-  const { data: requests } = await supabase
+  const { data: requests, error: requestsError } = await supabase
     .from("schedule_change_requests")
     .select(`
       id,
@@ -126,6 +126,10 @@ export default async function TeacherSchedulePage() {
     `)
     .eq("status", "pending")
     .order("requested_at", { ascending: true });
+
+  if (lessonsError || overdueError || requestsError) {
+    throw new Error("Teacher schedule data is unavailable");
+  }
 
   const teacherRequests =
     requests?.filter((request) => {

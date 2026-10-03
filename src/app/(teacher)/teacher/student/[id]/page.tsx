@@ -74,7 +74,9 @@ export default async function TeacherStudentPage({
     .limit(1)
     .maybeSingle();
 
-  if (assignmentError || !assignedLesson?.student_id) {
+  if (assignmentError) throw new Error("Teacher student assignment is unavailable");
+
+  if (!assignedLesson?.student_id) {
     notFound();
   }
 
@@ -128,6 +130,10 @@ async function renderStudentPage(
       .order("updated_at", { ascending: false })
       .limit(1),
   ]);
+
+  if (profileResult.error || lessonsResult.error || packagesResult.error || reportsResult.error) {
+    throw new Error("Teacher student data is unavailable");
+  }
 
   const profile = profileResult.data;
   const lessons = lessonsResult.data ?? [];

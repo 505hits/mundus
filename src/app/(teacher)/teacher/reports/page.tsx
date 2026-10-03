@@ -79,6 +79,10 @@ export default async function TeacherReportsPage() {
         .in("lesson_id", lessonIds)
     : { data: [], error: null };
 
+  if (lessonsError || reportsError) {
+    throw new Error("Teacher lesson reports are unavailable");
+  }
+
   const reportMap = new Map(
     (reports ?? []).map((report) => [report.lesson_id, report])
   );
@@ -107,12 +111,6 @@ export default async function TeacherReportsPage() {
             Po každej dokončenej hodine pridajte krátky záznam, aby mal študent aktuálny prehľad o svojom napredovaní.
           </p>
         </section>
-
-        {(lessonsError || reportsError) && (
-          <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            Nepodarilo sa načítať všetky záznamy z hodín. Obnovte stránku alebo to skúste o chvíľu znova.
-          </div>
-        )}
 
         <section className="mt-8 grid gap-4 sm:grid-cols-3">
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">

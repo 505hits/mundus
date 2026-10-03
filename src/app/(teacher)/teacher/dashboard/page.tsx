@@ -81,7 +81,7 @@ export default async function TeacherDashboardPage() {
     now.getTime() + 36 * 60 * 60 * 1000
   ).toISOString();
 
-  const { data: todayLessonCandidates } = await supabase
+  const { data: todayLessonCandidates, error: todayLessonCandidatesError } = await supabase
     .from("lessons")
     .select(`
       id,
@@ -102,12 +102,14 @@ export default async function TeacherDashboardPage() {
     .lte("scheduled_at", todayWindowEnd)
     .order("scheduled_at", { ascending: true });
 
+  if (todayLessonCandidatesError) throw new Error("Teacher lessons are unavailable");
+
   const todayLessons = (todayLessonCandidates ?? []).filter(
     (lesson) =>
       bratislavaDateFormatter.format(new Date(lesson.scheduled_at)) === todayKey
   );
 
-  const { data: upcomingLessons } = await supabase
+  const { data: upcomingLessons, error: upcomingLessonsError } = await supabase
     .from("lessons")
     .select(`
       id,
@@ -123,12 +125,12 @@ export default async function TeacherDashboardPage() {
     .gte("scheduled_at", now.toISOString())
     .order("scheduled_at", { ascending: true });
 
-  const { data: assignedLessonStudents } = await supabase
+  const { data: assignedLessonStudents, error: assignedLessonStudentsError } = await supabase
     .from("lessons")
     .select("student_id")
     .eq("teacher_id", user.id);
 
-  const { data: pendingRequests } = await supabase
+  const { data: pendingRequests, error: pendingRequestsError } = await supabase
     .from("schedule_change_requests")
     .select(`
       id,
@@ -147,6 +149,10 @@ export default async function TeacherDashboardPage() {
     `)
     .eq("status", "pending")
     .order("requested_at", { ascending: true });
+
+  if (upcomingLessonsError || assignedLessonStudentsError || pendingRequestsError) {
+    throw new Error("Teacher dashboard data is unavailable");
+  }
 
   const myPendingRequests =
     pendingRequests?.filter((request) => {

@@ -218,11 +218,11 @@ export default async function DashboardPage() {
                 ) : (
                   <>
                     <h2 className="mt-3 text-2xl font-semibold">
-                      Zatiaľ nemáte naplánovanú hodinu
+                      {lessonsError ? "Najbližšiu hodinu sa nepodarilo načítať" : "Zatiaľ nemáte naplánovanú hodinu"}
                     </h2>
 
                     <p className="mt-4 text-sm text-white/60">
-                      Vaša najbližšia potvrdená hodina sa zobrazí tu.
+                      {lessonsError ? "Obnovte stránku alebo to skúste o chvíľu znova." : "Vaša najbližšia potvrdená hodina sa zobrazí tu."}
                     </p>
                   </>
                 )}
@@ -278,7 +278,7 @@ export default async function DashboardPage() {
             </p>
             {paymentEnabled() && <Link href="/packages" className="mt-2 inline-block text-sm font-semibold text-[#2F3AA2] underline">Zobraziť balíčky a platby</Link>}
 
-            {activePackages.length > 0 ? (
+            {packagesError ? <p className="mt-4 text-sm text-red-700">Zostatok a stav balíčka sa nepodarilo načítať. Obnovte stránku alebo to skúste o chvíľu znova.</p> : activePackages.length > 0 ? (
               <>
                 <div className="mt-4">
                   <p className="text-5xl font-semibold tracking-tight">
@@ -373,7 +373,7 @@ export default async function DashboardPage() {
                 </p>
 
                 <h2 className="mt-1 text-xl font-semibold">
-                  {latestHomework
+                  {reportsError ? "Domácu úlohu sa nepodarilo načítať" : latestHomework
                     ? "Vaša posledná domáca úloha"
                     : "Zatiaľ nemáte domácu úlohu"}
                 </h2>
@@ -385,7 +385,7 @@ export default async function DashboardPage() {
             </div>
 
             <p className="mt-5 text-sm leading-6 text-gray-500">
-              {latestHomework
+              {reportsError ? "Obnovte stránku alebo to skúste o chvíľu znova." : latestHomework
                 ? latestHomework
                 : "Nové úlohy od lektora sa zobrazia po uložení záznamu z hodiny."}
             </p>

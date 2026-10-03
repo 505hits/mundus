@@ -97,11 +97,11 @@ export default async function LearningPage() {
               ) : (
                 <>
                   <h2 className="mt-3 text-2xl font-semibold">
-                    Zatiaľ nemáte zadanú domácu úlohu
+                    {error ? "Domácu úlohu sa nepodarilo načítať" : "Zatiaľ nemáte zadanú domácu úlohu"}
                   </h2>
 
                   <p className="mt-4 max-w-xl leading-7 text-white/60">
-                    Domáca úloha od lektora sa zobrazí po uložení záznamu z hodiny.
+                    {error ? "Obnovte stránku alebo to skúste o chvíľu znova." : "Domáca úloha od lektora sa zobrazí po uložení záznamu z hodiny."}
                   </p>
                 </>
               )}
@@ -123,7 +123,7 @@ export default async function LearningPage() {
               <p className="text-sm text-gray-400">Ďalšie zameranie</p>
 
               <h2 className="mt-1 text-xl font-semibold">
-                {latestReport?.next_focus?.trim() ||
+                {error ? "Odporúčanie sa nepodarilo načítať." : latestReport?.next_focus?.trim() ||
                   "Tu sa zobrazí odporúčanie, na čo sa zamerať ďalej."}
               </h2>
 
@@ -173,10 +173,10 @@ export default async function LearningPage() {
             </div>
           ) : (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
-              <p className="font-medium">Zatiaľ žiadne domáce úlohy</p>
+              <p className="font-medium">{error ? "Históriu domácich úloh sa nepodarilo načítať" : "Zatiaľ žiadne domáce úlohy"}</p>
 
               <p className="mt-1 text-sm text-gray-400">
-                Zadania od lektora sa zobrazia tu.
+                {error ? "Obnovte stránku alebo to skúste o chvíľu znova." : "Zadania od lektora sa zobrazia tu."}
               </p>
             </div>
           )}

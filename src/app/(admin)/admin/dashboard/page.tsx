@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { renewalAttention } from "@/lib/renewal-attention";
 import {
   AlertCircle,
   BookOpen,
@@ -52,7 +54,7 @@ export default async function AdminDashboardPage() {
     { data: packages, error: packagesError },
     { data: requests, error: requestsError },
   ] = await Promise.all([
-    supabase.from("profiles").select("id").eq("role", "student").eq("status", "active"),
+    supabase.from("profiles").select("id,full_name,email").eq("role", "student").eq("status", "active"),
     supabase.from("profiles").select("id").eq("role", "teacher").eq("status", "active"),
     supabase
       .from("lessons")
@@ -65,7 +67,7 @@ export default async function AdminDashboardPage() {
     supabase
       .from("lesson_packages")
       .select("student_id,remaining_lessons,status")
-      .eq("status", "active"),
+      .in("status", ["active", "completed"]),
     supabase
       .from("schedule_change_requests")
       .select("id,status")
@@ -106,12 +108,13 @@ export default async function AdminDashboardPage() {
   );
 
   const lowPackages = (packages ?? []).filter(
-    (pkg) => (pkg.remaining_lessons ?? 0) > 0 && (pkg.remaining_lessons ?? 0) <= 2
+    (pkg) => pkg.status === "active" && (pkg.remaining_lessons ?? 0) > 0 && (pkg.remaining_lessons ?? 0) <= 2
   );
   const noUpcoming = (students ?? []).filter(
     (student) => !upcomingStudentIds.has(student.id)
   ).length;
   const pendingRequests = requests?.length ?? 0;
+  const renewalRows = studentsError || packagesError ? null : renewalAttention(students ?? [], packages ?? []);
 
   const firstName =
     profile?.full_name?.trim()?.split(/\s+/)[0] || "Administrátor";
@@ -140,22 +143,22 @@ export default async function AdminDashboardPage() {
         <section className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <Users size={20} className="text-[#9a8049]" />
-            <p className="mt-4 text-3xl font-semibold">{students?.length ?? 0}</p>
+            <p className="mt-4 text-3xl font-semibold">{studentsError ? "—" : students?.length ?? 0}</p>
             <p className="mt-1 text-sm text-gray-500">Aktívni študenti</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <GraduationCap size={20} className="text-[#9a8049]" />
-            <p className="mt-4 text-3xl font-semibold">{teachers?.length ?? 0}</p>
+            <p className="mt-4 text-3xl font-semibold">{teachersError ? "—" : teachers?.length ?? 0}</p>
             <p className="mt-1 text-sm text-gray-500">Aktívni lektori</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CalendarDays size={20} className="text-[#9a8049]" />
-            <p className="mt-4 text-3xl font-semibold">{todayLessons.length}</p>
+            <p className="mt-4 text-3xl font-semibold">{lessonsError ? "—" : todayLessons.length}</p>
             <p className="mt-1 text-sm text-gray-500">Dnešné hodiny</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <AlertCircle size={20} className="text-[#9a8049]" />
-            <p className="mt-4 text-3xl font-semibold">{pendingRequests}</p>
+            <p className="mt-4 text-3xl font-semibold">{requestsError ? "—" : pendingRequests}</p>
             <p className="mt-1 text-sm text-gray-500">Čakajúce žiadosti o zmenu termínu</p>
           </div>
         </section>
@@ -172,15 +175,15 @@ export default async function AdminDashboardPage() {
 
             <div className="mt-5 space-y-3">
               <div className="rounded-2xl bg-[#faf8f2] p-4">
-                <p className="font-medium">{packageAlertLabel(lowPackages.length)}</p>
+                <p className="font-medium">{packagesError ? "Stav balíčkov sa nepodarilo načítať" : packageAlertLabel(lowPackages.length)}</p>
                 <p className="mt-1 text-sm text-gray-500">Odporúčame kontaktovať študenta ohľadom pokračovania.</p>
               </div>
               <div className="rounded-2xl bg-[#faf8f2] p-4">
-                <p className="font-medium">{requestAlertLabel(pendingRequests)}</p>
+                <p className="font-medium">{requestsError ? "Žiadosti sa nepodarilo načítať" : requestAlertLabel(pendingRequests)}</p>
                 <p className="mt-1 text-sm text-gray-500">Čaká sa na kontrolu alebo odpoveď lektora.</p>
               </div>
               <div className="rounded-2xl bg-[#faf8f2] p-4">
-                <p className="font-medium">{noUpcomingLabel(noUpcoming)}</p>
+                <p className="font-medium">{studentsError || lessonsError ? "Ďalšie termíny sa nepodarilo overiť" : noUpcomingLabel(noUpcoming)}</p>
                 <p className="mt-1 text-sm text-gray-500">Môže byť potrebné dohodnúť ďalší termín.</p>
               </div>
             </div>
@@ -190,10 +193,17 @@ export default async function AdminDashboardPage() {
             <Package size={21} className="text-[#d7b56d]" />
             <p className="mt-5 text-sm text-white/50">Balíčky</p>
             <h2 className="mt-1 text-xl font-semibold">Prehľad pokračovania</h2>
-            <p className="mt-7 text-4xl font-semibold">{lowPackages.length}</p>
+            <p className="mt-7 text-4xl font-semibold">{packagesError ? "—" : lowPackages.length}</p>
             <p className="mt-2 text-sm text-white/65">Aktívne balíčky s poslednými 1–2 hodinami</p>
           </section>
         </div>
+
+        <section className="mt-8 rounded-3xl border border-indigo-100 bg-white p-6 shadow-sm">
+          <h2 className="text-xl font-semibold text-[#2F3AA2]">Komu sa ozvať ohľadom pokračovania</h2>
+          <p className="mt-2 text-sm text-gray-600">Aktívni študenti s celkovým zostatkom 0–2 hodiny. Nové účty bez zakúpeného balíčka sem nepatria. Pred kontaktovaním skontrolujte balíčky a dohodnuté termíny.</p>
+          {renewalRows === null ? <p role="alert" className="mt-4 text-red-700">Zostatky sa nepodarilo overiť. Obnovte stránku.</p> : renewalRows.length === 0 ? <p className="mt-4 text-gray-600">Momentálne nikto nemá zostatok 0–2 hodiny na pokračovanie.</p> : <ul className="mt-5 divide-y divide-indigo-100">{renewalRows.map(student => <li key={student.id} className="flex flex-wrap items-center justify-between gap-3 py-4"><div><p className="font-semibold">{getName(student,"Študent")}</p><p className="break-all text-sm text-gray-600">{student.email || "E-mail nie je uvedený"}</p></div><span className="rounded-full bg-indigo-50 px-3 py-2 text-sm font-semibold text-[#2F3AA2]">{student.remaining === 0 ? "Balíček vyčerpaný" : student.remaining === 1 ? "Posledná hodina" : "Posledné 2 hodiny"}</span></li>)}</ul>}
+          <div className="mt-5 flex flex-wrap gap-4"><Link href="/admin/packages" className="font-semibold text-[#2F3AA2] underline">Skontrolovať balíčky</Link><Link href="/admin/students" className="font-semibold text-[#2F3AA2] underline">Prehľad študentov</Link><Link href="/admin/lessons" className="font-semibold text-[#2F3AA2] underline">Dohodnuté hodiny</Link></div>
+        </section>
 
         <section className="mt-8 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
@@ -210,7 +220,7 @@ export default async function AdminDashboardPage() {
             <BookOpen size={21} className="text-[#9a8049]" />
           </div>
 
-          {todayLessons.length === 0 ? (
+          {lessonsError ? <p className="mt-5 text-sm text-red-700">Dnešné hodiny sa nepodarilo načítať. Obnovte stránku.</p> : todayLessons.length === 0 ? (
             <p className="mt-5 text-sm text-gray-500">Na dnes nie sú naplánované žiadne hodiny.</p>
           ) : (
             <div className="mt-5 divide-y divide-gray-100">

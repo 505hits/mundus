@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import { renewalAttention } from '../src/lib/renewal-attention.ts';
+const students = ['new','due','one','two','renewed','multiple','unknown','inactive-package'].map(id => ({id,full_name:id}));
+const pkg = (student_id,remaining_lessons,status='active') => ({student_id,remaining_lessons,status});
+const packages = [pkg('due',0,'completed'),pkg('one',1),pkg('two',2),pkg('renewed',0,'completed'),pkg('renewed',10),pkg('multiple',1),pkg('multiple',2),pkg('unknown',null),pkg('unknown',0,'completed'),pkg('inactive-package',0,'inactive'),pkg('unrelated',0)];
+assert.deepEqual(renewalAttention(students,packages).map(s => [s.id,s.remaining]), [['due',0],['one',1],['two',2]]);
+assert.deepEqual(renewalAttention([{id:'x'}],[pkg('x',-1)]),[]);
+assert.deepEqual(renewalAttention([{id:'x'}],[pkg('x',1.5)]),[]);
+assert.equal(renewalAttention([{id:'x'}],[pkg('x',0),pkg('x',0,'completed')]).length,1);
+console.log('PASS: per-student renewal attention, completed packages, repurchases, aggregate balance and unknown data');

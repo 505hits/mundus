@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CalendarPlus } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
+import { bratislavaLocalToUtc, INVALID_LESSON_TIME } from "@/lib/lesson-time";
 import { formatLessonCount } from "@/lib/portalLabels";
 
 type PackageOption = {
@@ -19,64 +20,6 @@ type Props = {
   packages: PackageOption[];
 };
 
-function getTimeZoneOffset(date: Date, timeZone: string) {
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hourCycle: "h23",
-  }).formatToParts(date);
-
-  const values = Object.fromEntries(
-    parts
-      .filter((part) => part.type !== "literal")
-      .map((part) => [part.type, Number(part.value)])
-  );
-
-  return (
-    Date.UTC(
-      values.year,
-      values.month - 1,
-      values.day,
-      values.hour,
-      values.minute,
-      values.second
-    ) - date.getTime()
-  );
-}
-
-function bratislavaLocalToUtc(value: string) {
-  const [datePart, timePart] = value.split("T");
-  const [year, month, day] = datePart.split("-").map(Number);
-  const [hour, minute] = timePart.split(":").map(Number);
-
-  const localAsUtc = new Date(
-    Date.UTC(year, month - 1, day, hour, minute, 0)
-  );
-
-  let offset = getTimeZoneOffset(
-    localAsUtc,
-    "Europe/Bratislava"
-  );
-
-  let result = new Date(localAsUtc.getTime() - offset);
-
-  const correctedOffset = getTimeZoneOffset(
-    result,
-    "Europe/Bratislava"
-  );
-
-  if (correctedOffset !== offset) {
-    offset = correctedOffset;
-    result = new Date(localAsUtc.getTime() - offset);
-  }
-
-  return result;
-}
 
 export default function CreateLessonForm({
   studentId,
@@ -120,8 +63,12 @@ export default function CreateLessonForm({
 
     const scheduledAt = bratislavaLocalToUtc(dateTime);
 
+    if (Number.isNaN(scheduledAt.getTime())) {
+      setError(INVALID_LESSON_TIME);
+      return;
+    }
+
     if (
-      Number.isNaN(scheduledAt.getTime()) ||
       scheduledAt.getTime() <= Date.now()
     ) {
       setError("Termín hodiny musí byť v budúcnosti.");

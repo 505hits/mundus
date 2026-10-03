@@ -13,7 +13,12 @@ from pg_class c join pg_namespace n on n.oid=c.relnamespace
 where n.nspname='public' and c.relname in ('profiles','lessons','lesson_packages','lesson_reports','schedule_change_requests',
  'student_onboarding','payment_orders','payment_discount_settings','placement_results','learning_files','notification_outbox');
 select tablename,policyname,roles,cmd from pg_policies where schemaname='public'
-and tablename in ('profiles','lessons','lesson_packages','schedule_change_requests','placement_results','learning_files','notification_outbox');
+and tablename in ('profiles','lessons','lesson_packages','lesson_reports','schedule_change_requests','placement_results','learning_files','notification_outbox');
+
+-- Student report access must use the safe own-account RPC, with direct private reads restricted.
+select to_regprocedure('public.student_lesson_reports()') is not null as student_report_rpc_exists,
+ exists(select 1 from pg_policies where schemaname='public' and tablename='lesson_reports'
+   and policyname='Report private fields require staff access' and permissive='RESTRICTIVE') as report_privacy_policy_exists;
 
 -- Identify existing package/accounting triggers BEFORE adding any deduction logic.
 select c.relname as table_name,t.tgname as trigger_name,p.proname as function_name,t.tgenabled
@@ -44,5 +49,5 @@ select p.proname,has_function_privilege('anon',p.oid,'EXECUTE') as anon_execute,
  has_function_privilege('authenticated',p.oid,'EXECUTE') as client_execute
 from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public'
 and p.proname in ('mundus_reserve_payment_order','mundus_fulfill_payment_order','mundus_attach_checkout_session',
- 'claim_schedule_emails','retry_schedule_email','mundus_german_assessments_ready');
+ 'claim_schedule_emails','retry_schedule_email','mundus_german_assessments_ready','student_lesson_reports');
 commit;

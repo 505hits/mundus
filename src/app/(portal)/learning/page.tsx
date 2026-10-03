@@ -6,6 +6,7 @@ import {
   FileText,
   Target,
 } from "lucide-react";
+import type { StudentLessonReport } from "@/lib/student-report";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -23,13 +24,11 @@ export default async function LearningPage() {
   const supabase = await createSupabaseServerClient();
 
   const { data: reports, error } = await supabase
-    .from("lesson_reports")
-    .select("id,topic,student_note,homework,next_focus,updated_at")
-    .eq("student_id", user.id)
+    .rpc("student_lesson_reports")
     .order("updated_at", { ascending: false })
     .limit(20);
 
-  const teacherReports = reports ?? [];
+  const teacherReports: StudentLessonReport[] = Array.isArray(reports) ? reports : [];
   const homeworkReports = teacherReports.filter(
     (report) => report.homework?.trim()
   );

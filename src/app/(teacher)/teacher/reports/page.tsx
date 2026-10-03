@@ -220,11 +220,15 @@ export default async function TeacherReportsPage() {
                         </div>
                       </div>
 
-                      <LessonReportForm
+                      {reportsError ? (
+                        <p role="alert" className="text-sm text-red-700">
+                          Záznam sa nepodarilo načítať. Pred úpravou obnovte stránku.
+                        </p>
+                      ) : <LessonReportForm
                         lessonId={lesson.id}
                         studentId={lesson.student_id}
                         existingReport={report ?? null}
-                      />
+                      />}
                     </div>
                   </article>
                 );

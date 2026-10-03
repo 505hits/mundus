@@ -9,6 +9,7 @@ import {
   Target,
   TrendingUp,
 } from "lucide-react";
+import type { StudentLessonReport } from "@/lib/student-report";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatLanguage, formatLessonType, formatProgressLabel } from "@/lib/portalLabels";
@@ -40,11 +41,7 @@ export default async function ProgressPage() {
         .order("purchased_at", { ascending: false }),
 
       supabase
-        .from("lesson_reports")
-        .select(
-          "id,lesson_id,topic,progress,student_note,homework,next_focus,updated_at"
-        )
-        .eq("student_id", user.id)
+        .rpc("student_lesson_reports")
         .order("updated_at", { ascending: false }),
     ]);
 
@@ -55,7 +52,7 @@ export default async function ProgressPage() {
   );
 
   const activePackages = packages ?? [];
-  const teacherReports = reports ?? [];
+  const teacherReports: StudentLessonReport[] = Array.isArray(reports) ? reports : [];
   const latestReport = teacherReports[0] ?? null;
 
   const totalLessons = activePackages.reduce(

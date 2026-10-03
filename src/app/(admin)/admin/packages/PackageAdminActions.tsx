@@ -39,6 +39,7 @@ export default function PackageAdminActions({
     const remainingValue = Number(remaining);
 
     if (
+      !remaining.trim() ||
       !Number.isInteger(remainingValue) ||
       remainingValue < 0 ||
       remainingValue > totalLessons
@@ -61,30 +62,35 @@ export default function PackageAdminActions({
 
     setSaving(true);
 
-    const supabase = createSupabaseBrowserClient();
+    try {
+      const supabase = createSupabaseBrowserClient();
 
-    const { data: updatedPackage, error: updateError } = await supabase
-      .from("lesson_packages")
-      .update({
-        remaining_lessons: remainingValue,
-        used_lessons: totalLessons - remainingValue,
-        status: normalizedStatus,
-      })
-      .eq("id", packageId)
-      .select("id")
-      .maybeSingle();
+      const { data: updatedPackage, error: updateError } = await supabase
+        .from("lesson_packages")
+        .update({
+          remaining_lessons: remainingValue,
+          used_lessons: totalLessons - remainingValue,
+          status: normalizedStatus,
+        })
+        .eq("id", packageId)
+        .eq("remaining_lessons", remainingLessons)
+        .select("id")
+        .maybeSingle();
 
-    if (updateError || !updatedPackage) {
-      setError(
-        "Balíček sa nepodarilo aktualizovať. Skúste to prosím znova."
-      );
+      if (updateError || !updatedPackage) {
+        setError(
+          "Balíček sa nepodarilo aktualizovať. Obnovte stránku a skontrolujte aktuálny zostatok."
+        );
+        return;
+      }
+
+      setSaved(true);
+      router.refresh();
+    } catch {
+      setError("Uloženie sa nepodarilo. Skontrolujte pripojenie a skúste to znova.");
+    } finally {
       setSaving(false);
-      return;
     }
-
-    setSaved(true);
-    setSaving(false);
-    router.refresh();
   }
 
   return (
@@ -101,11 +107,12 @@ export default function PackageAdminActions({
         <label className="block text-xs font-medium text-gray-600">
           Zostávajúce hodiny
           <input
+            disabled={saving}
             type="number"
             min={0}
             max={totalLessons}
             value={remaining}
-            onChange={(event) => setRemaining(event.target.value)}
+            onChange={(event) => { setRemaining(event.target.value); setSaved(false); }}
             className="mt-1.5 w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-[#183f38]"
           />
         </label>
@@ -113,8 +120,9 @@ export default function PackageAdminActions({
         <label className="mt-3 block text-xs font-medium text-gray-600">
           Stav
           <select
+            disabled={saving}
             value={packageStatus}
-            onChange={(event) => setPackageStatus(event.target.value)}
+            onChange={(event) => { setPackageStatus(event.target.value); setSaved(false); }}
             className="mt-1.5 w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-[#183f38]"
           >
             <option value="active">Aktívny</option>
@@ -134,13 +142,13 @@ export default function PackageAdminActions({
         </button>
 
         {saved && (
-          <p className="mt-2 text-xs font-medium text-[#527064]">
+          <p role="status" className="mt-2 text-xs font-medium text-[#527064]">
             Uložené.
           </p>
         )}
 
         {error && (
-          <p className="mt-2 text-xs text-red-700">{error}</p>
+          <p role="alert" className="mt-2 text-xs text-red-700">{error}</p>
         )}
       </div>
     </details>

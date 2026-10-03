@@ -8,6 +8,7 @@ import {
   GraduationCap,
   Video,
 } from "lucide-react";
+import type { StudentLessonReport } from "@/lib/student-report";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatLanguage, formatLessonCount, formatLessonType } from "@/lib/portalLabels";
@@ -68,11 +69,7 @@ export default async function DashboardPage() {
       .limit(5),
 
     supabase
-      .from("lesson_reports")
-      .select(
-        "id,lesson_id,topic,progress,student_note,homework,next_focus,updated_at"
-      )
-      .eq("student_id", user.id)
+      .rpc("student_lesson_reports")
       .order("updated_at", { ascending: false })
       .limit(5),
 
@@ -90,7 +87,7 @@ export default async function DashboardPage() {
   const activePackages = packages ?? [];
   const upcomingLessons = lessons ?? [];
   const nextLesson = upcomingLessons[0] ?? null;
-  const teacherReports = reports ?? [];
+  const teacherReports: StudentLessonReport[] = Array.isArray(reports) ? reports : [];
   const pendingRequestMap = new Map(
     (pendingRequests ?? []).map((request) => [
       request.lesson_id,

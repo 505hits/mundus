@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CalendarPlus } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
+import { bratislavaLocalToUtc, INVALID_LESSON_TIME } from "@/lib/lesson-time";
 import { formatLessonCount } from "@/lib/portalLabels";
 
 type PersonOption = {
@@ -36,64 +37,6 @@ const languages = [
   ["Turkish", "Turečtina"],
 ];
 
-function getTimeZoneOffset(date: Date, timeZone: string) {
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hourCycle: "h23",
-  }).formatToParts(date);
-
-  const values = Object.fromEntries(
-    parts
-      .filter((part) => part.type !== "literal")
-      .map((part) => [part.type, Number(part.value)])
-  );
-
-  return (
-    Date.UTC(
-      values.year,
-      values.month - 1,
-      values.day,
-      values.hour,
-      values.minute,
-      values.second
-    ) - date.getTime()
-  );
-}
-
-function bratislavaLocalToUtc(value: string) {
-  const [datePart, timePart] = value.split("T");
-  const [year, month, day] = datePart.split("-").map(Number);
-  const [hour, minute] = timePart.split(":").map(Number);
-
-  const localAsUtc = new Date(
-    Date.UTC(year, month - 1, day, hour, minute, 0)
-  );
-
-  let offset = getTimeZoneOffset(
-    localAsUtc,
-    "Europe/Bratislava"
-  );
-
-  let result = new Date(localAsUtc.getTime() - offset);
-
-  const correctedOffset = getTimeZoneOffset(
-    result,
-    "Europe/Bratislava"
-  );
-
-  if (correctedOffset !== offset) {
-    offset = correctedOffset;
-    result = new Date(localAsUtc.getTime() - offset);
-  }
-
-  return result;
-}
 
 function personName(person: PersonOption) {
   return person.full_name?.trim() || person.email || "Bez mena";
@@ -157,8 +100,12 @@ export default function AdminCreateLessonForm({
 
     const scheduledAt = bratislavaLocalToUtc(dateTime);
 
+    if (Number.isNaN(scheduledAt.getTime())) {
+      setError(INVALID_LESSON_TIME);
+      return;
+    }
+
     if (
-      Number.isNaN(scheduledAt.getTime()) ||
       scheduledAt.getTime() <= Date.now()
     ) {
       setError("Termín hodiny musí byť v budúcnosti.");
@@ -185,53 +132,56 @@ export default function AdminCreateLessonForm({
 
     setSaving(true);
 
-    const supabase = createSupabaseBrowserClient();
+    try {
+      const supabase = createSupabaseBrowserClient();
 
-    const { data: selectedPackage, error: packageError } = await supabase
-      .from("lesson_packages")
-      .select("id")
-      .eq("id", effectivePackageId)
-      .eq("student_id", studentId)
-      .eq("status", "active")
-      .gt("remaining_lessons", 0)
-      .maybeSingle();
+      const { data: selectedPackage, error: packageError } = await supabase
+        .from("lesson_packages")
+        .select("id")
+        .eq("id", effectivePackageId)
+        .eq("student_id", studentId)
+        .eq("status", "active")
+        .gt("remaining_lessons", 0)
+        .maybeSingle();
 
-    if (packageError || !selectedPackage) {
-      setError(
-        "Vybraný balíček už nemá voľný kredit alebo nepatrí tomuto študentovi."
-      );
+      if (packageError || !selectedPackage) {
+        setError(
+          "Vybraný balíček už nemá voľný kredit alebo nepatrí tomuto študentovi."
+        );
+        return;
+      }
+
+      const { error: insertError } = await supabase
+        .from("lessons")
+        .insert({
+          student_id: studentId,
+          teacher_id: teacherId,
+          scheduled_at: scheduledAt.toISOString(),
+          duration_minutes: durationMinutes,
+          status: "scheduled",
+          lesson_type: "regular",
+          meet_link: trimmedLink || null,
+          language,
+          package_id: effectivePackageId,
+          updated_at: new Date().toISOString(),
+        });
+
+      if (insertError) {
+        setError(
+          "Hodinu sa nepodarilo vytvoriť. Skontrolujte údaje a skúste to znova."
+        );
+        return;
+      }
+
+      setSaved(true);
+      setDateTime("");
+      setMeetLink("");
+      router.refresh();
+    } catch {
+      setError("Uloženie sa nepodarilo. Skontrolujte pripojenie a skúste to znova.");
+    } finally {
       setSaving(false);
-      return;
     }
-
-    const { error: insertError } = await supabase
-      .from("lessons")
-      .insert({
-        student_id: studentId,
-        teacher_id: teacherId,
-        scheduled_at: scheduledAt.toISOString(),
-        duration_minutes: durationMinutes,
-        status: "scheduled",
-        lesson_type: "regular",
-        meet_link: trimmedLink || null,
-        language,
-        package_id: effectivePackageId,
-        updated_at: new Date().toISOString(),
-      });
-
-    if (insertError) {
-      setError(
-        "Hodinu sa nepodarilo vytvoriť. Skontrolujte údaje a skúste to znova."
-      );
-      setSaving(false);
-      return;
-    }
-
-    setSaved(true);
-    setDateTime("");
-    setMeetLink("");
-    setSaving(false);
-    router.refresh();
   }
 
   if (students.length === 0 || teachers.length === 0) {
@@ -253,8 +203,10 @@ export default function AdminCreateLessonForm({
         <label className="text-sm font-medium">
           Študent
           <select
+            disabled={saving}
             value={studentId}
             onChange={(event) => {
+              setSaved(false);
               setStudentId(event.target.value);
               setPackageId("");
             }}
@@ -271,8 +223,9 @@ export default function AdminCreateLessonForm({
         <label className="text-sm font-medium">
           Lektor
           <select
+            disabled={saving}
             value={teacherId}
-            onChange={(event) => setTeacherId(event.target.value)}
+            onChange={(event) => { setTeacherId(event.target.value); setSaved(false); }}
             className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
           >
             {teachers.map((teacher) => (
@@ -286,8 +239,9 @@ export default function AdminCreateLessonForm({
         <label className="text-sm font-medium">
           Jazyk
           <select
+            disabled={saving}
             value={language}
-            onChange={(event) => setLanguage(event.target.value)}
+            onChange={(event) => { setLanguage(event.target.value); setSaved(false); }}
             className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
           >
             {languages.map(([value, label]) => (
@@ -301,9 +255,10 @@ export default function AdminCreateLessonForm({
         <label className="text-sm font-medium">
           Dátum a čas
           <input
+            disabled={saving}
             type="datetime-local"
             value={dateTime}
-            onChange={(event) => setDateTime(event.target.value)}
+            onChange={(event) => { setDateTime(event.target.value); setSaved(false); }}
             className="mt-2 w-full rounded-xl border border-black/10 px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
           />
         </label>
@@ -311,8 +266,9 @@ export default function AdminCreateLessonForm({
         <label className="text-sm font-medium">
           Dĺžka
           <select
+            disabled={saving}
             value={duration}
-            onChange={(event) => setDuration(event.target.value)}
+            onChange={(event) => { setDuration(event.target.value); setSaved(false); }}
             className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
           >
             <option value="30">30 minút</option>
@@ -326,8 +282,8 @@ export default function AdminCreateLessonForm({
           Balíček
           <select
             value={effectivePackageId}
-            onChange={(event) => setPackageId(event.target.value)}
-            disabled={studentPackages.length === 0}
+            onChange={(event) => { setPackageId(event.target.value); setSaved(false); }}
+            disabled={saving || studentPackages.length === 0}
             className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none disabled:bg-gray-100 disabled:text-gray-400"
           >
             {studentPackages.length === 0 ? (
@@ -345,9 +301,10 @@ export default function AdminCreateLessonForm({
         <label className="text-sm font-medium md:col-span-2 xl:col-span-3">
           Odkaz na online hodinu
           <input
+            disabled={saving}
             type="url"
             value={meetLink}
-            onChange={(event) => setMeetLink(event.target.value)}
+            onChange={(event) => { setMeetLink(event.target.value); setSaved(false); }}
             placeholder="https://meet.google.com/..."
             className="mt-2 w-full rounded-xl border border-black/10 px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
           />
@@ -366,13 +323,13 @@ export default function AdminCreateLessonForm({
         </button>
 
         {saved && (
-          <span className="text-sm font-medium text-[#527064]">
+          <span role="status" className="text-sm font-medium text-[#527064]">
             Hodina bola vytvorená.
           </span>
         )}
 
         {error && (
-          <span className="text-sm text-red-700">{error}</span>
+          <span role="alert" className="text-sm text-red-700">{error}</span>
         )}
       </div>
     </details>

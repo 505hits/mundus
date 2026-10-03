@@ -1,3 +1,4 @@
+import { safeLessonLink } from "@/lib/lesson-link";
 import Link from "next/link";
 import {
   CalendarDays,
@@ -186,9 +187,9 @@ export default async function LessonsPage() {
                     </div>
 
                     <div className="flex flex-col gap-2 sm:min-w-[190px]">
-                      {lesson.meet_link ? (
+                      {safeLessonLink(lesson.meet_link) ? (
                         <a
-                          href={lesson.meet_link}
+                          href={safeLessonLink(lesson.meet_link) ?? undefined}
                           target="_blank"
                           rel="noreferrer"
                           className={`flex items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold ${

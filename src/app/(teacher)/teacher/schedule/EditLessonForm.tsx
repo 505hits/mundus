@@ -1,4 +1,5 @@
 "use client";
+import { safeLessonLink } from "@/lib/lesson-link";
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -73,9 +74,9 @@ export default function EditLessonForm({
 
     if (
       trimmedLink &&
-      !/^https:\/\//i.test(trimmedLink)
+      !safeLessonLink(trimmedLink)
     ) {
-      setError("Odkaz na online hodinu musí začínať https://");
+      setError("Zadajte platný odkaz na online hodinu s https:// bez prihlasovacích údajov.");
       return;
     }
 

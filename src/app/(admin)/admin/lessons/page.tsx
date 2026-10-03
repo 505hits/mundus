@@ -1,3 +1,4 @@
+import { safeLessonLink } from "@/lib/lesson-link";
 import ScheduleNotificationStatus from "@/components/ScheduleNotificationStatus";
 import {
   AlertCircle,
@@ -156,8 +157,8 @@ export default async function AdminLessonsPage() {
                       </span>
                     </div>
                     <div>
-                      {lesson.meet_link && (
-                        <a href={lesson.meet_link} target="_blank" rel="noreferrer" aria-label="Otvoriť online hodinu" className="inline-flex rounded-xl p-2 text-[#183f38] hover:bg-[#eef3ef]">
+                      {safeLessonLink(lesson.meet_link) && (
+                        <a href={safeLessonLink(lesson.meet_link) ?? undefined} target="_blank" rel="noreferrer" aria-label="Otvoriť online hodinu" className="inline-flex rounded-xl p-2 text-[#183f38] hover:bg-[#eef3ef]">
                           <Video size={17} />
                         </a>
                       )}

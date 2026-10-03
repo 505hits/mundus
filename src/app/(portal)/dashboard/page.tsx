@@ -1,3 +1,4 @@
+import { safeLessonLink } from "@/lib/lesson-link";
 import Link from "next/link";
 import {
   BookOpen,
@@ -235,9 +236,9 @@ export default async function DashboardPage() {
 
             {nextLesson && (
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                {nextLesson.meet_link ? (
+                {safeLessonLink(nextLesson.meet_link) ? (
                   <a
-                    href={nextLesson.meet_link}
+                    href={safeLessonLink(nextLesson.meet_link) ?? undefined}
                     target="_blank"
                     rel="noreferrer"
                     className="flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3.5 font-semibold text-[#183f38]"

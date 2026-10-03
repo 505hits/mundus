@@ -1,3 +1,4 @@
+import { safeLessonLink } from "@/lib/lesson-link";
 import Link from "next/link";
 import {
   AlertCircle,
@@ -363,9 +364,9 @@ export default async function TeacherDashboardPage() {
                         </div>
                       </div>
 
-                      {lesson.meet_link ? (
+                      {safeLessonLink(lesson.meet_link) ? (
                         <a
-                          href={lesson.meet_link}
+                          href={safeLessonLink(lesson.meet_link) ?? undefined}
                           target="_blank"
                           rel="noreferrer"
                           className={`flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold ${

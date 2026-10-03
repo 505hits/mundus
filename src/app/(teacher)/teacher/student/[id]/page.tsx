@@ -1,3 +1,4 @@
+import { safeLessonLink } from "@/lib/lesson-link";
 import LearningFiles from "@/components/LearningFiles";
 import PlacementResults from "@/components/PlacementResults";
 import Link from "next/link";
@@ -281,9 +282,9 @@ async function renderStudentPage(
                 </div>
               </div>
 
-              {nextLesson.meet_link ? (
+              {safeLessonLink(nextLesson.meet_link) ? (
                 <a
-                  href={nextLesson.meet_link}
+                  href={safeLessonLink(nextLesson.meet_link) ?? undefined}
                   target="_blank"
                   rel="noreferrer"
                   className="flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 font-semibold text-[#183f38]"

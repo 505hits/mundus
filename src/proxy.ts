@@ -43,7 +43,7 @@ export const config = {
     "/login", "/signup", "/forgot-password", "/reset-password",
     "/auth/:path*", "/onboarding/:path*", "/set-password/:path*",
     "/pending-approval", "/dashboard/:path*", "/lessons/:path*",
-    "/learning/:path*", "/progress/:path*", "/packages/:path*",
+    "/level-test/:path*", "/learning/:path*", "/progress/:path*", "/packages/:path*",
     "/teacher/:path*", "/admin/:path*",
   ],
 };

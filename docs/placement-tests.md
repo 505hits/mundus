@@ -1,0 +1,9 @@
+# Placement tests
+
+English version english-2 is an approximate A1–C2 starting recommendation: 24 questions, four per band (two grammar/vocabulary, one reading, one listening). Each band needs at least three correct answers and all lower bands must meet that threshold. Below A1 is reported as beginner; C2 is the highest estimate. This is a small original question bank, not a calibrated CEFR exam or certificate. Teachers must review suitability and assess speaking. Other languages do not yet have question banks.
+
+Listening uses browser speech synthesis with an English voice and requires a user playback action. The client enables submission after all six passages finish. Voice quality/availability vary by device; unavailable audio provides an error and support guidance. Browser playback is a usability requirement, not anti-cheating verification. Correct answers and scoring remain in server code; submitted scores and student IDs are ignored. Repeating tests is allowed and retained as separate attempts.
+
+Apply 202610030002_placement_results.sql after account onboarding in the verified preview database. Results are written only by the server service client. RLS permits own student results, active assigned teachers (assignment through lessons), and active admins. Students cannot insert/change their own score. Teacher detail page shows latest five attempts and overall plus skill scores. Results do not overwrite onboarding level or confer account/payment privileges.
+
+Run npm test and npm run build -- --webpack. Placement tests validate band structure, scoring, foundation gaps, invalid answers, ownership, teacher assignment and forged client writes. Real browser audio playback and the complete Supabase save/read flow still require testing on the connected preview. Check desktop/mobile playback, interrupted audio, denied audio support, validation, save failure, returning result history and assigned teacher access before launch.

@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 const navItems = [
+  { label: "Vstupný test", href: "/level-test", icon: BookOpen },
   {
     label: "Domov",
     href: "/dashboard",

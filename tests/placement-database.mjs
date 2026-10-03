@@ -1,0 +1,25 @@
+import { PGlite } from '@electric-sql/pglite';
+import { readFileSync } from 'node:fs';
+import assert from 'node:assert/strict';
+const db=new PGlite();
+const student='00000000-0000-4000-8000-000000000001', other='00000000-0000-4000-8000-000000000002', teacher='00000000-0000-4000-8000-000000000003', outsider='00000000-0000-4000-8000-000000000004', admin='00000000-0000-4000-8000-000000000005';
+await db.exec(`create role anon; create role authenticated; create role service_role bypassrls; create schema auth;
+create function auth.uid() returns uuid language sql as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;
+create table profiles(id uuid primary key,role text,status text); create table lessons(student_id uuid,teacher_id uuid);
+grant usage on schema auth to authenticated; grant select on profiles,lessons to authenticated;
+insert into profiles values('${student}','student','active'),('${other}','student','active'),('${teacher}','teacher','active'),('${outsider}','teacher','active'),('${admin}','admin','active');
+insert into lessons values('${student}','${teacher}');`);
+await db.exec(readFileSync(new URL('../supabase/migrations/202610030002_placement_results.sql',import.meta.url),'utf8'));
+await db.exec(`set role service_role; insert into placement_results(student_id,language,test_version,score,band_scores,skill_scores,recommendation) values('${student}','Angličtina','english-2',12,'[3,3,3,3,0,0]','{"grammar":6,"reading":3,"listening":3}','B2'); reset role;`);
+async function login(id){await db.exec(`reset role; set request.jwt.claim.sub='${id}'; set role authenticated;`);}
+await login(student);assert.equal((await db.query('select * from placement_results')).rows.length,1);
+await assert.rejects(db.query("update placement_results set score=24"),/permission denied/);
+await assert.rejects(db.query("insert into placement_results(student_id,language,test_version,score,band_scores,skill_scores,recommendation) values($1,'Angličtina','forged',24,'[]','{}','C2')",[student]),/permission denied/);
+await login(other);assert.equal((await db.query('select * from placement_results')).rows.length,0);
+await login(teacher);assert.equal((await db.query('select * from placement_results')).rows.length,1);
+await login(outsider);assert.equal((await db.query('select * from placement_results')).rows.length,0);
+await login(admin);assert.equal((await db.query('select * from placement_results')).rows.length,1);
+await db.exec(`reset role; update profiles set status='inactive' where id='${teacher}'`);
+await login(teacher);assert.equal((await db.query('select * from placement_results')).rows.length,0);
+await db.exec('reset role; set role anon');await assert.rejects(db.query('select * from placement_results'),/permission denied/);
+console.log('PASS: placement ownership, assigned teacher access, inactive access and client forgery prevention');await db.close();

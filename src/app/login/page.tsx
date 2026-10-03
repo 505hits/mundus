@@ -10,6 +10,7 @@ import { purchaseReturnPath } from "@/lib/purchase-intent";
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [nextPath, setNextPath] = useState<string | null>(null);
@@ -57,7 +58,17 @@ export default function LoginPage() {
         return;
       }
       const desired = purchaseReturnPath(new URLSearchParams(window.location.search).get("next"));
-      window.location.href = profile.role === "student" && data.user.user_metadata.signup_source === "self_service"
+      let needsOnboarding = false;
+      if (profile.role === "student" && data.user.user_metadata.signup_source === "self_service") {
+        const { data: onboarding, error: onboardingError } = await supabase
+          .from("student_onboarding").select("completed_at").eq("student_id", data.user.id).maybeSingle();
+        if (onboardingError) {
+          setError("Nepodarilo sa overiť nastavenie účtu. Skúste to znova alebo kontaktujte Mundus.");
+          return;
+        }
+        needsOnboarding = !onboarding?.completed_at;
+      }
+      window.location.href = needsOnboarding
         ? `/onboarding${desired ? `?next=${encodeURIComponent(desired)}` : ""}`
         : profile.role === "student" && desired ? desired : destination;
     } catch {
@@ -131,7 +142,7 @@ export default function LoginPage() {
             Prihláste sa a majte prehľad o svojich hodinách, materiáloch a pokroku.
           </p>
 
-          <form onSubmit={handleLogin} className="mt-9 space-y-5">
+          <form onSubmit={handleLogin} aria-busy={loading} className="mt-9 space-y-5">
             <label className="block">
               <span className="text-sm font-medium text-gray-700">
                 E-mailová adresa
@@ -144,7 +155,7 @@ export default function LoginPage() {
                 placeholder="meno@email.com"
                 required
                 autoComplete="email"
-                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-gray-800 shadow-sm outline-none focus:border-[#2F3AA2]"
+                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-gray-800 shadow-sm outline-none focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10"
               />
             </label>
 
@@ -154,17 +165,19 @@ export default function LoginPage() {
               </span>
 
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
+                id="login-password"
                 placeholder="••••••••"
                 required
                 autoComplete="current-password"
-                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-gray-800 shadow-sm outline-none focus:border-[#2F3AA2]"
+                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-gray-800 shadow-sm outline-none focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10"
               />
             </label>
 
-            <div className="-mt-2 text-right">
+            <div className="-mt-2 flex items-center justify-between gap-4">
+              <button type="button" aria-controls="login-password" aria-pressed={showPassword} onClick={() => setShowPassword(value => !value)} className="text-sm font-medium text-[#2F3AA2] hover:underline">{showPassword ? "Skryť heslo" : "Zobraziť heslo"}</button>
               <Link
                 href="/forgot-password"
                 className="text-sm font-medium text-[#2F3AA2] hover:underline"
@@ -174,7 +187,7 @@ export default function LoginPage() {
             </div>
 
             {error && (
-              <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              <div role="alert" className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
                 {error}
               </div>
             )}
@@ -194,7 +207,7 @@ export default function LoginPage() {
           <p className="mt-3 text-center text-xs text-gray-500">Lektorský účet získate cez e-mailovú pozvánku od Mundus.</p>
 
           <p className="mt-8 text-center text-sm text-gray-400">
-            Potrebujete pomoc? Kontaktujte Mundus Languages.
+            Potrebujete pomoc? <Link href="/contact" className="font-medium text-[#2F3AA2] underline">Kontaktujte Mundus Languages.</Link>
           </p>
 
           <div className="mt-6 text-center">

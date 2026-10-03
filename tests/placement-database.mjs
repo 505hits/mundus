@@ -11,6 +11,7 @@ insert into profiles values('${student}','student','active'),('${other}','studen
 insert into lessons values('${student}','${teacher}');`);
 await db.exec(readFileSync(new URL('../supabase/migrations/202610030002_placement_results.sql',import.meta.url),'utf8'));
 await db.exec(readFileSync(new URL('../supabase/migrations/202610030003_progress_assessments.sql',import.meta.url),'utf8'));
+await db.exec(readFileSync(new URL('../supabase/migrations/202610030007_german_assessments.sql',import.meta.url),'utf8'));
 await db.exec(`set role service_role; insert into placement_results(student_id,language,test_version,score,band_scores,skill_scores,recommendation) values('${student}','Angličtina','english-2',12,'[3,3,3,3,0,0]','{"grammar":6,"reading":3,"listening":3}','B2'); reset role;`);
 async function login(id){await db.exec(`reset role; set request.jwt.claim.sub='${id}'; set role authenticated;`);}
 await login(student);assert.equal((await db.query('select * from placement_results')).rows.length,1);
@@ -27,4 +28,8 @@ await db.exec(`reset role; set role service_role; insert into placement_results(
 await login(student);
 assert.equal((await db.query("select score from placement_results where assessment_kind='placement'")).rows[0].score,12,'progress does not replace placement');
 assert.equal((await db.query("select score from placement_results where assessment_kind='progress'")).rows[0].score,24);
+await db.exec(`reset role;set role service_role;insert into placement_results(student_id,language,test_version,assessment_kind,score,band_scores,skill_scores,recommendation) values('${student}','Nemčina','german-progress-1','progress',20,'[4,4,4,4,4,0]','{"grammar":10,"reading":5,"listening":5}','C1')`);
+assert.equal((await db.query("select score from placement_results where language='Nemčina' and assessment_kind='progress'")).rows[0].score,20);
+assert.equal((await db.query("select score from placement_results where language='Angličtina' and assessment_kind='progress'")).rows[0].score,24,'languages retain independent scores');
+assert.equal((await db.query('select mundus_german_assessments_ready() as ready')).rows[0].ready,true);
 console.log('PASS: placement ownership, assigned teacher access, inactive access and client forgery prevention');await db.close();

@@ -29,10 +29,11 @@ export default function LessonStatusActions({
   const router = useRouter();
   const [status, setStatus] = useState("completed");
   const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
 
   async function saveStatus() {
-    if (saving) return;
+    if (saving || saved) return;
 
     setError("");
 
@@ -50,51 +51,55 @@ export default function LessonStatusActions({
 
     setSaving(true);
 
-    const supabase = createSupabaseBrowserClient();
+    try {
+      const supabase = createSupabaseBrowserClient();
 
-    if (status === "completed") {
-      if (!packageId) {
-        setError("K hodine nie je priradený balíček. Kontaktujte administrátora.");
-        setSaving(false);
-        return;
+      if (status === "completed") {
+        if (!packageId) {
+          setError("K hodine nie je priradený balíček. Kontaktujte administrátora.");
+          return;
+        }
+
+        const { data: pkg, error: packageError } = await supabase
+          .from("lesson_packages")
+          .select("id")
+          .eq("id", packageId)
+          .eq("student_id", studentId)
+          .eq("status", "active")
+          .gt("remaining_lessons", 0)
+          .maybeSingle();
+
+        if (packageError || !pkg) {
+          setError("Hodinu nemožno dokončiť: balíček nemá voľný kredit alebo nepatrí tomuto študentovi.");
+          return;
+        }
       }
 
-      const { data: pkg, error: packageError } = await supabase
-        .from("lesson_packages")
+      const { data: updatedLesson, error: updateError } = await supabase
+        .from("lessons")
+        .update({
+          status,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", lessonId)
+        .in("status", ["scheduled", "rescheduled"])
         .select("id")
-        .eq("id", packageId)
-        .eq("student_id", studentId)
-        .eq("status", "active")
-        .gt("remaining_lessons", 0)
         .maybeSingle();
 
-      if (packageError || !pkg) {
-        setError("Hodinu nemožno dokončiť: balíček nemá voľný kredit alebo nepatrí tomuto študentovi.");
-        setSaving(false);
+      if (updateError || !updatedLesson) {
+        setError(
+          "Stav hodiny sa nepodarilo uložiť. Skúste to prosím znova."
+        );
         return;
       }
-    }
 
-    const { data: updatedLesson, error: updateError } = await supabase
-      .from("lessons")
-      .update({
-        status,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", lessonId)
-      .in("status", ["scheduled", "rescheduled"])
-      .select("id")
-      .maybeSingle();
-
-    if (updateError || !updatedLesson) {
-      setError(
-        "Stav hodiny sa nepodarilo uložiť. Skúste to prosím znova."
-      );
+      setSaved(true);
+      router.refresh();
+    } catch {
+      setError("Stav hodiny sa nepodarilo uložiť. Skontrolujte pripojenie a skúste to znova.");
+    } finally {
       setSaving(false);
-      return;
     }
-
-    router.refresh();
   }
 
   return (
@@ -102,7 +107,7 @@ export default function LessonStatusActions({
       <select
         value={status}
         onChange={(event) => setStatus(event.target.value)}
-        disabled={saving}
+        disabled={saving || saved}
         className="rounded-xl border border-black/10 bg-white px-3 py-2.5 text-sm text-[#183f38] outline-none focus:border-[#183f38]"
       >
         {statusOptions.map((option) => (
@@ -115,15 +120,15 @@ export default function LessonStatusActions({
       <button
         type="button"
         onClick={saveStatus}
-        disabled={saving}
+        disabled={saving || saved}
         className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#183f38] px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
       >
         <CheckCircle2 size={16} />
-        {saving ? "Ukladám..." : "Uložiť stav"}
+        {saving ? "Ukladám..." : saved ? "Uložené" : "Uložiť stav"}
       </button>
 
       {error && (
-        <p className="text-sm text-red-700 sm:max-w-xs">{error}</p>
+        <p role="alert" className="text-sm text-red-700 sm:max-w-xs">{error}</p>
       )}
     </div>
   );

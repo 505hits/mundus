@@ -10,6 +10,7 @@ export async function assessmentStorageReady(studentId: string, code = "en") {
       .eq("student_id",studentId).limit(1);
     if(error)return false;
     if(code === "de") { const {data,error:languageError}=await admin.rpc("mundus_german_assessments_ready"); return !languageError && data === true; }
-    return true;
+    if(code === "es") { const {data,error:languageError}=await admin.rpc("mundus_spanish_assessments_ready"); return !languageError && data === true; }
+    return code === "en";
   } catch { return false; }
 }

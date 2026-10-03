@@ -140,40 +140,46 @@ export default function EditLessonForm({
       selectedDate.toISOString() !==
       new Date(scheduledAt).toISOString();
 
-    const supabase = createSupabaseBrowserClient();
+    try {
+      const supabase = createSupabaseBrowserClient();
 
-    const update: {
-      scheduled_at: string;
-      meet_link: string | null;
-      updated_at: string;
-      status?: string;
-    } = {
-      scheduled_at: selectedDate.toISOString(),
-      meet_link: trimmedLink || null,
-      updated_at: new Date().toISOString(),
-    };
+      const update: {
+        scheduled_at: string;
+        meet_link: string | null;
+        updated_at: string;
+        status?: string;
+      } = {
+        scheduled_at: selectedDate.toISOString(),
+        meet_link: trimmedLink || null,
+        updated_at: new Date().toISOString(),
+      };
 
-    if (changedTime) {
-      update.status = "rescheduled";
-    }
+      if (changedTime) {
+        update.status = "rescheduled";
+      }
 
-    const { error: updateError } = await supabase
-      .from("lessons")
-      .update(update)
-      .eq("id", lessonId)
-      .in("status", ["scheduled", "rescheduled"]);
+      const { data: updatedLesson, error: updateError } = await supabase
+        .from("lessons")
+        .update(update)
+        .eq("id", lessonId)
+        .in("status", ["scheduled", "rescheduled"])
+        .select("id")
+        .maybeSingle();
 
-    if (updateError) {
-      setError(
-        "Hodinu sa nepodarilo aktualizovať. Skúste to prosím znova."
-      );
+      if (updateError || !updatedLesson) {
+        setError(
+          "Hodinu sa nepodarilo aktualizovať. Obnovte stránku a skontrolujte aktuálny stav hodiny."
+        );
+        return;
+      }
+
+      setSaved(true);
+      router.refresh();
+    } catch {
+      setError("Hodinu sa nepodarilo aktualizovať. Skontrolujte pripojenie a skúste to znova.");
+    } finally {
       setSaving(false);
-      return;
     }
-
-    setSaved(true);
-    setSaving(false);
-    router.refresh();
   }
 
   return (
@@ -187,9 +193,10 @@ export default function EditLessonForm({
         <label className="text-sm font-medium">
           Dátum a čas
           <input
+            disabled={saving}
             type="datetime-local"
             value={dateTime}
-            onChange={(event) => setDateTime(event.target.value)}
+            onChange={(event) => { setDateTime(event.target.value); setSaved(false); }}
             className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
           />
         </label>
@@ -197,9 +204,10 @@ export default function EditLessonForm({
         <label className="text-sm font-medium">
           Odkaz na online hodinu
           <input
+            disabled={saving}
             type="url"
             value={link}
-            onChange={(event) => setLink(event.target.value)}
+            onChange={(event) => { setLink(event.target.value); setSaved(false); }}
             placeholder="https://meet.google.com/..."
             className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
           />
@@ -218,13 +226,13 @@ export default function EditLessonForm({
         </button>
 
         {saved && (
-          <span className="text-sm font-medium text-[#527064]">
+          <span role="status" className="text-sm font-medium text-[#527064]">
             Zmeny boli uložené.
           </span>
         )}
 
         {error && (
-          <span className="text-sm text-red-700">{error}</span>
+          <span role="alert" className="text-sm text-red-700">{error}</span>
         )}
       </div>
 

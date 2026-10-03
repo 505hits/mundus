@@ -148,64 +148,66 @@ export default function CreateLessonForm({
 
     setSaving(true);
 
-    const supabase = createSupabaseBrowserClient();
+    try {
+      const supabase = createSupabaseBrowserClient();
 
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
 
-    if (userError || !user) {
-      setError("Vaše prihlásenie vypršalo. Prihláste sa prosím znova.");
+      if (userError || !user) {
+        setError("Vaše prihlásenie vypršalo. Prihláste sa prosím znova.");
+        return;
+      }
+
+      const { data: selectedPackage, error: packageError } = await supabase
+        .from("lesson_packages")
+        .select("id")
+        .eq("id", packageId)
+        .eq("student_id", studentId)
+        .eq("status", "active")
+        .gt("remaining_lessons", 0)
+        .maybeSingle();
+
+      if (packageError || !selectedPackage) {
+        setError(
+          "Vybraný balíček už nemá voľný kredit alebo nepatrí tomuto študentovi."
+        );
+        return;
+      }
+
+      const { error: insertError } = await supabase
+        .from("lessons")
+        .insert({
+          student_id: studentId,
+          teacher_id: user.id,
+          scheduled_at: scheduledAt.toISOString(),
+          duration_minutes: durationMinutes,
+          status: "scheduled",
+          lesson_type: lessonType || "regular",
+          meet_link: trimmedLink || null,
+          language: language || null,
+          package_id: packageId,
+          updated_at: new Date().toISOString(),
+        });
+
+      if (insertError) {
+        setError(
+          "Hodinu sa nepodarilo vytvoriť. Skontrolujte údaje a skúste to znova."
+        );
+        return;
+      }
+
+      setSaved(true);
+      setDateTime("");
+      setMeetLink("");
+      router.refresh();
+    } catch {
+      setError("Hodinu sa nepodarilo vytvoriť. Skontrolujte pripojenie a skúste to znova.");
+    } finally {
       setSaving(false);
-      return;
     }
-
-    const { data: selectedPackage, error: packageError } = await supabase
-      .from("lesson_packages")
-      .select("id")
-      .eq("id", packageId)
-      .eq("student_id", studentId)
-      .eq("status", "active")
-      .gt("remaining_lessons", 0)
-      .maybeSingle();
-
-    if (packageError || !selectedPackage) {
-      setError(
-        "Vybraný balíček už nemá voľný kredit alebo nepatrí tomuto študentovi."
-      );
-      setSaving(false);
-      return;
-    }
-
-    const { error: insertError } = await supabase
-      .from("lessons")
-      .insert({
-        student_id: studentId,
-        teacher_id: user.id,
-        scheduled_at: scheduledAt.toISOString(),
-        duration_minutes: durationMinutes,
-        status: "scheduled",
-        lesson_type: lessonType || "regular",
-        meet_link: trimmedLink || null,
-        language: language || null,
-        package_id: packageId,
-        updated_at: new Date().toISOString(),
-      });
-
-    if (insertError) {
-      setError(
-        "Hodinu sa nepodarilo vytvoriť. Skontrolujte údaje a skúste to znova."
-      );
-      setSaving(false);
-      return;
-    }
-
-    setSaved(true);
-    setDateTime("");
-    setMeetLink("");
-    setSaving(false);
-    router.refresh();
   }
 
   return (
@@ -234,9 +236,10 @@ export default function CreateLessonForm({
             <label className="text-sm font-medium">
               Dátum a čas
               <input
+                disabled={saving}
                 type="datetime-local"
                 value={dateTime}
-                onChange={(event) => setDateTime(event.target.value)}
+                onChange={(event) => { setDateTime(event.target.value); setSaved(false); }}
                 className="mt-2 w-full rounded-xl border border-black/10 px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
               />
             </label>
@@ -244,8 +247,9 @@ export default function CreateLessonForm({
             <label className="text-sm font-medium">
               Dĺžka hodiny
               <select
+                disabled={saving}
                 value={duration}
-                onChange={(event) => setDuration(event.target.value)}
+                onChange={(event) => { setDuration(event.target.value); setSaved(false); }}
                 className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
               >
                 <option value="30">30 minút</option>
@@ -258,8 +262,9 @@ export default function CreateLessonForm({
             <label className="text-sm font-medium">
               Balíček
               <select
+                disabled={saving}
                 value={packageId}
-                onChange={(event) => setPackageId(event.target.value)}
+                onChange={(event) => { setPackageId(event.target.value); setSaved(false); }}
                 className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
               >
                 {availablePackages.map((pkg) => (
@@ -273,9 +278,10 @@ export default function CreateLessonForm({
             <label className="text-sm font-medium">
               Odkaz na online hodinu
               <input
+                disabled={saving}
                 type="url"
                 value={meetLink}
-                onChange={(event) => setMeetLink(event.target.value)}
+                onChange={(event) => { setMeetLink(event.target.value); setSaved(false); }}
                 placeholder="https://meet.google.com/..."
                 className="mt-2 w-full rounded-xl border border-black/10 px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
               />
@@ -294,13 +300,13 @@ export default function CreateLessonForm({
             </button>
 
             {saved && (
-              <span className="text-sm font-medium text-[#527064]">
+              <span role="status" className="text-sm font-medium text-[#527064]">
                 Hodina bola naplánovaná.
               </span>
             )}
 
             {error && (
-              <span className="text-sm text-red-700">{error}</span>
+              <span role="alert" className="text-sm text-red-700">{error}</span>
             )}
           </div>
 

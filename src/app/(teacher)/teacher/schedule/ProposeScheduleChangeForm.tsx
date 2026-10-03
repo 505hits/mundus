@@ -76,7 +76,7 @@ export default function ProposeScheduleChangeForm({
   const [error, setError] = useState("");
 
   async function submit() {
-    if (saving) return;
+    if (saving || sent || hasPendingRequest) return;
 
     setError("");
     setSent(false);
@@ -98,61 +98,62 @@ export default function ProposeScheduleChangeForm({
 
     setSaving(true);
 
-    const supabase = createSupabaseBrowserClient();
+    try {
+      const supabase = createSupabaseBrowserClient();
 
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
 
-    if (userError || !user) {
-      setError("Vaše prihlásenie vypršalo. Prihláste sa prosím znova.");
+      if (userError || !user) {
+        setError("Vaše prihlásenie vypršalo. Prihláste sa prosím znova.");
+        return;
+      }
+
+      const { data: existingRequest, error: checkError } = await supabase
+        .from("schedule_change_requests")
+        .select("id")
+        .eq("lesson_id", lessonId)
+        .eq("status", "pending")
+        .limit(1)
+        .maybeSingle();
+
+      if (checkError) {
+        setError("Nepodarilo sa skontrolovať existujúce žiadosti. Skúste to znova.");
+        return;
+      }
+
+      if (existingRequest) {
+        setError("Pre túto hodinu už existuje čakajúca žiadosť o zmenu termínu.");
+        return;
+      }
+
+      const { error: insertError } = await supabase
+        .from("schedule_change_requests")
+        .insert({
+          lesson_id: lessonId,
+          student_id: studentId,
+          requested_by: user.id,
+          preferred_at: proposed.toISOString(),
+          message: message.trim() || null,
+          status: "pending",
+        });
+
+      if (insertError) {
+        setError("Návrh termínu sa nepodarilo odoslať. Skúste to prosím znova.");
+        return;
+      }
+
+      setPreferredAt("");
+      setMessage("");
+      setSent(true);
+      router.refresh();
+    } catch {
+      setError("Návrh sa nepodarilo odoslať. Skontrolujte pripojenie a skúste to znova.");
+    } finally {
       setSaving(false);
-      return;
     }
-
-    const { data: existingRequest, error: checkError } = await supabase
-      .from("schedule_change_requests")
-      .select("id")
-      .eq("lesson_id", lessonId)
-      .eq("status", "pending")
-      .limit(1)
-      .maybeSingle();
-
-    if (checkError) {
-      setError("Nepodarilo sa skontrolovať existujúce žiadosti. Skúste to znova.");
-      setSaving(false);
-      return;
-    }
-
-    if (existingRequest) {
-      setError("Pre túto hodinu už existuje čakajúca žiadosť o zmenu termínu.");
-      setSaving(false);
-      return;
-    }
-
-    const { error: insertError } = await supabase
-      .from("schedule_change_requests")
-      .insert({
-        lesson_id: lessonId,
-        student_id: studentId,
-        requested_by: user.id,
-        preferred_at: proposed.toISOString(),
-        message: message.trim() || null,
-        status: "pending",
-      });
-
-    if (insertError) {
-      setError("Návrh termínu sa nepodarilo odoslať. Skúste to prosím znova.");
-      setSaving(false);
-      return;
-    }
-
-    setPreferredAt("");
-    setMessage("");
-    setSent(true);
-    setSaving(false);
-    router.refresh();
   }
 
   if (hasPendingRequest) {
@@ -174,6 +175,7 @@ export default function ProposeScheduleChangeForm({
         <label className="text-sm font-medium">
           Navrhovaný dátum a čas
           <input
+            disabled={saving}
             type="datetime-local"
             value={preferredAt}
             onChange={(event) => setPreferredAt(event.target.value)}
@@ -184,6 +186,7 @@ export default function ProposeScheduleChangeForm({
         <label className="text-sm font-medium">
           Správa pre študenta <span className="font-normal text-gray-400">(voliteľné)</span>
           <textarea
+            disabled={saving}
             rows={2}
             value={message}
             onChange={(event) => setMessage(event.target.value)}
@@ -197,7 +200,7 @@ export default function ProposeScheduleChangeForm({
         <button
           type="button"
           onClick={submit}
-          disabled={saving}
+          disabled={saving || sent}
           className="inline-flex items-center gap-2 rounded-xl bg-[#183f38] px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
         >
           <Send size={16} />
@@ -205,13 +208,13 @@ export default function ProposeScheduleChangeForm({
         </button>
 
         {sent && (
-          <span className="text-sm font-medium text-[#527064]">
+          <span role="status" className="text-sm font-medium text-[#527064]">
             Návrh bol odoslaný študentovi.
           </span>
         )}
 
         {error && (
-          <span className="text-sm text-red-700">{error}</span>
+          <span role="alert" className="text-sm text-red-700">{error}</span>
         )}
       </div>
 

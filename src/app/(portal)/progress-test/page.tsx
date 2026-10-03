@@ -10,7 +10,7 @@ import { submitProgress } from "./actions";
 export default async function ProgressTestPage({searchParams}:{searchParams:Promise<{language?:string}>}) {
   const { user } = await requireRole("student");
   const language=(await searchParams).language;
-  const code=language === "de" || language === "es" || language === "it" || language === "fr" ? language : "en";
+  const code=language === "de" || language === "es" || language === "it" || language === "fr" || language === "pt" ? language : "en";
   const bank=assessmentBank(code,"progress");
   const storageReady = await assessmentStorageReady(user.id,code);
   const supabase = await createSupabaseServerClient();

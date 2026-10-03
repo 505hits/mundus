@@ -22,7 +22,7 @@ export default async function TeacherStudentsPage() {
   const supabase = await createSupabaseServerClient();
   const studentDirectory = await teacherDirectory(supabase);
 
-  const { data: lessons } = await supabase
+  const { data: lessons, error: lessonsError } = await supabase
     .from("lessons")
     .select(`
       id,
@@ -42,7 +42,7 @@ export default async function TeacherStudentsPage() {
     new Set((lessons ?? []).map((lesson) => lesson.student_id))
   );
 
-  const { data: packages } = studentIds.length
+  const { data: packages, error: packagesError } = studentIds.length
     ? await supabase
         .from("lesson_packages")
         .select(
@@ -50,7 +50,11 @@ export default async function TeacherStudentsPage() {
         )
         .in("student_id", studentIds)
         .eq("status", "active")
-    : { data: [] };
+    : { data: [], error: null };
+
+  if (lessonsError || packagesError) {
+    return <main className="mx-auto max-w-5xl px-5 py-10"><h1 className="text-3xl font-semibold">Moji študenti</h1><p role="alert" className="mt-5 text-red-700">Študentov alebo zostatky sa nepodarilo načítať. Obnovte stránku alebo to skúste o chvíľu znova.</p></main>;
+  }
 
   const packageMap = new Map<
     string,

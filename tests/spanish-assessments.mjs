@@ -24,5 +24,5 @@ assert.ok(progress.questions.every(q=>placement.questions.every(p=>p.prompt!==q.
 assert.ok(progress.questions.filter(q=>q.audio).every(q=>placement.questions.every(p=>p.audio!==q.audio)));
 assert.notEqual(placement.version,progress.version);
 for(const code of ['en','de'])assert.notEqual(placement.version,assessmentBank(code,'placement').version);
-assert.throws(()=>assessmentBank('pt','placement'));
+assert.throws(()=>assessmentBank('ru','placement'));
 console.log('PASS: Spanish placement/progress separation, all bands/skills, voices, answer structure and foundation-gap scoring');

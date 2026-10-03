@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { assessmentAnswers } from "../src/lib/assessment-answers.ts";
 import { assessmentBank } from "../src/lib/assessment-catalog.ts";
 import { scorePlacement } from "../src/lib/placement.ts";
-for (const language of ["en", "de", "es", "it", "fr"]) {
+for (const language of ["en", "de", "es", "it", "fr", "pt"]) {
   for (const kind of ["placement", "progress"]) {
     const bank = assessmentBank(language, kind);
     const valid = () => {

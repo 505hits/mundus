@@ -8,7 +8,7 @@ export default async function PortalLayout({
   // Each page authorizes before reading data; route-specific redirects retain purchase intent.
 
   return (
-    <div className="min-h-screen bg-[#f7f8f5] lg:flex">
+    <div className="min-h-screen bg-[#FAFAF9] lg:flex">
       <PortalNav paymentsEnabled={process.env.MUNDUS_PAYMENTS_ENABLED === "true"} />
 
       <div className="min-w-0 flex-1 pb-24 lg:pb-0">

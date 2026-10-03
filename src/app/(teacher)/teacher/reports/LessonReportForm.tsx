@@ -119,7 +119,7 @@ export default function LessonReportForm({
   }
 
   return (
-    <div className="rounded-2xl border border-black/5 bg-[#fafbf9] p-5">
+    <div className="rounded-2xl border border-black/5 bg-[#FAFAF9] p-5">
       <div className="grid gap-5 md:grid-cols-2">
         <label className="text-sm font-medium">
           Téma hodiny
@@ -128,7 +128,7 @@ export default function LessonReportForm({
             value={topic}
             onChange={(event) => { setTopic(event.target.value); setSaved(false); }}
             placeholder="napr. minulý čas a konverzácia"
-            className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none transition focus:border-[#183f38]"
+            className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none transition focus:border-[#2F3AA2]"
           />
         </label>
 
@@ -138,7 +138,7 @@ export default function LessonReportForm({
             disabled={saving}
             value={progress}
             onChange={(event) => { setProgress(event.target.value); setSaved(false); }}
-            className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#183f38]"
+            className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#2F3AA2]"
           >
             <option value="good_progress">Dobrý pokrok</option>
             <option value="normal_progress">Bežný pokrok</option>
@@ -154,7 +154,7 @@ export default function LessonReportForm({
             onChange={(event) => { setStudentNote(event.target.value); setSaved(false); }}
             rows={3}
             placeholder="Čo sa darilo a na čo by sa mal študent zamerať ďalej?"
-            className="mt-2 w-full resize-none rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#183f38]"
+            className="mt-2 w-full resize-none rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#2F3AA2]"
           />
         </label>
 
@@ -165,7 +165,7 @@ export default function LessonReportForm({
             value={homework}
             onChange={(event) => { setHomework(event.target.value); setSaved(false); }}
             placeholder="Voliteľné"
-            className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#183f38]"
+            className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#2F3AA2]"
           />
         </label>
 
@@ -176,7 +176,7 @@ export default function LessonReportForm({
             value={nextFocus}
             onChange={(event) => { setNextFocus(event.target.value); setSaved(false); }}
             placeholder="napr. istota pri rozprávaní"
-            className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#183f38]"
+            className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#2F3AA2]"
           />
         </label>
 
@@ -188,7 +188,7 @@ export default function LessonReportForm({
             onChange={(event) => { setPrivateNote(event.target.value); setSaved(false); }}
             rows={2}
             placeholder="Viditeľné iba pre lektorov a administrátora Mundus"
-            className="mt-2 w-full resize-none rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#183f38]"
+            className="mt-2 w-full resize-none rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#2F3AA2]"
           />
         </label>
       </div>
@@ -198,7 +198,7 @@ export default function LessonReportForm({
           type="button"
           onClick={saveReport}
           disabled={saving}
-          className="flex items-center gap-2 rounded-xl bg-[#183f38] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#12332d] disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex items-center gap-2 rounded-xl bg-[#2F3AA2] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#252E82] disabled:cursor-not-allowed disabled:opacity-60"
         >
           <Save size={17} />
           {saving
@@ -209,7 +209,7 @@ export default function LessonReportForm({
         </button>
 
         {saved && !saving && (
-          <span role="status" className="flex items-center gap-1.5 text-sm font-medium text-[#527064]">
+          <span role="status" className="flex items-center gap-1.5 text-sm font-medium text-[#3730A3]">
             <CheckCircle2 size={17} />
             Uložené
           </span>

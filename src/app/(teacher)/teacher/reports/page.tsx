@@ -92,10 +92,10 @@ export default async function TeacherReportsPage() {
   const missingReports = recentLessons.length - completedReports;
 
   return (
-    <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
+    <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
             Záznamy
           </p>
 
@@ -116,7 +116,7 @@ export default async function TeacherReportsPage() {
 
         <section className="mt-8 grid gap-4 sm:grid-cols-3">
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <ClipboardList size={20} className="text-[#9a8049]" />
+            <ClipboardList size={20} className="text-[#2F3AA2]" />
 
             <p className="mt-4 text-3xl font-semibold">
               {recentLessons.length}
@@ -127,20 +127,20 @@ export default async function TeacherReportsPage() {
             </p>
           </div>
 
-          <div className="rounded-3xl border border-[#c6a65b]/20 bg-[#faf6eb] p-5">
-            <AlertCircle size={20} className="text-[#9a8049]" />
+          <div className="rounded-3xl border border-[#2F3AA2]/20 bg-[#faf6eb] p-5">
+            <AlertCircle size={20} className="text-[#2F3AA2]" />
 
-            <p className="mt-4 text-3xl font-semibold text-[#7e693a]">
+            <p className="mt-4 text-3xl font-semibold text-[#92400e]">
               {missingReports}
             </p>
 
-            <p className="mt-1 text-sm text-[#7e693a]/70">
+            <p className="mt-1 text-sm text-[#92400e]/70">
               Chýbajúce záznamy
             </p>
           </div>
 
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <CheckCircle2 size={20} className="text-[#9a8049]" />
+            <CheckCircle2 size={20} className="text-[#2F3AA2]" />
 
             <p className="mt-4 text-3xl font-semibold">
               {completedReports}
@@ -184,7 +184,7 @@ export default async function TeacherReportsPage() {
                     className={`rounded-3xl border p-5 shadow-sm sm:p-6 ${
                       report
                         ? "border-black/5 bg-white"
-                        : "border-[#c6a65b]/20 bg-[#faf6eb]"
+                        : "border-[#2F3AA2]/20 bg-[#faf6eb]"
                     }`}
                   >
                     <div className="flex flex-col gap-5">
@@ -197,8 +197,8 @@ export default async function TeacherReportsPage() {
                           <span
                             className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
                               report
-                                ? "bg-[#eef3ef] text-[#527064]"
-                                : "bg-white text-[#9a8049]"
+                                ? "bg-[#EEF2FF] text-[#3730A3]"
+                                : "bg-white text-[#2F3AA2]"
                             }`}
                           >
                             {report

@@ -96,13 +96,13 @@ export default async function ProgressPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
+    <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
       {/* Header */}
       <header className="border-b border-black/5 bg-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
           <Link
             href="/dashboard"
-            className="flex items-center gap-2 text-sm font-medium transition hover:text-[#9a8049]"
+            className="flex items-center gap-2 text-sm font-medium transition hover:text-[#2F3AA2]"
           >
             <ArrowLeft size={17} />
             Prehľad
@@ -117,7 +117,7 @@ export default async function ProgressPage() {
       <div className="mx-auto max-w-6xl px-5 py-8 sm:px-8 lg:py-10">
         {/* Intro */}
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
             Môj pokrok
           </p>
 
@@ -137,7 +137,7 @@ export default async function ProgressPage() {
           </div>
         )}
 
-        <section className="mt-8 rounded-3xl bg-[#183f38] p-6 text-white shadow-sm sm:p-8">
+        <section className="mt-8 rounded-3xl bg-[#2F3AA2] p-6 text-white shadow-sm sm:p-8">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <p className="text-sm font-medium text-white/55">
@@ -166,7 +166,7 @@ export default async function ProgressPage() {
           <article className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CheckCircle2
               size={20}
-              className="text-[#9a8049]"
+              className="text-[#2F3AA2]"
             />
 
             <p className="mt-4 text-3xl font-semibold">
@@ -181,7 +181,7 @@ export default async function ProgressPage() {
           <article className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CalendarDays
               size={20}
-              className="text-[#9a8049]"
+              className="text-[#2F3AA2]"
             />
 
             <p className="mt-4 text-3xl font-semibold">
@@ -196,7 +196,7 @@ export default async function ProgressPage() {
           <article className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <FileText
               size={20}
-              className="text-[#9a8049]"
+              className="text-[#2F3AA2]"
             />
 
             <p className="mt-4 text-3xl font-semibold">
@@ -225,13 +225,13 @@ export default async function ProgressPage() {
 
               <BookOpen
                 size={21}
-                className="text-[#9a8049]"
+                className="text-[#2F3AA2]"
               />
             </div>
 
-            <div className="mt-6 h-3 overflow-hidden rounded-full bg-[#edf0ec]">
+            <div className="mt-6 h-3 overflow-hidden rounded-full bg-[#E0E7FF]">
               <div
-                className="h-full rounded-full bg-[#183f38]"
+                className="h-full rounded-full bg-[#2F3AA2]"
                 style={{
                   width: `${packageProgress}%`,
                 }}
@@ -251,7 +251,7 @@ export default async function ProgressPage() {
         {/* Ďalšie zameranie */}
         <section className="mt-6 rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
           <div className="flex items-start gap-4">
-            <div className="rounded-2xl bg-[#faf6eb] p-3 text-[#9a8049]">
+            <div className="rounded-2xl bg-[#faf6eb] p-3 text-[#2F3AA2]">
               <Target size={22} />
             </div>
 
@@ -287,7 +287,7 @@ export default async function ProgressPage() {
               </h2>
             </div>
 
-            <div className="rounded-2xl bg-[#eef3ef] p-3">
+            <div className="rounded-2xl bg-[#EEF2FF] p-3">
               <MessageCircle size={22} />
             </div>
           </div>
@@ -295,7 +295,7 @@ export default async function ProgressPage() {
           {latestReport ? (
             <>
               {latestReport.progress && (
-                <span className="mt-5 inline-flex rounded-full bg-[#eef3ef] px-3 py-1.5 text-xs font-semibold text-[#527064]">
+                <span className="mt-5 inline-flex rounded-full bg-[#EEF2FF] px-3 py-1.5 text-xs font-semibold text-[#3730A3]">
                   {formatProgressLabel(latestReport.progress)}
                 </span>
               )}
@@ -311,8 +311,8 @@ export default async function ProgressPage() {
               )}
 
               {latestReport.homework && (
-                <div className="mt-6 rounded-2xl bg-[#f7f8f5] p-5">
-                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#9a8049]">
+                <div className="mt-6 rounded-2xl bg-[#FAFAF9] p-5">
+                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#2F3AA2]">
                     Domáca úloha
                   </p>
 
@@ -370,7 +370,7 @@ export default async function ProgressPage() {
                       </p>
                     </div>
 
-                    <span className="rounded-full bg-[#eef3ef] px-3 py-1.5 text-xs font-semibold text-[#527064]">
+                    <span className="rounded-full bg-[#EEF2FF] px-3 py-1.5 text-xs font-semibold text-[#3730A3]">
                       Dokončená
                     </span>
                   </div>

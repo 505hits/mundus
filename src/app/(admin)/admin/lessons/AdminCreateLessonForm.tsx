@@ -187,7 +187,7 @@ export default function AdminCreateLessonForm({
 
   if (students.length === 0 || teachers.length === 0) {
     return (
-      <div className="mt-6 rounded-2xl border border-[#c6a65b]/20 bg-[#faf6eb] p-4 text-sm text-[#7e693a]">
+      <div className="mt-6 rounded-2xl border border-[#2F3AA2]/20 bg-[#faf6eb] p-4 text-sm text-[#92400e]">
         Na vytvorenie hodiny je potrebný aspoň jeden aktívny študent a jeden aktívny lektor.
       </div>
     );
@@ -211,7 +211,7 @@ export default function AdminCreateLessonForm({
               setStudentId(event.target.value);
               setPackageId("");
             }}
-            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
+            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#2F3AA2]"
           >
             {students.map((student) => (
               <option key={student.id} value={student.id}>
@@ -227,7 +227,7 @@ export default function AdminCreateLessonForm({
             disabled={saving}
             value={teacherId}
             onChange={(event) => { setTeacherId(event.target.value); setSaved(false); }}
-            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
+            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#2F3AA2]"
           >
             {teachers.map((teacher) => (
               <option key={teacher.id} value={teacher.id}>
@@ -243,7 +243,7 @@ export default function AdminCreateLessonForm({
             disabled={saving}
             value={language}
             onChange={(event) => { setLanguage(event.target.value); setSaved(false); }}
-            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
+            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#2F3AA2]"
           >
             {languages.map(([value, label]) => (
               <option key={value} value={value}>
@@ -260,7 +260,7 @@ export default function AdminCreateLessonForm({
             type="datetime-local"
             value={dateTime}
             onChange={(event) => { setDateTime(event.target.value); setSaved(false); }}
-            className="mt-2 w-full rounded-xl border border-black/10 px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
+            className="mt-2 w-full rounded-xl border border-black/10 px-3 py-2.5 font-normal outline-none focus:border-[#2F3AA2]"
           />
         </label>
 
@@ -270,7 +270,7 @@ export default function AdminCreateLessonForm({
             disabled={saving}
             value={duration}
             onChange={(event) => { setDuration(event.target.value); setSaved(false); }}
-            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
+            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#2F3AA2]"
           >
             <option value="30">30 minút</option>
             <option value="45">45 minút</option>
@@ -307,7 +307,7 @@ export default function AdminCreateLessonForm({
             value={meetLink}
             onChange={(event) => { setMeetLink(event.target.value); setSaved(false); }}
             placeholder="https://meet.google.com/..."
-            className="mt-2 w-full rounded-xl border border-black/10 px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
+            className="mt-2 w-full rounded-xl border border-black/10 px-3 py-2.5 font-normal outline-none focus:border-[#2F3AA2]"
           />
         </label>
       </div>
@@ -317,14 +317,14 @@ export default function AdminCreateLessonForm({
           type="button"
           onClick={createLesson}
           disabled={saving || !effectivePackageId}
-          className="inline-flex items-center gap-2 rounded-xl bg-[#183f38] px-5 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-xl bg-[#2F3AA2] px-5 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
         >
           <CalendarPlus size={17} />
           {saving ? "Vytváram..." : "Vytvoriť hodinu"}
         </button>
 
         {saved && (
-          <span role="status" className="text-sm font-medium text-[#527064]">
+          <span role="status" className="text-sm font-medium text-[#3730A3]">
             Hodina bola vytvorená.
           </span>
         )}

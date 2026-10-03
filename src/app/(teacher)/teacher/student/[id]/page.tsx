@@ -174,7 +174,7 @@ async function renderStudentPage(
     "regular";
 
   return (
-    <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
+    <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
       <LearningFiles studentId={studentId} teacher />
       <PlacementResults studentId={studentId} />
       <PlacementResults studentId={studentId} kind="progress" />
@@ -197,7 +197,7 @@ async function renderStudentPage(
       <div className="mx-auto max-w-6xl px-5 py-8 sm:px-8 lg:py-10">
         <section className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
               Môj študent
             </p>
 
@@ -210,14 +210,14 @@ async function renderStudentPage(
             </p>
           </div>
 
-          <span className="w-fit rounded-full bg-[#eaf4ed] px-3 py-1.5 text-xs font-semibold text-[#527064]">
+          <span className="w-fit rounded-full bg-[#eaf4ed] px-3 py-1.5 text-xs font-semibold text-[#3730A3]">
             Aktívny študent
           </span>
         </section>
 
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <article className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <BookOpen size={19} className="text-[#9a8049]" />
+            <BookOpen size={19} className="text-[#2F3AA2]" />
 
             <p className="mt-4 text-sm text-gray-400">
               Dokončené hodiny
@@ -229,7 +229,7 @@ async function renderStudentPage(
           </article>
 
           <article className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <CalendarDays size={19} className="text-[#9a8049]" />
+            <CalendarDays size={19} className="text-[#2F3AA2]" />
 
             <p className="mt-4 text-sm text-gray-400">
               Zostávajúce hodiny
@@ -241,7 +241,7 @@ async function renderStudentPage(
           </article>
 
           <article className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <TrendingUp size={19} className="text-[#9a8049]" />
+            <TrendingUp size={19} className="text-[#2F3AA2]" />
 
             <p className="mt-4 text-sm text-gray-400">
               Aktivita študenta
@@ -256,7 +256,7 @@ async function renderStudentPage(
         </div>
 
         {nextLesson && (
-          <section className="mt-6 rounded-3xl bg-[#183f38] p-6 text-white shadow-sm sm:p-8">
+          <section className="mt-6 rounded-3xl bg-[#2F3AA2] p-6 text-white shadow-sm sm:p-8">
             <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm text-white/55">
@@ -286,7 +286,7 @@ async function renderStudentPage(
                   href={safeLessonLink(nextLesson.meet_link) ?? undefined}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 font-semibold text-[#183f38]"
+                  className="flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 font-semibold text-[#0a0a0f]"
                 >
                   <Video size={18} />
                   Pripojiť sa na hodinu
@@ -355,7 +355,7 @@ async function renderStudentPage(
                       </p>
                     </div>
 
-                    <span className="rounded-full bg-[#eef3ef] px-3 py-1.5 text-xs font-semibold text-[#527064]">
+                    <span className="rounded-full bg-[#EEF2FF] px-3 py-1.5 text-xs font-semibold text-[#3730A3]">
                       Dokončená
                     </span>
                   </div>
@@ -369,7 +369,7 @@ async function renderStudentPage(
           <div className="flex items-center gap-2">
             <MessageCircle
               size={20}
-              className="text-[#9a8049]"
+              className="text-[#2F3AA2]"
             />
 
             <h2 className="text-lg font-semibold">
@@ -377,11 +377,11 @@ async function renderStudentPage(
             </h2>
           </div>
 
-          <div className="mt-5 rounded-2xl bg-[#f7f8f5] p-5">
+          <div className="mt-5 rounded-2xl bg-[#FAFAF9] p-5">
             {latestReport?.student_note?.trim() ? (
               <>
                 {latestReport.topic?.trim() && (
-                  <p className="text-sm font-semibold text-[#183f38]">
+                  <p className="text-sm font-semibold text-[#0a0a0f]">
                     {latestReport.topic}
                   </p>
                 )}

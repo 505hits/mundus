@@ -47,7 +47,7 @@ export default function TeacherApprovalAction({
           type="button"
           onClick={() => updateStatus("inactive")}
           disabled={saving}
-          className="inline-flex items-center gap-2 rounded-xl border border-black/10 bg-white px-3 py-2 text-xs font-semibold text-[#7e693a] disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-xl border border-black/10 bg-white px-3 py-2 text-xs font-semibold text-[#92400e] disabled:cursor-not-allowed disabled:opacity-60"
         >
           <PauseCircle size={15} />
           {saving ? "Deaktivujem..." : "Deaktivovať"}
@@ -57,7 +57,7 @@ export default function TeacherApprovalAction({
           type="button"
           onClick={() => updateStatus("active")}
           disabled={saving}
-          className="inline-flex items-center gap-2 rounded-xl bg-[#183f38] px-3 py-2 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-xl bg-[#2F3AA2] px-3 py-2 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
         >
           <CheckCircle2 size={15} />
           {saving ? "Schvaľujem..." : "Schváliť účet"}

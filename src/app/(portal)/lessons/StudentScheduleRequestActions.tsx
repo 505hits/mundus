@@ -61,7 +61,7 @@ export default function StudentScheduleRequestActions({
           type="button"
           onClick={() => respond("accepted")}
           disabled={loading !== null || saved}
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#183f38] px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
         >
           <Check size={16} />
           {loading === "accepted" ? "Potvrdzujem..." : "Potvrdiť nový termín"}
@@ -71,7 +71,7 @@ export default function StudentScheduleRequestActions({
           type="button"
           onClick={() => respond("declined")}
           disabled={loading !== null || saved}
-          className="inline-flex items-center justify-center gap-2 rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm font-medium text-[#183f38] disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex items-center justify-center gap-2 rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm font-medium text-[#0a0a0f] disabled:cursor-not-allowed disabled:opacity-60"
         >
           <X size={16} />
           {loading === "declined" ? "Odmietam..." : "Ponechať pôvodný termín"}

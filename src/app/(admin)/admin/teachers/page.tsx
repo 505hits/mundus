@@ -93,10 +93,10 @@ export default async function AdminTeachersPage() {
   );
 
   return (
-    <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
+    <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
             Lektori
           </p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -117,22 +117,22 @@ export default async function AdminTeachersPage() {
 
         <section className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <GraduationCap size={20} className="text-[#9a8049]" />
+            <GraduationCap size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{activeTeachers}</p>
             <p className="mt-1 text-sm text-gray-500">Aktívni lektori</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <Users size={20} className="text-[#9a8049]" />
+            <Users size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{assignedStudents}</p>
             <p className="mt-1 text-sm text-gray-500">Priradení študenti</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <CalendarDays size={20} className="text-[#9a8049]" />
+            <CalendarDays size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{lessonsThisWeek}</p>
             <p className="mt-1 text-sm text-gray-500">Hodiny tento týždeň</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <AlertCircle size={20} className="text-[#9a8049]" />
+            <AlertCircle size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{pendingTeachers}</p>
             <p className="mt-1 text-sm text-gray-500">Čakajúci / neaktívni</p>
           </div>
@@ -181,7 +181,7 @@ export default async function AdminTeachersPage() {
                       </p>
                     </div>
                     <div>
-                      <span className="rounded-full bg-[#eef3ef] px-3 py-1 text-xs font-semibold capitalize text-[#527064]">
+                      <span className="rounded-full bg-[#EEF2FF] px-3 py-1 text-xs font-semibold capitalize text-[#3730A3]">
                         {formatProfileStatus(teacher.status)}
                       </span>
                     </div>

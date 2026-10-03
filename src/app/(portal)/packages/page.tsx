@@ -31,8 +31,8 @@ export default async function PackagesPage({ searchParams }: PageProps) {
     (discountSetting?.first_package_allowed ?? !packages?.length);
   const totalRemaining = (packages ?? []).filter(p => p.status === "active").reduce((sum, item) => sum + (item.remaining_lessons ?? 0), 0);
 
-  return <main className="mx-auto max-w-6xl px-5 py-8 text-[#183f38] sm:px-8 lg:py-10">
-    <p className="text-sm font-semibold uppercase tracking-[0.15em] text-[#9a8049]">Moje balíčky</p>
+  return <main className="mx-auto max-w-6xl px-5 py-8 text-[#0a0a0f] sm:px-8 lg:py-10">
+    <p className="text-sm font-semibold uppercase tracking-[0.15em] text-[#2F3AA2]">Moje balíčky</p>
     <h1 className="mt-2 text-3xl font-semibold">Hodiny a platby</h1>
     {packageError ? <p role="alert" className="mt-3 text-red-700">Zostatok hodín sa nepodarilo načítať. Obnovte stránku alebo to skúste o chvíľu znova.</p> : <p className="mt-3 text-gray-600">Zostáva vám <strong>{totalRemaining} {totalRemaining === 1 ? "hodina" : "hodín"}</strong>. Nový balíček si vyberiete nižšie.</p>}
     {packages && packages.length > 0 && <section className="mt-6 rounded-2xl border border-gray-200 bg-white p-5"><h2 className="text-xl font-semibold">Vaše zakúpené balíčky</h2><ul className="mt-4 space-y-3">{packages.map(pkg => <li key={pkg.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-gray-50 p-4"><div><p className="font-semibold">{pkg.total_lessons} hodín · {pkg.status === "active" ? "Aktívny" : pkg.status === "completed" ? "Vyčerpaný" : "Neaktívny"}</p><p className="mt-1 text-sm text-gray-600">Využité: {pkg.used_lessons ?? 0} · Zostáva: {pkg.remaining_lessons ?? 0}</p></div><a href={enabled ? "#available-packages" : "/contact"} className="text-sm font-semibold text-[#2F3AA2] underline">Kúpiť ďalší balíček</a></li>)}</ul></section>}
@@ -44,7 +44,7 @@ export default async function PackagesPage({ searchParams }: PageProps) {
     {problem && <p role="alert" className="mt-6 rounded-2xl bg-red-50 p-4 text-sm text-red-700">{problem === "price-changed" ? "Nárok na zľavu sa medzičasom zmenil. Skontrolujte aktuálnu cenu a potvrďte výber znova." : problem === "pending" ? "Už máte otvorenú platbu. Môžete ju zrušiť nižšie." : problem === "processing" ? "Platba sa už spracúva. Počkajte na potvrdenie." : "Platbu sa teraz nepodarilo spracovať. Skúste to znova neskôr."}</p>}
     {pendingOrder && <div className="mt-6 rounded-2xl bg-amber-50 p-4 text-sm text-amber-900"><p>{pendingOrder.stripe_session_id ? <>Máte otvorenú platbu za {pendingOrder.package_lessons} hodín. Po jej dokončení sa balíček pripíše automaticky.</> : <>Pripravuje sa platba za {pendingOrder.package_lessons} hodín. Obnovte stránku o chvíľu. Ak sa tlačidlo na pokračovanie nezobrazí, kontaktujte Mundus a uveďte číslo objednávky <span className="break-all font-mono">{pendingOrder.id}</span>.</>}</p>
       {!pendingOrder.stripe_session_id && <a href="/contact" className="mt-3 inline-block font-semibold underline">Kontaktovať Mundus</a>}
-      {pendingOrder.stripe_session_id && <form action={resumePackageCheckout} className="mt-3"><input type="hidden" name="order_id" value={pendingOrder.id} /><button className="rounded-lg bg-[#183f38] px-4 py-2 font-semibold text-white">Pokračovať v platbe</button></form>}
+      {pendingOrder.stripe_session_id && <form action={resumePackageCheckout} className="mt-3"><input type="hidden" name="order_id" value={pendingOrder.id} /><button className="rounded-lg bg-[#2F3AA2] px-4 py-2 font-semibold text-white">Pokračovať v platbe</button></form>}
       {pendingOrder.stripe_session_id && <form action={cancelPackageCheckout} className="mt-3"><input type="hidden" name="order_id" value={pendingOrder.id} /><button className="font-semibold underline">Zrušiť otvorenú platbu</button></form>}
     </div>}
     <section id="available-packages" className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-label="Balíčky hodín">
@@ -56,7 +56,7 @@ export default async function PackagesPage({ searchParams }: PageProps) {
           {first && <p className="mt-1 text-sm text-gray-500">Prvý balíček: zľava 10 % · bežne {euro(amountCents)}</p>}
           <p className="mt-3 text-sm text-gray-500">Individuálne online hodiny po 60 minút</p>
           <form action={startPackageCheckout} className="mt-6"><input type="hidden" name="lessons" value={lessons} /><input type="hidden" name="expected_amount" value={shown} />
-            <button disabled={!enabled || unavailable || !!pendingOrder} className="w-full rounded-xl bg-[#183f38] px-4 py-3 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50">{pendingOrder ? "Čaká sa na platbu" : "Kúpiť balíček"}</button>
+            <button disabled={!enabled || unavailable || !!pendingOrder} className="w-full rounded-xl bg-[#2F3AA2] px-4 py-3 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50">{pendingOrder ? "Čaká sa na platbu" : "Kúpiť balíček"}</button>
           </form>
         </article>;
       })}

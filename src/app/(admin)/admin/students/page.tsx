@@ -81,10 +81,10 @@ export default async function AdminStudentsPage({searchParams}:{searchParams:Pro
   const visibleStudents=studentRows.filter(student=>(!statusFilter||student.status===statusFilter)&&(!search||`${student.full_name||""} ${student.email||""}`.toLocaleLowerCase("sk").includes(search.toLocaleLowerCase("sk"))));
 
   return (
-    <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
+    <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">Študenti</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">Študenti</p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Správa študentov</h1>
           <p className="mt-2 text-gray-500">Reálne účty študentov, balíčky a najbližšie hodiny.</p>
         </section>
@@ -97,17 +97,17 @@ export default async function AdminStudentsPage({searchParams}:{searchParams:Pro
 
         <section className="mt-8 grid gap-4 sm:grid-cols-3">
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <Users size={20} className="text-[#9a8049]" />
+            <Users size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{profilesError ? "—" : activeStudents}</p>
             <p className="mt-1 text-sm text-gray-500">Aktívni študenti</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <BookOpen size={20} className="text-[#9a8049]" />
+            <BookOpen size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{profilesError || packagesError ? "—" : renewalSoon}</p>
             <p className="mt-1 text-sm text-gray-500">Blíži sa pokračovanie</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <AlertCircle size={20} className="text-[#9a8049]" />
+            <AlertCircle size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{profilesError || lessonsError || packagesError ? "—" : needsAttention}</p>
             <p className="mt-1 text-sm text-gray-500">Vyžaduje pozornosť</p>
           </div>
@@ -131,7 +131,7 @@ export default async function AdminStudentsPage({searchParams}:{searchParams:Pro
                     <div className="flex flex-wrap items-center gap-2">
                       <p className="font-semibold">{student.full_name?.trim() || student.email || "Študent"}</p>
                       {!packagesError && student.status === "active" && student.remaining > 0 && student.remaining <= 2 && (
-                        <span className="rounded-full bg-[#faf1d9] px-2.5 py-1 text-xs font-semibold text-[#9a8049]">
+                        <span className="rounded-full bg-[#faf1d9] px-2.5 py-1 text-xs font-semibold text-[#2F3AA2]">
                           Blíži sa pokračovanie
                         </span>
                       )}
@@ -154,7 +154,7 @@ export default async function AdminStudentsPage({searchParams}:{searchParams:Pro
                     </p>
                   </div>
                   <div>
-                    <span className="rounded-full bg-[#eef3ef] px-3 py-1 text-xs font-semibold capitalize text-[#527064]">
+                    <span className="rounded-full bg-[#EEF2FF] px-3 py-1 text-xs font-semibold capitalize text-[#3730A3]">
                       {formatProfileStatus(student.status)}
                     </span>
                   </div>

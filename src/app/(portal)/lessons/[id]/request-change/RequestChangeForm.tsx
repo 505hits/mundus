@@ -84,8 +84,8 @@ export default function RequestChangeForm({
 
   if (success) {
     return (
-      <section className="mt-6 rounded-3xl border border-[#dfe8e2] bg-white p-6 shadow-sm sm:p-8">
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#eef3ef] text-[#183f38]">
+      <section className="mt-6 rounded-3xl border border-[#E0E7FF] bg-white p-6 shadow-sm sm:p-8">
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#EEF2FF] text-[#0a0a0f]">
           ✓
         </div>
 
@@ -100,7 +100,7 @@ export default function RequestChangeForm({
         <button
           type="button"
           onClick={() => router.push("/lessons")}
-          className="mt-6 rounded-2xl bg-[#183f38] px-5 py-3 font-semibold text-white"
+          className="mt-6 rounded-2xl bg-[#2F3AA2] px-5 py-3 font-semibold text-white"
         >
           Späť na moje hodiny
         </button>
@@ -111,7 +111,7 @@ export default function RequestChangeForm({
   return (
     <section className="mt-6 rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
       <div className="flex items-center gap-3">
-        <div className="rounded-2xl bg-[#f7f2e7] p-3 text-[#9a8049]">
+        <div className="rounded-2xl bg-[#EEF2FF] p-3 text-[#2F3AA2]">
           <CalendarDays size={21} />
         </div>
 
@@ -140,7 +140,7 @@ export default function RequestChangeForm({
           required
           value={preferredAt}
           onChange={(event) => setPreferredAt(event.target.value)}
-          className="mt-2 w-full rounded-2xl border border-black/10 bg-white px-4 py-3.5 outline-none transition focus:border-[#183f38]"
+          className="mt-2 w-full rounded-2xl border border-black/10 bg-white px-4 py-3.5 outline-none transition focus:border-[#2F3AA2]"
         />
 
         <label
@@ -160,7 +160,7 @@ export default function RequestChangeForm({
           value={message}
           onChange={(event) => setMessage(event.target.value)}
           placeholder="Napríklad: Vyhovoval by vám namiesto toho utorok večer?"
-          className="mt-2 w-full resize-none rounded-2xl border border-black/10 bg-white px-4 py-3.5 outline-none transition focus:border-[#183f38]"
+          className="mt-2 w-full resize-none rounded-2xl border border-black/10 bg-white px-4 py-3.5 outline-none transition focus:border-[#2F3AA2]"
         />
 
         {errorMessage && (
@@ -173,7 +173,7 @@ export default function RequestChangeForm({
           <button
             type="submit"
             disabled={submitting}
-            className="flex items-center justify-center gap-2 rounded-2xl bg-[#183f38] px-5 py-3.5 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
+            className="flex items-center justify-center gap-2 rounded-2xl bg-[#2F3AA2] px-5 py-3.5 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
           >
             <Send size={17} />
 
@@ -184,7 +184,7 @@ export default function RequestChangeForm({
             type="button"
             onClick={() => router.push("/lessons")}
             disabled={submitting}
-            className="rounded-2xl border border-black/10 px-5 py-3.5 font-medium text-[#183f38]"
+            className="rounded-2xl border border-black/10 px-5 py-3.5 font-medium text-[#0a0a0f]"
           >
             Zrušiť
           </button>

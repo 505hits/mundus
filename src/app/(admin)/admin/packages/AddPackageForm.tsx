@@ -82,7 +82,7 @@ export default function AddPackageForm({ students }: Props) {
 
   if (students.length === 0) {
     return (
-      <div className="mt-6 rounded-2xl border border-[#c6a65b]/20 bg-[#faf6eb] p-4 text-sm text-[#7e693a]">
+      <div className="mt-6 rounded-2xl border border-[#2F3AA2]/20 bg-[#faf6eb] p-4 text-sm text-[#92400e]">
         Balíček zatiaľ nemožno pridať, pretože nie je dostupný žiadny aktívny študent.
       </div>
     );
@@ -102,7 +102,7 @@ export default function AddPackageForm({ students }: Props) {
             disabled={saving}
             value={studentId}
             onChange={(event) => { setStudentId(event.target.value); setSaved(false); }}
-            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
+            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#2F3AA2]"
           >
             {students.map((student) => (
               <option key={student.id} value={student.id}>
@@ -118,7 +118,7 @@ export default function AddPackageForm({ students }: Props) {
             disabled={saving}
             value={totalLessons}
             onChange={(event) => { setTotalLessons(event.target.value); setSaved(false); }}
-            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
+            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#2F3AA2]"
           >
             {packageSizes.map((size) => (
               <option key={size} value={size}>
@@ -136,7 +136,7 @@ export default function AddPackageForm({ students }: Props) {
             onChange={(event) => { setNotes(event.target.value); setSaved(false); }}
             rows={2}
             placeholder="Voliteľné"
-            className="mt-2 w-full resize-none rounded-xl border border-black/10 px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
+            className="mt-2 w-full resize-none rounded-xl border border-black/10 px-3 py-2.5 font-normal outline-none focus:border-[#2F3AA2]"
           />
         </label>
       </div>
@@ -146,14 +146,14 @@ export default function AddPackageForm({ students }: Props) {
           type="button"
           onClick={createPackage}
           disabled={saving}
-          className="inline-flex items-center gap-2 rounded-xl bg-[#183f38] px-5 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-xl bg-[#2F3AA2] px-5 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
         >
           <PackagePlus size={17} />
           {saving ? "Pridávam..." : "Pridať balíček"}
         </button>
 
         {saved && (
-          <span role="status" className="text-sm font-medium text-[#527064]">
+          <span role="status" className="text-sm font-medium text-[#3730A3]">
             Balíček bol pridaný.
           </span>
         )}

@@ -21,7 +21,7 @@ Slovak market; personalized practical online teaching. Focus: acquisition/conver
 | Flexible schedule requests and notifications | Student requests, teacher proposals, accept/decline, email queue/worker | Live queue, scheduler/SMTP and recipient receipt checks; scheduling error guards fixed in this checkpoint |
 | B2B acquisition | Business is covered in original plan; generic contact exists | Dedicated company enquiry collecting employee count/language/format/goal, company follow-up workflow and acquisition reporting absent; corporate HR portal remains deferred |
 | Honest public content | Audit found universal native speakers, 24/7, instant matching, certificates, two-minute assessment and unverified social proof | Corrected visible claims; removed reviews from homepage pending provenance; replaced unverified teacher cards with teacher-selection explanation. Unused legacy components/data are not verified content |
-| Brand and Slovak portal | Login/auth uses Mundus indigo/charcoal; Slovak portal labels | Operational portal still uses older green/gold palette; visual consistency and mobile/browser QA remain |
+| Brand and Slovak portal | Login/auth uses Mundus indigo/charcoal; Slovak portal labels | Operational portal palette now aligned with indigo/charcoal/warm-white brand; mobile/browser visual QA remains |
 | Small groups | Original business offers small groups; locked checkout is individual only | No group enrollment/capacity/course scheduling flow. Do not invent prices or restore old offers; keep as separately planned business workflow |
 
 ## Launch order

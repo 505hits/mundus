@@ -112,14 +112,14 @@ export default function ProposeScheduleChangeForm({
 
   if (hasPendingRequest) {
     return (
-      <div className="mt-3 rounded-2xl border border-[#c6a65b]/20 bg-[#faf6eb] p-4 text-sm text-[#7e693a]">
+      <div className="mt-3 rounded-2xl border border-[#2F3AA2]/20 bg-[#faf6eb] p-4 text-sm text-[#92400e]">
         Pre túto hodinu už existuje čakajúca žiadosť o zmenu termínu.
       </div>
     );
   }
 
   return (
-    <details className="mt-3 rounded-2xl border border-black/5 bg-white/80 p-4 text-[#183f38]">
+    <details className="mt-3 rounded-2xl border border-black/5 bg-white/80 p-4 text-[#0a0a0f]">
       <summary className="flex cursor-pointer list-none items-center gap-2 text-sm font-semibold">
         <CalendarClock size={16} />
         Navrhnúť študentovi nový termín
@@ -133,7 +133,7 @@ export default function ProposeScheduleChangeForm({
             type="datetime-local"
             value={preferredAt}
             onChange={(event) => setPreferredAt(event.target.value)}
-            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
+            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#2F3AA2]"
           />
         </label>
 
@@ -145,7 +145,7 @@ export default function ProposeScheduleChangeForm({
             value={message}
             onChange={(event) => setMessage(event.target.value)}
             placeholder="Napríklad: Potrebovala by som presunúť hodinu na tento termín."
-            className="mt-2 w-full resize-none rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
+            className="mt-2 w-full resize-none rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#2F3AA2]"
           />
         </label>
       </div>
@@ -155,14 +155,14 @@ export default function ProposeScheduleChangeForm({
           type="button"
           onClick={submit}
           disabled={saving || sent}
-          className="inline-flex items-center gap-2 rounded-xl bg-[#183f38] px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-xl bg-[#2F3AA2] px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
         >
           <Send size={16} />
           {saving ? "Odosielam..." : "Odoslať návrh"}
         </button>
 
         {sent && (
-          <span role="status" className="text-sm font-medium text-[#527064]">
+          <span role="status" className="text-sm font-medium text-[#3730A3]">
             Návrh bol odoslaný študentovi.
           </span>
         )}

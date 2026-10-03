@@ -66,7 +66,7 @@ export default function ScheduleRequestActions({
           type="button"
           disabled={loading !== null || saved}
           onClick={() => respond("accepted")}
-          className="flex items-center gap-2 rounded-xl bg-[#183f38] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#12332d] disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex items-center gap-2 rounded-xl bg-[#2F3AA2] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#252E82] disabled:cursor-not-allowed disabled:opacity-60"
         >
           <Check size={16} />
           {loading === "accepted" ? "Schvaľujem..." : "Schváliť"}
@@ -76,7 +76,7 @@ export default function ScheduleRequestActions({
           type="button"
           disabled={loading !== null || saved}
           onClick={() => respond("declined")}
-          className="flex items-center gap-2 rounded-xl border border-[#7e693a]/20 bg-white px-4 py-2.5 text-sm font-medium text-[#7e693a] transition hover:bg-[#f7f2e7] disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex items-center gap-2 rounded-xl border border-[#92400e]/20 bg-white px-4 py-2.5 text-sm font-medium text-[#92400e] transition hover:bg-[#EEF2FF] disabled:cursor-not-allowed disabled:opacity-60"
         >
           <X size={16} />
           {loading === "declined"

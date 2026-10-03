@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 
 const navItems = [
+  {name:"Priradenie",href:"/admin/matching",icon:Users},
   {
     name: "Domov",
     href: "/admin/dashboard",
@@ -75,10 +76,11 @@ export default function AdminNav({ paymentsEnabled = false }: { paymentsEnabled?
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition ${
+                  aria-current={active ? "page" : undefined}
+                  className={`focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F3AA2] flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition ${
                     active
                       ? "bg-[#0a0a0f] text-white"
-                      : "text-gray-500 hover:bg-[#f3f5f2] hover:text-[#0a0a0f]"
+                      : "text-gray-500 hover:bg-[#EEF2FF] hover:text-[#0a0a0f]"
                   }`}
                 >
                   <Icon size={18} />
@@ -92,7 +94,7 @@ export default function AdminNav({ paymentsEnabled = false }: { paymentsEnabled?
         <div className="border-t border-black/5 p-5">
           <LogoutButton />
           <div className="mt-3">
-          <div className="rounded-2xl bg-[#f7f8f5] p-4">
+          <div className="rounded-2xl bg-[#FAFAF9] p-4">
             <p className="text-sm font-semibold text-[#0a0a0f]">
               Anikó
             </p>
@@ -106,8 +108,8 @@ export default function AdminNav({ paymentsEnabled = false }: { paymentsEnabled?
 
       {/* Mobile navigation */}
       <div className="fixed right-4 top-4 z-50 lg:hidden"><LogoutButton compact /></div>
-      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-black/5 bg-white/95 px-2 py-2 backdrop-blur lg:hidden">
-        <div className="mx-auto flex max-w-xl items-center justify-around">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-black/5 bg-white/95 px-2 pt-2 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
+        <div className="mx-auto flex max-w-3xl items-center overflow-x-auto">
           {items.map((item) => {
             const Icon = item.icon;
 
@@ -120,7 +122,8 @@ export default function AdminNav({ paymentsEnabled = false }: { paymentsEnabled?
               <Link
                 key={item.name}
                 href={item.href}
-                className={`flex min-w-0 flex-1 flex-col items-center gap-1 rounded-xl px-1 py-2 text-[10px] font-medium ${
+                  aria-current={active ? "page" : undefined}
+                className={`focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F3AA2] flex min-w-[80px] flex-1 flex-col items-center gap-1 rounded-xl px-1 py-2 text-[10px] font-medium ${
                   active ? "text-[#0a0a0f]" : "text-gray-400"
                 }`}
               >

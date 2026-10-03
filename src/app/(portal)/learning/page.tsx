@@ -36,7 +36,7 @@ export default async function LearningPage() {
   const latestReport = teacherReports[0] ?? null;
 
   return (
-    <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
+    <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
       <div className="mx-auto max-w-6xl px-5"><LearningFiles studentId={user.id} /></div>
       <header className="border-b border-black/5 bg-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
@@ -54,7 +54,7 @@ export default async function LearningPage() {
 
       <div className="mx-auto max-w-6xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
             Učenie
           </p>
 
@@ -73,7 +73,7 @@ export default async function LearningPage() {
           </div>
         )}
 
-        <section className="mt-8 rounded-3xl bg-[#183f38] p-6 text-white shadow-sm sm:p-8">
+        <section className="mt-8 rounded-3xl bg-[#2F3AA2] p-6 text-white shadow-sm sm:p-8">
           <div className="flex items-start justify-between gap-5">
             <div>
               <p className="text-sm font-medium text-white/55">
@@ -115,7 +115,7 @@ export default async function LearningPage() {
 
         <section className="mt-6 rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
           <div className="flex items-start gap-4">
-            <div className="rounded-2xl bg-[#faf6eb] p-3 text-[#9a8049]">
+            <div className="rounded-2xl bg-[#faf6eb] p-3 text-[#2F3AA2]">
               <Target size={22} />
             </div>
 
@@ -138,7 +138,7 @@ export default async function LearningPage() {
 
         <section className="mt-10">
           <div className="flex items-center gap-2">
-            <BookOpen size={20} className="text-[#9a8049]" />
+            <BookOpen size={20} className="text-[#2F3AA2]" />
             <h2 className="text-xl font-semibold">História domácich úloh</h2>
           </div>
 
@@ -150,7 +150,7 @@ export default async function LearningPage() {
                   className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm sm:p-6"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="shrink-0 rounded-2xl bg-[#eef3ef] p-3">
+                    <div className="shrink-0 rounded-2xl bg-[#EEF2FF] p-3">
                       <FileText size={20} />
                     </div>
 

@@ -132,10 +132,10 @@ export default async function TeacherStudentsPage() {
   );
 
   return (
-    <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
+    <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
             Študenti
           </p>
 
@@ -150,7 +150,7 @@ export default async function TeacherStudentsPage() {
 
         <section className="mt-8 grid gap-4 sm:grid-cols-2">
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <Users size={20} className="text-[#9a8049]" />
+            <Users size={20} className="text-[#2F3AA2]" />
 
             <p className="mt-4 text-3xl font-semibold">
               {students.length}
@@ -162,7 +162,7 @@ export default async function TeacherStudentsPage() {
           </div>
 
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <BookOpen size={20} className="text-[#9a8049]" />
+            <BookOpen size={20} className="text-[#2F3AA2]" />
 
             <p className="mt-4 text-3xl font-semibold">
               {totalRemaining}

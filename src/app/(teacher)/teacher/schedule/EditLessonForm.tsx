@@ -130,7 +130,7 @@ export default function EditLessonForm({
   }
 
   return (
-    <details className="mt-4 rounded-2xl border border-black/5 bg-white/80 p-4 text-[#183f38]">
+    <details className="mt-4 rounded-2xl border border-black/5 bg-white/80 p-4 text-[#0a0a0f]">
       <summary className="flex cursor-pointer list-none items-center gap-2 text-sm font-semibold">
         <CalendarClock size={16} />
         Upraviť termín alebo online odkaz
@@ -144,7 +144,7 @@ export default function EditLessonForm({
             type="datetime-local"
             value={dateTime}
             onChange={(event) => { setDateTime(event.target.value); setSaved(false); }}
-            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
+            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#2F3AA2]"
           />
         </label>
 
@@ -156,7 +156,7 @@ export default function EditLessonForm({
             value={link}
             onChange={(event) => { setLink(event.target.value); setSaved(false); }}
             placeholder="https://meet.google.com/..."
-            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
+            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#2F3AA2]"
           />
         </label>
       </div>
@@ -166,14 +166,14 @@ export default function EditLessonForm({
           type="button"
           onClick={save}
           disabled={saving}
-          className="inline-flex items-center gap-2 rounded-xl bg-[#183f38] px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-xl bg-[#2F3AA2] px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
         >
           <Save size={16} />
           {saving ? "Ukladám..." : "Uložiť zmeny"}
         </button>
 
         {saved && (
-          <span role="status" className="text-sm font-medium text-[#527064]">
+          <span role="status" className="text-sm font-medium text-[#3730A3]">
             Zmeny boli uložené.
           </span>
         )}

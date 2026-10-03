@@ -62,7 +62,7 @@ export default function StudentSearchList({
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Vyhľadať študenta alebo jazyk"
           aria-label="Vyhľadať študenta"
-          className="w-full rounded-2xl border border-black/5 bg-white py-3 pl-11 pr-4 text-sm outline-none transition placeholder:text-gray-400 focus:border-[#183f38]"
+          className="w-full rounded-2xl border border-black/5 bg-white py-3 pl-11 pr-4 text-sm outline-none transition placeholder:text-gray-400 focus:border-[#2F3AA2]"
         />
       </label>
 
@@ -91,14 +91,14 @@ export default function StudentSearchList({
             >
               <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#eef3ef] font-semibold text-[#183f38]">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#EEF2FF] font-semibold text-[#0a0a0f]">
                     {student.name.charAt(0).toUpperCase()}
                   </div>
 
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
                       <h2 className="font-semibold">{student.name}</h2>
-                      <span className="rounded-full bg-[#eef3ef] px-2.5 py-1 text-xs font-semibold text-[#527064]">
+                      <span className="rounded-full bg-[#EEF2FF] px-2.5 py-1 text-xs font-semibold text-[#3730A3]">
                         Aktívny
                       </span>
                     </div>
@@ -134,7 +134,7 @@ export default function StudentSearchList({
 
                   <Link
                     href={`/teacher/student/${student.id}`}
-                    className="flex items-center justify-center gap-2 rounded-xl bg-[#183f38] px-4 py-2.5 text-sm font-semibold text-white"
+                    className="flex items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-4 py-2.5 text-sm font-semibold text-white"
                   >
                     Zobraziť študenta
                     <ArrowRight size={16} />

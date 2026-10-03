@@ -108,7 +108,7 @@ export default function LessonStatusActions({
         value={status}
         onChange={(event) => setStatus(event.target.value)}
         disabled={saving || saved}
-        className="rounded-xl border border-black/10 bg-white px-3 py-2.5 text-sm text-[#183f38] outline-none focus:border-[#183f38]"
+        className="rounded-xl border border-black/10 bg-white px-3 py-2.5 text-sm text-[#0a0a0f] outline-none focus:border-[#2F3AA2]"
       >
         {statusOptions.map((option) => (
           <option key={option.value} value={option.value}>
@@ -121,7 +121,7 @@ export default function LessonStatusActions({
         type="button"
         onClick={saveStatus}
         disabled={saving || saved}
-        className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#183f38] px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
+        className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
       >
         <CheckCircle2 size={16} />
         {saving ? "Ukladám..." : saved ? "Uložené" : "Uložiť stav"}

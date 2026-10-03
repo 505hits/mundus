@@ -130,10 +130,10 @@ export default async function AdminDashboardPage() {
     profile?.full_name?.trim()?.split(/\s+/)[0] || "Administrátor";
 
   return (
-    <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
+    <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
             Administrácia Mundus
           </p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -154,22 +154,22 @@ export default async function AdminDashboardPage() {
 
         <section className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <Users size={20} className="text-[#9a8049]" />
+            <Users size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{studentsError ? "—" : students?.length ?? 0}</p>
             <p className="mt-1 text-sm text-gray-500">Aktívni študenti</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <GraduationCap size={20} className="text-[#9a8049]" />
+            <GraduationCap size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{teachersError ? "—" : teachers?.length ?? 0}</p>
             <p className="mt-1 text-sm text-gray-500">Aktívni lektori</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <CalendarDays size={20} className="text-[#9a8049]" />
+            <CalendarDays size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{lessonsError ? "—" : todayLessons.length}</p>
             <p className="mt-1 text-sm text-gray-500">Dnešné hodiny</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <AlertCircle size={20} className="text-[#9a8049]" />
+            <AlertCircle size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{requestsError ? "—" : pendingRequests}</p>
             <p className="mt-1 text-sm text-gray-500">Čakajúce žiadosti o zmenu termínu</p>
           </div>
@@ -182,27 +182,27 @@ export default async function AdminDashboardPage() {
                 <p className="text-sm text-gray-400">Priorita</p>
                 <h2 className="mt-1 text-xl font-semibold">Vyžaduje pozornosť</h2>
               </div>
-              <AlertCircle size={21} className="text-[#9a8049]" />
+              <AlertCircle size={21} className="text-[#2F3AA2]" />
             </div>
 
             <div className="mt-5 space-y-3">
-              <div className="rounded-2xl bg-[#faf8f2] p-4">
+              <div className="rounded-2xl bg-[#EEF2FF] p-4">
                 <p className="font-medium">{packagesError ? "Stav balíčkov sa nepodarilo načítať" : packageAlertLabel(lowPackages.length)}</p>
                 <p className="mt-1 text-sm text-gray-500">Odporúčame kontaktovať študenta ohľadom pokračovania.</p>
               </div>
-              <div className="rounded-2xl bg-[#faf8f2] p-4">
+              <div className="rounded-2xl bg-[#EEF2FF] p-4">
                 <p className="font-medium">{requestsError ? "Žiadosti sa nepodarilo načítať" : requestAlertLabel(pendingRequests)}</p>
                 <p className="mt-1 text-sm text-gray-500">Čaká sa na kontrolu alebo odpoveď lektora.</p>
               </div>
-              <div className="rounded-2xl bg-[#faf8f2] p-4">
+              <div className="rounded-2xl bg-[#EEF2FF] p-4">
                 <p className="font-medium">{studentsError || lessonsError ? "Ďalšie termíny sa nepodarilo overiť" : noUpcomingLabel(noUpcoming)}</p>
                 <p className="mt-1 text-sm text-gray-500">Môže byť potrebné dohodnúť ďalší termín.</p>
               </div>
             </div>
           </section>
 
-          <section className="rounded-3xl border border-black/5 bg-[#183f38] p-6 text-white shadow-sm">
-            <Package size={21} className="text-[#d7b56d]" />
+          <section className="rounded-3xl border border-black/5 bg-[#2F3AA2] p-6 text-white shadow-sm">
+            <Package size={21} className="text-[#C7D2FE]" />
             <p className="mt-5 text-sm text-white/50">Balíčky</p>
             <h2 className="mt-1 text-xl font-semibold">Prehľad pokračovania</h2>
             <p className="mt-7 text-4xl font-semibold">{packagesError ? "—" : lowPackages.length}</p>
@@ -244,7 +244,7 @@ export default async function AdminDashboardPage() {
               </p>
               <h2 className="mt-1 text-xl font-semibold">Dnešné hodiny</h2>
             </div>
-            <BookOpen size={21} className="text-[#9a8049]" />
+            <BookOpen size={21} className="text-[#2F3AA2]" />
           </div>
 
           {lessonsError ? <p className="mt-5 text-sm text-red-700">Dnešné hodiny sa nepodarilo načítať. Obnovte stránku.</p> : todayLessons.length === 0 ? (
@@ -264,7 +264,7 @@ export default async function AdminDashboardPage() {
                     </div>
                     <div className="flex items-center gap-3">
                       <span className="font-semibold">{formatTime(lesson.scheduled_at)}</span>
-                      <span className="rounded-full bg-[#eef3ef] px-3 py-1 text-xs font-semibold capitalize text-[#527064]">
+                      <span className="rounded-full bg-[#EEF2FF] px-3 py-1 text-xs font-semibold capitalize text-[#3730A3]">
                         {formatLessonStatus(lesson.status)}
                       </span>
                     </div>

@@ -201,7 +201,7 @@ export default async function TeacherDashboardPage() {
   const firstName = teacherName.split(" ")[0];
 
   return (
-    <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
+    <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
       <header className="border-b border-black/5 bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
           <Link href="/" className="text-xl font-bold tracking-tight">
@@ -214,7 +214,7 @@ export default async function TeacherDashboardPage() {
               <p className="text-xs text-gray-400">Portál lektora</p>
             </div>
 
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#183f38] text-sm font-semibold text-white">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#2F3AA2] text-sm font-semibold text-white">
               {getInitials(teacherName)}
             </div>
           </div>
@@ -223,7 +223,7 @@ export default async function TeacherDashboardPage() {
 
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
             Prehľad lektora
           </p>
 
@@ -240,7 +240,7 @@ export default async function TeacherDashboardPage() {
           <article className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between">
               <p className="text-sm text-gray-400">Dnes</p>
-              <CalendarDays size={19} className="text-[#9a8049]" />
+              <CalendarDays size={19} className="text-[#2F3AA2]" />
             </div>
 
             <p className="mt-3 text-3xl font-semibold">
@@ -253,7 +253,7 @@ export default async function TeacherDashboardPage() {
           <article className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between">
               <p className="text-sm text-gray-400">Moji študenti</p>
-              <Users size={19} className="text-[#9a8049]" />
+              <Users size={19} className="text-[#2F3AA2]" />
             </div>
 
             <p className="mt-3 text-3xl font-semibold">
@@ -265,19 +265,19 @@ export default async function TeacherDashboardPage() {
             </p>
           </article>
 
-          <article className="rounded-3xl border border-[#c6a65b]/20 bg-[#faf6eb] p-5">
+          <article className="rounded-3xl border border-[#2F3AA2]/20 bg-[#faf6eb] p-5">
             <div className="flex items-center justify-between">
-              <p className="text-sm text-[#7e693a]/70">
+              <p className="text-sm text-[#92400e]/70">
                 Žiadosti o zmenu termínu
               </p>
-              <Clock3 size={19} className="text-[#9a8049]" />
+              <Clock3 size={19} className="text-[#2F3AA2]" />
             </div>
 
-            <p className="mt-3 text-3xl font-semibold text-[#7e693a]">
+            <p className="mt-3 text-3xl font-semibold text-[#92400e]">
               {myPendingRequests.length}
             </p>
 
-            <p className="mt-1 text-sm text-[#7e693a]/70">
+            <p className="mt-1 text-sm text-[#92400e]/70">
               čakajú na vybavenie
             </p>
           </article>
@@ -294,7 +294,7 @@ export default async function TeacherDashboardPage() {
 
             <Link
               href="/teacher/schedule"
-              className="rounded-xl bg-[#183f38] px-4 py-2.5 text-sm font-semibold text-white"
+              className="rounded-xl bg-[#2F3AA2] px-4 py-2.5 text-sm font-semibold text-white"
             >
               Zobraziť rozvrh
             </Link>
@@ -317,7 +317,7 @@ export default async function TeacherDashboardPage() {
                     key={lesson.id}
                     className={`rounded-3xl border p-5 shadow-sm sm:p-6 ${
                       lesson.id === nextTodayLessonId
-                        ? "border-[#183f38]/10 bg-[#183f38] text-white"
+                        ? "border-[#2F3AA2]/10 bg-[#2F3AA2] text-white"
                         : "border-black/5 bg-white"
                     }`}
                   >
@@ -327,7 +327,7 @@ export default async function TeacherDashboardPage() {
                           className={`flex h-14 w-14 items-center justify-center rounded-2xl text-sm font-semibold ${
                             lesson.id === nextTodayLessonId
                               ? "bg-white/10"
-                              : "bg-[#eef3ef] text-[#183f38]"
+                              : "bg-[#EEF2FF] text-[#0a0a0f]"
                           }`}
                         >
                           {formatTime(lesson.scheduled_at)}
@@ -366,8 +366,8 @@ export default async function TeacherDashboardPage() {
                           rel="noreferrer"
                           className={`flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold ${
                             lesson.id === nextTodayLessonId
-                              ? "bg-white text-[#183f38]"
-                              : "bg-[#eef3ef] text-[#183f38]"
+                              ? "bg-white text-[#0a0a0f]"
+                              : "bg-[#EEF2FF] text-[#0a0a0f]"
                           }`}
                         >
                           <Video size={17} />
@@ -395,30 +395,30 @@ export default async function TeacherDashboardPage() {
         {myPendingRequests.length > 0 && (
           <section className="mt-10">
             <div className="flex items-center gap-2">
-              <AlertCircle size={20} className="text-[#9a8049]" />
+              <AlertCircle size={20} className="text-[#2F3AA2]" />
               <h2 className="text-xl font-semibold">
                 Vyžaduje vašu pozornosť
               </h2>
             </div>
 
-            <div className="mt-4 rounded-3xl border border-[#c6a65b]/20 bg-[#faf6eb] p-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#9a8049]">
+            <div className="mt-4 rounded-3xl border border-[#2F3AA2]/20 bg-[#faf6eb] p-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#2F3AA2]">
                 Zmeny termínov
               </p>
 
-              <h3 className="mt-3 font-semibold text-[#7e693a]">
+              <h3 className="mt-3 font-semibold text-[#92400e]">
                 {myPendingRequests.length === 1
                   ? "1 študent čaká na vašu odpoveď"
                   : `${myPendingRequests.length} študentov čaká na vašu odpoveď`}
               </h3>
 
-              <p className="mt-2 text-sm leading-6 text-[#7e693a]/75">
+              <p className="mt-2 text-sm leading-6 text-[#92400e]/75">
                 Skontrolujte navrhované termíny pred potvrdením zmeny.
               </p>
 
               <Link
                 href="/teacher/schedule"
-                className="mt-5 inline-flex rounded-xl bg-[#183f38] px-4 py-2.5 text-sm font-semibold text-white"
+                className="mt-5 inline-flex rounded-xl bg-[#2F3AA2] px-4 py-2.5 text-sm font-semibold text-white"
               >
                 Skontrolovať žiadosti
               </Link>
@@ -435,7 +435,7 @@ export default async function TeacherDashboardPage() {
               </h2>
             </div>
 
-            <GraduationCap size={21} className="text-[#9a8049]" />
+            <GraduationCap size={21} className="text-[#2F3AA2]" />
           </div>
 
           {students.length === 0 ? (
@@ -451,7 +451,7 @@ export default async function TeacherDashboardPage() {
                 <Link
                   key={student.id}
                   href={`/teacher/student/${student.id}`}
-                  className={`flex items-center justify-between gap-4 p-5 transition hover:bg-[#fafbf9] sm:p-6 ${
+                  className={`flex items-center justify-between gap-4 p-5 transition hover:bg-[#FAFAF9] sm:p-6 ${
                     index !== Math.min(students.length, 6) - 1
                       ? "border-b border-gray-100"
                       : ""

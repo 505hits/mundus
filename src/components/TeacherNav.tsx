@@ -66,10 +66,11 @@ export default function TeacherNav() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-medium transition ${
+                  aria-current={active ? "page" : undefined}
+                  className={`focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F3AA2] flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-medium transition ${
                     active
                       ? "bg-[#0a0a0f] text-white"
-                      : "text-gray-500 hover:bg-[#f4f6f3] hover:text-[#0a0a0f]"
+                      : "text-gray-500 hover:bg-[#F5F5F4] hover:text-[#0a0a0f]"
                   }`}
                 >
                   <Icon size={18} />
@@ -80,7 +81,7 @@ export default function TeacherNav() {
           </nav>
 
           <div className="mt-auto space-y-3">
-            <div className="rounded-2xl bg-[#f4f6f3] p-4">
+            <div className="rounded-2xl bg-[#F5F5F4] p-4">
             <p className="text-sm font-semibold text-[#0a0a0f]">
               Účet lektora
             </p>
@@ -110,13 +111,14 @@ export default function TeacherNav() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex flex-col items-center justify-center gap-1 py-3 text-[11px] font-medium ${
+                  aria-current={active ? "page" : undefined}
+                className={`focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F3AA2] flex flex-col items-center justify-center gap-1 py-3 text-[11px] font-medium ${
                   active ? "text-[#0a0a0f]" : "text-gray-400"
                 }`}
               >
                 <div
                   className={`rounded-xl p-1.5 ${
-                    active ? "bg-[#eef3ef]" : ""
+                    active ? "bg-[#EEF2FF]" : ""
                   }`}
                 >
                   <Icon size={19} />

@@ -131,7 +131,7 @@ export default async function DashboardPage() {
       : 0;
 
   return (
-    <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
+    <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
       <header className="border-b border-black/5 bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
           <Link
@@ -143,7 +143,7 @@ export default async function DashboardPage() {
 
           <div className="flex items-center gap-3">
             <div className="hidden text-right sm:block">
-              <p className="text-sm font-semibold text-[#183f38]">
+              <p className="text-sm font-semibold text-[#0a0a0f]">
                 Portál študenta
               </p>
 
@@ -152,7 +152,7 @@ export default async function DashboardPage() {
               </p>
             </div>
 
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#183f38] text-sm font-semibold text-white">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#2F3AA2] text-sm font-semibold text-white">
               {(
                 profile?.full_name?.trim()?.[0] ||
                 user.email?.[0] ||
@@ -165,7 +165,7 @@ export default async function DashboardPage() {
 
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
             Moje učenie
           </p>
 
@@ -186,7 +186,7 @@ export default async function DashboardPage() {
 
         <div className="mt-8 grid gap-6 lg:grid-cols-3">
           {/* Najbližšia hodina */}
-          <section className="rounded-3xl bg-[#183f38] p-6 text-white shadow-sm lg:col-span-2 sm:p-8">
+          <section className="rounded-3xl bg-[#2F3AA2] p-6 text-white shadow-sm lg:col-span-2 sm:p-8">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-sm font-medium text-white/60">
@@ -241,7 +241,7 @@ export default async function DashboardPage() {
                     href={safeLessonLink(nextLesson.meet_link) ?? undefined}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3.5 font-semibold text-[#183f38]"
+                    className="flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3.5 font-semibold text-[#0a0a0f]"
                   >
                     <Video size={18} />
                     Pripojiť sa na hodinu
@@ -249,7 +249,7 @@ export default async function DashboardPage() {
                 ) : (
                   <button
                     disabled
-                    className="flex cursor-not-allowed items-center justify-center gap-2 rounded-2xl bg-white/70 px-5 py-3.5 font-semibold text-[#183f38]/60"
+                    className="flex cursor-not-allowed items-center justify-center gap-2 rounded-2xl bg-white/70 px-5 py-3.5 font-semibold text-[#0a0a0f]/60"
                   >
                     <Video size={18} />
                     Odkaz na hodinu zatiaľ nie je pridaný
@@ -290,9 +290,9 @@ export default async function DashboardPage() {
                   </p>
                 </div>
 
-                <div className="mt-6 h-2 overflow-hidden rounded-full bg-[#edf0ec]">
+                <div className="mt-6 h-2 overflow-hidden rounded-full bg-[#E0E7FF]">
                   <div
-                    className="h-full rounded-full bg-[#c6a65b]"
+                    className="h-full rounded-full bg-[#2F3AA2]"
                     style={{ width: `${progress}%` }}
                   />
                 </div>
@@ -302,15 +302,15 @@ export default async function DashboardPage() {
                 </p>
 
                 {remainingLessons <= 2 && (
-                  <div className="mt-5 rounded-2xl border border-[#c6a65b]/20 bg-[#faf6eb] p-4">
-                    <p className="font-semibold text-[#7e693a]">
+                  <div className="mt-5 rounded-2xl border border-[#2F3AA2]/20 bg-[#faf6eb] p-4">
+                    <p className="font-semibold text-[#92400e]">
                       {remainingLessons === 0
                         ? "Balíček je vyčerpaný"
                         : remainingLessons === 1
                           ? "Zostáva vám posledná hodina"
                           : "Zostávajú vám posledné 2 hodiny"}
                     </p>
-                    <p className="mt-1 text-sm leading-6 text-[#7e693a]/75">
+                    <p className="mt-1 text-sm leading-6 text-[#92400e]/75">
                       Ak chcete pokračovať bez prerušenia, ozvite sa Mundus Languages a pripravíme vám ďalší balíček.
                     </p>
                   </div>
@@ -338,7 +338,7 @@ export default async function DashboardPage() {
                 </h2>
               </div>
 
-              <div className="rounded-2xl bg-[#eef3ef] p-3">
+              <div className="rounded-2xl bg-[#EEF2FF] p-3">
                 <BookOpen size={22} />
               </div>
             </div>
@@ -346,7 +346,7 @@ export default async function DashboardPage() {
             {latestNextFocus ? (
               <p className="mt-5 text-sm leading-6 text-gray-500">
                 Ďalšie zameranie:{" "}
-                <span className="font-medium text-[#183f38]">
+                <span className="font-medium text-[#0a0a0f]">
                   {latestNextFocus}
                 </span>
               </p>
@@ -358,7 +358,7 @@ export default async function DashboardPage() {
 
             <Link
               href="/progress"
-              className="mt-6 flex items-center gap-2 text-sm font-semibold text-[#9a8049]"
+              className="mt-6 flex items-center gap-2 text-sm font-semibold text-[#2F3AA2]"
             >
               Zobraziť môj pokrok
               <ChevronRight size={16} />
@@ -380,7 +380,7 @@ export default async function DashboardPage() {
                 </h2>
               </div>
 
-              <div className="rounded-2xl bg-[#f7f2e7] p-3 text-[#9a8049]">
+              <div className="rounded-2xl bg-[#EEF2FF] p-3 text-[#2F3AA2]">
                 <FileText size={22} />
               </div>
             </div>
@@ -404,7 +404,7 @@ export default async function DashboardPage() {
 
             <Link
               href="/learning"
-              className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#9a8049]"
+              className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#2F3AA2]"
             >
               Zobraziť úlohy a poznámky
               <ChevronRight size={16} />
@@ -427,7 +427,7 @@ export default async function DashboardPage() {
 
             <CalendarDays
               size={21}
-              className="text-[#9a8049]"
+              className="text-[#2F3AA2]"
             />
           </div>
 
@@ -450,7 +450,7 @@ export default async function DashboardPage() {
                   </div>
 
                   {index === 0 ? (
-                    <span className="rounded-full bg-[#eef3ef] px-3 py-1.5 text-xs font-semibold">
+                    <span className="rounded-full bg-[#EEF2FF] px-3 py-1.5 text-xs font-semibold">
                       Najbližšia
                     </span>
                   ) : (

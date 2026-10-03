@@ -82,7 +82,7 @@ export default async function ProgressPage() {
     allLessons.find((lesson) => lesson.language)?.language ||
     "Váš jazyk";
 
-  const nextFocus =
+  const nextFocus = reportsError ? "Ďalšie zameranie sa nepodarilo načítať." :
     latestReport?.next_focus ||
     "Lektor doplní ďalšie zameranie po hodine.";
 
@@ -170,7 +170,7 @@ export default async function ProgressPage() {
             />
 
             <p className="mt-4 text-3xl font-semibold">
-              {completedLessons.length}
+              {lessonsError ? "—" : completedLessons.length}
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
@@ -185,7 +185,7 @@ export default async function ProgressPage() {
             />
 
             <p className="mt-4 text-3xl font-semibold">
-              {remainingLessons}
+              {packagesError ? "—" : remainingLessons}
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
@@ -200,7 +200,7 @@ export default async function ProgressPage() {
             />
 
             <p className="mt-4 text-3xl font-semibold">
-              {teacherReports.length}
+              {reportsError ? "—" : teacherReports.length}
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
@@ -210,7 +210,7 @@ export default async function ProgressPage() {
         </section>
 
         {/* Package progress */}
-        {totalLessons > 0 && (
+        {!packagesError && totalLessons > 0 && (
           <section className="mt-6 rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
             <div className="flex items-start justify-between gap-4">
               <div>
@@ -264,7 +264,7 @@ export default async function ProgressPage() {
                 {nextFocus}
               </h2>
 
-              {!latestReport && (
+              {!reportsError && !latestReport && (
                 <p className="mt-3 text-sm leading-6 text-gray-500">
                   Lektor zatiaľ nepridal ďalšie zameranie. Zobrazí sa po uložení záznamu z hodiny.
                 </p>
@@ -282,7 +282,7 @@ export default async function ProgressPage() {
               </p>
 
               <h2 className="mt-1 text-xl font-semibold">
-                {latestReport?.topic ||
+                {reportsError ? "Spätnú väzbu sa nepodarilo načítať" : latestReport?.topic ||
                   "Zatiaľ bez záznamu od lektora"}
               </h2>
             </div>
@@ -328,7 +328,7 @@ export default async function ProgressPage() {
             </>
           ) : (
             <p className="mt-5 max-w-2xl text-sm leading-6 text-gray-500">
-              Najnovšia spätná väzba sa zobrazí po uložení záznamu z hodiny.
+              {reportsError ? "Obnovte stránku alebo skúste načítať spätnú väzbu o chvíľu znova." : "Najnovšia spätná väzba sa zobrazí po uložení záznamu z hodiny."}
             </p>
           )}
         </section>
@@ -380,11 +380,11 @@ export default async function ProgressPage() {
           ) : (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
               <p className="font-medium">
-                Zatiaľ nemáte dokončené hodiny
+                {lessonsError ? "Históriu hodín sa nepodarilo načítať" : "Zatiaľ nemáte dokončené hodiny"}
               </p>
 
               <p className="mt-1 text-sm text-gray-400">
-                História hodín sa zobrazí po prvej dokončenej hodine.
+                {lessonsError ? "Obnovte stránku alebo to skúste o chvíľu znova." : "História hodín sa zobrazí po prvej dokončenej hodine."}
               </p>
             </div>
           )}

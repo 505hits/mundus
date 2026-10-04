@@ -12,6 +12,11 @@ check('Supabase URL',https(env.NEXT_PUBLIC_SUPABASE_URL));
 check('Supabase public publishable key',!!env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY);
 check('Server Supabase service key',!!env.SUPABASE_SERVICE_ROLE_KEY);
 check('Canonical HTTPS site URL',https(env.MUNDUS_SITE_URL));
+for (const flag of ['MUNDUS_SELF_SIGNUP_ENABLED','MUNDUS_INVITATIONS_ENABLED','MUNDUS_PAYMENTS_ENABLED','MUNDUS_PAYMENTS_LIVE_ENABLED','MUNDUS_EMAIL_NOTIFICATIONS_ENABLED']) {
+ if(env[flag]!==undefined) check(`${flag} is true or false`,['true','false'].includes(env[flag]));
+}
+process.stdout.write(`INFO Student signup ${env.MUNDUS_SELF_SIGNUP_ENABLED==='true'?'enabled':'disabled'}\n`);
+process.stdout.write(`INFO Teacher invitations ${env.MUNDUS_INVITATIONS_ENABLED==='true'?'enabled':'disabled'}\n`);
 const payments=env.MUNDUS_PAYMENTS_ENABLED==='true';
 process.stdout.write(`INFO Payments ${payments?'enabled':'disabled'}\n`);
 if(payments){

@@ -1,6 +1,6 @@
 # Mundus preview activation sequence
 
-Code is on mundus-portal. These tools do not deploy, alter the database, send mail or enable live payments.
+Code is on mundus-portal. The reviewed database activation is applied; website production promotion and live payment/email enablement remain pending.
 
 1. Run supabase/launch-preflight.sql in the EXISTING project's SQL editor. It is read-only and reports missing tables, RLS/policies, trigger names, accounting candidates, counter inconsistencies and private storage. Inspect candidate trigger functions before adding any lesson-credit logic; candidate names alone do not prove correct accounting. Stop if counters are inconsistent or the learning bucket is public. Do not reset existing users, packages or balances.
 2. In an isolated verified preview database, apply only missing migrations in this dependency order (inspect migration history first; do not rerun creation migrations blindly):
@@ -28,6 +28,7 @@ Code is on mundus-portal. These tools do not deploy, alter the database, send ma
    - 202610040004_portuguese_assessments.sql
    - 202610040005_verified_lesson_completion.sql
    - 202610040006_completed_lesson_integrity.sql
+   - 20261004120115_report_table_grants.sql
    These augment an existing base schema, not an empty database. Check profile creation trigger compatibility and discounted pending-order identity duplicates before applying. Run preflight again afterward.
 3. Run npm run launch:check in an environment with deployment variables, or npm run launch:check -- --env-file <local-env-file>. Never commit that file or paste secret values into chat. The command outputs only status, checks presence/shape, and does not validate credentials or prove launch readiness. Disabled optional features are reported as disabled, not missing. Public Supabase values must be supplied at build time and require a fresh deployment build.
 4. Use docs/account-onboarding.md for Auth redirects, confirmed email and signup/invite checks; docs/payments.md for Stripe test mode; docs/placement-tests.md for language/audio tests; docs/learning-and-notifications.md for private files/SMTP/scheduler. Enable each feature only after its preview checks. SMTP and scheduling remain off until configured; no production cron is created by this work.
@@ -36,7 +37,7 @@ Code is on mundus-portal. These tools do not deploy, alter the database, send ma
 
 Report privacy is a launch blocker until migration 202610030008 is applied and verified. Student dashboard, learning and progress use student_lesson_reports(), which returns only their shared fields. Direct report-table reads must return no rows for students, including explicit private_teacher_note queries. Check an assigned active teacher can still read/update the private note, an unrelated/inactive teacher cannot, and an active admin retains access. Existing notes are preserved. The restrictive policy blocks broad legacy SELECT policies; the RPC has no caller-selected student ID and requires a verified active student. Missing RPC shows a page load error rather than falling back to the private table.
 
-Remaining product scope: two language question banks beyond English/German/Spanish/Italian/French/Portuguese, teacher review of approximate question levels, real device audio verification, and connected integration checks. The original production project/domain have not been changed. Production/live enablement remains a separate deliberate launch step after preview validation.
+Remaining product scope: two language question banks beyond English/German/Spanish/Italian/French/Portuguese, teacher review of approximate question levels, real device audio verification, and connected integration checks. The existing Supabase project received the explicitly approved activation and report-grant fix; website production/domain settings have not been changed. Production/live enablement remains a separate deliberate launch step after preview validation.
 
 Apply session guards after the baseline schedule-response/validation triggers. Verify an inactive or unverified account with an existing token cannot read/write lessons, packages, reports, schedule requests, assessment results, learning-file metadata, onboarding or payment-order records through the API. Optional feature tables are guarded when present; rerun this migration if any are created afterward. The helper restricts legacy permissive policies; trusted service operations retain their bypass. A request must start pending with the actual requester ID. Test expired proposals can be declined by the other party, acceptance remains blocked for expired times, and a fresh valid acceptance moves the lesson exactly once. No lesson-credit deduction trigger is installed.
 
@@ -60,4 +61,4 @@ GitHub reports successful Vercel deployments for mundus and mundus-5at5 on porta
 
 The older https://mundus-chi.vercel.app/login address returns HTTP 404. Do not give that address as a working portal preview. Main remains at 8803d08 (September 30); it does not contain the subsequent portal safeguards. Preparing a draft PR is review preparation, not production publication. A read-only merge-tree check finds no merge conflict against the current portal branch.
 
-Supabase integration is available but not installed/connected in this session. Database inspection, migration application, Auth tests and live accounting verification still require that connection. No changes to Vercel access restrictions or live payment/email flags were made.
+Supabase is connected. All24 reviewed sources were applied atomically as 20261004115305_mundus_v1_portal_activation, followed by report_table_grants. Existing3 profiles/1lesson/1package were preserved; all13 public tables have RLS. Read-only teacher/student/anonymous role checks pass. Auth browser tests and real checkout/email/upload checks remain pending. Preflight now audits table grants as well as RLS: teachers require authenticated SELECT/INSERT/UPDATE on lesson_reports; server-only feature tables must not grant client writes. No changes to Vercel access restrictions or live payment/email flags were made.

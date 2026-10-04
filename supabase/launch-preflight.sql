@@ -1,4 +1,4 @@
--- READ ONLY: run in the existing Supabase SQL editor before applying changes.
+-- READ ONLY: run in the existing Supabase SQL editor before and after changes.
 -- No personal rows, secrets, balance updates or email sends.
 begin read only;
 
@@ -14,6 +14,23 @@ where n.nspname='public' and c.relname in ('profiles','lessons','lesson_packages
  'student_onboarding','payment_orders','payment_discount_settings','placement_results','learning_files','notification_outbox','renewal_followups','teacher_preferences');
 select tablename,policyname,roles,cmd from pg_policies where schemaname='public'
 and tablename in ('profiles','lessons','lesson_packages','lesson_reports','schedule_change_requests','placement_results','learning_files','notification_outbox','renewal_followups','teacher_preferences');
+
+-- RLS policies do not grant table access. Catch missing staff permissions too.
+select c.relname as table_name,
+ has_table_privilege('authenticated',c.oid,'SELECT') as client_select,
+ has_table_privilege('authenticated',c.oid,'INSERT') as client_insert,
+ has_table_privilege('authenticated',c.oid,'UPDATE') as client_update,
+ has_table_privilege('service_role',c.oid,'SELECT') as server_select,
+ has_table_privilege('service_role',c.oid,'INSERT') as server_insert,
+ has_table_privilege('service_role',c.oid,'UPDATE') as server_update
+from pg_class c join pg_namespace n on n.oid=c.relnamespace
+where n.nspname='public' and c.relkind='r'
+ and c.relname in ('profiles','lessons','lesson_packages','lesson_reports','schedule_change_requests',
+ 'student_onboarding','payment_orders','payment_discount_settings','placement_results','learning_files',
+ 'notification_outbox','renewal_followups','teacher_preferences') order by c.relname;
+-- Expected authenticated report SELECT/INSERT/UPDATE; private rows still restricted by RLS.
+-- Server-only payment/files/assessment/outbox writes must remain inaccessible to clients.
+-- Server grants on tables not used by service operations need not be enabled.
 
 -- Teacher contact privacy must be active before launch.
 select to_regprocedure('public.teacher_student_directory()') is not null as teacher_directory_exists,

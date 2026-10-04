@@ -19,4 +19,15 @@ $$;
 drop trigger if exists a_guard_completed_lesson_history on public.lessons;
 create trigger a_guard_completed_lesson_history before update on public.lessons
 for each row execute function public.guard_completed_lesson_history();
+-- Trigger/event-trigger functions are internal entry points, not client RPCs.
+-- Existing triggers still run; their creator retains execution rights.
+do $$ declare f record;
+begin
+  for f in select p.oid::regprocedure as signature from pg_proc p
+    join pg_namespace n on n.oid=p.pronamespace
+    where n.nspname='public' and p.prorettype in ('pg_catalog.trigger'::regtype,'pg_catalog.event_trigger'::regtype)
+  loop
+    execute format('revoke execute on function %s from public, anon, authenticated',f.signature);
+  end loop;
+end $$;
 commit;

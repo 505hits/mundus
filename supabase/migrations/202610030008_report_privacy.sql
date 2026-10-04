@@ -22,6 +22,32 @@ using (
   )
 );
 
+-- Restrictive writes also constrain broad pre-existing teacher report policies.
+drop policy if exists "Report writes require completed assigned lesson" on public.lesson_reports;
+create policy "Report writes require completed assigned lesson"
+on public.lesson_reports as restrictive for insert to authenticated
+with check (
+  exists (select 1 from public.profiles p where p.id=auth.uid() and p.status='active'
+    and (p.role='admin' or (p.role='teacher' and teacher_id=auth.uid()
+      and exists (select 1 from public.lessons l where l.id=lesson_reports.lesson_id
+        and l.teacher_id=auth.uid() and l.student_id=lesson_reports.student_id and l.status='completed'))))
+);
+drop policy if exists "Report updates require completed assigned lesson" on public.lesson_reports;
+create policy "Report updates require completed assigned lesson"
+on public.lesson_reports as restrictive for update to authenticated
+using (
+  exists (select 1 from public.profiles p where p.id=auth.uid() and p.status='active'
+    and (p.role='admin' or (p.role='teacher' and teacher_id=auth.uid()
+      and exists (select 1 from public.lessons l where l.id=lesson_reports.lesson_id
+        and l.teacher_id=auth.uid() and l.student_id=lesson_reports.student_id and l.status='completed'))))
+)
+with check (
+  exists (select 1 from public.profiles p where p.id=auth.uid() and p.status='active'
+    and (p.role='admin' or (p.role='teacher' and teacher_id=auth.uid()
+      and exists (select 1 from public.lessons l where l.id=lesson_reports.lesson_id
+        and l.teacher_id=auth.uid() and l.student_id=lesson_reports.student_id and l.status='completed'))))
+);
+
 create or replace function public.student_lesson_reports()
 returns table (
   id uuid, lesson_id uuid, topic text, progress text, student_note text,

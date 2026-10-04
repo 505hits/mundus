@@ -32,6 +32,8 @@ async function fixture(mode) {
  await db.exec(migration);await db.exec(migration);
  const history=readFileSync(new URL("../supabase/migrations/202610040006_completed_lesson_integrity.sql",import.meta.url),"utf8");
  await db.exec(history);await db.exec(history);
+ assert.equal((await db.query("select has_function_privilege('anon','public.guard_completed_lesson_history()','execute') allowed")).rows[0].allowed,false);
+ assert.equal((await db.query("select has_function_privilege('authenticated','public.guard_completed_lesson_history()','execute') allowed")).rows[0].allowed,false);
  return db;
 }
 async function actor(db,id) {await db.exec(`reset role;set request.jwt.claim.sub='${id}';set role authenticated;`);}

@@ -1,16 +1,23 @@
-// Storage is already written. Keep it only when metadata was saved successfully.
+// A failed response may follow a committed metadata write. Confirm before cleanup.
 export async function persistLearningMetadata<T extends { error: unknown }>(
   save: () => PromiseLike<T>,
   cleanup: () => PromiseLike<unknown>,
-): Promise<T> {
-  let committed = false;
+  confirm: () => PromiseLike<boolean> = async () => false,
+): Promise<T | { error: null }> {
+  let result: T | undefined;
+  let failure: unknown;
   try {
-    const result = await save();
-    committed = !result.error;
-    return result;
-  } finally {
-    if (!committed) {
-      try { await cleanup(); } catch { /* Preserve the original save error. */ }
-    }
+    result = await save();
+    if (!result.error) return result;
+  } catch (error) { failure = error; }
+  let absent = false;
+  try {
+    if (await confirm()) return { error: null };
+    absent = true;
+  } catch { /* Uncertain commit: retain storage until it can be reconciled. */ }
+  if (absent) {
+    try { await cleanup(); } catch { /* Preserve the original save error. */ }
   }
+  if (result) return result;
+  throw failure;
 }

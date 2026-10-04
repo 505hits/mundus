@@ -14,3 +14,11 @@ assert.equal(removed,2,"thrown metadata failures also clean storage");
 await assert.rejects(persistLearningMetadata(async()=>{throw thrown;},async()=>{throw Error("Cleanup failed");}),error=>error===thrown);
 assert.equal(await persistLearningMetadata(async()=>failed,async()=>{throw Error("Cleanup failed");}),failed);
 console.log("PASS: retain committed uploads, clean returned/thrown metadata failures, preserve original errors when cleanup fails");
+
+const before=removed;
+assert.deepEqual(await persistLearningMetadata(async()=>{throw thrown;},cleanup,async()=>true),{error:null});
+assert.deepEqual(await persistLearningMetadata(async()=>failed,cleanup,async()=>true),{error:null});
+assert.equal(removed,before,"committed metadata after a lost reply must retain its file");
+await assert.rejects(persistLearningMetadata(async()=>{throw thrown;},cleanup,async()=>{throw Error("Lookup unavailable");}),error=>error===thrown);
+assert.equal(removed,before,"uncertain commit must not delete a potentially referenced file");
+console.log("PASS: recover committed metadata after lost replies and retain storage when confirmation is unavailable");

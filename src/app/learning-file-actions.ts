@@ -41,6 +41,12 @@ export async function uploadLearningFile(_previous: State, form: FormData): Prom
   const {error}=await persistLearningMetadata(
    () => admin.from("learning_files").insert({student_id:studentId,uploaded_by:user.id,kind,title,object_path:objectPath,file_name:file.name.replace(/[\r\n/\\]/g,"_").slice(0,150),mime_type:file.type,size_bytes:file.size}),
    () => admin.storage.from("mundus-learning").remove([objectPath]),
+   async () => {
+    const { data, error } = await admin.from("learning_files").select("id")
+     .eq("object_path", objectPath).eq("student_id", studentId).eq("uploaded_by", user.id).maybeSingle();
+    if(error) throw error;
+    return Boolean(data);
+   },
   );
   if(error) return {error:"Súbor sa nepodarilo uložiť. Skúste znova."};
   revalidatePath("/learning"); revalidatePath(`/teacher/student/${studentId}`);

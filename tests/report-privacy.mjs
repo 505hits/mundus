@@ -9,8 +9,8 @@ create table auth.users(id uuid primary key,email_confirmed_at timestamptz);
 create table profiles(id uuid primary key,role text,status text);
 create table lessons(id uuid primary key,student_id uuid,teacher_id uuid,status text);
 create table lesson_reports(id uuid primary key,lesson_id uuid,student_id uuid,teacher_id uuid,topic text,progress text,student_note text,homework text,next_focus text,private_teacher_note text,updated_at timestamptz);
-grant usage on schema auth to authenticated,anon; grant select on profiles,lessons,lesson_reports to authenticated,anon;
-grant insert,update on lesson_reports to authenticated;
+grant usage on schema auth to authenticated,anon; grant select on profiles,lessons to authenticated,anon; grant select on lesson_reports to anon;
+-- Start without authenticated report grants, matching the live defect.
 insert into profiles values('${student}','student','active'),('${other}','student','active'),('${teacher}','teacher','active'),('${outsider}','teacher','active'),('${admin}','admin','active');
 insert into auth.users values('${student}',now()),('${other}',now()),('${teacher}',now()),('${outsider}',now()),('${admin}',now());
 insert into lessons values('${lesson}','${student}','${teacher}','completed');
@@ -24,6 +24,9 @@ create policy legacy_insert on lesson_reports for insert with check(true);
 create policy teacher_update on lesson_reports for update to authenticated using(teacher_id=auth.uid()) with check(teacher_id=auth.uid());`);
 const migration=readFileSync(new URL('../supabase/migrations/202610030008_report_privacy.sql',import.meta.url),'utf8');
 await db.exec(migration); await db.exec(migration);
+const grants=readFileSync(new URL('../supabase/migrations/20261004120115_report_table_grants.sql',import.meta.url),'utf8');
+await db.exec(grants);await db.exec(grants);
+assert.equal((await db.query("select has_table_privilege('authenticated','lesson_reports','select,insert,update') as ready")).rows[0].ready,true);
 await db.exec(readFileSync(new URL('../supabase/migrations/202610030009_portal_session_guards.sql',import.meta.url),'utf8'));
 async function login(id){await db.exec(`reset role; set request.jwt.claim.sub='${id}'; set role authenticated;`);}
 await login(student);

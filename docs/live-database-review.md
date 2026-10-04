@@ -20,6 +20,10 @@ This adds the missing feature tables/private storage and replaces specified port
 
 After application, verify table/RLS/grant/bucket readiness, unchanged record counts/counters, advisors and migration history. Then run isolated fixture checks of the real accounting and role policies; actual signup, checkout, uploads and email still require an accessible configured preview. No destructive user-data reset or actual outreach is part of this proposal.
 
-## Approval-review block
+## Activation result — 4 October 2026
 
-The initial production batch was rejected by automatic approval review because it spans authentication, RLS, payments, storage, notifications, assessments and accounting, including policy/trigger replacements, and broad continuation instructions did not clearly authorize that combined production mutation. Nothing was applied; migration history was checked again and remains empty. Do not evade the rejection by splitting the same batch or executing it through another interface. Obtain explicit approval for this reviewed production activation before attempting it again.
+User explicitly approved the reviewed activation. All24 sources applied atomically as `20261004115305_mundus_v1_portal_activation`. Verified3 profiles/1lesson/1package retained, consistent counters,13 public tables with RLS,50 policies and private learning storage. Teacher role sees assigned names/lessons and zero student contact profiles; anonymous role sees no lessons/packages. Subsequent grant audit found missing authenticated SELECT/INSERT/UPDATE privileges on lesson_reports, blocking staff reports despite correct RLS. Follow-up migration restores these three privileges; restrictive staff/verified-account policies retain student privacy. No DELETE privilege is added.
+
+## Historical approval-review block
+
+The initial production batch was rejected by automatic approval review because it spans authentication, RLS, payments, storage, notifications, assessments and accounting, including policy/trigger replacements, and broad continuation instructions did not clearly authorize that combined production mutation. At that initial attempt nothing was applied, and migration history was empty. The explicitly approved activation above supersedes that initial blocked status. Do not evade the rejection by splitting the same batch or executing it through another interface. Obtain explicit approval for this reviewed production activation before attempting it again.

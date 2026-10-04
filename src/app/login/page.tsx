@@ -2,16 +2,18 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 import { canAcceptTeacherInvitation, hasCompletedOnboarding, portalDestination } from "@/lib/account-policy";
 import { purchaseReturnPath } from "@/lib/purchase-intent";
 
 export default function LoginPage() {
+  const errorRef = useRef<HTMLDivElement>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  useEffect(() => { if (error) errorRef.current?.focus(); }, [error]);
   const [loading, setLoading] = useState(false);
   const [nextPath, setNextPath] = useState<string | null>(null);
 
@@ -154,6 +156,7 @@ export default function LoginPage() {
                 onChange={(event) => setEmail(event.target.value)}
                 placeholder="meno@email.com"
                 required
+                aria-describedby={error ? "login-error" : undefined}
                 autoComplete="email"
                 className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-gray-800 shadow-sm outline-none focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10"
               />
@@ -171,6 +174,7 @@ export default function LoginPage() {
                 id="login-password"
                 placeholder="••••••••"
                 required
+                aria-describedby={error ? "login-error" : undefined}
                 autoComplete="current-password"
                 className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-gray-800 shadow-sm outline-none focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10"
               />
@@ -187,7 +191,7 @@ export default function LoginPage() {
             </div>
 
             {error && (
-              <div role="alert" className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              <div id="login-error" ref={errorRef} tabIndex={-1} role="alert" className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
                 {error}
               </div>
             )}

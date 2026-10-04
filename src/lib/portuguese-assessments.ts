@@ -77,7 +77,7 @@ export const PORTUGUESE_PLACEMENT = bank([
       "Na segunda de manhã",
       "Só ao domingo",
       "Todas as segundas",
-      "Na quarta à tarde"
+      "Na quarta-feira"
     ],
     3
   ],
@@ -464,7 +464,7 @@ export const PORTUGUESE_PROGRESS = bank([
     "A garantia de que nenhum posto seria eliminado referia-se expressamente aos trabalhadores com contrato sem termo. A situação dos prestadores de serviços externos continuava por esclarecer."
   ],
   [
-    "Que frase sugere que um fracasso foi evitado por pouco?",
+    "Que frase sugere que a intervenção dela evitou um fracasso?",
     [
       "O projeto falhou antes de começar.",
       "Não fosse a intervenção dela, o projeto teria fracassado.",

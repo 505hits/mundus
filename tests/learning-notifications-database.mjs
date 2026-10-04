@@ -26,6 +26,19 @@ const accepted=(await db.query("select id from notification_outbox where event='
 await db.query("update notification_outbox set status='failed' where id=$1",[accepted]);
 assert.equal((await db.query('select retry_schedule_email($1) as retried',[accepted])).rows[0].retried,true);
 assert.equal((await db.query('select retry_schedule_email($1) as retried',[accepted])).rows[0].retried,false,'already queued notifications cannot be replayed');
+// SMTP rejection/backoff and worker crash are simulated without sending any email.
+await db.exec("update notification_outbox set status='sent',lease_until=null");
+await db.query("update notification_outbox set status='pending',attempts=0,available_at=now()+interval '15 minutes',lease_token=null where id=$1",[accepted]);
+assert.equal((await db.query('select * from claim_schedule_emails(2)')).rows.length,0,'backoff is respected');
+await db.query("update notification_outbox set available_at=now()-interval '1 minute' where id=$1",[accepted]);
+const retryJob=(await db.query('select * from claim_schedule_emails(2)')).rows[0];assert.equal(retryJob.id,accepted);
+await db.query("update notification_outbox set lease_until=now()-interval '1 minute' where id=$1",[accepted]);
+const recovered=(await db.query('select * from claim_schedule_emails(2)')).rows[0];
+assert.equal(recovered.id,accepted);assert.notEqual(recovered.lease_token,retryJob.lease_token);
+const stale=(await db.query("update notification_outbox set status='sent' where id=$1 and lease_token=$2 returning id",[accepted,retryJob.lease_token])).rows;
+assert.equal(stale.length,0,'expired worker cannot acknowledge a newly leased job');
+await db.query("update notification_outbox set status='sent',lease_until=null where id=$1 and lease_token=$2",[accepted,recovered.lease_token]);
+assert.equal((await db.query('select * from claim_schedule_emails(2)')).rows.length,0,'successful delivery is not reclaimed');
 await db.exec(`insert into learning_files(student_id,uploaded_by,kind,title,object_path,file_name,mime_type,size_bytes) values('${student}','${teacher}','material','Lesson notes','private/path','notes.pdf','application/pdf',10)`);
 async function login(id){await db.exec(`reset role;set request.jwt.claim.sub='${id}';set role authenticated;`);}
 await login(student);assert.equal((await db.query('select * from learning_files')).rows.length,1);await assert.rejects(db.query("update learning_files set title='forged'"),/permission denied/);

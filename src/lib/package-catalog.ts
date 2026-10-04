@@ -5,4 +5,3 @@ export const PACKAGE_PRICES = [
   { lessons: 20, amountCents: 49000 },
   { lessons: 30, amountCents: 70500 },
 ] as const;
-

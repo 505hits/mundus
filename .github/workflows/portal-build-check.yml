@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - mundus-portal
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -26,7 +29,7 @@ jobs:
       - name: Lint portal
         run: npm run lint
 
-      - name: Test account and payment safeguards
+      - name: Test portal safeguards and assessment drafts
         run: npm test
 
       - name: Build portal

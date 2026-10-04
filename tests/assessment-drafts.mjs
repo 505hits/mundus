@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {assessmentBank} from '../src/lib/assessment-catalog.ts';
 for(const code of ['ru','tr']) {
+ assert.throws(()=>assessmentBank(code,'placement'),/Unsupported language/);
+ assert.throws(()=>assessmentBank(code,'progress'),/Unsupported language/);
  const banks=['placement','progress'].map(kind=>JSON.parse(readFileSync(new URL(`../docs/assessment-review/${code}-${kind}-draft.json`,import.meta.url),'utf8')));
  for(const bank of banks) {
   assert.equal(bank.status,'draft_not_live');assert.equal(bank.teacher_review_required,true);assert.equal(bank.calibrated,false);

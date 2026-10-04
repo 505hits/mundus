@@ -1,6 +1,7 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
+import { createRequestOnce } from "@/lib/request-creation";
 import { useRouter } from "next/navigation";
 import { CalendarDays, Send } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
@@ -20,13 +21,15 @@ export default function RequestChangeForm({
 
   const [preferredAt, setPreferredAt] = useState("");
   const [message, setMessage] = useState("");
+  const busy = useRef(false);
+  const attempt = useRef<{ signature: string; id: string } | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [success, setSuccess] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (submitting) return;
+    if (busy.current || success) return;
 
     if (!preferredAt) {
       setErrorMessage("Vyberte si prosím preferovaný dátum a čas.");
@@ -47,30 +50,41 @@ export default function RequestChangeForm({
       return;
     }
 
+    busy.current = true;
     setSubmitting(true);
     setErrorMessage("");
 
     try {
     const supabase = createSupabaseBrowserClient();
 
-    const { error } = await supabase
-      .from("schedule_change_requests")
-      .insert({
-        lesson_id: lessonId,
-        student_id: studentId,
-        requested_by: studentId,
-        preferred_at: selectedDate.toISOString(),
-        message: message.trim() || null,
-        status: "pending",
-      });
-
-    if (error) {
-      setErrorMessage(
-        "Žiadosť sa nepodarilo odoslať. Skúste to prosím znova."
-      );
-      setSubmitting(false);
-      return;
+    const details = {
+      lesson_id: lessonId, student_id: studentId, requested_by: studentId,
+      preferred_at: selectedDate.toISOString(), message: message.trim() || null,
+    };
+    const signature = JSON.stringify(details);
+    if (attempt.current?.signature !== signature) {
+      attempt.current = { signature, id: crypto.randomUUID() };
     }
+    const id = attempt.current.id;
+    const confirm = async () => {
+      const { data, error } = await supabase.from("schedule_change_requests")
+        .select("id,lesson_id,student_id,requested_by,preferred_at,message")
+        .eq("id", id).maybeSingle();
+      if (error) throw error;
+      if (!data) return false;
+      if (data.lesson_id !== details.lesson_id || data.student_id !== details.student_id
+        || data.requested_by !== details.requested_by || data.message !== details.message
+        || Date.parse(data.preferred_at) !== Date.parse(details.preferred_at)) {
+        throw new Error("Request conflict");
+      }
+      return true;
+    };
+    await createRequestOnce(confirm, async () => {
+      const { error } = await supabase.from("schedule_change_requests")
+        .insert({ ...details, id, status: "pending" }).select("id").single();
+      if (error) throw error;
+    });
+    attempt.current = null;
 
     setSuccess(true);
     setSubmitting(false);
@@ -78,6 +92,7 @@ export default function RequestChangeForm({
     } catch {
       setErrorMessage("Žiadosť sa nepodarilo odoslať. Skúste znova alebo kontaktujte Mundus.");
     } finally {
+      busy.current = false;
       setSubmitting(false);
     }
   }

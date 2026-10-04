@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import { createRequestOnce } from '../src/lib/request-creation.ts';
+let saved=false,inserts=0;
+const confirm=async()=>saved;
+await createRequestOnce(confirm,async()=>{inserts++;saved=true;throw Error('Lost response');});
+await createRequestOnce(confirm,async()=>{inserts++;});
+assert.equal(inserts,1);
+await assert.rejects(createRequestOnce(async()=>false,async()=>{throw Error('Rejected');}),/Rejected/);
+await assert.rejects(createRequestOnce(async()=>{throw Error('Conflict');},async()=>{inserts++;}),/Conflict/);
+assert.equal(inserts,1);
+await assert.rejects(createRequestOnce(async()=>{throw Error('Offline');},async()=>{inserts++;}),/Offline/);
+assert.equal(inserts,1);
+console.log('PASS: request insert lost-response recovery, unchanged retry, rejected insertion, conflict and unavailable lookup');

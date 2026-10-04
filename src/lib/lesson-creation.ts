@@ -5,7 +5,7 @@ export type LessonCreation = {
   package_id: string;
   scheduled_at: string;
   duration_minutes: number;
-  language: string;
+  language: string | null;
   lesson_type: string;
   meet_link: string | null;
 };

@@ -1,7 +1,8 @@
 "use client";
+import { createLessonOnce, type LessonCreation } from "@/lib/lesson-creation";
 import { safeLessonLink } from "@/lib/lesson-link";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CalendarPlus } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
@@ -40,12 +41,14 @@ export default function CreateLessonForm({
   const [packageId, setPackageId] = useState(
     availablePackages[0]?.id ?? ""
   );
+  const busy = useRef(false);
+  const attempt = useRef<{ signature: string; id: string } | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
 
   async function createLesson() {
-    if (saving) return;
+    if (busy.current) return;
 
     setError("");
     setSaved(false);
@@ -94,6 +97,7 @@ export default function CreateLessonForm({
       return;
     }
 
+    busy.current = true;
     setSaving(true);
 
     try {
@@ -109,43 +113,42 @@ export default function CreateLessonForm({
         return;
       }
 
-      const { data: selectedPackage, error: packageError } = await supabase
-        .from("lesson_packages")
-        .select("id")
-        .eq("id", packageId)
-        .eq("student_id", studentId)
-        .eq("status", "active")
-        .gt("remaining_lessons", 0)
-        .maybeSingle();
-
-      if (packageError || !selectedPackage) {
-        setError(
-          "Vybraný balíček už nemá voľný kredit alebo nepatrí tomuto študentovi."
-        );
-        return;
+      const details = {
+        student_id: studentId,
+        teacher_id: user.id,
+        scheduled_at: scheduledAt.toISOString(),
+        duration_minutes: durationMinutes,
+        status: "scheduled",
+        lesson_type: lessonType || "regular",
+        meet_link: trimmedLink || null,
+        language: language || null,
+        package_id: packageId,
+      };
+      const signature = JSON.stringify(details);
+      if (attempt.current?.signature !== signature) {
+        attempt.current = { signature, id: crypto.randomUUID() };
       }
-
-      const { error: insertError } = await supabase
-        .from("lessons")
-        .insert({
-          student_id: studentId,
-          teacher_id: user.id,
-          scheduled_at: scheduledAt.toISOString(),
-          duration_minutes: durationMinutes,
-          status: "scheduled",
-          lesson_type: lessonType || "regular",
-          meet_link: trimmedLink || null,
-          language: language || null,
-          package_id: packageId,
-          updated_at: new Date().toISOString(),
-        });
-
-      if (insertError) {
-        setError(
-          "Hodinu sa nepodarilo vytvoriť. Skontrolujte údaje a skúste to znova."
-        );
-        return;
-      }
+      const row = { ...details, id: attempt.current.id };
+      await createLessonOnce(row, async () => {
+        const { data, error } = await supabase.from("lessons")
+          .select("id,student_id,teacher_id,package_id,scheduled_at,duration_minutes,language,lesson_type,meet_link")
+          .eq("id", row.id).maybeSingle();
+        if (error) throw error;
+        return data as LessonCreation | null;
+      }, async () => {
+        const { data: selectedPackage, error: packageError } = await supabase
+          .from("lesson_packages").select("id")
+          .eq("id", packageId).eq("student_id", studentId)
+          .eq("status", "active").gt("remaining_lessons", 0).maybeSingle();
+        if (packageError || !selectedPackage) {
+          throw new Error("Selected package unavailable");
+        }
+        const { error } = await supabase.from("lessons")
+          .insert({ ...row, updated_at: new Date().toISOString() })
+          .select("id").single();
+        if (error) throw error;
+      });
+      attempt.current = null;
 
       setSaved(true);
       setDateTime("");
@@ -154,6 +157,7 @@ export default function CreateLessonForm({
     } catch {
       setError("Hodinu sa nepodarilo vytvoriť. Skontrolujte pripojenie a skúste to znova.");
     } finally {
+      busy.current = false;
       setSaving(false);
     }
   }

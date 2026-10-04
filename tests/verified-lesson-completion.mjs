@@ -30,6 +30,8 @@ async function fixture(mode) {
    create trigger fixture_accounting after update on lessons for each row execute function fixture_deduct();`);
  }
  await db.exec(migration);await db.exec(migration);
+ const history=readFileSync(new URL("../supabase/migrations/202610040006_completed_lesson_integrity.sql",import.meta.url),"utf8");
+ await db.exec(history);await db.exec(history);
  return db;
 }
 async function actor(db,id) {await db.exec(`reset role;set request.jwt.claim.sub='${id}';set role authenticated;`);}
@@ -61,6 +63,15 @@ for(const mode of ["correct","missing","double"]) {
   assert.deepEqual((await db.query("select used_lessons,remaining_lessons,status from lesson_packages")).rows[0],{used_lessons:1,remaining_lessons:0,status:"completed"});
   await assert.rejects(db.query("select mundus_complete_lesson($1)",[second]),/package with credit/);
   await actor(db,admin);assert.equal((await db.query("select mundus_complete_lesson($1) id",[lesson])).rows[0].id,lesson);
+  await assert.rejects(db.query("update lessons set status='scheduled' where id=$1",[lesson]),/cannot be reopened/);
+  await assert.rejects(db.query("update lessons set package_id=null where id=$1",[lesson]),/cannot be reopened/);
+  await assert.rejects(db.query("update lessons set student_id=$1 where id=$2",[other,lesson]),/cannot be reopened/);
+  await assert.rejects(db.query("update lessons set teacher_id=$1 where id=$2",[other,lesson]),/cannot be reopened/);
+  await db.query("update lessons set updated_at=now() where id=$1",[lesson]);
+  assert.deepEqual((await db.query("select used_lessons,remaining_lessons from lesson_packages")).rows[0],{used_lessons:1,remaining_lessons:0});
+  await db.exec("reset role;insert into lesson_packages values ('88888888-8888-4888-8888-888888888888','"+student+"',1,0,1,'active');insert into lessons values ('99999999-9999-4999-8999-999999999999','"+student+"','"+other+"','88888888-8888-4888-8888-888888888888','scheduled',now()-interval '1 day',now());set role authenticated;");
+  await db.query("select mundus_complete_lesson($1)",['99999999-9999-4999-8999-999999999999']);
+  assert.deepEqual((await db.query("select used_lessons,remaining_lessons from lesson_packages where id='88888888-8888-4888-8888-888888888888'")).rows[0],{used_lessons:1,remaining_lessons:0});
  }
  await db.exec("reset role;set role anon;");await assert.rejects(db.query("select mundus_complete_lesson($1)",[lesson]),/permission denied/);
  await db.close();

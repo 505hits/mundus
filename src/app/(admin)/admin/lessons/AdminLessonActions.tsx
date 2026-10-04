@@ -41,7 +41,6 @@ function bratislavaInputValue(value: string) {
 
 export default function AdminLessonActions({
   lessonId,
-  studentId,
   packageId,
   scheduledAt,
   meetLink,
@@ -113,19 +112,18 @@ export default function AdminLessonActions({
           return;
         }
 
-        const { data: pkg, error: packageError } = await supabase
-          .from("lesson_packages")
-          .select("id")
-          .eq("id", packageId)
-          .eq("student_id", studentId)
-          .eq("status", "active")
-          .gt("remaining_lessons", 0)
-          .maybeSingle();
-
-        if (packageError || !pkg) {
-          setError("Hodinu nemožno dokončiť: balíček nemá voľný kredit alebo nepatrí tomuto študentovi.");
+        if (changedTime || (trimmedLink || null) !== meetLink) {
+          setError("Najprv uložte opravu času alebo odkazu s pôvodným stavom. Potom označte hodinu ako dokončenú.");
           return;
         }
+        const { data, error } = await supabase.rpc("mundus_complete_lesson", { target_lesson_id: lessonId });
+        if (error || !data) {
+          setError("Hodinu sa nepodarilo dokončiť a overiť odpočítanie kreditu. Obnovte stránku alebo skontrolujte balíček.");
+          return;
+        }
+        setSaved(true);
+        router.refresh();
+        return;
       }
 
       const { data: updatedLesson, error: updateError } = await supabase
@@ -178,7 +176,7 @@ export default function AdminLessonActions({
         <label className="mt-3 block text-xs font-medium text-gray-600">
           Stav
           <select
-            disabled={saving}
+            disabled={saving || currentStatus === "completed"}
             value={status}
             onChange={(event) => { setStatus(event.target.value); setSaved(false); }}
             className="mt-1.5 w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm outline-none"
@@ -188,6 +186,8 @@ export default function AdminLessonActions({
             ))}
           </select>
         </label>
+
+        {currentStatus === "completed" && <p className="mt-2 text-xs text-gray-500">Dokončenú hodinu nemožno znovu otvoriť. Opravu účtovania riešte samostatne, aby sa kredit neodpočítal dvakrát.</p>}
 
         <label className="mt-3 block text-xs font-medium text-gray-600">
           Odkaz na online hodinu

@@ -1,0 +1,326 @@
+{
+  "status": "draft_not_live",
+  "teacher_review_required": true,
+  "calibrated": false,
+  "language": "tr",
+  "questions": [
+    {
+      "id": "a1-1",
+      "band": "A1",
+      "skill": "grammar",
+      "prompt": "Ben Slovakya___.",
+      "options": [
+        "-danım",
+        "-dayım",
+        "-lıyım",
+        "-yım"
+      ],
+      "answer": 2
+    },
+    {
+      "id": "a1-2",
+      "band": "A1",
+      "skill": "grammar",
+      "prompt": "Bu ___ kitap.",
+      "options": [
+        "bir",
+        "ben",
+        "sen",
+        "biz"
+      ],
+      "answer": 0
+    },
+    {
+      "id": "a1-3",
+      "band": "A1",
+      "skill": "reading",
+      "prompt": "Ayşe Ankara’da yaşıyor, İstanbul’da çalışıyor. Nerede yaşıyor?",
+      "options": [
+        "İstanbul’da",
+        "Ankara’da",
+        "İzmir’de",
+        "Bursa’da"
+      ],
+      "answer": 1
+    },
+    {
+      "id": "a1-4",
+      "band": "A1",
+      "skill": "listening",
+      "prompt": "Ders saat kaçta başlıyor?",
+      "options": [
+        "Sekizde",
+        "Dokuzda",
+        "Onda",
+        "On birde"
+      ],
+      "answer": 2,
+      "audio": "Türkçe dersimiz sabah saat onda başlıyor."
+    },
+    {
+      "id": "a2-1",
+      "band": "A2",
+      "skill": "grammar",
+      "prompt": "Dün sinemaya ___.",
+      "options": [
+        "gidiyorum",
+        "gideceğim",
+        "gittim",
+        "giderim"
+      ],
+      "answer": 2
+    },
+    {
+      "id": "a2-2",
+      "band": "A2",
+      "skill": "grammar",
+      "prompt": "Bu çanta diğerinden daha ___.",
+      "options": [
+        "ucuz",
+        "ucuza",
+        "ucuzdan",
+        "ucuzu"
+      ],
+      "answer": 0
+    },
+    {
+      "id": "a2-3",
+      "band": "A2",
+      "skill": "reading",
+      "prompt": "Mağaza hafta içi sekizde, cumartesi altıda kapanıyor. Cumartesi kaçta kapanıyor?",
+      "options": [
+        "Altıda",
+        "Yedide",
+        "Sekizde",
+        "Dokuzda"
+      ],
+      "answer": 0
+    },
+    {
+      "id": "a2-4",
+      "band": "A2",
+      "skill": "listening",
+      "prompt": "Neden evde kaldılar?",
+      "options": [
+        "Yağmur yüzünden",
+        "İş yüzünden",
+        "Hastalık yüzünden",
+        "Bilet yüzünden"
+      ],
+      "answer": 0,
+      "audio": "Parka gitmek istedik ama yağmur başladı. Bu yüzden evde kaldık."
+    },
+    {
+      "id": "b1-1",
+      "band": "B1",
+      "skill": "grammar",
+      "prompt": "Yarın hava güzel olursa yürüyüşe ___.",
+      "options": [
+        "çıktık",
+        "çıkacağız",
+        "çıkmıştık",
+        "çıkıyorduk"
+      ],
+      "answer": 1
+    },
+    {
+      "id": "b1-2",
+      "band": "B1",
+      "skill": "grammar",
+      "prompt": "Otobüsü kaçırmamak ___ erken çıktım.",
+      "options": [
+        "için",
+        "gibi",
+        "kadar",
+        "sonra"
+      ],
+      "answer": 0
+    },
+    {
+      "id": "b1-3",
+      "band": "B1",
+      "skill": "reading",
+      "prompt": "Deniz eskiden işe arabayla gidiyordu. Artık tren kullanıyor çünkü daha ucuz; ancak yolculuk daha uzun sürüyor. Neden tren kullanıyor?",
+      "options": [
+        "Daha hızlı",
+        "Daha ucuz",
+        "Arabası bozuk",
+        "Taşındı"
+      ],
+      "answer": 1
+    },
+    {
+      "id": "b1-4",
+      "band": "B1",
+      "skill": "listening",
+      "prompt": "Konuşmacı ne öneriyor?",
+      "options": [
+        "Buluşmayı iptal etmeyi",
+        "Daha erken buluşmayı",
+        "Daha geç buluşmayı",
+        "Yer değiştirmeyi"
+      ],
+      "answer": 2,
+      "audio": "İşten geç çıkacağım. Altıda değil, altı buçukta buluşalım mı?"
+    },
+    {
+      "id": "b2-1",
+      "band": "B2",
+      "skill": "grammar",
+      "prompt": "Yağmur yağmasına ___ dışarı çıktık.",
+      "options": [
+        "rağmen",
+        "çünkü",
+        "için",
+        "dolayı"
+      ],
+      "answer": 0
+    },
+    {
+      "id": "b2-2",
+      "band": "B2",
+      "skill": "grammar",
+      "prompt": "Raporu ___ müdüre gönderdim.",
+      "options": [
+        "bitirdikten sonra",
+        "bitirmeden önce de sonra",
+        "bitirinceye kadar sonra",
+        "bitirmiş önce"
+      ],
+      "answer": 0
+    },
+    {
+      "id": "b2-3",
+      "band": "B2",
+      "skill": "reading",
+      "prompt": "Şirket maaşları değiştirmeden çalışma haftasını kısalttı. Verimlilik arttı, ancak deneme yalnızca bir ay sürdüğü için sonuçlar kesin değil. Neden sonuçlar kesin değil?",
+      "options": [
+        "Maaşlar azaldı",
+        "Deneme kısa sürdü",
+        "Şirket kapandı",
+        "Kimse çalışmadı"
+      ],
+      "answer": 1
+    },
+    {
+      "id": "b2-4",
+      "band": "B2",
+      "skill": "listening",
+      "prompt": "Konuşmacının tutumu nedir?",
+      "options": [
+        "Koşulsuz destek",
+        "Temkinli kabul",
+        "Kesin ret",
+        "İlgisizlik"
+      ],
+      "answer": 1,
+      "audio": "Fikir dikkate değer, fakat uygulamadan önce yeterli kaynağımız olup olmadığını kontrol etmeliyiz."
+    },
+    {
+      "id": "c1-1",
+      "band": "C1",
+      "skill": "grammar",
+      "prompt": "Daha çok zamanımız olsaydı sonuçları yeniden ___.",
+      "options": [
+        "inceleriz",
+        "inceleyeceğiz",
+        "incelerdik",
+        "inceleyelim"
+      ],
+      "answer": 2
+    },
+    {
+      "id": "c1-2",
+      "band": "C1",
+      "skill": "grammar",
+      "prompt": "“Göz ardı etmek” ne demektir?",
+      "options": [
+        "Dikkate almamak",
+        "Yakından izlemek",
+        "Gözünü kapatmak",
+        "Uzaktan görmek"
+      ],
+      "answer": 0
+    },
+    {
+      "id": "c1-3",
+      "band": "C1",
+      "skill": "reading",
+      "prompt": "Yazar reformun yararlarını kabul ediyor; ancak başarısının raporda tartışılmayan koşullara bağlı olduğunu vurguluyor. Eleştirisi nedir?",
+      "options": [
+        "Her reform zararlıdır",
+        "Başarı koşulları yeterince ele alınmamıştır",
+        "Rapor çok uzundur",
+        "Rapor yayımlanmamalıdır"
+      ],
+      "answer": 1
+    },
+    {
+      "id": "c1-4",
+      "band": "C1",
+      "skill": "listening",
+      "prompt": "Konuşmacı ne ima ediyor?",
+      "options": [
+        "Görüşler kararı belirledi",
+        "Karar önceden verilmişti",
+        "Henüz proje yoktu",
+        "Bütün öneriler kabul edildi"
+      ],
+      "answer": 1,
+      "audio": "Kurul kamuoyunun görüşünü istediğini açıkladı; oysa projenin temel maddeleri o tarihte çoktan kesinleşmişti."
+    },
+    {
+      "id": "c2-1",
+      "band": "C2",
+      "skill": "grammar",
+      "prompt": "Hangisi bir ödünleme ifade eder?",
+      "options": [
+        "Ne kadar ikna edici görünse de kanıtlar yetersiz.",
+        "Kanıtlar yeterli olduğu için katılıyorum.",
+        "İkna etmek amacıyla örnek verdi.",
+        "Kanıt gelirse katılacağım."
+      ],
+      "answer": 0
+    },
+    {
+      "id": "c2-2",
+      "band": "C2",
+      "skill": "grammar",
+      "prompt": "“Kaş yapayım derken göz çıkarmak” ne demektir?",
+      "options": [
+        "Düzeltmeye çalışırken daha büyük zarar vermek",
+        "Çok dikkatli davranmak",
+        "Bir işi ertelemek",
+        "Görünüşünü değiştirmek"
+      ],
+      "answer": 0
+    },
+    {
+      "id": "c2-3",
+      "band": "C2",
+      "skill": "reading",
+      "prompt": "Eleştirmen, “Argümanın zarif yapısı, yazarın sınamaktan kaçındığı varsayımlar üzerine kurulmuş” diyor. Eleştiri nedir?",
+      "options": [
+        "Üslup anlaşılmaz",
+        "Temel varsayımlar güvenilir değil",
+        "Yapı yok",
+        "Metaforlar az"
+      ],
+      "answer": 1
+    },
+    {
+      "id": "c2-4",
+      "band": "C2",
+      "skill": "listening",
+      "prompt": "Sözün tonu nedir?",
+      "options": [
+        "Hızlı kararı övme",
+        "Gecikmeyi ironik biçimde eleştirme",
+        "Erteleme isteği",
+        "Karardan vazgeçmeyi onaylama"
+      ],
+      "answer": 1,
+      "audio": "Komisyonu acelecilikle suçlamak zor: önlemler kabul edildiğinde sorun çoktan güncelliğini yitirmişti."
+    }
+  ]
+}

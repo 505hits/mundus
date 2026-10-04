@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { confirmScheduleResponse, ScheduleResponseError } from "@/lib/schedule-response";
 import { useRouter } from "next/navigation";
 import { Check, X } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
@@ -20,41 +21,37 @@ export default function ScheduleRequestActions({
 
   const [errorMessage, setErrorMessage] = useState("");
 
+  const busy = useRef(false);
   const [saved, setSaved] = useState(false);
 
   async function respond(status: "accepted" | "declined") {
-    if (loading || saved) return;
+    if (busy.current || saved) return;
+    busy.current = true;
     setLoading(status);
     setErrorMessage("");
 
     try {
     const supabase = createSupabaseBrowserClient();
 
-    const { data: updatedRequest, error } = await supabase
-      .from("schedule_change_requests")
-      .update({
-        status,
-        responded_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", requestId)
-      .eq("status", "pending")
-      .select("id")
-      .maybeSingle();
-
-    if (error || !updatedRequest) {
-      setErrorMessage(
-        "Žiadosť sa nepodarilo aktualizovať. Skúste to prosím znova."
-      );
-      setLoading(null);
-      return;
-    }
+    await confirmScheduleResponse(status, async () => {
+      const { data, error } = await supabase.from("schedule_change_requests")
+        .update({ status, responded_at: new Date().toISOString(), updated_at: new Date().toISOString() })
+        .eq("id", requestId).eq("status", "pending").select("id").maybeSingle();
+      if (error) throw error;
+      return Boolean(data);
+    }, async () => {
+      const { data, error } = await supabase.from("schedule_change_requests")
+        .select("status").eq("id", requestId).maybeSingle();
+      if (error) throw error;
+      return data?.status ?? null;
+    });
 
     setSaved(true);
     router.refresh();
-    } catch {
-      setErrorMessage("Odpoveď sa nepodarilo uložiť. Skúste znova alebo kontaktujte Mundus.");
+    } catch (error) {
+      setErrorMessage(error instanceof ScheduleResponseError ? error.message : "Odpoveď sa nepodarilo uložiť. Skúste znova alebo kontaktujte Mundus.");
     } finally {
+      busy.current = false;
       setLoading(null);
     }
   }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { CheckCircle2, Save } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 
@@ -62,12 +62,14 @@ export default function LessonReportForm({
     existingReport?.private_teacher_note ?? ""
   );
 
+  const savingRef = useRef(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(Boolean(existingReport));
   const [error, setError] = useState("");
 
   async function saveReport() {
-    if (saving) return;
+    if (savingRef.current) return;
+    savingRef.current = true;
     setSaving(true);
     setSaved(false);
     setError("");
@@ -85,7 +87,7 @@ export default function LessonReportForm({
         return;
       }
 
-      const { error: saveError } = await supabase
+      const { data: savedReport, error: saveError } = await supabase
         .from("lesson_reports")
         .upsert(
           {
@@ -103,9 +105,11 @@ export default function LessonReportForm({
           {
             onConflict: "lesson_id",
           }
-        );
+        )
+        .select("id")
+        .single();
 
-      if (saveError) {
+      if (saveError || !savedReport?.id) {
         setError("Záznam sa nepodarilo uložiť. Skúste to prosím znova.");
         return;
       }
@@ -114,6 +118,7 @@ export default function LessonReportForm({
     } catch {
       setError("Záznam sa nepodarilo uložiť. Skontrolujte pripojenie a skúste to znova.");
     } finally {
+      savingRef.current = false;
       setSaving(false);
     }
   }

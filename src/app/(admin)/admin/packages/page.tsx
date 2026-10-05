@@ -47,7 +47,7 @@ export default async function AdminPackagesPage() {
   const totalUsed = rows.reduce((sum, item) => sum + (item.used_lessons ?? 0), 0);
 
   return (
-    <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
+    <main className="min-h-screen bg-transparent text-[#0a0a0f]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">Balíčky</p>
@@ -66,29 +66,29 @@ export default async function AdminPackagesPage() {
         <AddPackageForm students={students ?? []} />
 
         <section className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border border-[#E5E7F0] bg-white p-5 shadow-sm">
             <Package size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{active.length}</p>
             <p className="mt-1 text-sm text-gray-500">Aktívne balíčky</p>
           </div>
-          <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border border-[#E5E7F0] bg-white p-5 shadow-sm">
             <AlertCircle size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{renewalSoon.length}</p>
             <p className="mt-1 text-sm text-gray-500">2 alebo menej hodín</p>
           </div>
-          <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border border-[#E5E7F0] bg-white p-5 shadow-sm">
             <RefreshCw size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{renewalDue.length}</p>
             <p className="mt-1 text-sm text-gray-500">Je čas pokračovať</p>
           </div>
-          <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border border-[#E5E7F0] bg-white p-5 shadow-sm">
             <CheckCircle2 size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{totalUsed}</p>
             <p className="mt-1 text-sm text-gray-500">Využité hodiny vo všetkých balíčkoch</p>
           </div>
         </section>
 
-        <section className="mt-8 overflow-hidden rounded-3xl border border-black/5 bg-white shadow-sm">
+        <section className="mt-8 overflow-hidden rounded-3xl border border-[#E5E7F0] bg-white shadow-sm">
           {rows.length === 0 ? (
             <div className="p-8 text-center text-sm text-gray-500">Zatiaľ nie sú vytvorené žiadne balíčky.</div>
           ) : (

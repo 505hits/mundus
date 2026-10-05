@@ -29,7 +29,7 @@ export default async function FeedbackPage() {
       .order("scheduled_at", { ascending: false }),
     db
       .from("teacher_monthly_feedback")
-      .select("teacher_id,rating,feedback")
+      .select("teacher_id,rating,feedback,categories")
       .eq("student_id", user.id)
       .eq("feedback_month", month.key),
   ]);
@@ -88,6 +88,7 @@ export default async function FeedbackPage() {
                     feedbackMonth={month.key}
                     initialRating={existing?.rating ?? null}
                     initialFeedback={existing?.feedback ?? ""}
+                    initialCategories={existing?.categories ?? []}
                   />
                   <p className="mt-2 px-1 text-xs text-gray-400">
                     Dokončené hodiny s týmto lektorom tento mesiac: {teacher.lessons}

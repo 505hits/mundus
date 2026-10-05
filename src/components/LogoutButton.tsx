@@ -2,6 +2,7 @@
 
 import { LogOut } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 
 export default function LogoutButton({
@@ -9,6 +10,7 @@ export default function LogoutButton({
 }: {
   compact?: boolean;
 }) {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -23,7 +25,8 @@ export default function LogoutButton({
         setError("Odhlásenie sa nepodarilo. Skúste to znova.");
         return;
       }
-      window.location.href = "/login";
+      router.replace("/login");
+      router.refresh();
     } catch {
       setError("Odhlásenie sa nepodarilo. Skontrolujte pripojenie a skúste to znova.");
     } finally {

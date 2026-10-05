@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { PackagePlus } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
+import {useLanguage} from "@/context/LanguageContext";
 
 type StudentOption = {
   id: string;
@@ -19,6 +20,7 @@ const packageSizes = [1, 5, 10, 20, 30];
 
 export default function AddPackageForm({ students }: Props) {
   const router = useRouter();
+  const {language}=useLanguage(); const sk=language==="sk";
 
   const [studentId, setStudentId] = useState(students[0]?.id ?? "");
   const [totalLessons, setTotalLessons] = useState("10");
@@ -34,14 +36,14 @@ export default function AddPackageForm({ students }: Props) {
     setSaved(false);
 
     if (!studentId) {
-      setError("Vyberte študenta.");
+      setError(sk?"Vyberte študenta.":"Choose a student.");
       return;
     }
 
     const total = Number(totalLessons);
 
     if (!packageSizes.includes(total)) {
-      setError("Vyberte balíček s 1, 5, 10, 20 alebo 30 hodinami.");
+      setError(sk?"Vyberte balíček s 1, 5, 10, 20 alebo 30 hodinami.":"Choose a package with 1, 5, 10, 20 or 30 lessons.");
       return;
     }
 
@@ -65,7 +67,7 @@ export default function AddPackageForm({ students }: Props) {
 
       if (insertError) {
         setError(
-          "Balíček sa nepodarilo vytvoriť. Skontrolujte údaje a skúste to znova."
+          sk?"Balíček sa nepodarilo vytvoriť. Skontrolujte údaje a skúste to znova.":"The package could not be created. Check the details and try again."
         );
         return;
       }
@@ -74,7 +76,7 @@ export default function AddPackageForm({ students }: Props) {
       setNotes("");
       router.refresh();
     } catch {
-      setError("Uloženie sa nepodarilo. Skontrolujte pripojenie a skúste to znova.");
+      setError(sk?"Uloženie sa nepodarilo. Skontrolujte pripojenie a skúste to znova.":"Saving failed. Check your connection and try again.");
     } finally {
       setSaving(false);
     }
@@ -83,7 +85,7 @@ export default function AddPackageForm({ students }: Props) {
   if (students.length === 0) {
     return (
       <div className="mt-6 rounded-2xl border border-[#2F3AA2]/20 bg-[#faf6eb] p-4 text-sm text-[#92400e]">
-        Balíček zatiaľ nemožno pridať, pretože nie je dostupný žiadny aktívny študent.
+        {sk?"Balíček zatiaľ nemožno pridať, pretože nie je dostupný žiadny aktívny študent.":"A package cannot be added because no active student is available."}
       </div>
     );
   }
@@ -92,12 +94,12 @@ export default function AddPackageForm({ students }: Props) {
     <details className="mt-6 rounded-3xl border border-black/5 bg-white p-5 shadow-sm sm:p-6">
       <summary className="flex cursor-pointer list-none items-center gap-2 font-semibold">
         <PackagePlus size={19} />
-        Pridať balíček
+        {sk?"Pridať balíček":"Add package"}
       </summary>
 
       <div className="mt-5 grid gap-4 md:grid-cols-2">
         <label className="text-sm font-medium">
-          Študent
+          {sk?"Študent":"Student"}
           <select
             disabled={saving}
             value={studentId}
@@ -106,14 +108,14 @@ export default function AddPackageForm({ students }: Props) {
           >
             {students.map((student) => (
               <option key={student.id} value={student.id}>
-                {student.full_name?.trim() || student.email || "Študent"}
+                {student.full_name?.trim() || student.email || (sk?"Študent":"Student")}
               </option>
             ))}
           </select>
         </label>
 
         <label className="text-sm font-medium">
-          Počet hodín
+          {sk?"Počet hodín":"Number of lessons"}
           <select
             disabled={saving}
             value={totalLessons}
@@ -122,20 +124,20 @@ export default function AddPackageForm({ students }: Props) {
           >
             {packageSizes.map((size) => (
               <option key={size} value={size}>
-                {size} {size === 1 ? "hodina" : "hodín"}
+                {size} {sk?(size===1?"hodina":"hodín"):(size===1?"lesson":"lessons")}
               </option>
             ))}
           </select>
         </label>
 
         <label className="text-sm font-medium md:col-span-2">
-          Interná poznámka
+          {sk?"Interná poznámka":"Internal note"}
           <textarea
             disabled={saving}
             value={notes}
             onChange={(event) => { setNotes(event.target.value); setSaved(false); }}
             rows={2}
-            placeholder="Voliteľné"
+            placeholder={sk?"Voliteľné":"Optional"}
             className="mt-2 w-full resize-none rounded-xl border border-black/10 px-3 py-2.5 font-normal outline-none focus:border-[#2F3AA2]"
           />
         </label>
@@ -149,12 +151,12 @@ export default function AddPackageForm({ students }: Props) {
           className="inline-flex items-center gap-2 rounded-xl bg-[#2F3AA2] px-5 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
         >
           <PackagePlus size={17} />
-          {saving ? "Pridávam..." : "Pridať balíček"}
+          {saving?(sk?"Pridávam...":"Adding..."):(sk?"Pridať balíček":"Add package")}
         </button>
 
         {saved && (
           <span role="status" className="text-sm font-medium text-[#3730A3]">
-            Balíček bol pridaný.
+            {sk?"Balíček bol pridaný.":"Package added."}
           </span>
         )}
 
@@ -164,7 +166,7 @@ export default function AddPackageForm({ students }: Props) {
       </div>
 
       <p className="mt-3 text-xs leading-5 text-gray-400">
-        Po vytvorení sa celý počet hodín nastaví ako dostupný. Využité hodiny sa budú odpočítavať po označení hodiny ako dokončenej.
+        {sk?"Po vytvorení sa celý počet hodín nastaví ako dostupný. Využité hodiny sa budú odpočítavať po označení hodiny ako dokončenej.":"After creation, the full lesson count is available. Used lessons are deducted when a lesson is marked completed."}
       </p>
     </details>
   );

@@ -15,6 +15,7 @@ import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatLanguage, formatLessonCount, formatLessonType } from "@/lib/portalLabels";
 import { paymentEnabled } from "@/lib/payments";
+import { currentBratislavaMonth } from "@/lib/month";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("sk-SK", {
@@ -85,31 +86,23 @@ export default async function DashboardPage() {
       .eq("status", "pending"),
 
     (() => {
-      const now = new Date();
-      const year = new Intl.DateTimeFormat("en", { year: "numeric", timeZone: "Europe/Bratislava" }).format(now);
-      const month = new Intl.DateTimeFormat("en", { month: "2-digit", timeZone: "Europe/Bratislava" }).format(now);
-      const key = `${year}-${month}-01`;
-      const start = new Date(`${key}T00:00:00+02:00`);
-      const end = new Date(start);
-      end.setUTCMonth(end.getUTCMonth() + 1);
+      const month = currentBratislavaMonth();
       return supabase
         .from("lessons")
         .select("teacher_id")
         .eq("student_id", user.id)
         .eq("status", "completed")
-        .gte("scheduled_at", start.toISOString())
-        .lt("scheduled_at", end.toISOString());
+        .gte("scheduled_at", month.start)
+        .lt("scheduled_at", month.end);
     })(),
 
     (() => {
-      const now = new Date();
-      const year = new Intl.DateTimeFormat("en", { year: "numeric", timeZone: "Europe/Bratislava" }).format(now);
-      const month = new Intl.DateTimeFormat("en", { month: "2-digit", timeZone: "Europe/Bratislava" }).format(now);
+      const month = currentBratislavaMonth();
       return supabase
         .from("teacher_monthly_feedback")
         .select("teacher_id")
         .eq("student_id", user.id)
-        .eq("feedback_month", `${year}-${month}-01`);
+        .eq("feedback_month", month.key);
     })(),
   ]);
 

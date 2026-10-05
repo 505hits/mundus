@@ -27,7 +27,10 @@ const floatingFlags = [
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function LanguageSelector() {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
+    const offeredLanguages = language === "sk"
+        ? ["Angličtina", "Nemčina", "Španielčina", "Taliančina", "Francúzština", "Portugalčina", "Maďarčina", "Poľština", "Ruština", "Čínština", "Slovenčina", "Ukrajinčina", "Moderná hebrejčina"]
+        : ["English", "German", "Spanish", "Italian", "French", "Portuguese", "Hungarian", "Polish", "Russian", "Chinese", "Slovak", "Ukrainian", "Modern Hebrew"];
     return (
         <section id="languages" className="section relative overflow-hidden bg-gradient-to-b from-blue-50/20 to-white py-12 md:py-24">
             {/* Background Floating Flags - Adjusted positions to avoid center text */}
@@ -90,6 +93,9 @@ export default function LanguageSelector() {
                     <motion.p variants={fadeInUp} className="section-subtitle text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto font-medium">
                         {t.languageSelector.subtitle}
                     </motion.p>
+                    <motion.ul variants={fadeInUp} aria-label={language === "sk" ? "Ponúkané jazyky" : "Languages offered"} className="mx-auto mt-8 flex max-w-5xl flex-wrap justify-center gap-2">
+                        {offeredLanguages.map((item) => <li key={item} className="rounded-full border border-blue-100 bg-white/90 px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm">{item}</li>)}
+                    </motion.ul>
                 </motion.div>
 
             </div>

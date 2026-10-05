@@ -6,9 +6,10 @@ import { Menu, X, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
+import LanguageToggle from "@/components/LanguageToggle";
 
 export default function Navbar() {
-    const { t, language, setLanguage } = useLanguage();
+    const { t, language } = useLanguage();
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -69,20 +70,7 @@ export default function Navbar() {
                             </Link>
                         ))}
                         {/* Language Toggle */}
-                        <div className="flex items-center gap-1 rounded-full border border-[#E5E7F0] bg-white/75 p-1">
-                            <button
-                                onClick={() => setLanguage("en")}
-                                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${language === "en" ? "bg-white shadow text-gray-900" : "text-gray-500 hover:text-gray-900"}`}
-                            >
-                                EN
-                            </button>
-                            <button
-                                onClick={() => setLanguage("sk")}
-                                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${language === "sk" ? "bg-white shadow text-gray-900" : "text-gray-500 hover:text-gray-900"}`}
-                            >
-                                SK
-                            </button>
-                        </div>
+                        <LanguageToggle compact />
                         <a href="tel:+421904082794" className="nav-link text-sm font-semibold text-gray-900 hover:text-primary transition-colors flex items-center gap-1 whitespace-nowrap">
                             +421 904 082 794
                         </a>
@@ -91,7 +79,7 @@ export default function Navbar() {
                     {/* Desktop CTA */}
                     <div className="hidden xl:flex items-center">
                         <Link href="/login" className="mr-3 whitespace-nowrap text-sm font-semibold text-[#171A2B] transition hover:text-[#2F3AA2]">
-                            Prihlásenie
+                            {language === "sk" ? "Prihlásenie" : "Sign in"}
                         </Link>
                         <motion.div
                             whileHover={{ scale: 1.02 }}
@@ -137,7 +125,7 @@ export default function Navbar() {
                                 onClick={() => setIsMobileMenuOpen(false)}
                                 className="flex items-center justify-between border-b border-gray-100 py-3 text-2xl font-medium text-gray-900"
                             >
-                            Prihlásenie
+                            {language === "sk" ? "Prihlásenie" : "Sign in"}
                         <ArrowRight size={20} className="text-gray-400" />
                             </Link>
                             {navLinks.map((link, i) => (
@@ -172,28 +160,14 @@ export default function Navbar() {
                                 </a>
                             </motion.div>
 
-                            {/* Mobile Language Toggle */}
+                            {{/* Mobile Language Toggle */}
                             <motion.div
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: 0.4 }}
-                                className="flex items-center gap-3 justify-center bg-gray-50 p-3 rounded-xl"
+                                className="flex items-center justify-center rounded-xl bg-gray-50 p-3"
                             >
-                                <span className="text-sm font-semibold text-gray-500">Jazyk:</span>
-                                <div className="flex items-center gap-2 bg-white rounded-full p-1 shadow-sm border border-gray-100">
-                                    <button
-                                        onClick={() => setLanguage("en")}
-                                        className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${language === "en" ? "bg-gray-900 text-white shadow-md" : "text-gray-500 hover:text-gray-900"}`}
-                                    >
-                                        English
-                                    </button>
-                                    <button
-                                        onClick={() => setLanguage("sk")}
-                                        className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${language === "sk" ? "bg-gray-900 text-white shadow-md" : "text-gray-500 hover:text-gray-900"}`}
-                                    >
-                                        Slovenský
-                                    </button>
-                                </div>
+                                <LanguageToggle />
                             </motion.div>
                         </div>
 

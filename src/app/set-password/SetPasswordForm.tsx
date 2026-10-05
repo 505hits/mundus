@@ -39,6 +39,6 @@ export default function SetPasswordForm() {
     <label className="block text-sm">Nové heslo<input name="password" type="password" autoComplete="new-password" minLength={10} maxLength={128} required className="mt-2 w-full rounded-xl border border-gray-200 p-3" /><span className="mt-1 block text-xs text-gray-500">Aspoň 10 znakov.</span></label>
     <label className="block text-sm">Zopakujte heslo<input name="confirmPassword" type="password" autoComplete="new-password" minLength={10} maxLength={128} required className="mt-2 w-full rounded-xl border border-gray-200 p-3" /></label>
     {state.error && <p role="alert" className="text-sm text-red-700">{state.error}</p>}
-    <button disabled={pending} className="w-full rounded-xl bg-[#163f3a] p-3.5 font-semibold text-white disabled:opacity-50">{pending ? "Aktivujem účet…" : "Nastaviť heslo a aktivovať účet"}</button>
+    <button disabled={pending} className="w-full rounded-xl bg-[#2F3AA2] p-3.5 font-semibold text-white disabled:opacity-50">{pending ? "Aktivujem účet…" : "Nastaviť heslo a aktivovať účet"}</button>
   </form>;
 }

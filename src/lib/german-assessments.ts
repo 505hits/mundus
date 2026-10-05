@@ -1,0 +1,58 @@
+import type {AssessmentQuestion} from "./placement";
+type Row = readonly [string,readonly string[],number,string?];
+function bank(rows:Row[]):readonly AssessmentQuestion[] {
+ const bands=["A1","A2","B1","B2","C1","C2"];
+ return rows.map(([prompt,options,answer,audio],i)=>({id:`${bands[Math.floor(i/4)].toLowerCase()}-${i%4===3?"listen":i%4+1}`,band:bands[Math.floor(i/4)],prompt,options,answer,...(audio?{audio,skill:"listening"}:{})}));
+}
+export const GERMAN_PLACEMENT=bank([
+ ["Ich ___ aus der Slowakei.",["kommt","komme","kommen","kommst"],1],
+ ["Das ist ___ Buch.",["ein","eine","einen","einem"],0],
+ ["Lisa wohnt in Wien und arbeitet in einem Café. Wo wohnt Lisa?",["Berlin","Wien","Prag","Rom"],1],
+ ["Wann beginnt der Kurs?",["Um acht","Um neun","Um zehn","Um elf"],1,"Guten Morgen. Unser Deutschkurs beginnt heute um neun Uhr."],
+ ["Gestern ___ ich meine Freundin besucht.",["bin","habe","werde","hat"],1],
+ ["Ich fahre mit ___ Bus.",["der","den","dem","des"],2],
+ ["Die Bibliothek ist montags geschlossen. An allen anderen Tagen öffnet sie um zehn. Wann kann man sie besuchen?",["Montag um elf","Dienstag","Montag um zehn","Jeden Montag"],1],
+ ["Warum kommt Paul später?",["Sein Bus hat Verspätung","Er ist krank","Er muss arbeiten","Er hat verschlafen"],0,"Hallo, ich komme heute etwas später. Mein Bus hat zwanzig Minuten Verspätung."],
+ ["Ich bleibe zu Hause, weil ich krank ___.",["bin","sein","ist","war gewesen bin"],0],
+ ["Wenn ich mehr Geld hätte, ___ ich verreisen.",["werde","würde","bin","habe"],1],
+ ["Obwohl es regnete, gingen wir spazieren. Welche Aussage stimmt?",["Wir blieben zu Hause","Wir gingen trotz Regen spazieren","Es war trocken","Wir warteten auf Sonne"],1],
+ ["Was macht die Sprecherin zuerst?",["Sie besucht das Museum","Sie kauft eine Fahrkarte","Sie fährt nach Hause","Sie trifft ihre Schwester"],3,"Bevor ich ins Museum gehe, treffe ich meine Schwester am Bahnhof. Danach besuchen wir gemeinsam die Ausstellung."],
+ ["Nachdem er den Bericht ___, schickte er ihn ab.",["geschrieben hatte","schreiben wird","schreibt gerade","hat schreiben"],0],
+ ["Das ist der Kollege, ___ ich gestern gesprochen habe.",["den","mit dem","dessen","der"],1],
+ ["Die Maßnahme spart langfristig Energie, erfordert jedoch zunächst hohe Investitionen. Was ist der Nachteil?",["Sie spart keine Energie","Die Anfangskosten sind hoch","Sie funktioniert nur kurzfristig","Sie braucht keine Finanzierung"],1],
+ ["Welche Einschränkung nennt die Sprecherin?",["Die Arbeitszeit wird länger","Nicht alle Aufgaben eignen sich für mobiles Arbeiten","Alle müssen zu Hause arbeiten","Die Firma schließt"],1,"Mobiles Arbeiten bietet mehr Flexibilität. Allerdings lässt sich nicht jede Aufgabe außerhalb des Büros erledigen, weshalb wir keine allgemeine Regel einführen."],
+ ["Er tat so, als ___ er nichts von der Sache.",["weiß","wüsste","wissen","wusstest"],1],
+ ["Die Ergebnisse sind mit Vorsicht zu genießen. Was bedeutet das?",["Sie sind besonders angenehm","Sie sollten kritisch betrachtet werden","Sie sind geheim","Sie gelten uneingeschränkt"],1],
+ ["Der Autor räumt Fortschritte ein, bezweifelt aber, dass sie allen Bevölkerungsgruppen gleichermaßen zugutekommen. Was bezweifelt er?",["Dass es Fortschritte gibt","Dass die Vorteile gleichmäßig verteilt sind","Dass Bevölkerung existiert","Dass Fortschritte möglich sind"],1],
+ ["Was wird an der Anhörung kritisiert?",["Sie fand zu früh statt","Sie beeinflusste die Entscheidung kaum","Sie hatte keine Teilnehmer","Sie wurde abgesagt"],1,"Die Anhörung sollte den Eindruck einer offenen Debatte vermitteln. Tatsächlich stand die Entscheidung jedoch längst fest, bevor die ersten Stellungnahmen eingingen."],
+ ["Welche Formulierung drückt eine widerwillige Zustimmung aus?",["Ich stimme vorbehaltlos zu.","Ich stimme zu, wenn auch nur schweren Herzens.","Ich lehne entschieden ab.","Ich habe keine Meinung."],1],
+ ["Sein Lob war vergiftet. Gemeint ist ein Lob, das ___.",["uneingeschränkt freundlich ist","eine versteckte Kränkung enthält","zu leise gesprochen wurde","nicht ausgesprochen wurde"],1],
+ ["Die Rezension nennt das Werk eine glänzende Fassade ohne tragfähiges Fundament. Welche Kritik ist gemeint?",["Die Darstellung überzeugt, die Grundlagen nicht","Das Werk ist architektonisch korrekt","Die Grundlagen sind stärker als die Darstellung","Die Rezension empfiehlt das Werk uneingeschränkt"],0],
+ ["Welchen Ton hat die Aussage?",["Uneingeschränktes Lob","Ironische Kritik an der Verzögerung","Freude über schnelle Entscheidungen","Sachliche Beschreibung einer Reise"],1,"Dem Ausschuss überstürztes Handeln vorzuwerfen, wäre wohl kaum angebracht. Als er endlich eine Lösung präsentierte, hatte sich das Problem längst von selbst erledigt."],
+]);
+export const GERMAN_PROGRESS=bank([
+ ["Meine Eltern ___ in Berlin.",["wohnt","wohnen","wohnst","wohne"],1],
+ ["Ich habe ___ Schwester.",["ein","einem","eine","einen"],2],
+ ["Ben hat einen Hund und zwei Katzen. Wie viele Katzen hat er?",["Eine","Zwei","Drei","Keine"],1],
+ ["Wo arbeitet Anna?",["Im Krankenhaus","In der Schule","Im Restaurant","In der Bank"],0,"Ich heiße Anna und bin Ärztin. Ich arbeite in einem Krankenhaus."],
+ ["Am Wochenende bin ich nach München ___.",["fahren","gefahren","fahre","fuhr gefahren"],1],
+ ["Heute ist es ___ als gestern.",["kalt","kälter","am kalt","kälteste"],1],
+ ["Online kostet die Karte zwölf Euro, an der Kasse fünfzehn. Wie kauft man günstiger?",["An der Kasse","Online","Mit zwei Karten","Am Abend"],1],
+ ["Wann soll man eine Jacke mitnehmen?",["Heute Nacht","Morgen","Nächste Woche","Im Sommer"],1,"Nimm morgen bitte eine Jacke mit. Am Morgen wird es warm, aber am Abend sinkt die Temperatur."],
+ ["Ich weiß nicht, ob er morgen ___.",["kommt","kommen","kommst","komme"],0],
+ ["Das Haus ___ vor zehn Jahren gebaut.",["hat","wurde","ist werden","werden"],1],
+ ["Nora fährt normalerweise mit dem Rad. Bei Regen nimmt sie den Bus. Heute fährt sie wegen des Wetters mit dem Bus. Was kann man schließen?",["Es regnet","Es ist sonnig","Sie hat kein Fahrrad","Sie mag Radfahren nicht"],0],
+ ["Warum wurde das Treffen verschoben?",["Der Raum war belegt","Der Chef war krank","Alle waren im Urlaub","Es war zu früh"],0,"Wir wollten uns am Dienstag treffen. Da der Raum schon reserviert war, haben wir das Treffen auf Mittwoch verschoben."],
+ ["Je mehr ich übe, ___ sicherer werde ich.",["weil","desto","obwohl","als"],1],
+ ["Ich hätte dir geholfen, wenn du mich ___ hättest.",["fragen","gefragt","fragte","fragst"],1],
+ ["Das Angebot ist bequem, dennoch sorgen sich viele Kunden um den Datenschutz. Welcher Gegensatz besteht?",["Bequemlichkeit und Datenschutzbedenken","Preis und Qualität","Sicherheit und Zeitgewinn","Arbeitszeit und Freizeit"],0],
+ ["Warum soll der Kurs wieder stattfinden?",["Alle Plätze waren besetzt","Die Teilnehmer bewerteten ihn positiv","Er war kostenlos","Er ist gesetzlich vorgeschrieben"],1,"Es kamen weniger Teilnehmer als erwartet. Die Rückmeldungen waren jedoch sehr positiv, deshalb werden wir den Kurs mit besserer Werbung erneut anbieten."],
+ ["Er behauptet, er ___ davon nichts gewusst.",["habe","haben","hatte haben","gehabt"],0],
+ ["Die Entscheidung steht noch aus. Das bedeutet, sie ___.",["wurde bereits getroffen","ist noch nicht getroffen worden","ist endgültig ungültig","wird nicht benötigt"],1],
+ ["Die Studie liefert Anhaltspunkte, keine Beweise: Ihre geringe Stichprobe lässt weitreichende Schlüsse nicht zu. Welche Haltung wird ausgedrückt?",["Uneingeschränkte Gewissheit","Vorsicht bei der Interpretation","Völlige Bedeutungslosigkeit aller Daten","Ablehnung jeder Forschung"],1],
+ ["Für wen gilt die Zusage nicht ausdrücklich?",["Für fest angestellte Mitarbeiter","Für externe Mitarbeiter","Für die Leitung","Für niemanden"],1,"Die Zusage, dass keine Stellen wegfallen würden, bezog sich ausdrücklich nur auf fest angestellte Mitarbeiter. Für externe Kräfte blieb die Lage offen."],
+ ["Welche Aussage deutet an, dass ihr Eingreifen ein Scheitern verhindert hat?",["Der Plan scheiterte sofort.","Ohne ihr Eingreifen wäre der Plan wohl gescheitert.","Ein Scheitern war ausgeschlossen.","Niemand griff ein."],1],
+ ["Seine Zusage war ein Lippenbekenntnis. Sie war ___.",["verbindlich und aufrichtig","nur verbal, ohne echte Überzeugung","nicht hörbar","schriftlich beglaubigt"],1],
+ ["Der Kommentar bezeichnet die Reform als einen Triumph der Inszenierung über den Inhalt. Was wird kritisiert?",["Die Reform wirkt bedeutender, als ihre tatsächliche Wirkung rechtfertigt","Die Reform hat keine öffentliche Darstellung","Der Inhalt überzeugt stärker als die Darstellung","Die Reform ist uneingeschränkt erfolgreich"],0],
+ ["Wie bewertet der Sprecher die Antwort?",["Als diplomatisch geschickt","Als unbedacht und provozierend","Als zu kurz für eine Bewertung","Als eindeutigen Erfolg"],1,"Die Antwort als diplomatisch zu bezeichnen, wäre äußerst großzügig. Mit wenigen Sätzen brachte sie sowohl die Kritiker als auch die verbliebenen Unterstützer gegen sich auf."],
+]);

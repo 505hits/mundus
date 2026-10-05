@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { confirmScheduleResponse, ScheduleResponseError } from "@/lib/schedule-response";
 import { useRouter } from "next/navigation";
 import { Check, X } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
@@ -20,33 +21,39 @@ export default function ScheduleRequestActions({
 
   const [errorMessage, setErrorMessage] = useState("");
 
+  const busy = useRef(false);
+  const [saved, setSaved] = useState(false);
+
   async function respond(status: "accepted" | "declined") {
+    if (busy.current || saved) return;
+    busy.current = true;
     setLoading(status);
     setErrorMessage("");
 
+    try {
     const supabase = createSupabaseBrowserClient();
 
-    const { data: updatedRequest, error } = await supabase
-      .from("schedule_change_requests")
-      .update({
-        status,
-        responded_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", requestId)
-      .eq("status", "pending")
-      .select("id")
-      .maybeSingle();
+    await confirmScheduleResponse(status, async () => {
+      const { data, error } = await supabase.from("schedule_change_requests")
+        .update({ status, responded_at: new Date().toISOString(), updated_at: new Date().toISOString() })
+        .eq("id", requestId).eq("status", "pending").select("id").maybeSingle();
+      if (error) throw error;
+      return Boolean(data);
+    }, async () => {
+      const { data, error } = await supabase.from("schedule_change_requests")
+        .select("status").eq("id", requestId).maybeSingle();
+      if (error) throw error;
+      return data?.status ?? null;
+    });
 
-    if (error || !updatedRequest) {
-      setErrorMessage(
-        "Žiadosť sa nepodarilo aktualizovať. Skúste to prosím znova."
-      );
-      setLoading(null);
-      return;
-    }
-
+    setSaved(true);
     router.refresh();
+    } catch (error) {
+      setErrorMessage(error instanceof ScheduleResponseError ? error.message : "Odpoveď sa nepodarilo uložiť. Skúste znova alebo kontaktujte Mundus.");
+    } finally {
+      busy.current = false;
+      setLoading(null);
+    }
   }
 
   return (
@@ -54,9 +61,9 @@ export default function ScheduleRequestActions({
       <div className="flex flex-wrap gap-2">
         <button
           type="button"
-          disabled={loading !== null}
+          disabled={loading !== null || saved}
           onClick={() => respond("accepted")}
-          className="flex items-center gap-2 rounded-xl bg-[#183f38] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#12332d] disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex items-center gap-2 rounded-xl bg-[#2F3AA2] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#252E82] disabled:cursor-not-allowed disabled:opacity-60"
         >
           <Check size={16} />
           {loading === "accepted" ? "Schvaľujem..." : "Schváliť"}
@@ -64,9 +71,9 @@ export default function ScheduleRequestActions({
 
         <button
           type="button"
-          disabled={loading !== null}
+          disabled={loading !== null || saved}
           onClick={() => respond("declined")}
-          className="flex items-center gap-2 rounded-xl border border-[#7e693a]/20 bg-white px-4 py-2.5 text-sm font-medium text-[#7e693a] transition hover:bg-[#f7f2e7] disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex items-center gap-2 rounded-xl border border-[#92400e]/20 bg-white px-4 py-2.5 text-sm font-medium text-[#92400e] transition hover:bg-[#EEF2FF] disabled:cursor-not-allowed disabled:opacity-60"
         >
           <X size={16} />
           {loading === "declined"
@@ -75,8 +82,10 @@ export default function ScheduleRequestActions({
         </button>
       </div>
 
+      {saved && <p role="status" className="mt-3 text-sm text-[#2F3AA2]">Odpoveď bola uložená. Aktuálny termín nájdete v rozvrhu.</p>}
+
       {errorMessage && (
-        <p className="mt-3 max-w-xs text-sm text-red-700">
+        <p role="alert" className="mt-3 max-w-xs text-sm text-red-700">
           {errorMessage}
         </p>
       )}

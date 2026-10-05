@@ -1,3 +1,5 @@
+import { safeLessonLink } from "@/lib/lesson-link";
+import ScheduleNotificationStatus from "@/components/ScheduleNotificationStatus";
 import {
   AlertCircle,
   CalendarDays,
@@ -84,10 +86,11 @@ export default async function AdminLessonsPage() {
   );
 
   return (
-    <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
+    <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
+      <ScheduleNotificationStatus />
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">Hodiny</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">Hodiny</p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Správa hodín</h1>
           <p className="mt-2 text-gray-500">Reálny prehľad hodín študentov a lektorov Mundus.</p>
         </section>
@@ -106,17 +109,17 @@ export default async function AdminLessonsPage() {
 
         <section className="mt-8 grid gap-4 sm:grid-cols-3">
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <CalendarDays size={20} className="text-[#9a8049]" />
+            <CalendarDays size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{today.length}</p>
             <p className="mt-1 text-sm text-gray-500">Dnes</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <CheckCircle2 size={20} className="text-[#9a8049]" />
+            <CheckCircle2 size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{completed.length}</p>
             <p className="mt-1 text-sm text-gray-500">Dokončené v načítanej histórii</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <AlertCircle size={20} className="text-[#9a8049]" />
+            <AlertCircle size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{attention.length}</p>
             <p className="mt-1 text-sm text-gray-500">Zrušené / nedostavenie sa</p>
           </div>
@@ -149,13 +152,13 @@ export default async function AdminLessonsPage() {
                       {formatTime(lesson.scheduled_at)}
                     </div>
                     <div>
-                      <span className="inline-flex rounded-full bg-[#eef3ef] px-3 py-1 text-xs font-semibold capitalize text-[#527064]">
+                      <span className="inline-flex rounded-full bg-[#EEF2FF] px-3 py-1 text-xs font-semibold capitalize text-[#3730A3]">
                         {formatLessonStatus(lesson.status)}
                       </span>
                     </div>
                     <div>
-                      {lesson.meet_link && (
-                        <a href={lesson.meet_link} target="_blank" rel="noreferrer" aria-label="Otvoriť online hodinu" className="inline-flex rounded-xl p-2 text-[#183f38] hover:bg-[#eef3ef]">
+                      {safeLessonLink(lesson.meet_link) && (
+                        <a href={safeLessonLink(lesson.meet_link) ?? undefined} target="_blank" rel="noreferrer" aria-label="Otvoriť online hodinu" className="inline-flex rounded-xl p-2 text-[#0a0a0f] hover:bg-[#EEF2FF]">
                           <Video size={17} />
                         </a>
                       )}

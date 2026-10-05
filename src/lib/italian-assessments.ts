@@ -1,0 +1,62 @@
+import type { AssessmentQuestion } from "./placement";
+type Row = readonly [string, readonly string[], number, string?];
+function bank(rows: Row[]): readonly AssessmentQuestion[] {
+  const bands = ["A1", "A2", "B1", "B2", "C1", "C2"];
+  return rows.map(([prompt, options, answer, audio], index) => ({
+    id: `${bands[Math.floor(index / 4)].toLowerCase()}-${index % 4 === 3 ? "listen" : index % 4 + 1}`,
+    band: bands[Math.floor(index / 4)], prompt, options, answer,
+    ...(audio ? { audio, skill: "listening" } : {}),
+  }));
+}
+export const ITALIAN_PLACEMENT = bank([
+  ["Io ___ di Bratislava.", ["è", "sei", "sono", "siete"], 2],
+  ["Questo è ___ libro.", ["una", "un", "uno", "un'"], 1],
+  ["Giulia abita a Torino e lavora in una libreria. Dove abita Giulia?", ["A Milano", "A Roma", "A Napoli", "A Torino"], 3],
+  ["A che ora inizia la lezione?", ["Alle otto", "Alle nove", "Alle dieci", "Alle undici"], 2, "Buongiorno. La nostra lezione di italiano inizia oggi alle dieci del mattino."],
+  ["Ieri Marco ___ al mercato.", ["è andato", "ha andato", "andrà", "andare"], 0],
+  ["Questa borsa è ___ di quella.", ["caro più", "più cara", "molto più di", "la cara più"], 1],
+  ["La piscina è aperta dal martedì alla domenica. Il lunedì è chiusa. Quando puoi andarci?", ["Lunedì mattina", "Solo il lunedì", "Mercoledì", "Ogni lunedì"], 2],
+  ["Perché Sara arriverà più tardi?", ["Deve comprare il pane", "Il suo autobus è in ritardo", "Ha perso il telefono", "Deve andare dal medico"], 1, "Arriverò con venti minuti di ritardo. Il mio autobus è fermo nel traffico. Aspettami davanti al cinema."],
+  ["Da bambino ___ dai miei nonni ogni domenica.", ["andrò", "andavo", "andare", "vado domani"], 1],
+  ["Spero che tu ___ alla festa.", ["vieni", "venire", "venga", "verrai venendo"], 2],
+  ["Nonostante la pioggia, Paolo è uscito a fare una passeggiata. Che cosa ha fatto?", ["È rimasto a casa", "Ha aspettato il sole", "Ha camminato anche se pioveva", "Ha cancellato la passeggiata"], 2],
+  ["Che cosa farà la persona prima di andare alla mostra?", ["Incontrerà sua cugina", "Comprerà un libro", "Tornerà a casa", "Prenderà un taxi"], 0, "Prima di andare alla mostra, incontrerò mia cugina davanti alla stazione. Poi visiteremo insieme il museo."],
+  ["Se avessi più tempo, ___ un corso di cucina.", ["seguo", "seguirò", "seguirei", "seguendo"], 2],
+  ["Non penso che la proposta ___ realistica.", ["è", "sia", "essere", "sarà essendo"], 1],
+  ["Il progetto ridurrà i consumi nel lungo periodo, ma richiede un investimento iniziale consistente. Quale ostacolo viene indicato?", ["Non riduce i consumi", "Costa molto all'inizio", "Non richiede finanziamenti", "Funziona solo per un giorno"], 1],
+  ["Perché ogni reparto dovrà organizzarsi in modo diverso?", ["L'azienda chiuderà", "Tutti lavoreranno meno ore", "Alcune attività richiedono la presenza in sede", "Nessuno vuole lavorare da casa"], 2, "Il lavoro a distanza offre flessibilità, ma non tutte le attività possono essere svolte fuori sede. Per questo ogni reparto dovrà concordare la soluzione più adatta."],
+  ["Se avessi saputo dei rischi, non ___ il contratto.", ["firmo", "firmerò", "avrei firmato", "firmando"], 2],
+  ["La decisione è ancora in sospeso. Significa che ___.", ["è definitiva", "non è ancora stata presa", "è stata annullata per sempre", "non è necessaria"], 1],
+  ["L'autrice riconosce i progressi ottenuti, ma dubita che i vantaggi siano distribuiti in modo equo. Di che cosa dubita?", ["Dell'esistenza di ogni progresso", "Dell'equità nella distribuzione dei vantaggi", "Della necessità di studiare la società", "Della possibilità di migliorare"], 1],
+  ["Che cosa suggerisce il discorso sulla consultazione?", ["Ha determinato interamente la decisione", "È stata annullata", "Ha avuto poco peso su una decisione già definita", "Si terrà il mese prossimo"], 2, "La consultazione venne presentata come un'occasione per ascoltare i cittadini. Tuttavia, le linee essenziali del piano erano già state definite prima che arrivassero le prime osservazioni."],
+  ["Quale frase esprime un consenso accompagnato da riserve?", ["Approvo senza alcuna obiezione.", "Acconsento, non senza qualche perplessità.", "Respingo categoricamente la proposta.", "Non mi è stata chiesta un'opinione."], 1],
+  ["Il complimento conteneva una frecciata. Che cosa implica?", ["Era del tutto sincero e benevolo", "Nascondeva una critica pungente", "Era stato pronunciato troppo piano", "Riguardava soltanto lo sport"], 1],
+  ["La recensione definisce il saggio una facciata brillante sorretta da argomenti fragili. Qual è la critica?", ["La presentazione convince più del ragionamento", "Gli argomenti sono solidi", "Il saggio descrive un edificio", "La recensione elogia ogni aspetto"], 0],
+  ["Quale atteggiamento esprime il parlante?", ["Ammirazione per la rapidità del consiglio", "Timore che la decisione sia stata precipitosa", "Critica ironica alla lentezza del consiglio", "Soddisfazione per l'assenza di riforme"], 2, "Accusare il consiglio di eccessiva fretta sarebbe davvero ingeneroso. Quando finalmente approvò la riforma, le circostanze che l'avevano resa necessaria erano ormai venute meno."],
+]);
+export const ITALIAN_PROGRESS = bank([
+  ["I miei amici ___ a Firenze.", ["abita", "abiti", "abitiamo", "abitano"], 3],
+  ["Ho due ___ piccoli.", ["gatto", "gatti", "gatta", "gattino"], 1],
+  ["Luca ha un cane e due gatti. Quanti gatti ha?", ["Uno", "Due", "Tre", "Nessuno"], 1],
+  ["Dove lavora Elena?", ["In ospedale", "In banca", "A scuola", "In un ristorante"], 0, "Mi chiamo Elena e sono infermiera. Lavoro in un ospedale vicino a casa."],
+  ["Sabato scorso noi ___ un film.", ["vediamo domani", "vedremo", "abbiamo visto", "vedere"], 2],
+  ["Oggi fa ___ freddo di ieri.", ["più", "molto di", "tanto di", "il più di"], 0],
+  ["Il biglietto costa dodici euro online e quindici alla cassa. Dove costa meno?", ["Alla cassa", "Online", "Il prezzo è uguale", "Solo al mattino"], 1],
+  ["Quando bisogna portare una giacca?", ["Stanotte", "La prossima settimana", "Domani", "In estate"], 2, "Porta una giacca domani. Al mattino farà caldo, ma verso sera la temperatura scenderà parecchio."],
+  ["Questo edificio ___ nel secolo scorso.", ["ha costruito", "fu costruito", "costruendo", "ha costruire"], 1],
+  ["È importante che noi ___ puntuali.", ["siamo stati domani", "essere", "sarà", "siamo"], 3],
+  ["Anna va al lavoro in bicicletta quando non piove. Oggi prende l'autobus perché piove. Perché non usa la bicicletta?", ["Perché è rotta", "Perché l'ha venduta", "Perché piove", "Perché non sa usarla"], 2],
+  ["Perché è stato cambiato il giorno della riunione?", ["La sala era già prenotata", "Il direttore era malato", "Nessuno voleva partecipare", "L'edificio era chiuso"], 0, "La riunione doveva svolgersi martedì. Dato che la sala era già prenotata, l'abbiamo spostata a mercoledì."],
+  ["Ti avrei aiutato se me lo ___ chiesto.", ["hai", "avrai", "avessi", "avere"], 2],
+  ["Benché ___ stanco, continua a lavorare.", ["è", "sia", "essere", "sarà essendo"], 1],
+  ["Il servizio è comodo; eppure molti utenti temono un uso non autorizzato dei loro dati. Quale contrasto emerge?", ["Comodità e timori per la privacy", "Prezzo e velocità", "Orari e distanza", "Qualità e varietà"], 0],
+  ["Perché il laboratorio verrà riproposto?", ["Era obbligatorio", "Ha ricevuto valutazioni positive", "Era gratuito", "Tutti i posti erano occupati"], 1, "Sono venute meno persone del previsto, ma le valutazioni dei partecipanti sono state molto positive. Riproporremo il laboratorio e faremo più pubblicità."],
+  ["Quale frase riferisce un fatto precedente a una convinzione passata?", ["Pensavo che avesse già telefonato.", "Penso che telefonerà domani.", "Telefonerò quando avrò tempo.", "Sta telefonando proprio adesso."], 0],
+  ["Dare per scontato un risultato significa ___.", ["rifiutarlo subito", "considerarlo certo senza verificarlo", "scriverlo su un foglio", "calcolarlo con precisione"], 1],
+  ["La ricerca offre indizi, non prove definitive: un campione così ridotto non consente di generalizzare. Quale atteggiamento suggerisce?", ["Certezza assoluta", "Prudenza nell'interpretazione", "Rifiuto di qualsiasi ricerca", "Indifferenza verso tutti i dati"], 1],
+  ["Quale gruppo non è coperto dalla garanzia esplicita?", ["I dipendenti a tempo indeterminato", "La direzione", "I collaboratori esterni", "Tutto il personale"], 2, "La garanzia che non ci sarebbero stati tagli riguardava espressamente i dipendenti a tempo indeterminato. Per i collaboratori esterni la situazione restava incerta."],
+  ["Quale frase suggerisce che il suo intervento ha evitato un fallimento?", ["Il piano è fallito prima di iniziare.", "Senza il suo intervento, il piano sarebbe fallito.", "Il successo era garantito fin dall'inizio.", "Nessuno è intervenuto nel progetto."], 1],
+  ["La promessa è rimasta lettera morta. Che cosa significa?", ["È stata mantenuta in anticipo", "Non ha avuto attuazione concreta", "È stata pronunciata sottovoce", "Era scritta a mano"], 1],
+  ["Il commento definisce la riforma un trionfo della messinscena sulla sostanza. Che cosa mette in dubbio?", ["Che i risultati giustifichino la presentazione enfatica", "Che sia stata presentata al pubblico", "Che abbia un'immagine pubblica", "Che sia stata discussa dai giornali"], 0],
+  ["Come viene giudicata la risposta?", ["Come un esempio di tatto", "Come troppo breve per poterla valutare", "Come un gesto che ha risolto il conflitto", "Come un intervento poco prudente che ha peggiorato i rapporti"], 3, "Definire diplomatica quella risposta richiederebbe una notevole dose di benevolenza. In poche frasi riuscì a inimicarsi sia i critici sia coloro che erano ancora disposti a sostenerlo."],
+]);

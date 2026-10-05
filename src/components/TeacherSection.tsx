@@ -2,145 +2,85 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
+import { MUNDUS_LANGUAGE_OPTIONS } from "@/lib/language-offer";
 
-const fadeInUp = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const } },
-};
+type PublicTeacher={id:string;name:string;headline:string;bio:string;languages:string[];photoUrl:string|null};
 
-const stagger = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
-};
-
-const cardReveal = {
-    hidden: { opacity: 0, y: 50, scale: 0.9 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        transition: { type: "spring" as const, stiffness: 100, damping: 15 }
-    },
-};
-
-const teachers = [
-    {
-        name: "Lenka",
-        flag: "🇬🇧🇸🇰",
-        specialty: "English & Slovak",
-        description: "Engaging English and Slovak lessons for all levels.",
-        image: "/Lenka.jpeg",
-    },
-    {
-        name: "Jakub",
-        flag: "🇪🇸",
-        specialty: "Kouč španielskej gramatiky",
-        description: "Zvládnite komplexnú gramatiku jednoduchými vysvetleniami.",
-        image: "/Jakub.jpeg",
-    },
-    {
-        name: "Alisa",
-        flag: "🇷🇺",
-        specialty: "Rodená hovorkyňa ruštiny",
-        description: "Pohlcujúce lekcie ruského jazyka a kultúry.",
-        image: "/alisa.JPG",
-    },
-    {
-        name: "Roland",
-        flag: "🇮🇹",
-        specialty: "Expert na taliančinu",
-        description: "Naučte sa hovoriť taliansky s vášňou a sebavedomím.",
-        image: "/roland.jpeg",
-    },
-    {
-        name: "Bella",
-        flag: "🇬🇧",
-        specialty: "Angličtina",
-        description: "Zábavné lekcie pre každého, od začiatočníkov po pokročilých.",
-        image: "/Bella English side.png",
-    },
-    {
-        name: "Anar",
-        flag: "🇨🇳",
-        specialty: "Mandarínska čínština",
-        description: "Naučte sa efektívne najrozšírenejší jazyk sveta.",
-        image: "/Anar Chinese chill.png",
-    },
-    {
-        name: "Tamara",
-        flag: "🇺🇦🇸🇰🇬🇧",
-        specialty: "Ukrainian, Slovak & English",
-        description: "Learn Ukrainian, Slovak or English with a passionate native teacher.",
-        image: "/Tamara.jpeg",
-    },
+const existingTeacherImages=[
+  "/Lenka.jpeg",
+  "/Jakub.jpeg",
+  "/alisa.JPG",
+  "/roland.jpeg",
+  "/Bella English side.png",
+  "/Anar Chinese chill.png",
+  "/Tamara.jpeg",
 ];
 
+const fade={hidden:{opacity:0,y:24},visible:{opacity:1,y:0,transition:{duration:0.45}}};
 
-export default function TeacherSection() {
-    const { t } = useLanguage();
-    return (
-        <section id="teachers" className="section bg-white py-24">
-            <div className="container">
-                <motion.div
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, margin: "-100px" }}
-                    variants={stagger}
-                    className="section-header text-center mb-16"
-                >
-                    <motion.span variants={fadeInUp} className="section-label inline-block px-4 py-1.5 rounded-full bg-blue-50 text-blue-600 font-semibold text-sm mb-4">
-                        {t.teachers.label}
-                    </motion.span>
-                    <motion.h2 variants={fadeInUp} className="section-title text-4xl md:text-5xl font-bold mb-6 text-gray-900">
-                        {t.teachers.titleStart} <span className="accent-word relative inline-block text-blue-600">
-                            {t.teachers.titleEnd}
-                            <svg className="absolute w-full h-3 bottom-0 left-0 text-yellow-300 -z-10 opacity-40" viewBox="0 0 100 10" preserveAspectRatio="none">
-                                <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="8" fill="none" />
-                            </svg>
-                        </span>
-                    </motion.h2>
-                    <motion.p variants={fadeInUp} className="section-subtitle text-lg text-gray-600 max-w-2xl mx-auto">
-                        {t.teachers.subtitle}
-                    </motion.p>
-                </motion.div>
+export default function TeacherSection({teachers}:{teachers:PublicTeacher[]}) {
+  const { t, language } = useLanguage();
+  const sk=language==="sk";
+  const displayLanguage=(value:string)=>sk ? MUNDUS_LANGUAGE_OPTIONS.find(item=>item.value===value)?.label ?? value : value;
+  const existingNames=new Set(t.teachers.list.map(item=>item.name.trim().split(/\s+/)[0].toLowerCase()));
+  const newTeachers=teachers.filter(teacher=>!existingNames.has(teacher.name.trim().split(/\s+/)[0].toLowerCase()));
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {t.teachers.list.map((teacher, index) => {
-                        // Map static images to translated teachers
-                        const teacherImage = teachers[index].image;
+  return <section id="teachers" className="section bg-white py-24">
+    <div className="container">
+      <div className="mx-auto max-w-3xl text-center">
+        <p className="section-label text-[#2F3AA2]">{sk?"Naši lektori":"Our teachers"}</p>
+        <h2 className="mt-4 text-3xl font-bold sm:text-4xl">{sk?"Spoznajte lektorov Mundus":"Meet the Mundus teachers"}</h2>
+        <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-gray-600">
+          {sk
+            ?"Pri priradení zohľadňujeme jazyk, úroveň, vaše ciele aj časové možnosti. Konkrétnu dostupnosť vhodného lektora vždy overíme."
+            :"We match teachers based on language, level, goals and availability, and confirm the right teacher before lessons begin."}
+        </p>
+      </div>
 
-                        return (
-                            <motion.div
-                                key={index}
-                                initial="hidden"
-                                whileInView="visible"
-                                viewport={{ once: true, margin: "-50px" }}
-                                variants={cardReveal}
-                                className="group relative cursor-pointer"
-                            >
-                                <div className="relative overflow-hidden rounded-2xl aspect-[3/4] mb-4 shadow-lg shadow-gray-200">
-                                    <Image
-                                        src={teacherImage}
-                                        alt={teacher.name}
-                                        fill
-                                        className="object-cover transition-transform duration-700 scale-105 group-hover:scale-115"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 transition-opacity duration-300" />
-
-                                    <div className="absolute bottom-0 left-0 w-full p-6 text-white translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                                        <h3 className="text-xl font-bold mb-1 !text-white">{teacher.name}</h3>
-                                        <p className="text-sm font-medium text-blue-200 mb-2">{teacher.specialty}</p>
-                                        <p className="text-xs text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300 line-clamp-2">
-                                            {teacher.description}
-                                        </p>
-                                    </div>
-                                </div>
-                            </motion.div>
-                        );
-                    })}
-                </div>
+      <div className="mt-12 grid grid-cols-1 gap-7 md:grid-cols-2 lg:grid-cols-3">
+        {t.teachers.list.map((teacher,index)=>
+          <motion.article key={teacher.name} initial="hidden" whileInView="visible" viewport={{once:true,margin:"-40px"}} variants={fade} className="group">
+            <div className="relative mb-4 aspect-[3/4] overflow-hidden rounded-3xl bg-[#F5F5F4] shadow-sm">
+              <Image src={existingTeacherImages[index]} alt={teacher.name} fill className="object-cover transition-transform duration-500 group-hover:scale-105"/>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent"/>
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <h3 className="text-xl font-bold !text-white">{teacher.name}</h3>
+                <p className="mt-1 text-sm font-semibold text-indigo-100">{teacher.specialty}</p>
+                <p className="mt-2 text-sm leading-5 text-white/80">{teacher.description}</p>
+              </div>
             </div>
-        </section>
-    );
+          </motion.article>
+        )}
+
+        {newTeachers.map(teacher=>
+          <motion.article key={teacher.id} initial="hidden" whileInView="visible" viewport={{once:true,margin:"-40px"}} variants={fade} className="group">
+            <div className="relative mb-4 aspect-[3/4] overflow-hidden rounded-3xl bg-[#EEF2FF] shadow-sm">
+              {teacher.photoUrl
+                ? <>
+                    {/* Dynamic Supabase-hosted teacher photos intentionally use the public object URL directly. */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={teacher.photoUrl} alt={teacher.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"/>
+                  </>
+                : <div className="flex h-full items-center justify-center text-6xl font-semibold text-[#2F3AA2]">{teacher.name.slice(0,1).toUpperCase()}</div>}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent"/>
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <h3 className="text-xl font-bold !text-white">{teacher.name}</h3>
+                {teacher.headline&&<p className="mt-1 text-sm font-semibold text-indigo-100">{teacher.headline}</p>}
+                <p className="mt-2 text-sm leading-5 text-white/80">{teacher.bio}</p>
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  {teacher.languages.map(item=><span key={item} className="rounded-full bg-white/15 px-2.5 py-1 text-xs font-medium text-white">{displayLanguage(item)}</span>)}
+                </div>
+              </div>
+            </div>
+          </motion.article>
+        )}
+      </div>
+
+      <div className="mt-10 text-center">
+        <Link href="/#buy-packages" className="inline-flex rounded-xl bg-[#2F3AA2] px-6 py-3 font-semibold text-white">{sk?"Vybrať balíček":"Choose a package"}</Link>
+      </div>
+    </div>
+  </section>;
 }

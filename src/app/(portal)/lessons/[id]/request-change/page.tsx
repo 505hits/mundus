@@ -51,11 +51,12 @@ export default async function RequestChangePage({
     )
     .eq("id", id)
     .eq("student_id", user.id)
-    .single();
+    .maybeSingle();
 
-  if (error || !lesson) {
-    notFound();
+  if (error) {
+    return <main className="mx-auto max-w-3xl px-5 py-10"><h1 className="text-2xl font-semibold">Hodinu sa nepodarilo načítať</h1><p role="alert" className="mt-4 text-gray-600">Obnovte stránku alebo to skúste o chvíľu znova. Pôvodný termín zostáva platný.</p><Link href="/lessons" className="mt-5 inline-block font-semibold underline">Späť na moje hodiny</Link></main>;
   }
+  if (!lesson) notFound();
 
   if (
     lesson.status !== "scheduled" &&
@@ -68,7 +69,7 @@ export default async function RequestChangePage({
     notFound();
   }
 
-  const { data: pendingRequest } = await supabase
+  const { data: pendingRequest, error: pendingError } = await supabase
     .from("schedule_change_requests")
     .select("id")
     .eq("lesson_id", lesson.id)
@@ -78,18 +79,18 @@ export default async function RequestChangePage({
     .maybeSingle();
 
   return (
-    <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
+    <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
       <div className="mx-auto max-w-3xl px-5 py-8 sm:px-8 lg:py-10">
         <Link
           href="/lessons"
-          className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 transition hover:text-[#183f38]"
+          className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 transition hover:text-[#0a0a0f]"
         >
           <ArrowLeft size={17} />
           Späť na moje hodiny
         </Link>
 
         <section className="mt-7">
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
             Rozvrh
           </p>
 
@@ -102,7 +103,7 @@ export default async function RequestChangePage({
           </p>
         </section>
 
-        <section className="mt-8 rounded-3xl bg-[#183f38] p-6 text-white shadow-sm sm:p-8">
+        <section className="mt-8 rounded-3xl bg-[#2F3AA2] p-6 text-white shadow-sm sm:p-8">
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-sm font-medium text-white/60">
@@ -136,8 +137,8 @@ export default async function RequestChangePage({
           </div>
         </section>
 
-        {pendingRequest ? (
-          <section className="mt-6 rounded-3xl border border-[#dfe8e2] bg-white p-6 shadow-sm sm:p-8">
+        {pendingError ? <section role="alert" className="mt-6 rounded-3xl bg-white p-6 text-red-700"><h2 className="text-xl font-semibold">Stav žiadosti sa nepodarilo overiť</h2><p className="mt-2">Obnovte stránku alebo to skúste o chvíľu znova. Novú žiadosť môžete odoslať po overení stavu. Pôvodný termín zostáva platný.</p></section> : pendingRequest ? (
+          <section className="mt-6 rounded-3xl border border-[#E0E7FF] bg-white p-6 shadow-sm sm:p-8">
             <h2 className="text-xl font-semibold">
               Žiadosť o zmenu čaká na vybavenie
             </h2>
@@ -148,7 +149,7 @@ export default async function RequestChangePage({
 
             <Link
               href="/lessons"
-              className="mt-6 inline-flex rounded-2xl bg-[#183f38] px-5 py-3 font-semibold text-white"
+              className="mt-6 inline-flex rounded-2xl bg-[#2F3AA2] px-5 py-3 font-semibold text-white"
             >
               Späť na moje hodiny
             </Link>

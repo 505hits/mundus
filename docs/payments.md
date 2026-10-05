@@ -30,3 +30,9 @@ If checkout has been created but its session cannot be attached, the server trie
 - `node tests/purchase-intent.mjs` confirms that login and email redirects accept only the five internal package choices.
 
 These checks do not connect to a real Stripe account or production Supabase. Verify the schema, webhook delivery and actual Checkout in a dedicated test environment before accepting payments.
+
+## First package: once per person
+
+Apply `202610030001_first_package_identity.sql` after the payment migration, before enabling checkout. The offer is once per person, checked using normalized full name and email plus account history. Verified email is required by the server role guard. Gmail dots, plus tags and googlemail.com are treated as the same mailbox; other email providers are compared as entered after trimming/case normalization. Matching names are conservatively ineligible and customers can contact Mundus for identity review. Names/emails alone cannot prove real-world identity, and different identities or unrecognized mailbox aliases can evade these checks. Do not advertise a guarantee of fraud-proof identification.
+
+Orders retain identity fingerprints so profile edits do not reset the offer. Pending discounted checkouts have unique name/email keys to prevent simultaneous claims; failed/expired attempts release the offer. Existing balances are unchanged. Backfill uses current profile details for older orders; inspect existing missing names, duplicate names and discounted pending orders before applying the migration. The package page fails closed if this migration is missing. Admin account overrides cannot reissue a consumed identity offer. No raw other-customer identity is exposed through the eligibility RPC. If reservation changes the quoted price, checkout is stopped and the customer must confirm the new price.

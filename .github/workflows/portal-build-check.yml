@@ -4,26 +4,37 @@ on:
   push:
     branches:
       - mundus-portal
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
+
+concurrency:
+  group: portal-build-${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout mundus-portal
+      - name: Checkout triggering commit
         uses: actions/checkout@v4
-        with:
-          ref: mundus-portal
 
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Lint portal
+        run: npm run lint
+
+      - name: Test portal safeguards and assessment drafts
+        run: npm test
 
       - name: Build portal
         run: npm run build

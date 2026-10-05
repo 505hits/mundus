@@ -10,7 +10,7 @@ export default async function AdminLayout({
   await requireRole("admin");
 
   return (
-    <div className="min-h-screen bg-[#f7f8f5] lg:flex">
+    <div className="min-h-screen bg-[#FAFAF9] lg:flex">
       <AdminNav paymentsEnabled={paymentEnabled()} />
 
       <div className="min-w-0 flex-1 pb-24 lg:pb-0">

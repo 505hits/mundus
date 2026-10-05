@@ -1,3 +1,4 @@
+import { safeLessonLink } from "@/lib/lesson-link";
 import Link from "next/link";
 import {
   CalendarDays,
@@ -81,18 +82,18 @@ export default async function LessonsPage() {
     .reverse();
 
   return (
-    <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
+    <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
       <div className="mx-auto max-w-5xl px-5 py-8 sm:px-8 lg:py-10">
         <Link
           href="/dashboard"
-          className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 transition hover:text-[#183f38]"
+          className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 transition hover:text-[#0a0a0f]"
         >
           <ArrowLeft size={17} />
           Späť na prehľad
         </Link>
 
         <section className="mt-7">
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
             Moje učenie
           </p>
 
@@ -121,7 +122,7 @@ export default async function LessonsPage() {
             </div>
 
             <span className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold shadow-sm">
-              {upcomingLessons.length === 1 ? "1 naplánovaná" : upcomingLessons.length >= 2 && upcomingLessons.length <= 4 ? `${upcomingLessons.length} naplánované` : `${upcomingLessons.length} naplánovaných`}
+              {lessonsError ? "Rozvrh nedostupný" : upcomingLessons.length === 1 ? "1 naplánovaná" : upcomingLessons.length >= 2 && upcomingLessons.length <= 4 ? `${upcomingLessons.length} naplánované` : `${upcomingLessons.length} naplánovaných`}
             </span>
           </div>
 
@@ -132,7 +133,7 @@ export default async function LessonsPage() {
                   key={lesson.id}
                   className={`rounded-3xl p-6 shadow-sm ${
                     index === 0
-                      ? "bg-[#183f38] text-white"
+                      ? "bg-[#2F3AA2] text-white"
                       : "border border-black/5 bg-white"
                   }`}
                 >
@@ -153,8 +154,8 @@ export default async function LessonsPage() {
                           <span
                             className={`rounded-full px-3 py-1 text-xs font-semibold ${
                               index === 0
-                                ? "bg-[#c6a65b]/20 text-[#e8ce91]"
-                                : "bg-[#fff7e6] text-[#9a8049]"
+                                ? "bg-[#2F3AA2]/20 text-[#e8ce91]"
+                                : "bg-[#fff7e6] text-[#2F3AA2]"
                             }`}
                           >
                             Presunutá
@@ -186,15 +187,15 @@ export default async function LessonsPage() {
                     </div>
 
                     <div className="flex flex-col gap-2 sm:min-w-[190px]">
-                      {lesson.meet_link ? (
+                      {safeLessonLink(lesson.meet_link) ? (
                         <a
-                          href={lesson.meet_link}
+                          href={safeLessonLink(lesson.meet_link) ?? undefined}
                           target="_blank"
                           rel="noreferrer"
                           className={`flex items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold ${
                             index === 0
-                              ? "bg-white text-[#183f38]"
-                              : "bg-[#183f38] text-white"
+                              ? "bg-white text-[#0a0a0f]"
+                              : "bg-[#2F3AA2] text-white"
                           }`}
                         >
                           <Video size={17} />
@@ -223,7 +224,7 @@ export default async function LessonsPage() {
                             className={`rounded-2xl border px-4 py-3 text-sm font-medium ${
                               index === 0
                                 ? "border-white/20 bg-white/5 text-white/80"
-                                : "border-[#c6a65b]/20 bg-[#faf6eb] text-[#9a8049]"
+                                : "border-[#2F3AA2]/20 bg-[#faf6eb] text-[#2F3AA2]"
                             }`}
                           >
                             <div className="flex items-center justify-center gap-2">
@@ -234,7 +235,7 @@ export default async function LessonsPage() {
                             </div>
 
                             <p className={`mt-1 text-center text-xs ${
-                              index === 0 ? "text-white/55" : "text-[#9a8049]/75"
+                              index === 0 ? "text-white/55" : "text-[#2F3AA2]/75"
                             }`}>
                               Navrhovaný termín: {formatDate(request.preferred_at)} ·{" "}
                               {formatTime(request.preferred_at)}
@@ -245,13 +246,13 @@ export default async function LessonsPage() {
                             )}
                           </div>
                         );
-                      })() : (
+                      })() : requestsError ? <p className="text-center text-sm">Stav žiadosti sa nepodarilo načítať. Obnovte stránku pred žiadosťou o zmenu.</p> : (
                         <Link
                           href={`/lessons/${lesson.id}/request-change`}
                           className={`flex items-center justify-center gap-2 rounded-2xl border px-4 py-3 text-sm font-medium ${
                             index === 0
                               ? "border-white/20 text-white"
-                              : "border-black/10 text-[#183f38]"
+                              : "border-black/10 text-[#0a0a0f]"
                           }`}
                         >
                           <RefreshCw size={16} />
@@ -267,15 +268,15 @@ export default async function LessonsPage() {
             <div className="mt-5 rounded-3xl border border-black/5 bg-white p-8 text-center shadow-sm">
               <CalendarDays
                 size={28}
-                className="mx-auto text-[#9a8049]"
+                className="mx-auto text-[#2F3AA2]"
               />
 
               <h3 className="mt-4 font-semibold">
-                Zatiaľ nemáte naplánované hodiny
+                {lessonsError ? "Rozvrh sa nepodarilo načítať" : "Zatiaľ nemáte naplánované hodiny"}
               </h3>
 
               <p className="mt-2 text-sm text-gray-500">
-                Vaša najbližšia potvrdená hodina sa zobrazí tu.
+                {lessonsError ? "Obnovte stránku alebo to skúste o chvíľu znova." : "Vaša najbližšia potvrdená hodina sa zobrazí tu."}
               </p>
             </div>
           )}
@@ -307,7 +308,7 @@ export default async function LessonsPage() {
                     </p>
                   </div>
 
-                  <span className="w-fit rounded-full bg-[#eef3ef] px-3 py-1.5 text-xs font-semibold capitalize">
+                  <span className="w-fit rounded-full bg-[#EEF2FF] px-3 py-1.5 text-xs font-semibold capitalize">
                     {formatLessonStatus(lesson.status)}
                   </span>
                 </div>
@@ -315,7 +316,7 @@ export default async function LessonsPage() {
             </div>
           ) : (
             <p className="mt-5 rounded-3xl border border-black/5 bg-white p-6 text-sm text-gray-500 shadow-sm">
-              História vašich hodín sa zobrazí tu.
+              {lessonsError ? "Históriu hodín sa nepodarilo načítať. Obnovte stránku alebo to skúste o chvíľu znova." : "História vašich hodín sa zobrazí tu."}
             </p>
           )}
         </section>

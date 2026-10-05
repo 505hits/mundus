@@ -2,6 +2,7 @@
 
 import { LogOut } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 
 export default function LogoutButton({
@@ -9,18 +10,32 @@ export default function LogoutButton({
 }: {
   compact?: boolean;
 }) {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   async function signOut() {
     if (loading) return;
     setLoading(true);
-
-    const supabase = createSupabaseBrowserClient();
-    await supabase.auth.signOut();
-    window.location.href = "/login";
+    setError("");
+    try {
+      const supabase = createSupabaseBrowserClient();
+      const { error: signOutError } = await supabase.auth.signOut();
+      if (signOutError) {
+        setError("Odhlásenie sa nepodarilo. Skúste to znova.");
+        return;
+      }
+      router.replace("/login");
+      router.refresh();
+    } catch {
+      setError("Odhlásenie sa nepodarilo. Skontrolujte pripojenie a skúste to znova.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
+    <div>
     <button
       type="button"
       onClick={signOut}
@@ -34,5 +49,7 @@ export default function LogoutButton({
       <LogOut size={compact ? 15 : 17} />
       {loading ? "Odhlasujem..." : "Odhlásiť sa"}
     </button>
+    {error && <p role="alert" className="mt-2 text-xs text-red-700">{error}</p>}
+    </div>
   );
 }

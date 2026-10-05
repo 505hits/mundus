@@ -1,4 +1,6 @@
+import { safeLessonLink } from "@/lib/lesson-link";
 import Link from "next/link";
+import BrandLogo from "@/components/BrandLogo";
 import {
   BookOpen,
   CalendarDays,
@@ -8,6 +10,7 @@ import {
   GraduationCap,
   Video,
 } from "lucide-react";
+import type { StudentLessonReport } from "@/lib/student-report";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatLanguage, formatLessonCount, formatLessonType } from "@/lib/portalLabels";
@@ -33,6 +36,7 @@ function formatTime(value: string) {
 
 export default async function DashboardPage() {
   const { user } = await requireRole("student");
+  const paymentsAvailable = paymentEnabled();
   const supabase = await createSupabaseServerClient();
 
   const [
@@ -51,7 +55,7 @@ export default async function DashboardPage() {
     supabase
       .from("lesson_packages")
       .select(
-        "id,total_lessons,remaining_lessons,used_lessons,status"
+        "id,total_lessons,remaining_lessons,used_lessons,status,purchased_at"
       )
       .eq("student_id", user.id)
       .eq("status", "active"),
@@ -68,11 +72,7 @@ export default async function DashboardPage() {
       .limit(5),
 
     supabase
-      .from("lesson_reports")
-      .select(
-        "id,lesson_id,topic,progress,student_note,homework,next_focus,updated_at"
-      )
-      .eq("student_id", user.id)
+      .rpc("student_lesson_reports")
       .order("updated_at", { ascending: false })
       .limit(5),
 
@@ -90,7 +90,7 @@ export default async function DashboardPage() {
   const activePackages = packages ?? [];
   const upcomingLessons = lessons ?? [];
   const nextLesson = upcomingLessons[0] ?? null;
-  const teacherReports = reports ?? [];
+  const teacherReports: StudentLessonReport[] = Array.isArray(reports) ? reports : [];
   const pendingRequestMap = new Map(
     (pendingRequests ?? []).map((request) => [
       request.lesson_id,
@@ -124,6 +124,20 @@ export default async function DashboardPage() {
     0
   );
 
+  const renewalDue = activePackages.some(pkg => {
+    const low =
+      (pkg.total_lessons === 5 && (pkg.used_lessons ?? 0) >= 4 && (pkg.remaining_lessons ?? 0) <= 1) ||
+      (pkg.total_lessons !== 5 && (pkg.used_lessons ?? 0) > 0 && (pkg.remaining_lessons ?? 0) <= 2);
+    if (!low) return false;
+    const purchasedAt = new Date(pkg.purchased_at ?? 0).getTime();
+    const alreadyContinued = activePackages.some(other =>
+      other.id !== pkg.id &&
+      (other.remaining_lessons ?? 0) > 0 &&
+      new Date(other.purchased_at ?? 0).getTime() > purchasedAt
+    );
+    return !alreadyContinued;
+  });
+
   const progress =
     totalLessons > 0
       ? Math.min(
@@ -133,19 +147,14 @@ export default async function DashboardPage() {
       : 0;
 
   return (
-    <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
+    <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
       <header className="border-b border-black/5 bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
-          <Link
-            href="/"
-            className="text-xl font-bold tracking-tight"
-          >
-            mundus
-          </Link>
+          <BrandLogo compact />
 
           <div className="flex items-center gap-3">
             <div className="hidden text-right sm:block">
-              <p className="text-sm font-semibold text-[#183f38]">
+              <p className="text-sm font-semibold text-[#0a0a0f]">
                 Portál študenta
               </p>
 
@@ -154,7 +163,7 @@ export default async function DashboardPage() {
               </p>
             </div>
 
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#183f38] text-sm font-semibold text-white">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#2F3AA2] text-sm font-semibold text-white">
               {(
                 profile?.full_name?.trim()?.[0] ||
                 user.email?.[0] ||
@@ -166,8 +175,12 @@ export default async function DashboardPage() {
       </header>
 
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
+        {renewalDue && <section className="mb-6 flex flex-col gap-4 rounded-3xl border border-[#2F3AA2]/20 bg-[#EEF2FF] p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div><p className="font-semibold text-[#2F3AA2]">Je čas myslieť na ďalší balíček</p><p className="mt-1 text-sm text-gray-600">Máte už len posledné hodiny. Ak chcete pokračovať bez prestávky, môžete si ďalší balíček pripraviť už teraz.</p></div>
+          {paymentsAvailable?<Link href="/packages" className="shrink-0 rounded-xl bg-[#2F3AA2] px-4 py-3 text-sm font-semibold text-white">Kúpiť ďalší balíček</Link>:<Link href="/contact" className="shrink-0 rounded-xl bg-[#2F3AA2] px-4 py-3 text-sm font-semibold text-white">Kontaktovať Mundus</Link>}
+        </section>}
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
             Moje učenie
           </p>
 
@@ -188,7 +201,7 @@ export default async function DashboardPage() {
 
         <div className="mt-8 grid gap-6 lg:grid-cols-3">
           {/* Najbližšia hodina */}
-          <section className="rounded-3xl bg-[#183f38] p-6 text-white shadow-sm lg:col-span-2 sm:p-8">
+          <section className="rounded-3xl bg-[#2F3AA2] p-6 text-white shadow-sm lg:col-span-2 sm:p-8">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-sm font-medium text-white/60">
@@ -221,11 +234,11 @@ export default async function DashboardPage() {
                 ) : (
                   <>
                     <h2 className="mt-3 text-2xl font-semibold">
-                      Zatiaľ nemáte naplánovanú hodinu
+                      {lessonsError ? "Najbližšiu hodinu sa nepodarilo načítať" : "Zatiaľ nemáte naplánovanú hodinu"}
                     </h2>
 
                     <p className="mt-4 text-sm text-white/60">
-                      Vaša najbližšia potvrdená hodina sa zobrazí tu.
+                      {lessonsError ? "Obnovte stránku alebo to skúste o chvíľu znova." : "Vaša najbližšia potvrdená hodina sa zobrazí tu."}
                     </p>
                   </>
                 )}
@@ -238,12 +251,12 @@ export default async function DashboardPage() {
 
             {nextLesson && (
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                {nextLesson.meet_link ? (
+                {safeLessonLink(nextLesson.meet_link) ? (
                   <a
-                    href={nextLesson.meet_link}
+                    href={safeLessonLink(nextLesson.meet_link) ?? undefined}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3.5 font-semibold text-[#183f38]"
+                    className="flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3.5 font-semibold text-[#0a0a0f]"
                   >
                     <Video size={18} />
                     Pripojiť sa na hodinu
@@ -251,7 +264,7 @@ export default async function DashboardPage() {
                 ) : (
                   <button
                     disabled
-                    className="flex cursor-not-allowed items-center justify-center gap-2 rounded-2xl bg-white/70 px-5 py-3.5 font-semibold text-[#183f38]/60"
+                    className="flex cursor-not-allowed items-center justify-center gap-2 rounded-2xl bg-white/70 px-5 py-3.5 font-semibold text-[#0a0a0f]/60"
                   >
                     <Video size={18} />
                     Odkaz na hodinu zatiaľ nie je pridaný
@@ -279,9 +292,9 @@ export default async function DashboardPage() {
             <p className="text-sm font-medium text-gray-500">
               Aktuálny balíček
             </p>
-            {paymentEnabled() && <Link href="/packages" className="mt-2 inline-block text-sm font-semibold text-[#2F3AA2] underline">Zobraziť balíčky a platby</Link>}
+            {paymentsAvailable && <Link href="/packages" className="mt-2 inline-block text-sm font-semibold text-[#2F3AA2] underline">Zobraziť balíčky a platby</Link>}
 
-            {activePackages.length > 0 ? (
+            {packagesError ? <p className="mt-4 text-sm text-red-700">Zostatok a stav balíčka sa nepodarilo načítať. Obnovte stránku alebo to skúste o chvíľu znova.</p> : activePackages.length > 0 ? (
               <>
                 <div className="mt-4">
                   <p className="text-5xl font-semibold tracking-tight">
@@ -292,9 +305,9 @@ export default async function DashboardPage() {
                   </p>
                 </div>
 
-                <div className="mt-6 h-2 overflow-hidden rounded-full bg-[#edf0ec]">
+                <div className="mt-6 h-2 overflow-hidden rounded-full bg-[#E0E7FF]">
                   <div
-                    className="h-full rounded-full bg-[#c6a65b]"
+                    className="h-full rounded-full bg-[#2F3AA2]"
                     style={{ width: `${progress}%` }}
                   />
                 </div>
@@ -304,24 +317,38 @@ export default async function DashboardPage() {
                 </p>
 
                 {remainingLessons <= 2 && (
-                  <div className="mt-5 rounded-2xl border border-[#c6a65b]/20 bg-[#faf6eb] p-4">
-                    <p className="font-semibold text-[#7e693a]">
+                  <div className="mt-5 rounded-2xl border border-[#2F3AA2]/20 bg-[#faf6eb] p-4">
+                    <p className="font-semibold text-[#92400e]">
                       {remainingLessons === 0
                         ? "Balíček je vyčerpaný"
                         : remainingLessons === 1
                           ? "Zostáva vám posledná hodina"
                           : "Zostávajú vám posledné 2 hodiny"}
                     </p>
-                    <p className="mt-1 text-sm leading-6 text-[#7e693a]/75">
-                      Ak chcete pokračovať bez prerušenia, ozvite sa Mundus Languages a pripravíme vám ďalší balíček.
+                    <p className="mt-1 text-sm leading-6 text-[#92400e]/75">
+                      {paymentsAvailable
+                        ? "Ak chcete pokračovať bez prerušenia, môžete si vybrať ďalší balíček online."
+                        : "Ak chcete pokračovať bez prerušenia, ozvite sa Mundus Languages a pripravíme vám ďalší balíček."}
                     </p>
+                    {paymentsAvailable && (
+                      <Link href="/packages" className="mt-3 inline-flex rounded-xl bg-[#2F3AA2] px-4 py-2.5 text-sm font-semibold text-white">
+                        Vybrať ďalší balíček
+                      </Link>
+                    )}
                   </div>
                 )}
               </>
             ) : (
-              <p className="mt-4 text-sm leading-6 text-gray-500">
-                Zatiaľ nemáte priradený aktívny balíček hodín.
-              </p>
+              <>
+                <p className="mt-4 text-sm leading-6 text-gray-500">
+                  Zatiaľ nemáte priradený aktívny balíček hodín.
+                </p>
+                {paymentsAvailable && (
+                  <Link href="/packages" className="mt-4 inline-flex rounded-xl bg-[#2F3AA2] px-4 py-2.5 text-sm font-semibold text-white">
+                    Pozrieť balíčky
+                  </Link>
+                )}
+              </>
             )}
           </section>
         </div>
@@ -340,7 +367,7 @@ export default async function DashboardPage() {
                 </h2>
               </div>
 
-              <div className="rounded-2xl bg-[#eef3ef] p-3">
+              <div className="rounded-2xl bg-[#EEF2FF] p-3">
                 <BookOpen size={22} />
               </div>
             </div>
@@ -348,7 +375,7 @@ export default async function DashboardPage() {
             {latestNextFocus ? (
               <p className="mt-5 text-sm leading-6 text-gray-500">
                 Ďalšie zameranie:{" "}
-                <span className="font-medium text-[#183f38]">
+                <span className="font-medium text-[#0a0a0f]">
                   {latestNextFocus}
                 </span>
               </p>
@@ -360,7 +387,7 @@ export default async function DashboardPage() {
 
             <Link
               href="/progress"
-              className="mt-6 flex items-center gap-2 text-sm font-semibold text-[#9a8049]"
+              className="mt-6 flex items-center gap-2 text-sm font-semibold text-[#2F3AA2]"
             >
               Zobraziť môj pokrok
               <ChevronRight size={16} />
@@ -376,19 +403,19 @@ export default async function DashboardPage() {
                 </p>
 
                 <h2 className="mt-1 text-xl font-semibold">
-                  {latestHomework
+                  {reportsError ? "Domácu úlohu sa nepodarilo načítať" : latestHomework
                     ? "Vaša posledná domáca úloha"
                     : "Zatiaľ nemáte domácu úlohu"}
                 </h2>
               </div>
 
-              <div className="rounded-2xl bg-[#f7f2e7] p-3 text-[#9a8049]">
+              <div className="rounded-2xl bg-[#EEF2FF] p-3 text-[#2F3AA2]">
                 <FileText size={22} />
               </div>
             </div>
 
             <p className="mt-5 text-sm leading-6 text-gray-500">
-              {latestHomework
+              {reportsError ? "Obnovte stránku alebo to skúste o chvíľu znova." : latestHomework
                 ? latestHomework
                 : "Nové úlohy od lektora sa zobrazia po uložení záznamu z hodiny."}
             </p>
@@ -406,7 +433,7 @@ export default async function DashboardPage() {
 
             <Link
               href="/learning"
-              className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#9a8049]"
+              className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#2F3AA2]"
             >
               Zobraziť úlohy a poznámky
               <ChevronRight size={16} />
@@ -429,7 +456,7 @@ export default async function DashboardPage() {
 
             <CalendarDays
               size={21}
-              className="text-[#9a8049]"
+              className="text-[#2F3AA2]"
             />
           </div>
 
@@ -452,7 +479,7 @@ export default async function DashboardPage() {
                   </div>
 
                   {index === 0 ? (
-                    <span className="rounded-full bg-[#eef3ef] px-3 py-1.5 text-xs font-semibold">
+                    <span className="rounded-full bg-[#EEF2FF] px-3 py-1.5 text-xs font-semibold">
                       Najbližšia
                     </span>
                   ) : (

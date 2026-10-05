@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import { followupQueue } from '../src/lib/followup-queue.ts';
+const students=['overdue','today','future','undated','closed','renewed'].map(id=>({id,full_name:id}));
+const row=(student_id,next_followup,status='waiting')=>({student_id,next_followup,status,last_contact:null,note:'',updated_at:'2026-10-04T00:00:00Z'});
+const rows=[row('undated',null),row('future','2026-11-01'),row('overdue','2026-09-30'),row('today','2026-10-04'),row('closed','2026-09-01','closed'),row('inactive','2026-09-01'),row('renewed','2026-10-03')];
+const queue=followupQueue(students,rows,'2026-10-04');
+assert.deepEqual(queue.map(x=>x.student.id),['overdue','renewed','today','future','undated']);
+assert.deepEqual(queue.map(x=>x.due),[true,true,true,false,false]);
+assert.equal(followupQueue(students,[row('today','2026-10-05')],'2026-10-04')[0].due,false);
+console.log('PASS: due today/overdue, future/undated, closed/inactive exclusion and followups independent of package renewal');

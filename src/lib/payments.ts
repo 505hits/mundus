@@ -3,13 +3,7 @@ import Stripe from "stripe";
 import { randomBytes } from "node:crypto";
 import { accountOrigin } from "@/lib/account-config";
 
-export const PACKAGE_PRICES = [
-  { lessons: 1, amountCents: 2800 },
-  { lessons: 5, amountCents: 13500 },
-  { lessons: 10, amountCents: 26000 },
-  { lessons: 20, amountCents: 49000 },
-  { lessons: 30, amountCents: 70500 },
-] as const;
+export { PACKAGE_PRICES } from "@/lib/package-catalog";
 
 export function paymentEnabled() {
   try { accountOrigin(); } catch { return false; }

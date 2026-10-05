@@ -22,17 +22,17 @@ const statusOptions = [
 
 export default function LessonStatusActions({
   lessonId,
-  studentId,
   packageId,
   scheduledAt,
 }: Props) {
   const router = useRouter();
   const [status, setStatus] = useState("completed");
   const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
 
   async function saveStatus() {
-    if (saving) return;
+    if (saving || saved) return;
 
     setError("");
 
@@ -50,51 +50,42 @@ export default function LessonStatusActions({
 
     setSaving(true);
 
-    const supabase = createSupabaseBrowserClient();
+    try {
+      const supabase = createSupabaseBrowserClient();
 
-    if (status === "completed") {
-      if (!packageId) {
-        setError("K hodine nie je priradený balíček. Kontaktujte administrátora.");
-        setSaving(false);
+      if (status === "completed") {
+        if (!packageId) {
+          setError("K hodine nie je priradený balíček. Kontaktujte administrátora.");
+          return;
+        }
+      }
+
+      const { data: updatedLesson, error: updateError } = status === "completed"
+        ? await supabase.rpc("mundus_complete_lesson", { target_lesson_id: lessonId })
+        : await supabase
+          .from("lessons")
+          .update({ status, updated_at: new Date().toISOString() })
+          .eq("id", lessonId)
+          .in("status", ["scheduled", "rescheduled"])
+          .select("id")
+          .maybeSingle();
+
+      if (updateError || !updatedLesson) {
+        setError(
+          status === "completed"
+            ? "Hodinu sa nepodarilo dokončiť a overiť odpočítanie kreditu. Obnovte stránku alebo kontaktujte Mundus."
+            : "Stav hodiny sa nepodarilo uložiť. Skúste to prosím znova."
+        );
         return;
       }
 
-      const { data: pkg, error: packageError } = await supabase
-        .from("lesson_packages")
-        .select("id")
-        .eq("id", packageId)
-        .eq("student_id", studentId)
-        .eq("status", "active")
-        .gt("remaining_lessons", 0)
-        .maybeSingle();
-
-      if (packageError || !pkg) {
-        setError("Hodinu nemožno dokončiť: balíček nemá voľný kredit alebo nepatrí tomuto študentovi.");
-        setSaving(false);
-        return;
-      }
-    }
-
-    const { data: updatedLesson, error: updateError } = await supabase
-      .from("lessons")
-      .update({
-        status,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", lessonId)
-      .in("status", ["scheduled", "rescheduled"])
-      .select("id")
-      .maybeSingle();
-
-    if (updateError || !updatedLesson) {
-      setError(
-        "Stav hodiny sa nepodarilo uložiť. Skúste to prosím znova."
-      );
+      setSaved(true);
+      router.refresh();
+    } catch {
+      setError("Stav hodiny sa nepodarilo uložiť. Skontrolujte pripojenie a skúste to znova.");
+    } finally {
       setSaving(false);
-      return;
     }
-
-    router.refresh();
   }
 
   return (
@@ -102,8 +93,8 @@ export default function LessonStatusActions({
       <select
         value={status}
         onChange={(event) => setStatus(event.target.value)}
-        disabled={saving}
-        className="rounded-xl border border-black/10 bg-white px-3 py-2.5 text-sm text-[#183f38] outline-none focus:border-[#183f38]"
+        disabled={saving || saved}
+        className="rounded-xl border border-black/10 bg-white px-3 py-2.5 text-sm text-[#0a0a0f] outline-none focus:border-[#2F3AA2]"
       >
         {statusOptions.map((option) => (
           <option key={option.value} value={option.value}>
@@ -115,15 +106,15 @@ export default function LessonStatusActions({
       <button
         type="button"
         onClick={saveStatus}
-        disabled={saving}
-        className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#183f38] px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
+        disabled={saving || saved}
+        className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
       >
         <CheckCircle2 size={16} />
-        {saving ? "Ukladám..." : "Uložiť stav"}
+        {saving ? "Ukladám..." : saved ? "Uložené" : "Uložiť stav"}
       </button>
 
       {error && (
-        <p className="text-sm text-red-700 sm:max-w-xs">{error}</p>
+        <p role="alert" className="text-sm text-red-700 sm:max-w-xs">{error}</p>
       )}
     </div>
   );

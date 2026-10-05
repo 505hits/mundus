@@ -1,0 +1,28 @@
+import type { AssessmentQuestion } from "./placement";
+export const PROGRESS_VERSION = "english-progress-1";
+export const PROGRESS_QUESTIONS: readonly AssessmentQuestion[] = [
+ {id:"a1-1",band:"A1",prompt:"They ___ at home.",options:["is","are","am","be"],answer:1},
+ {id:"a1-2",band:"A1",prompt:"I ___ coffee every morning.",options:["drink","drinks","drinking","drank yesterday"],answer:0},
+ {id:"a1-3",band:"A1",prompt:"Tom has a red bike and a blue car. What is blue?",options:["His bike","His car","His house","His hat"],answer:1},
+ {id:"a1-listen",band:"A1",skill:"listening",audio:"My brother is twenty years old. He works in a shop.",prompt:"Where does the brother work?",options:["A school","A hospital","A shop","A hotel"],answer:2},
+ {id:"a2-1",band:"A2",prompt:"She ___ dinner when I called.",options:["was cooking","cook","has cook","is cook"],answer:0},
+ {id:"a2-2",band:"A2",prompt:"There isn't ___ milk left.",options:["many","some of","a","much"],answer:3},
+ {id:"a2-3",band:"A2",prompt:"Tickets cost ten euros online and twelve at the door. How can you pay less?",options:["Buy at the door","Buy online","Buy two tickets","Arrive late"],answer:1},
+ {id:"a2-listen",band:"A2",skill:"listening",audio:"Please bring a jacket tomorrow. It will be sunny in the morning, but cold in the evening.",prompt:"Why should you bring a jacket?",options:["It will rain all day","The morning will be cold","The evening will be cold","It will snow"],answer:2},
+ {id:"b1-1",band:"B1",prompt:"Have you ___ visited Scotland?",options:["ever","yet yesterday","since","during"],answer:0},
+ {id:"b1-2",band:"B1",prompt:"The letter ___ yesterday.",options:["has send","was sent","is sending","sent it"],answer:1},
+ {id:"b1-3",band:"B1",prompt:"Lena prefers cycling, but takes the bus whenever it rains. Today she took the bus because of the weather. What can you infer?",options:["It was sunny","Her bike was stolen","It was raining","She dislikes cycling"],answer:2},
+ {id:"b1-listen",band:"B1",skill:"listening",audio:"We planned to visit the museum on Monday, but it was closed. We went to the park instead and visited the museum the following day.",prompt:"When did they visit the museum?",options:["Monday","Tuesday","Sunday","They never visited"],answer:1},
+ {id:"b2-1",band:"B2",prompt:"I wish I ___ more attention during the lecture yesterday.",options:["pay","have paid","had paid","will pay"],answer:2},
+ {id:"b2-2",band:"B2",prompt:"You ___ told me earlier; now it's too late.",options:["should have","must to","should to","would had"],answer:0},
+ {id:"b2-3",band:"B2",prompt:"The new service is convenient, yet users remain concerned about how their data is stored. What is the contrast?",options:["Convenience versus privacy concerns","Cost versus speed","Safety versus poor quality","Storage versus lack of users"],answer:0},
+ {id:"b2-listen",band:"B2",skill:"listening",audio:"The course attracted fewer participants than expected. Nevertheless, those who attended rated it highly, so we intend to run it again with better publicity.",prompt:"Why will the course run again?",options:["It had many participants","Attendees gave positive feedback","Publicity was already excellent","It was compulsory"],answer:1},
+ {id:"c1-1",band:"C1",prompt:"Rarely ___ such a convincing explanation.",options:["I heard have","have I heard","I have hear","heard have I"],answer:1},
+ {id:"c1-2",band:"C1",prompt:"She insisted that the report ___ revised before publication.",options:["be","is being been","has be","will to be"],answer:0},
+ {id:"c1-3",band:"C1",prompt:"The author concedes that automation raises output, but questions whether this translates into broadly shared prosperity. What is questioned?",options:["Whether automation raises output","Whether the gains benefit society widely","Whether automation exists","Whether prosperity has any value"],answer:1},
+ {id:"c1-listen",band:"C1",skill:"listening",audio:"The director's assurance that no jobs would be lost was carefully qualified: it applied only to permanent staff, leaving contractors in an uncertain position.",prompt:"Who was excluded from the assurance?",options:["Permanent employees","The director","Contractors","Everyone"],answer:2},
+ {id:"c2-1",band:"C2",prompt:"Her approval was grudging. This means she approved ___.",options:["enthusiastically","reluctantly","without understanding","in advance"],answer:1},
+ {id:"c2-2",band:"C2",prompt:"Choose the sentence saying that her intervention prevented the plan from failing.",options:["The plan was bound to fail.","The plan failed as expected.","The plan could scarcely have succeeded.","The plan might well have failed, had she not intervened."],answer:3},
+ {id:"c2-3",band:"C2",prompt:"The editorial calls the reform 'a triumph of presentation over substance'. What does it suggest?",options:["The reform is more impressive in appearance than in meaningful effect","The reform has no presentation","Substance is more impressive than appearance","The editorial fully endorses the reform"],answer:0},
+ {id:"c2-listen",band:"C2",skill:"listening",audio:"To describe the response as measured would be charitable. It managed, in a single paragraph, to alienate both its critics and the few allies it had left.",prompt:"What is the speaker's assessment?",options:["The response was diplomatically balanced","The response won new allies","The response was poorly judged and antagonistic","The critics misunderstood a successful response"],answer:2},
+];

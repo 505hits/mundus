@@ -47,10 +47,10 @@ export default async function AdminPackagesPage() {
   const totalUsed = rows.reduce((sum, item) => sum + (item.used_lessons ?? 0), 0);
 
   return (
-    <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
+    <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">Balíčky</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">Balíčky</p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Prehľad balíčkov</h1>
           <p className="mt-2 max-w-2xl text-gray-500">
             Aktuálny stav hodín v balíčkoch a upozornenia na pokračovanie.
@@ -67,22 +67,22 @@ export default async function AdminPackagesPage() {
 
         <section className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <Package size={20} className="text-[#9a8049]" />
+            <Package size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{active.length}</p>
             <p className="mt-1 text-sm text-gray-500">Aktívne balíčky</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <AlertCircle size={20} className="text-[#9a8049]" />
+            <AlertCircle size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{renewalSoon.length}</p>
             <p className="mt-1 text-sm text-gray-500">2 alebo menej hodín</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <RefreshCw size={20} className="text-[#9a8049]" />
+            <RefreshCw size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{renewalDue.length}</p>
             <p className="mt-1 text-sm text-gray-500">Je čas pokračovať</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <CheckCircle2 size={20} className="text-[#9a8049]" />
+            <CheckCircle2 size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{totalUsed}</p>
             <p className="mt-1 text-sm text-gray-500">Využité hodiny vo všetkých balíčkoch</p>
           </div>
@@ -118,7 +118,7 @@ export default async function AdminPackagesPage() {
                         {formatPackageType(item.package_type)} · {formatDate(item.purchased_at)}
                       </p>
                       <div className="mt-3 h-1.5 max-w-[180px] overflow-hidden rounded-full bg-gray-100">
-                        <div className="h-full rounded-full bg-[#183f38]" style={{ width: `${percentage}%` }} />
+                        <div className="h-full rounded-full bg-[#2F3AA2]" style={{ width: `${percentage}%` }} />
                       </div>
                     </div>
                     <div>
@@ -131,13 +131,13 @@ export default async function AdminPackagesPage() {
                     </div>
                     <div>
                       <p className="text-xs text-gray-400 lg:hidden">Zostáva</p>
-                      <p className={`mt-1 text-lg font-semibold lg:mt-0 ${warning ? "text-[#9a8049]" : ""}`}>
+                      <p className={`mt-1 text-lg font-semibold lg:mt-0 ${warning ? "text-[#2F3AA2]" : ""}`}>
                         {remaining}
                       </p>
                     </div>
                     <div>
                       <span className={`rounded-full px-3 py-1 text-xs font-semibold capitalize ${
-                        warning ? "bg-[#faf1d9] text-[#9a8049]" : "bg-[#eef3ef] text-[#527064]"
+                        warning ? "bg-[#faf1d9] text-[#2F3AA2]" : "bg-[#EEF2FF] text-[#3730A3]"
                       }`}>
                         {displayStatus.replaceAll("_", " ")}
                       </span>

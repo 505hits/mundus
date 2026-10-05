@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import { confirmScheduleResponse } from '../src/lib/schedule-response.ts';
+let reads=0;
+await confirmScheduleResponse('accepted',async()=>true,async()=>{reads++;return null;});
+assert.equal(reads,0);
+let updates=0;let status='pending';
+await confirmScheduleResponse('accepted',async()=>{updates++;status='accepted';throw Error('Lost response');},async()=>status);
+await confirmScheduleResponse('accepted',async()=>{updates++;return false;},async()=>status);
+assert.equal(updates,2);assert.equal(status,'accepted');
+await assert.rejects(confirmScheduleResponse('declined',async()=>false,async()=>status),/inú odpoveď/);
+await assert.rejects(confirmScheduleResponse('accepted',async()=>false,async()=>null),/nepodarilo potvrdiť/);
+await assert.rejects(confirmScheduleResponse('accepted',async()=>{throw Error('Offline');},async()=>{throw Error('Read unavailable');}),/Read unavailable/);
+console.log('PASS: schedule response confirmation, lost-response recovery, unchanged resolved request and conflicting/missing/inaccessible outcomes');

@@ -70,6 +70,15 @@ assert.equal(first.discount_percent, 10);
 await assert.rejects(db.query("select * from mundus_reserve_payment_order($1,$2)", [student, 10]), /unfinished checkout/);
 await db.query("select mundus_attach_checkout_session($1,$2)", [first.id, "cs_test_first"]);
 await assert.rejects(db.query("select mundus_fulfill_payment_order($1,$2,$3,$4,$5)", [first.id, "cs_test_first", "pi_first", 13500, "eur"]), /does not match/);
+// Simulate a database failure after credit creation; the entire fulfillment must roll back.
+await db.exec(`reset role;
+create function fail_test_credit() returns trigger language plpgsql as $$ begin raise exception 'Simulated credit write failure'; end $$;
+create trigger test_credit_failure after insert on lesson_packages for each row execute function fail_test_credit();
+set role service_role;`);
+await assert.rejects(db.query("select mundus_fulfill_payment_order($1,$2,$3,$4,$5)",[first.id,"cs_test_first","pi_first",12150,"eur"]),/Simulated credit write failure/);
+assert.equal((await db.query("select count(*)::integer as n from lesson_packages where student_id=$1",[student])).rows[0].n,0);
+assert.notEqual((await db.query("select status from payment_orders where id=$1",[first.id])).rows[0].status,'paid');
+await db.exec('reset role;drop trigger test_credit_failure on lesson_packages;drop function fail_test_credit();set role service_role');
 await db.query("select mundus_fulfill_payment_order($1,$2,$3,$4,$5)", [first.id, "cs_test_first", "pi_first", 12150, "eur"]);
 await db.query("select mundus_fulfill_payment_order($1,$2,$3,$4,$5)", [first.id, "cs_test_first", "pi_first", 12150, "eur"]);
 assert.equal((await db.query("select count(*)::integer as count from lesson_packages where student_id=$1", [student])).rows[0].count, 1);

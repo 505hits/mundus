@@ -45,3 +45,11 @@ Implemented on `mundus-portal`. Do not merge/deploy to production solely to test
 Build and policy tests do not prove email delivery, real RLS behavior, or compatibility with unseen production triggers. Full integration requires access to the configured Mundus Supabase project.
 
 Browser visual QA could not be completed in this execution environment because the Chromium download failed. Check the signup and invitation screens at mobile and desktop widths in the configured preview.
+
+## Password recovery
+
+- Allow `/reset-password` in Supabase Auth redirect URLs for the deployed environment.
+- Default PKCE reset links exchange the code before the password form is enabled. They need the browser that requested the email.
+- For cross-device email recovery, use `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery` in the reset-password email template. The confirmation route verifies the recovery token and redirects only to `/reset-password`.
+- Older recovery token fragments are accepted and removed from browser history. Failed/expired links never fall back to another signed-in account.
+- Password length is consistently 10–128 characters. Test received email, expired link, different browser and successful login after reset before launch.

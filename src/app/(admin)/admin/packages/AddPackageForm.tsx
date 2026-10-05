@@ -40,43 +40,49 @@ export default function AddPackageForm({ students }: Props) {
 
     const total = Number(totalLessons);
 
-    if (!Number.isInteger(total) || total <= 0 || total > 100) {
-      setError("Počet hodín musí byť od 1 do 100.");
+    if (!packageSizes.includes(total)) {
+      setError("Vyberte balíček s 1, 5, 10, 20 alebo 30 hodinami.");
       return;
     }
 
     setSaving(true);
 
-    const supabase = createSupabaseBrowserClient();
+    try {
+      const supabase = createSupabaseBrowserClient();
 
-    const { error: insertError } = await supabase
-      .from("lesson_packages")
-      .insert({
-        student_id: studentId,
-        package_type: `${total}_lessons`,
-        total_lessons: total,
-        purchased_at: new Date().toISOString(),
-        status: "active",
-        notes: notes.trim() || null,
-      });
+      const { error: insertError } = await supabase
+        .from("lesson_packages")
+        .insert({
+          student_id: studentId,
+          package_type: `${total}_lessons`,
+          total_lessons: total,
+          used_lessons: 0,
+          remaining_lessons: total,
+          purchased_at: new Date().toISOString(),
+          status: "active",
+          notes: notes.trim() || null,
+        });
 
-    if (insertError) {
-      setError(
-        "Balíček sa nepodarilo vytvoriť. Skontrolujte údaje a skúste to znova."
-      );
+      if (insertError) {
+        setError(
+          "Balíček sa nepodarilo vytvoriť. Skontrolujte údaje a skúste to znova."
+        );
+        return;
+      }
+
+      setSaved(true);
+      setNotes("");
+      router.refresh();
+    } catch {
+      setError("Uloženie sa nepodarilo. Skontrolujte pripojenie a skúste to znova.");
+    } finally {
       setSaving(false);
-      return;
     }
-
-    setSaved(true);
-    setNotes("");
-    setSaving(false);
-    router.refresh();
   }
 
   if (students.length === 0) {
     return (
-      <div className="mt-6 rounded-2xl border border-[#c6a65b]/20 bg-[#faf6eb] p-4 text-sm text-[#7e693a]">
+      <div className="mt-6 rounded-2xl border border-[#2F3AA2]/20 bg-[#faf6eb] p-4 text-sm text-[#92400e]">
         Balíček zatiaľ nemožno pridať, pretože nie je dostupný žiadny aktívny študent.
       </div>
     );
@@ -93,9 +99,10 @@ export default function AddPackageForm({ students }: Props) {
         <label className="text-sm font-medium">
           Študent
           <select
+            disabled={saving}
             value={studentId}
-            onChange={(event) => setStudentId(event.target.value)}
-            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
+            onChange={(event) => { setStudentId(event.target.value); setSaved(false); }}
+            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#2F3AA2]"
           >
             {students.map((student) => (
               <option key={student.id} value={student.id}>
@@ -108,9 +115,10 @@ export default function AddPackageForm({ students }: Props) {
         <label className="text-sm font-medium">
           Počet hodín
           <select
+            disabled={saving}
             value={totalLessons}
-            onChange={(event) => setTotalLessons(event.target.value)}
-            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
+            onChange={(event) => { setTotalLessons(event.target.value); setSaved(false); }}
+            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#2F3AA2]"
           >
             {packageSizes.map((size) => (
               <option key={size} value={size}>
@@ -123,11 +131,12 @@ export default function AddPackageForm({ students }: Props) {
         <label className="text-sm font-medium md:col-span-2">
           Interná poznámka
           <textarea
+            disabled={saving}
             value={notes}
-            onChange={(event) => setNotes(event.target.value)}
+            onChange={(event) => { setNotes(event.target.value); setSaved(false); }}
             rows={2}
             placeholder="Voliteľné"
-            className="mt-2 w-full resize-none rounded-xl border border-black/10 px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
+            className="mt-2 w-full resize-none rounded-xl border border-black/10 px-3 py-2.5 font-normal outline-none focus:border-[#2F3AA2]"
           />
         </label>
       </div>
@@ -137,20 +146,20 @@ export default function AddPackageForm({ students }: Props) {
           type="button"
           onClick={createPackage}
           disabled={saving}
-          className="inline-flex items-center gap-2 rounded-xl bg-[#183f38] px-5 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-xl bg-[#2F3AA2] px-5 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
         >
           <PackagePlus size={17} />
           {saving ? "Pridávam..." : "Pridať balíček"}
         </button>
 
         {saved && (
-          <span className="text-sm font-medium text-[#527064]">
+          <span role="status" className="text-sm font-medium text-[#3730A3]">
             Balíček bol pridaný.
           </span>
         )}
 
         {error && (
-          <span className="text-sm text-red-700">{error}</span>
+          <span role="alert" className="text-sm text-red-700">{error}</span>
         )}
       </div>
 

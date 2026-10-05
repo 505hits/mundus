@@ -17,6 +17,7 @@ export default function Navbar() {
         { name: t.nav.howItWorks, href: "/#how-it-works" },
         { name: t.nav.teachers, href: "/#teachers" },
         { name: t.nav.prices, href: "/prices" },
+        { name: language === "sk" ? "Kúpiť hodiny" : "Buy lessons", href: "/#buy-packages" },
         { name: t.nav.contact, href: "/contact" },
     ];
 
@@ -210,7 +211,7 @@ export default function Navbar() {
                                 {t.nav.book}
                             </Link>
                             <p className="mt-6 text-center text-gray-500 text-sm">
-                                {t.nav.needHelp} <a href="mailto:support@mundus.com" className="text-primary underline">{t.nav.contactUs}</a>
+                                {t.nav.needHelp} <a href="/contact" className="text-primary underline">{t.nav.contactUs}</a>
                             </p>
                         </motion.div>
                     </motion.div >

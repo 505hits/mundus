@@ -35,8 +35,8 @@ export default async function AdminPaymentsPage({ searchParams }: { searchParams
     ? await supabase.rpc("mundus_payment_account_state", { account_ids: students.map(student => student.id) })
     : { data: [], error: null };
   const states = new Map<string, AccountState>(((accountStates ?? []) as AccountState[]).map(row => [row.student_id, row]));
-  return <main className="mx-auto max-w-6xl px-5 py-8 text-[#183f38] sm:px-8 lg:py-10">
-    <p className="text-sm font-semibold uppercase tracking-[0.15em] text-[#9a8049]">Admin portál</p>
+  return <main className="mx-auto max-w-6xl px-5 py-8 text-[#0a0a0f] sm:px-8 lg:py-10">
+    <p className="text-sm font-semibold uppercase tracking-[0.15em] text-[#2F3AA2]">Admin portál</p>
     <h1 className="mt-2 text-3xl font-semibold">Platby</h1>
     <p className="mt-3 text-gray-600">Posledných 100 objednávok. Hodiny sa pripisujú po potvrdení platby od poskytovateľa.</p>
     {problem && <p role="alert" className="mt-6 rounded-2xl bg-red-50 p-4 text-sm text-red-700">Zľavu sa nepodarilo zmeniť. Pri otvorenej alebo už zaplatenej objednávke ju nemožno meniť. Obnovte údaje a skontrolujte stav študenta.</p>}
@@ -53,7 +53,7 @@ export default async function AdminPaymentsPage({ searchParams }: { searchParams
       })}</ul>
     </section>}
     <div className="mt-8 overflow-x-auto rounded-2xl bg-white shadow-sm">
-      <table className="w-full min-w-[720px] text-left text-sm"><thead className="border-b bg-[#f7f8f5] text-gray-500"><tr>
+      <table className="w-full min-w-[720px] text-left text-sm"><thead className="border-b bg-[#FAFAF9] text-gray-500"><tr>
         <th className="px-5 py-4">Dátum</th><th className="px-5 py-4">Študent</th><th className="px-5 py-4">Balíček</th><th className="px-5 py-4">Suma</th><th className="px-5 py-4">Stav</th>
       </tr></thead><tbody className="divide-y divide-black/5">{(orders ?? []).map(order => {
         const profile = names.get(order.student_id);

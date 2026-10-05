@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
+import { preparePasswordRecovery } from "@/lib/password-recovery";
+import { validPassword } from "@/lib/account-policy";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 
 export default function ResetPasswordPage() {
@@ -11,15 +13,40 @@ export default function ResetPasswordPage() {
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
 
+  const [ready, setReady] = useState(false);
+  const [linkError, setLinkError] = useState("");
+  const preparation = useRef<Promise<void> | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!preparation.current) {
+      preparation.current = (async () => {
+        try {
+          const supabase = createSupabaseBrowserClient();
+          await preparePasswordRecovery(supabase.auth, new URL(window.location.href));
+        } finally {
+          // Remove one-time codes and tokens even when the link is invalid.
+          window.history.replaceState(null, "", "/reset-password");
+        }
+      })();
+    }
+    void preparation.current.then(() => {
+      if (!cancelled) setReady(true);
+    }).catch(() => {
+      if (!cancelled) setLinkError("Odkaz nie je platný alebo vypršal. Požiadajte o nový odkaz na obnovu hesla.");
+    });
+    return () => { cancelled = true; };
+  }, []);
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (loading) return;
+    if (loading || !ready) return;
 
     setError("");
     setSaved(false);
 
-    if (password.length < 8) {
-      setError("Nové heslo musí mať aspoň 8 znakov.");
+    if (!validPassword(password)) {
+      setError("Nové heslo musí mať 10 až 128 znakov.");
       return;
     }
 
@@ -30,25 +57,25 @@ export default function ResetPasswordPage() {
 
     setLoading(true);
 
-    const supabase = createSupabaseBrowserClient();
-    const { error: updateError } = await supabase.auth.updateUser({
-      password,
-    });
-
-    if (updateError) {
-      setError("Heslo sa nepodarilo zmeniť. Otvorte odkaz z e-mailu znova alebo požiadajte o nový.");
+    try {
+      const supabase = createSupabaseBrowserClient();
+      const { error: updateError } = await supabase.auth.updateUser({ password });
+      if (updateError) {
+        setError("Heslo sa nepodarilo zmeniť. Otvorte odkaz z e-mailu znova alebo požiadajte o nový.");
+        return;
+      }
+      setSaved(true);
+    } catch {
+      setError("Heslo sa nepodarilo uložiť. Skúste to prosím znova.");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    setSaved(true);
-    setLoading(false);
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#f7f8f5] px-6 py-12 text-[#163f3a]">
+    <main className="flex min-h-screen items-center justify-center bg-[#FAFAF9] px-6 py-12 text-[#2F3AA2]">
       <div className="w-full max-w-md rounded-3xl border border-black/5 bg-white p-7 shadow-sm sm:p-9">
-        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#8a7445]">
+        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
           Mundus portál
         </p>
 
@@ -56,9 +83,13 @@ export default function ResetPasswordPage() {
           Nastaviť nové heslo
         </h1>
 
-        {saved ? (
+        {linkError ? (
+          <div className="mt-7"><p role="alert" className="text-sm text-red-700">{linkError}</p><Link href="/forgot-password" className="mt-4 inline-block font-semibold underline">Poslať nový odkaz</Link></div>
+        ) : !ready ? (
+          <p role="status" className="mt-7 text-sm text-gray-500">Overujem odkaz…</p>
+        ) : saved ? (
           <>
-            <div className="mt-7 rounded-2xl bg-[#eef3ef] p-5">
+            <div role="status" aria-live="polite" className="mt-7 rounded-2xl bg-[#eef3ef] p-5">
               <p className="font-semibold">Heslo bolo zmenené</p>
               <p className="mt-2 text-sm leading-6 text-gray-600">
                 Teraz sa môžete prihlásiť pomocou nového hesla.
@@ -67,7 +98,7 @@ export default function ResetPasswordPage() {
 
             <Link
               href="/login"
-              className="mt-6 inline-flex w-full justify-center rounded-2xl bg-[#163f3a] px-5 py-3.5 font-semibold text-white"
+              className="mt-6 inline-flex w-full justify-center rounded-2xl bg-[#2F3AA2] px-5 py-3.5 font-semibold text-white"
             >
               Prejsť na prihlásenie
             </Link>
@@ -81,9 +112,10 @@ export default function ResetPasswordPage() {
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 required
-                minLength={8}
+                minLength={10}
+                maxLength={128}
                 autoComplete="new-password"
-                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 outline-none focus:border-[#163f3a]"
+                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 outline-none focus:border-[#2F3AA2]"
               />
             </label>
 
@@ -94,14 +126,15 @@ export default function ResetPasswordPage() {
                 value={confirmPassword}
                 onChange={(event) => setConfirmPassword(event.target.value)}
                 required
-                minLength={8}
+                minLength={10}
+                maxLength={128}
                 autoComplete="new-password"
-                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 outline-none focus:border-[#163f3a]"
+                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 outline-none focus:border-[#2F3AA2]"
               />
             </label>
 
             {error && (
-              <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
+              <p role="alert" className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
                 {error}
               </p>
             )}
@@ -109,7 +142,7 @@ export default function ResetPasswordPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-2xl bg-[#163f3a] px-5 py-3.5 font-semibold text-white disabled:opacity-60"
+              className="w-full rounded-2xl bg-[#2F3AA2] px-5 py-3.5 font-semibold text-white disabled:opacity-60"
             >
               {loading ? "Ukladám..." : "Uložiť nové heslo"}
             </button>

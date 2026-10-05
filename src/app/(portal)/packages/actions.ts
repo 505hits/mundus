@@ -7,9 +7,10 @@ import { accountOrigin } from "@/lib/account-config";
 import { PACKAGE_PRICES, paymentEnabled, stripeClient, stripeIntegrationIdentifier } from "@/lib/payments";
 
 export async function startPackageCheckout(form: FormData) {
-  const { user } = await requireRole("student");
-  if (!paymentEnabled()) redirect("/packages?problem=unavailable");
   const lessons = Number(form.get("lessons"));
+  const chosen = PACKAGE_PRICES.some(item => item.lessons === lessons);
+  const { user } = await requireRole("student", chosen ? `/packages?selected=${lessons}` : undefined);
+  if (!paymentEnabled()) redirect("/packages?problem=unavailable");
   if (!PACKAGE_PRICES.some(item => item.lessons === lessons)) redirect("/packages?problem=package");
   const origin = accountOrigin();
   const stripe = stripeClient();
@@ -22,6 +23,11 @@ export async function startPackageCheckout(form: FormData) {
     const { data: pending } = await admin.from("payment_orders").select("id")
       .eq("student_id", user.id).eq("status", "pending").maybeSingle();
     redirect(pending ? "/packages?problem=pending" : "/packages?problem=checkout");
+  }
+
+  if (Number(form.get("expected_amount")) !== order.amount_cents) {
+    await admin.rpc("mundus_close_payment_order", { order_id: order.id, session_id: null, new_status: "failed" });
+    redirect("/packages?problem=price-changed");
   }
 
   let checkout: Awaited<ReturnType<typeof stripe.checkout.sessions.create>>;

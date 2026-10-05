@@ -1,9 +1,11 @@
 "use client";
+import { safeLessonLink } from "@/lib/lesson-link";
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Settings2 } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
+import { bratislavaLocalToUtc, INVALID_LESSON_TIME } from "@/lib/lesson-time";
 
 type Props = {
   lessonId: string;
@@ -36,55 +38,9 @@ function bratislavaInputValue(value: string) {
   }).format(new Date(value)).replace(" ", "T");
 }
 
-function getTimeZoneOffset(date: Date, timeZone: string) {
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hourCycle: "h23",
-  }).formatToParts(date);
-
-  const values = Object.fromEntries(
-    parts
-      .filter((part) => part.type !== "literal")
-      .map((part) => [part.type, Number(part.value)])
-  );
-
-  return Date.UTC(
-    values.year,
-    values.month - 1,
-    values.day,
-    values.hour,
-    values.minute,
-    values.second
-  ) - date.getTime();
-}
-
-function bratislavaLocalToUtc(value: string) {
-  const [datePart, timePart] = value.split("T");
-  const [year, month, day] = datePart.split("-").map(Number);
-  const [hour, minute] = timePart.split(":").map(Number);
-  const localAsUtc = new Date(Date.UTC(year, month - 1, day, hour, minute, 0));
-
-  let offset = getTimeZoneOffset(localAsUtc, "Europe/Bratislava");
-  let result = new Date(localAsUtc.getTime() - offset);
-  const correctedOffset = getTimeZoneOffset(result, "Europe/Bratislava");
-
-  if (correctedOffset !== offset) {
-    offset = correctedOffset;
-    result = new Date(localAsUtc.getTime() - offset);
-  }
-
-  return result;
-}
 
 export default function AdminLessonActions({
   lessonId,
-  studentId,
   packageId,
   scheduledAt,
   meetLink,
@@ -108,15 +64,18 @@ export default function AdminLessonActions({
     setError("");
     setSaved(false);
 
-    const selectedDate = bratislavaLocalToUtc(dateTime);
-    if (!dateTime || Number.isNaN(selectedDate.getTime())) {
-      setError("Zvolený dátum a čas nie je platný.");
+    const selectedDate = dateTime === initialDateTime
+      ? new Date(scheduledAt)
+      : bratislavaLocalToUtc(dateTime);
+
+    if (Number.isNaN(selectedDate.getTime())) {
+      setError(INVALID_LESSON_TIME);
       return;
     }
 
     const trimmedLink = link.trim();
-    if (trimmedLink && !/^https:\/\//i.test(trimmedLink)) {
-      setError("Odkaz na online hodinu musí začínať https://");
+    if (trimmedLink && !safeLessonLink(trimmedLink)) {
+      setError("Zadajte platný odkaz na online hodinu s https:// bez prihlasovacích údajov.");
       return;
     }
 
@@ -144,52 +103,55 @@ export default function AdminLessonActions({
     }
 
     setSaving(true);
-    const supabase = createSupabaseBrowserClient();
+    try {
+      const supabase = createSupabaseBrowserClient();
 
-    if (nextStatus === "completed" && currentStatus !== "completed") {
-      if (!packageId) {
-        setError("K hodine nie je priradený balíček.");
-        setSaving(false);
+      if (nextStatus === "completed" && currentStatus !== "completed") {
+        if (!packageId) {
+          setError("K hodine nie je priradený balíček.");
+          return;
+        }
+
+        if (changedTime || (trimmedLink || null) !== meetLink) {
+          setError("Najprv uložte opravu času alebo odkazu s pôvodným stavom. Potom označte hodinu ako dokončenú.");
+          return;
+        }
+        const { data, error } = await supabase.rpc("mundus_complete_lesson", { target_lesson_id: lessonId });
+        if (error || !data) {
+          setError("Hodinu sa nepodarilo dokončiť a overiť odpočítanie kreditu. Obnovte stránku alebo skontrolujte balíček.");
+          return;
+        }
+        setSaved(true);
+        router.refresh();
         return;
       }
 
-      const { data: pkg, error: packageError } = await supabase
-        .from("lesson_packages")
+      const { data: updatedLesson, error: updateError } = await supabase
+        .from("lessons")
+        .update({
+          scheduled_at: selectedDate.toISOString(),
+          meet_link: trimmedLink || null,
+          status: nextStatus,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", lessonId)
+        .eq("status", currentStatus)
+        .eq("scheduled_at", scheduledAt)
         .select("id")
-        .eq("id", packageId)
-        .eq("student_id", studentId)
-        .eq("status", "active")
-        .gt("remaining_lessons", 0)
         .maybeSingle();
 
-      if (packageError || !pkg) {
-        setError("Hodinu nemožno dokončiť: balíček nemá voľný kredit alebo nepatrí tomuto študentovi.");
-        setSaving(false);
+      if (updateError || !updatedLesson) {
+        setError("Hodinu sa nepodarilo aktualizovať. Skúste to prosím znova.");
         return;
       }
-    }
 
-    const { data: updatedLesson, error: updateError } = await supabase
-      .from("lessons")
-      .update({
-        scheduled_at: selectedDate.toISOString(),
-        meet_link: trimmedLink || null,
-        status: nextStatus,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", lessonId)
-      .select("id")
-      .maybeSingle();
-
-    if (updateError || !updatedLesson) {
-      setError("Hodinu sa nepodarilo aktualizovať. Skúste to prosím znova.");
+      setSaved(true);
+      router.refresh();
+    } catch {
+      setError("Uloženie sa nepodarilo. Skontrolujte pripojenie a skúste to znova.");
+    } finally {
       setSaving(false);
-      return;
     }
-
-    setSaved(true);
-    setSaving(false);
-    router.refresh();
   }
 
   return (
@@ -199,13 +161,14 @@ export default function AdminLessonActions({
         Upraviť
       </summary>
 
-      <div className="mt-3 min-w-[260px] rounded-2xl border border-black/10 bg-[#fafbf9] p-4">
+      <div className="mt-3 min-w-[260px] rounded-2xl border border-black/10 bg-[#FAFAF9] p-4">
         <label className="block text-xs font-medium text-gray-600">
           Dátum a čas
           <input
+            disabled={saving}
             type="datetime-local"
             value={dateTime}
-            onChange={(event) => setDateTime(event.target.value)}
+            onChange={(event) => { setDateTime(event.target.value); setSaved(false); }}
             className="mt-1.5 w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm outline-none"
           />
         </label>
@@ -213,8 +176,9 @@ export default function AdminLessonActions({
         <label className="mt-3 block text-xs font-medium text-gray-600">
           Stav
           <select
+            disabled={saving || currentStatus === "completed"}
             value={status}
-            onChange={(event) => setStatus(event.target.value)}
+            onChange={(event) => { setStatus(event.target.value); setSaved(false); }}
             className="mt-1.5 w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm outline-none"
           >
             {statusOptions.map(([value, label]) => (
@@ -223,12 +187,15 @@ export default function AdminLessonActions({
           </select>
         </label>
 
+        {currentStatus === "completed" && <p className="mt-2 text-xs text-gray-500">Dokončenú hodinu nemožno znovu otvoriť. Opravu účtovania riešte samostatne, aby sa kredit neodpočítal dvakrát.</p>}
+
         <label className="mt-3 block text-xs font-medium text-gray-600">
           Odkaz na online hodinu
           <input
+            disabled={saving}
             type="url"
             value={link}
-            onChange={(event) => setLink(event.target.value)}
+            onChange={(event) => { setLink(event.target.value); setSaved(false); }}
             placeholder="https://meet.google.com/..."
             className="mt-1.5 w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm outline-none"
           />
@@ -238,13 +205,13 @@ export default function AdminLessonActions({
           type="button"
           onClick={save}
           disabled={saving}
-          className="mt-3 w-full rounded-xl bg-[#183f38] px-3 py-2 text-xs font-semibold text-white disabled:opacity-60"
+          className="mt-3 w-full rounded-xl bg-[#2F3AA2] px-3 py-2 text-xs font-semibold text-white disabled:opacity-60"
         >
           {saving ? "Ukladám..." : "Uložiť zmeny"}
         </button>
 
-        {saved && <p className="mt-2 text-xs font-medium text-[#527064]">Uložené.</p>}
-        {error && <p className="mt-2 text-xs text-red-700">{error}</p>}
+        {saved && <p role="status" className="mt-2 text-xs font-medium text-[#3730A3]">Uložené.</p>}
+        {error && <p role="alert" className="mt-2 text-xs text-red-700">{error}</p>}
       </div>
     </details>
   );

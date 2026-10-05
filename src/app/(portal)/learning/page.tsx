@@ -1,3 +1,4 @@
+import LearningFiles from "@/components/LearningFiles";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -5,6 +6,7 @@ import {
   FileText,
   Target,
 } from "lucide-react";
+import type { StudentLessonReport } from "@/lib/student-report";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -22,13 +24,11 @@ export default async function LearningPage() {
   const supabase = await createSupabaseServerClient();
 
   const { data: reports, error } = await supabase
-    .from("lesson_reports")
-    .select("id,topic,student_note,homework,next_focus,updated_at")
-    .eq("student_id", user.id)
+    .rpc("student_lesson_reports")
     .order("updated_at", { ascending: false })
     .limit(20);
 
-  const teacherReports = reports ?? [];
+  const teacherReports: StudentLessonReport[] = Array.isArray(reports) ? reports : [];
   const homeworkReports = teacherReports.filter(
     (report) => report.homework?.trim()
   );
@@ -36,7 +36,8 @@ export default async function LearningPage() {
   const latestReport = teacherReports[0] ?? null;
 
   return (
-    <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
+    <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
+      <div className="mx-auto max-w-6xl px-5"><LearningFiles studentId={user.id} /></div>
       <header className="border-b border-black/5 bg-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
           <Link
@@ -53,7 +54,7 @@ export default async function LearningPage() {
 
       <div className="mx-auto max-w-6xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
             Učenie
           </p>
 
@@ -72,7 +73,7 @@ export default async function LearningPage() {
           </div>
         )}
 
-        <section className="mt-8 rounded-3xl bg-[#183f38] p-6 text-white shadow-sm sm:p-8">
+        <section className="mt-8 rounded-3xl bg-[#2F3AA2] p-6 text-white shadow-sm sm:p-8">
           <div className="flex items-start justify-between gap-5">
             <div>
               <p className="text-sm font-medium text-white/55">
@@ -96,11 +97,11 @@ export default async function LearningPage() {
               ) : (
                 <>
                   <h2 className="mt-3 text-2xl font-semibold">
-                    Zatiaľ nemáte zadanú domácu úlohu
+                    {error ? "Domácu úlohu sa nepodarilo načítať" : "Zatiaľ nemáte zadanú domácu úlohu"}
                   </h2>
 
                   <p className="mt-4 max-w-xl leading-7 text-white/60">
-                    Domáca úloha od lektora sa zobrazí po uložení záznamu z hodiny.
+                    {error ? "Obnovte stránku alebo to skúste o chvíľu znova." : "Domáca úloha od lektora sa zobrazí po uložení záznamu z hodiny."}
                   </p>
                 </>
               )}
@@ -114,7 +115,7 @@ export default async function LearningPage() {
 
         <section className="mt-6 rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
           <div className="flex items-start gap-4">
-            <div className="rounded-2xl bg-[#faf6eb] p-3 text-[#9a8049]">
+            <div className="rounded-2xl bg-[#faf6eb] p-3 text-[#2F3AA2]">
               <Target size={22} />
             </div>
 
@@ -122,7 +123,7 @@ export default async function LearningPage() {
               <p className="text-sm text-gray-400">Ďalšie zameranie</p>
 
               <h2 className="mt-1 text-xl font-semibold">
-                {latestReport?.next_focus?.trim() ||
+                {error ? "Odporúčanie sa nepodarilo načítať." : latestReport?.next_focus?.trim() ||
                   "Tu sa zobrazí odporúčanie, na čo sa zamerať ďalej."}
               </h2>
 
@@ -137,7 +138,7 @@ export default async function LearningPage() {
 
         <section className="mt-10">
           <div className="flex items-center gap-2">
-            <BookOpen size={20} className="text-[#9a8049]" />
+            <BookOpen size={20} className="text-[#2F3AA2]" />
             <h2 className="text-xl font-semibold">História domácich úloh</h2>
           </div>
 
@@ -149,7 +150,7 @@ export default async function LearningPage() {
                   className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm sm:p-6"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="shrink-0 rounded-2xl bg-[#eef3ef] p-3">
+                    <div className="shrink-0 rounded-2xl bg-[#EEF2FF] p-3">
                       <FileText size={20} />
                     </div>
 
@@ -172,10 +173,10 @@ export default async function LearningPage() {
             </div>
           ) : (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
-              <p className="font-medium">Zatiaľ žiadne domáce úlohy</p>
+              <p className="font-medium">{error ? "Históriu domácich úloh sa nepodarilo načítať" : "Zatiaľ žiadne domáce úlohy"}</p>
 
               <p className="mt-1 text-sm text-gray-400">
-                Zadania od lektora sa zobrazia tu.
+                {error ? "Obnovte stránku alebo to skúste o chvíľu znova." : "Zadania od lektora sa zobrazia tu."}
               </p>
             </div>
           )}

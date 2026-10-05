@@ -1,3 +1,4 @@
+import { teacherDirectory } from "@/lib/teacher-directory";
 import {
   BookOpen,
   Users,
@@ -19,8 +20,9 @@ function getName(
 export default async function TeacherStudentsPage() {
   const { user } = await requireRole("teacher");
   const supabase = await createSupabaseServerClient();
+  const studentDirectory = await teacherDirectory(supabase);
 
-  const { data: lessons } = await supabase
+  const { data: lessons, error: lessonsError } = await supabase
     .from("lessons")
     .select(`
       id,
@@ -29,8 +31,7 @@ export default async function TeacherStudentsPage() {
       status,
       language,
       student:profiles!lessons_student_id_fkey (
-        full_name,
-        email
+        full_name
       )
     `)
     .eq("teacher_id", user.id)
@@ -41,7 +42,7 @@ export default async function TeacherStudentsPage() {
     new Set((lessons ?? []).map((lesson) => lesson.student_id))
   );
 
-  const { data: packages } = studentIds.length
+  const { data: packages, error: packagesError } = studentIds.length
     ? await supabase
         .from("lesson_packages")
         .select(
@@ -49,7 +50,11 @@ export default async function TeacherStudentsPage() {
         )
         .in("student_id", studentIds)
         .eq("status", "active")
-    : { data: [] };
+    : { data: [], error: null };
+
+  if (lessonsError || packagesError) {
+    return <main className="mx-auto max-w-5xl px-5 py-10"><h1 className="text-3xl font-semibold">Moji študenti</h1><p role="alert" className="mt-5 text-red-700">Študentov alebo zostatky sa nepodarilo načítať. Obnovte stránku alebo to skúste o chvíľu znova.</p></main>;
+  }
 
   const packageMap = new Map<
     string,
@@ -87,9 +92,7 @@ export default async function TeacherStudentsPage() {
   for (const lesson of lessons ?? []) {
     const existing = studentMap.get(lesson.student_id);
 
-    const student = Array.isArray(lesson.student)
-      ? lesson.student[0]
-      : lesson.student;
+    const student = studentDirectory.get(lesson.student_id);
 
     const isFuture =
       ["scheduled", "rescheduled"].includes(lesson.status) &&
@@ -133,10 +136,10 @@ export default async function TeacherStudentsPage() {
   );
 
   return (
-    <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
+    <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
             Študenti
           </p>
 
@@ -151,7 +154,7 @@ export default async function TeacherStudentsPage() {
 
         <section className="mt-8 grid gap-4 sm:grid-cols-2">
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <Users size={20} className="text-[#9a8049]" />
+            <Users size={20} className="text-[#2F3AA2]" />
 
             <p className="mt-4 text-3xl font-semibold">
               {students.length}
@@ -163,7 +166,7 @@ export default async function TeacherStudentsPage() {
           </div>
 
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
-            <BookOpen size={20} className="text-[#9a8049]" />
+            <BookOpen size={20} className="text-[#2F3AA2]" />
 
             <p className="mt-4 text-3xl font-semibold">
               {totalRemaining}

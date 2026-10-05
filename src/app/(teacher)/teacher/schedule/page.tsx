@@ -1,3 +1,5 @@
+import { teacherDirectory } from "@/lib/teacher-directory";
+import { safeLessonLink } from "@/lib/lesson-link";
 import {
   AlertCircle,
   CalendarDays,
@@ -47,10 +49,11 @@ function studentName(
 export default async function TeacherSchedulePage() {
   const { user } = await requireRole("teacher");
   const supabase = await createSupabaseServerClient();
+  const studentDirectory = await teacherDirectory(supabase);
 
   const now = new Date().toISOString();
 
-  const { data: lessons } = await supabase
+  const { data: lessons, error: lessonsError } = await supabase
     .from("lessons")
     .select(`
       id,
@@ -63,8 +66,7 @@ export default async function TeacherSchedulePage() {
       lesson_type,
       meet_link,
       student:profiles!lessons_student_id_fkey (
-        full_name,
-        email
+        full_name
       )
     `)
     .eq("teacher_id", user.id)
@@ -90,8 +92,7 @@ export default async function TeacherSchedulePage() {
       lesson_type,
       meet_link,
       student:profiles!lessons_student_id_fkey (
-        full_name,
-        email
+        full_name
       )
     `)
     .eq("teacher_id", user.id)
@@ -101,7 +102,7 @@ export default async function TeacherSchedulePage() {
     .order("scheduled_at", { ascending: false })
     .limit(10);
 
-  const { data: requests } = await supabase
+  const { data: requests, error: requestsError } = await supabase
     .from("schedule_change_requests")
     .select(`
       id,
@@ -115,16 +116,20 @@ export default async function TeacherSchedulePage() {
       lesson:lessons!schedule_change_requests_lesson_id_fkey (
         id,
         teacher_id,
+        student_id,
         scheduled_at,
         language,
         student:profiles!lessons_student_id_fkey (
-          full_name,
-          email
+          full_name
         )
       )
     `)
     .eq("status", "pending")
     .order("requested_at", { ascending: true });
+
+  if (lessonsError || overdueError || requestsError) {
+    throw new Error("Teacher schedule data is unavailable");
+  }
 
   const teacherRequests =
     requests?.filter((request) => {
@@ -162,10 +167,10 @@ export default async function TeacherSchedulePage() {
   );
 
   return (
-    <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
+    <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
             Rozvrh
           </p>
 
@@ -180,7 +185,7 @@ export default async function TeacherSchedulePage() {
 
         <section className="mt-8">
           <div className="flex items-center gap-2">
-            <RefreshCw size={19} className="text-[#9a8049]" />
+            <RefreshCw size={19} className="text-[#2F3AA2]" />
             <h2 className="text-xl font-semibold">
               Žiadosti o zmenu termínu
             </h2>
@@ -208,32 +213,30 @@ export default async function TeacherSchedulePage() {
 
                 if (!lesson) return null;
 
-                const student = Array.isArray(lesson.student)
-                  ? lesson.student[0]
-                  : lesson.student;
+                const student = studentDirectory.get(lesson.student_id);
 
                 return (
                   <article
                     key={request.id}
-                    className="rounded-3xl border border-[#c6a65b]/20 bg-[#faf6eb] p-6"
+                    className="rounded-3xl border border-[#2F3AA2]/20 bg-[#faf6eb] p-6"
                   >
                     <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                       <div>
                         <div className="flex flex-wrap items-center gap-2">
-                          <p className="font-semibold text-[#7e693a]">
+                          <p className="font-semibold text-[#92400e]">
                             {studentName(student)}
                           </p>
 
-                          <span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-[#9a8049]">
+                          <span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-[#2F3AA2]">
                             Nová žiadosť
                           </span>
                         </div>
 
-                        <p className="mt-2 text-sm text-[#7e693a]/70">
+                        <p className="mt-2 text-sm text-[#92400e]/70">
                           {formatLanguage(lesson.language)} hodina
                         </p>
 
-                        <div className="mt-4 space-y-2 text-sm text-[#7e693a]">
+                        <div className="mt-4 space-y-2 text-sm text-[#92400e]">
                           <p>
                             <strong>Aktuálne:</strong>{" "}
                             {formatDate(lesson.scheduled_at)} ·{" "}
@@ -248,7 +251,7 @@ export default async function TeacherSchedulePage() {
                         </div>
 
                         {request.message && (
-                          <p className="mt-3 text-sm italic text-[#7e693a]/65">
+                          <p className="mt-3 text-sm italic text-[#92400e]/65">
                             “{request.message}”
                           </p>
                         )}
@@ -284,9 +287,7 @@ export default async function TeacherSchedulePage() {
 
                 if (!lesson) return null;
 
-                const student = Array.isArray(lesson.student)
-                  ? lesson.student[0]
-                  : lesson.student;
+                const student = studentDirectory.get(lesson.student_id);
 
                 return (
                   <article
@@ -305,7 +306,7 @@ export default async function TeacherSchedulePage() {
                         </p>
                       </div>
 
-                      <span className="w-fit rounded-full bg-[#faf6eb] px-3 py-1.5 text-xs font-semibold text-[#9a8049]">
+                      <span className="w-fit rounded-full bg-[#faf6eb] px-3 py-1.5 text-xs font-semibold text-[#2F3AA2]">
                         Čaká na študenta
                       </span>
                     </div>
@@ -318,7 +319,7 @@ export default async function TeacherSchedulePage() {
 
         <section className="mt-10">
           <div className="flex items-center gap-2">
-            <AlertCircle size={20} className="text-[#9a8049]" />
+            <AlertCircle size={20} className="text-[#2F3AA2]" />
             <div>
               <p className="text-sm text-gray-400">Po hodine</p>
               <h2 className="mt-1 text-xl font-semibold">
@@ -341,21 +342,19 @@ export default async function TeacherSchedulePage() {
           ) : (
             <div className="mt-4 space-y-3">
               {overdueLessons.map((lesson) => {
-                const student = Array.isArray(lesson.student)
-                  ? lesson.student[0]
-                  : lesson.student;
+                const student = studentDirectory.get(lesson.student_id);
 
                 return (
                   <article
                     key={lesson.id}
-                    className="rounded-3xl border border-[#c6a65b]/20 bg-[#faf6eb] p-5 shadow-sm sm:p-6"
+                    className="rounded-3xl border border-[#2F3AA2]/20 bg-[#faf6eb] p-5 shadow-sm sm:p-6"
                   >
                     <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                       <div>
-                        <p className="font-semibold text-[#7e693a]">
+                        <p className="font-semibold text-[#92400e]">
                           {studentName(student)}
                         </p>
-                        <p className="mt-2 text-sm text-[#7e693a]/70">
+                        <p className="mt-2 text-sm text-[#92400e]/70">
                           {formatLanguage(lesson.language)} ·{" "}
                           {formatDate(lesson.scheduled_at)} ·{" "}
                           {formatTime(lesson.scheduled_at)}
@@ -385,7 +384,7 @@ export default async function TeacherSchedulePage() {
               </h2>
             </div>
 
-            <CalendarDays size={21} className="text-[#9a8049]" />
+            <CalendarDays size={21} className="text-[#2F3AA2]" />
           </div>
 
           {!lessons?.length ? (
@@ -400,16 +399,14 @@ export default async function TeacherSchedulePage() {
           ) : (
             <div className="mt-4 space-y-3">
               {lessons.map((lesson, index) => {
-                const student = Array.isArray(lesson.student)
-                  ? lesson.student[0]
-                  : lesson.student;
+                const student = studentDirectory.get(lesson.student_id);
 
                 return (
                   <article
                     key={lesson.id}
                     className={`rounded-3xl border p-5 shadow-sm sm:p-6 ${
                       index === 0
-                        ? "border-[#183f38]/10 bg-[#183f38] text-white"
+                        ? "border-[#2F3AA2]/10 bg-[#2F3AA2] text-white"
                         : "border-black/5 bg-white"
                     }`}
                   >
@@ -419,7 +416,7 @@ export default async function TeacherSchedulePage() {
                           className={`flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-2xl ${
                             index === 0
                               ? "bg-white/10"
-                              : "bg-[#eef3ef]"
+                              : "bg-[#EEF2FF]"
                           }`}
                         >
                           <Clock3 size={18} />
@@ -438,7 +435,7 @@ export default async function TeacherSchedulePage() {
                               className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
                                 index === 0
                                   ? "bg-white/10"
-                                  : "bg-[#eef3ef] text-[#527064]"
+                                  : "bg-[#EEF2FF] text-[#3730A3]"
                               }`}
                             >
                               {index === 0 ? "Najbližšia" : "Naplánovaná"}
@@ -468,15 +465,15 @@ export default async function TeacherSchedulePage() {
                         </div>
                       </div>
 
-                      {lesson.meet_link ? (
+                      {safeLessonLink(lesson.meet_link) ? (
                         <a
-                          href={lesson.meet_link}
+                          href={safeLessonLink(lesson.meet_link) ?? undefined}
                           target="_blank"
                           rel="noreferrer"
                           className={`flex w-fit items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold ${
                             index === 0
-                              ? "bg-white text-[#183f38]"
-                              : "bg-[#eef3ef] text-[#183f38]"
+                              ? "bg-white text-[#0a0a0f]"
+                              : "bg-[#EEF2FF] text-[#0a0a0f]"
                           }`}
                         >
                           <Video size={17} />

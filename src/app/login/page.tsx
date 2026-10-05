@@ -2,15 +2,20 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { FormEvent, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
-import { canAcceptTeacherInvitation, portalDestination } from "@/lib/account-policy";
+import { canAcceptTeacherInvitation, hasCompletedOnboarding, portalDestination } from "@/lib/account-policy";
 import { purchaseReturnPath } from "@/lib/purchase-intent";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const errorRef = useRef<HTMLDivElement>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  useEffect(() => { if (error) errorRef.current?.focus(); }, [error]);
   const [loading, setLoading] = useState(false);
   const [nextPath, setNextPath] = useState<string | null>(null);
 
@@ -21,17 +26,18 @@ export default function LoginPage() {
   async function handleLogin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
+    if (loading) return;
     setError("");
     if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY) {
       setError("Prihlásenie je momentálne nedostupné. Prosím, kontaktujte nás.");
       return;
     }
 
-    const supabase = createSupabaseBrowserClient();
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      const supabase = createSupabaseBrowserClient();
+      const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
       if (error || !data.user) {
         setError("Nesprávny e-mail alebo heslo. Skontrolujte údaje a overenie e-mailu.");
         return;
@@ -47,7 +53,7 @@ export default function LoginPage() {
         return;
       }
       if (profile.role === "teacher" && profile.status === "pending" && !canAcceptTeacherInvitation(data.user.app_metadata)) {
-        window.location.href = "/pending-approval";
+        router.replace("/pending-approval");
         return;
       }
       const destination = portalDestination(profile.role, profile.status);
@@ -56,9 +62,19 @@ export default function LoginPage() {
         return;
       }
       const desired = purchaseReturnPath(new URLSearchParams(window.location.search).get("next"));
-      window.location.href = profile.role === "student" && data.user.user_metadata.signup_source === "self_service"
+      let needsOnboarding = false;
+      if (profile.role === "student" && data.user.user_metadata.signup_source === "self_service") {
+        const { data: onboarding, error: onboardingError } = await supabase
+          .from("student_onboarding").select("completed_at").eq("student_id", data.user.id).maybeSingle();
+        if (onboardingError) {
+          setError("Nepodarilo sa overiť nastavenie účtu. Skúste to znova alebo kontaktujte Mundus.");
+          return;
+        }
+        needsOnboarding = !hasCompletedOnboarding(onboarding);
+      }
+      router.replace(needsOnboarding
         ? `/onboarding${desired ? `?next=${encodeURIComponent(desired)}` : ""}`
-        : profile.role === "student" && desired ? desired : destination;
+        : profile.role === "student" && desired ? desired : destination);
     } catch {
       setError("Prihlásenie je momentálne nedostupné. Skúste to znova.");
     } finally {
@@ -66,10 +82,10 @@ export default function LoginPage() {
     }
   }
   return (
-    <main className="min-h-screen bg-[#f7f8f5] flex">
-      <section className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-[#163f3a] p-12 flex-col justify-between">
-        <div className="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-[#d7b56d]/10 blur-3xl" />
-        <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-white/5 blur-3xl" />
+    <main className="min-h-screen bg-[#FAFAF9] flex">
+      <section className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-[#0a0a0f] p-12 flex-col justify-between">
+        <div className="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-[#2F3AA2]/50 blur-3xl" />
+        <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-[#6575ff]/20 blur-3xl" />
 
         <Link href="/" className="relative z-10">
           <Image
@@ -83,11 +99,11 @@ export default function LoginPage() {
         </Link>
 
         <div className="relative z-10 max-w-lg">
-          <p className="mb-5 text-sm font-semibold uppercase tracking-[0.2em] text-[#d7b56d]">
+          <p className="mb-5 text-sm font-semibold uppercase tracking-[0.2em] text-[#b7c0ff]">
             Vzdelávací portál Mundus
           </p>
 
-          <h1 className="text-5xl font-semibold leading-tight text-white">
+          <h1 className="text-5xl font-semibold leading-tight text-white" style={{ color: "#ffffff" }}>
             Vaše jazykové napredovanie,
             <br />
             všetko na jednom mieste.
@@ -104,7 +120,7 @@ export default function LoginPage() {
       </section>
 
       <section className="flex w-full items-center justify-center px-6 py-12 lg:w-1/2">
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-md rounded-3xl border border-gray-200 bg-white p-6 shadow-xl shadow-indigo-100/30 sm:p-9">
           <div className="mb-10 lg:hidden">
             <Link href="/">
               <Image
@@ -118,11 +134,11 @@ export default function LoginPage() {
             </Link>
           </div>
 
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#8a7445]">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
             Vzdelávací portál
           </p>
 
-          <h2 className="mt-3 text-4xl font-semibold tracking-tight text-[#163f3a]">
+          <h2 className="mt-3 text-4xl font-semibold tracking-tight text-[#2F3AA2]">
             Vitajte späť
           </h2>
 
@@ -130,7 +146,7 @@ export default function LoginPage() {
             Prihláste sa a majte prehľad o svojich hodinách, materiáloch a pokroku.
           </p>
 
-          <form onSubmit={handleLogin} className="mt-9 space-y-5">
+          <form onSubmit={handleLogin} aria-busy={loading} className="mt-9 space-y-5">
             <label className="block">
               <span className="text-sm font-medium text-gray-700">
                 E-mailová adresa
@@ -142,8 +158,9 @@ export default function LoginPage() {
                 onChange={(event) => setEmail(event.target.value)}
                 placeholder="meno@email.com"
                 required
+                aria-describedby={error ? "login-error" : undefined}
                 autoComplete="email"
-                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-gray-800 shadow-sm outline-none focus:border-[#163f3a]"
+                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-gray-800 shadow-sm outline-none focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10"
               />
             </label>
 
@@ -153,27 +170,30 @@ export default function LoginPage() {
               </span>
 
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
+                id="login-password"
                 placeholder="••••••••"
                 required
+                aria-describedby={error ? "login-error" : undefined}
                 autoComplete="current-password"
-                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-gray-800 shadow-sm outline-none focus:border-[#163f3a]"
+                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-gray-800 shadow-sm outline-none focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10"
               />
             </label>
 
-            <div className="-mt-2 text-right">
+            <div className="-mt-2 flex items-center justify-between gap-4">
+              <button type="button" aria-controls="login-password" aria-pressed={showPassword} onClick={() => setShowPassword(value => !value)} className="text-sm font-medium text-[#2F3AA2] hover:underline">{showPassword ? "Skryť heslo" : "Zobraziť heslo"}</button>
               <Link
                 href="/forgot-password"
-                className="text-sm font-medium text-[#163f3a] hover:underline"
+                className="text-sm font-medium text-[#2F3AA2] hover:underline"
               >
                 Zabudli ste heslo?
               </Link>
             </div>
 
             {error && (
-              <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              <div id="login-error" ref={errorRef} tabIndex={-1} role="alert" className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
                 {error}
               </div>
             )}
@@ -181,25 +201,25 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-2xl bg-[#163f3a] px-5 py-4 font-semibold text-white transition hover:bg-[#12342f] disabled:cursor-not-allowed disabled:opacity-60"
+              className="w-full rounded-2xl bg-[#2F3AA2] px-5 py-4 font-semibold text-white transition hover:bg-[#252E82] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading ? "Prihlasujem..." : "Prihlásiť sa"}
             </button>
           </form>
 
           <p className="mt-6 text-center text-sm text-gray-600">
-            Ešte nemáte účet? <Link href={nextPath ? `/signup?next=${encodeURIComponent(nextPath)}` : "/signup"} className="font-semibold text-[#163f3a] underline">Vytvoriť študentský účet</Link>
+            Ešte nemáte účet? <Link href={nextPath ? `/signup?next=${encodeURIComponent(nextPath)}` : "/signup"} className="font-semibold text-[#2F3AA2] underline">Vytvoriť študentský účet</Link>
           </p>
           <p className="mt-3 text-center text-xs text-gray-500">Lektorský účet získate cez e-mailovú pozvánku od Mundus.</p>
 
           <p className="mt-8 text-center text-sm text-gray-400">
-            Potrebujete pomoc? Kontaktujte Mundus Languages.
+            Potrebujete pomoc? <Link href="/contact" className="font-medium text-[#2F3AA2] underline">Kontaktujte Mundus Languages.</Link>
           </p>
 
           <div className="mt-6 text-center">
             <Link
               href="/"
-              className="text-sm font-medium text-[#163f3a] hover:underline"
+              className="text-sm font-medium text-[#2F3AA2] hover:underline"
             >
               ← Späť na Mundus Languages
             </Link>

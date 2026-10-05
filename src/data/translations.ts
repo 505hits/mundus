@@ -13,22 +13,22 @@ export const translations = {
             contactUs: "Contact us",
         },
         hero: {
-            badge: "Hundreds of happy learners — and counting",
+            badge: "Personal online language lessons",
             titleBefore: "Learn languages with",
-            nativeSpeakers: "native speakers",
-            subtitle: "Experience immersive 1-on-1 sessions with native experts. Fluid, fast, and tailored to your goals.",
+            nativeSpeakers: "experienced teachers",
+            subtitle: "Individual online lessons tailored to your level, goals and schedule.",
             ctaPrimary: "Explore lesson packages",
             ctaSecondary: "See how it works",
             interactive: "Interactive Logic",
-            students: "200+ students",
-            rating: "4.9/5 rating",
+            students: "60-minute lessons",
+            rating: "Personal approach",
         },
         languageSelector: {
             badge: "Choose your language",
             title: "Choose the right course",
             titleBreak: "for your",
             goals: "goals",
-            subtitle: "Select your desired language and connect with native-speaking tutors from around the world.",
+            subtitle: "Choose your language. We will help you arrange lessons for your goals and level.",
         },
         howItWorks: {
             label: "Simple process",
@@ -38,23 +38,23 @@ export const translations = {
             steps: [
                 {
                     number: "01",
-                    title: "Take a quick test",
-                    description: "Find your level in just 2 minutes — no pressure, just a starting point.",
+                    title: "Tell us your goal",
+                    description: "Tell us your language, approximate level and goal. Your teacher will help confirm your level.",
                 },
                 {
                     number: "02",
-                    title: "Choose your course",
-                    description: "Pick the plan that fits your goals: beginner, conversation, business, or exam prep.",
+                    title: "Create your account & choose a package",
+                    description: "Create a student account, confirm your email and choose the lesson package you want to purchase.",
                 },
                 {
                     number: "03",
-                    title: "Start learning online",
-                    description: "Access lessons anytime and join live video calls with native-speaking tutors.",
+                    title: "We match you with a teacher",
+                    description: "We use your language, level, goals and availability to recommend a suitable teacher and arrange your first lesson.",
                 },
                 {
                     number: "04",
-                    title: "Improve every day",
-                    description: "Track your progress, unlock new topics, and stay consistent with smart reminders.",
+                    title: "Track lessons and continue",
+                    description: "See your schedule, feedback, homework and remaining lessons in your portal, and buy another package when needed.",
                 },
             ]
         },
@@ -65,28 +65,28 @@ export const translations = {
             subtitle: "Not just another course — Mundus blends smart tools with real conversation.",
             items: [
                 {
-                    title: "Native-speaker interaction",
-                    description: "No extra apps or platforms — talk to real teachers directly inside Mundus.",
+                    title: "Personal teaching",
+                    description: "Meet your teacher online using the lesson meeting link.",
                 },
                 {
                     title: "Smart progress tracking",
                     description: "Track your learning journey and adapt lessons to your pace.",
                 },
                 {
-                    title: "24/7 availability",
-                    description: "Find tutors across all time zones, ready when you are.",
+                    title: "Flexible scheduling",
+                    description: "Arrange lesson times with your teacher according to your availability.",
                 },
                 {
-                    title: "Instant matching",
-                    description: "Get paired with the perfect tutor in seconds based on your goals.",
+                    title: "Teacher selection",
+                    description: "Mundus helps you find a suitable teacher according to your language, goals and availability.",
                 },
                 {
                     title: "Real conversations",
                     description: "Practice authentic dialogues, not scripted scenarios.",
                 },
                 {
-                    title: "Certified progress",
-                    description: "Receive a personalized certificate when you complete your course.",
+                    title: "Teacher feedback",
+                    description: "Discuss your progress and next learning goals with your teacher.",
                 },
             ]
         },
@@ -138,47 +138,6 @@ export const translations = {
             titleStart: "Simple, transparent",
             titleEnd: "pricing",
             subtitle: "Choose the package that suits your learning style.",
-            group: {
-                title: "GROUP COURSES (6–10 students)",
-                headers: {
-                    language: "Language",
-                    format: "Format",
-                    duration: "Duration",
-                    price: "Price",
-                    launchPrice: "\"Only For U\" Launch Price"
-                },
-                rows: [
-                    {
-                        language: "English / Spanish / Italian / Russian / German / Chinese / Ukrainian / Slovak",
-                        format: "1 month / 8 lessons",
-                        duration: "",
-                        originalPrice: "€ 110",
-                        launchPrice: ""
-                    },
-                    {
-                        language: "",
-                        format: "3 months / 24 lessons",
-                        duration: "",
-                        originalPrice: "€ 295",
-                        launchPrice: ""
-                    },
-                    {
-                        language: "",
-                        format: "6 months / 48 lessons",
-                        duration: "",
-                        originalPrice: "€ 540",
-                        launchPrice: ""
-                    },
-                    {
-                        language: "Business / Exam Prep",
-                        format: "12 weeks",
-                        duration: "",
-                        originalPrice: "€ 350",
-                        launchPrice: "€ 315"
-                    }
-                ],
-                note: "🎁 Includes e-materials, certificate, placement test & feedback session."
-            },
             individual: {
                 title: "INDIVIDUAL (1-ON-1) LESSONS",
                 headers: {
@@ -221,47 +180,6 @@ export const translations = {
                 existingAccountNote: "Existing students can sign in to pay online. New students can contact us to create an account.",
                 offlineNote: "Online payment is coming soon. Contact us to arrange lessons."
             },
-            discounts: {
-                title: "FRIEND & FAMILY DISCOUNTS",
-                paymentNote: "Ask us about these offers before paying. They are arranged individually and are not applied automatically in online Checkout.",
-                headers: {
-                    type: "Type",
-                    description: "Description",
-                    discount: "Discount"
-                },
-                rows: [
-                    {
-                        type: "Bring a Friend",
-                        description: "You both enrol → each saves",
-                        discount: "€ 30"
-                    },
-                    {
-                        type: "Sibling Deal",
-                        description: "Two siblings join same course →",
-                        discount: "-15% total"
-                    },
-                    {
-                        type: "Couple / Family Pack",
-                        description: "Learn together →",
-                        discount: "-10% each"
-                    },
-                    {
-                        type: "Student Discount",
-                        description: "Valid student ID",
-                        discount: "-5%"
-                    },
-                    {
-                        type: "Multi-Language Bundle",
-                        description: "Enrol in 2 languages →",
-                        discount: "-15%"
-                    },
-                    {
-                        type: "Loyal Learner",
-                        description: "Renew next term →",
-                        discount: "-8%"
-                    }
-                ]
-            }
         },
         booking: {
             label: "Questions?",
@@ -293,7 +211,7 @@ export const translations = {
             }
         },
         footer: {
-            brandDesc: "Master the world's most beautiful languages with native speakers. Immersive, personalized, and effective.",
+            brandDesc: "Personal online language lessons for conversation, work and travel.",
             headings: {
                 Languages: "Languages",
                 Company: "Company",
@@ -322,22 +240,22 @@ export const translations = {
             contactUs: "Kontaktujte nás",
         },
         hero: {
-            badge: "Stovky spokojných študentov — a rastieme",
+            badge: "Individuálna online výučba jazykov",
             titleBefore: "Učte sa jazyky s",
-            nativeSpeakers: "native spíkrami",
-            subtitle: "Zažite pohlcujúce lekcie 1 na 1 s rodenými expertmi. Plynulé, rýchle a prispôsobené vašim cieľom.",
+            nativeSpeakers: "skúsenými lektormi",
+            subtitle: "Individuálne online hodiny prispôsobené vašej úrovni, cieľom a časovým možnostiam.",
             ctaPrimary: "Vybrať balíček hodín",
             ctaSecondary: "Ako to funguje",
             interactive: "Interaktívna výučba",
-            students: "200+ študentov",
-            rating: "4.9/5 hodnotenie",
+            students: "60-minútové hodiny",
+            rating: "Osobný prístup",
         },
         languageSelector: {
             badge: "Vyberte si jazyk",
             title: "Vyberte si správny kurz",
             titleBreak: "pre vaše",
             goals: "ciele",
-            subtitle: "Vyberte si požadovaný jazyk a spojte sa s rodenými lektormi z celého sveta.",
+            subtitle: "Vyberte si jazyk. Pomôžeme vám dohodnúť výučbu podľa vašich cieľov a úrovne.",
         },
         howItWorks: {
             label: "Jednoduchý proces",
@@ -347,23 +265,23 @@ export const translations = {
             steps: [
                 {
                     number: "01",
-                    title: "Urobte si rýchly test",
-                    description: "Zistite svoju úroveň za 2 minúty — žiadny stres, len východiskový bod.",
+                    title: "Povedzte nám svoj cieľ",
+                    description: "Napíšte nám jazyk, približnú úroveň a cieľ. Vhodnú úroveň vám pomôže overiť lektor.",
                 },
                 {
                     number: "02",
-                    title: "Vyberte si kurz",
-                    description: "Zvoľte plán, ktorý sedí vašim cieľom: začiatočník, konverzácia, biznis alebo príprava na skúšky.",
+                    title: "Vytvorte si účet a vyberte balíček",
+                    description: "Vytvorte si študentský účet, potvrďte e-mail a vyberte balíček hodín, ktorý chcete kúpiť.",
                 },
                 {
                     number: "03",
-                    title: "Začnite sa učiť online",
-                    description: "Prístup k lekciám kedykoľvek a živé videohovory s rodenými lektormi.",
+                    title: "Odporučíme vám lektora",
+                    description: "Podľa jazyka, úrovne, cieľa a dostupnosti vám odporučíme vhodného lektora a dohodneme prvú hodinu.",
                 },
                 {
                     number: "04",
-                    title: "Zlepšujte sa každý deň",
-                    description: "Sledujte svoj pokrok, odomykajte nové témy a buďte konzistentní vďaka smart pripomienkam.",
+                    title: "Sledujte hodiny a pokračujte",
+                    description: "V portáli vidíte rozvrh, spätnú väzbu, úlohy aj zostávajúce hodiny a včas si môžete kúpiť ďalší balíček.",
                 },
             ]
         },
@@ -374,28 +292,28 @@ export const translations = {
             subtitle: "Nie len ďalší kurz — Mundus spája smart nástroje so skutočnou konverzáciou.",
             items: [
                 {
-                    title: "Interakcia s rodeným hovorcom",
-                    description: "Žiadne ďalšie aplikácie alebo platformy — hovorte so skutočnými učiteľmi priamo v Mundus.",
+                    title: "Osobná výučba",
+                    description: "S lektorom sa stretnete online cez odkaz na hodinu.",
                 },
                 {
                     title: "Smart sledovanie pokroku",
                     description: "Sledujte svoju cestu učením a prispôsobte lekcie svojmu tempu.",
                 },
                 {
-                    title: "Dostupnosť 24/7",
-                    description: "Nájdite tútorov vo všetkých časových pásmach, pripravených keď ste vy.",
+                    title: "Flexibilné termíny",
+                    description: "Termíny hodín si dohodnete s lektorom podľa spoločných časových možností.",
                 },
                 {
-                    title: "Okamžité priradenie",
-                    description: "Získajte perfektného tútora za pár sekúnd na základe vašich cieľov.",
+                    title: "Výber lektora",
+                    description: "Pomôžeme vám vybrať lektora podľa jazyka, cieľov a dostupných termínov.",
                 },
                 {
                     title: "Skutočné konverzácie",
                     description: "Precvičujte autentické dialógy, nie napísané scenáre.",
                 },
                 {
-                    title: "Certifikovaný pokrok",
-                    description: "Získajte personalizovaný certifikát po dokončení kurzu.",
+                    title: "Spätná väzba od lektora",
+                    description: "S lektorom zhodnotíte svoj pokrok a ďalšie ciele výučby.",
                 },
             ]
         },
@@ -447,47 +365,6 @@ export const translations = {
             titleStart: "Jednoduchý, transparentný",
             titleEnd: "cenník",
             subtitle: "Vyberte si balíček, ktorý vyhovuje vášmu štýlu učenia.",
-            group: {
-                title: "SKUPINOVÉ KURZY (6–10 študentov)",
-                headers: {
-                    language: "Jazyk",
-                    format: "Formát",
-                    duration: "Trvanie",
-                    price: "Cena",
-                    launchPrice: "\"Only For U\" Uvádzacia cena"
-                },
-                rows: [
-                    {
-                        language: "Anglický / Španielsky / Taliansky / Ruský / Nemecký / Čínsky / Ukrajinský / Slovenský",
-                        format: "1 mesiac / 8 lekcií",
-                        duration: "",
-                        originalPrice: "€ 110",
-                        launchPrice: ""
-                    },
-                    {
-                        language: "",
-                        format: "3 mesiace / 24 lekcií",
-                        duration: "",
-                        originalPrice: "€ 295",
-                        launchPrice: ""
-                    },
-                    {
-                        language: "",
-                        format: "6 mesiacov / 48 lekcií",
-                        duration: "",
-                        originalPrice: "€ 540",
-                        launchPrice: ""
-                    },
-                    {
-                        language: "Business / Príprava na skúšky",
-                        format: "12 týždňov",
-                        duration: "",
-                        originalPrice: "€ 350",
-                        launchPrice: "€ 315"
-                    }
-                ],
-                note: "🎁 Zahŕňa e-materiály, certifikát, zaraďovací test a feedback."
-            },
             individual: {
                 title: "INDIVIDUÁLNE (1-ON-1) LEKCIE",
                 headers: {
@@ -530,47 +407,6 @@ export const translations = {
                 existingAccountNote: "Existujúci študenti sa môžu prihlásiť a zaplatiť online. Novým študentom pomôžeme vytvoriť účet po kontakte s nami.",
                 offlineNote: "Online platby pripravujeme. Ak máte záujem o hodiny, kontaktujte nás."
             },
-            discounts: {
-                title: "ZĽAVY PRE PRIATEĽOV A RODINU",
-                paymentNote: "O tieto zľavy nás požiadajte pred platbou. Riešime ich individuálne a pri online platbe sa nepripočítajú automaticky.",
-                headers: {
-                    type: "Typ",
-                    description: "Popis",
-                    discount: "Zľava"
-                },
-                rows: [
-                    {
-                        type: "Priveď priateľa",
-                        description: "Obaja sa zapíšete → každý ušetrí",
-                        discount: "€ 30"
-                    },
-                    {
-                        type: "Súrodenecká zľava",
-                        description: "Dvaja súrodenci v rovnakom kurze →",
-                        discount: "-15% celkovo"
-                    },
-                    {
-                        type: "Pár / Rodinný balík",
-                        description: "Učte sa spolu →",
-                        discount: "-10% každý"
-                    },
-                    {
-                        type: "Študentská zľava",
-                        description: "Platný študentský preukaz",
-                        discount: "-5%"
-                    },
-                    {
-                        type: "Viacjazyčný balík",
-                        description: "Zápis na 2 jazyky →",
-                        discount: "-15%"
-                    },
-                    {
-                        type: "Verný študent",
-                        description: "Obnovenie ďalšieho semestra →",
-                        discount: "-8%"
-                    }
-                ]
-            }
         },
         booking: {
             label: "Máte otázky?",
@@ -602,7 +438,7 @@ export const translations = {
             }
         },
         footer: {
-            brandDesc: "Osvojte si najkrajšie jazyky sveta s rodenými hovorcami. Pohlcujúce, personalizované a efektívne.",
+            brandDesc: "Individuálna online výučba jazykov pre konverzáciu, prácu a cestovanie.",
             headings: {
                 Languages: "Jazyky",
                 Company: "Spoločnosť",

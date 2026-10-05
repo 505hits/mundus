@@ -1,9 +1,11 @@
 "use client";
+import { safeLessonLink } from "@/lib/lesson-link";
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CalendarClock, Save } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
+import { bratislavaLocalToUtc, INVALID_LESSON_TIME } from "@/lib/lesson-time";
 
 type Props = {
   lessonId: string;
@@ -25,64 +27,6 @@ function bratislavaInputValue(value: string) {
   return formatter.format(new Date(value)).replace(" ", "T");
 }
 
-function getTimeZoneOffset(date: Date, timeZone: string) {
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hourCycle: "h23",
-  }).formatToParts(date);
-
-  const values = Object.fromEntries(
-    parts
-      .filter((part) => part.type !== "literal")
-      .map((part) => [part.type, Number(part.value)])
-  );
-
-  const asUtc = Date.UTC(
-    values.year,
-    values.month - 1,
-    values.day,
-    values.hour,
-    values.minute,
-    values.second
-  );
-
-  return asUtc - date.getTime();
-}
-
-function bratislavaLocalToUtc(value: string) {
-  const [datePart, timePart] = value.split("T");
-  const [year, month, day] = datePart.split("-").map(Number);
-  const [hour, minute] = timePart.split(":").map(Number);
-
-  const localAsUtc = new Date(
-    Date.UTC(year, month - 1, day, hour, minute, 0)
-  );
-
-  let offset = getTimeZoneOffset(
-    localAsUtc,
-    "Europe/Bratislava"
-  );
-
-  let result = new Date(localAsUtc.getTime() - offset);
-
-  const correctedOffset = getTimeZoneOffset(
-    result,
-    "Europe/Bratislava"
-  );
-
-  if (correctedOffset !== offset) {
-    offset = correctedOffset;
-    result = new Date(localAsUtc.getTime() - offset);
-  }
-
-  return result;
-}
 
 export default function EditLessonForm({
   lessonId,
@@ -112,10 +56,12 @@ export default function EditLessonForm({
       return;
     }
 
-    const selectedDate = bratislavaLocalToUtc(dateTime);
+    const selectedDate = dateTime === initialDateTime
+      ? new Date(scheduledAt)
+      : bratislavaLocalToUtc(dateTime);
 
     if (Number.isNaN(selectedDate.getTime())) {
-      setError("Zvolený termín nie je platný.");
+      setError(INVALID_LESSON_TIME);
       return;
     }
 
@@ -128,9 +74,9 @@ export default function EditLessonForm({
 
     if (
       trimmedLink &&
-      !/^https:\/\//i.test(trimmedLink)
+      !safeLessonLink(trimmedLink)
     ) {
-      setError("Odkaz na online hodinu musí začínať https://");
+      setError("Zadajte platný odkaz na online hodinu s https:// bez prihlasovacích údajov.");
       return;
     }
 
@@ -140,44 +86,51 @@ export default function EditLessonForm({
       selectedDate.toISOString() !==
       new Date(scheduledAt).toISOString();
 
-    const supabase = createSupabaseBrowserClient();
+    try {
+      const supabase = createSupabaseBrowserClient();
 
-    const update: {
-      scheduled_at: string;
-      meet_link: string | null;
-      updated_at: string;
-      status?: string;
-    } = {
-      scheduled_at: selectedDate.toISOString(),
-      meet_link: trimmedLink || null,
-      updated_at: new Date().toISOString(),
-    };
+      const update: {
+        scheduled_at: string;
+        meet_link: string | null;
+        updated_at: string;
+        status?: string;
+      } = {
+        scheduled_at: selectedDate.toISOString(),
+        meet_link: trimmedLink || null,
+        updated_at: new Date().toISOString(),
+      };
 
-    if (changedTime) {
-      update.status = "rescheduled";
-    }
+      if (changedTime) {
+        update.status = "rescheduled";
+      }
 
-    const { error: updateError } = await supabase
-      .from("lessons")
-      .update(update)
-      .eq("id", lessonId)
-      .in("status", ["scheduled", "rescheduled"]);
+      const { data: updatedLesson, error: updateError } = await supabase
+        .from("lessons")
+        .update(update)
+        .eq("id", lessonId)
+        .eq("scheduled_at", scheduledAt)
+        .in("status", ["scheduled", "rescheduled"])
+        .select("id")
+        .maybeSingle();
 
-    if (updateError) {
-      setError(
-        "Hodinu sa nepodarilo aktualizovať. Skúste to prosím znova."
-      );
+      if (updateError || !updatedLesson) {
+        setError(
+          "Hodinu sa nepodarilo aktualizovať. Obnovte stránku a skontrolujte aktuálny stav hodiny."
+        );
+        return;
+      }
+
+      setSaved(true);
+      router.refresh();
+    } catch {
+      setError("Hodinu sa nepodarilo aktualizovať. Skontrolujte pripojenie a skúste to znova.");
+    } finally {
       setSaving(false);
-      return;
     }
-
-    setSaved(true);
-    setSaving(false);
-    router.refresh();
   }
 
   return (
-    <details className="mt-4 rounded-2xl border border-black/5 bg-white/80 p-4 text-[#183f38]">
+    <details className="mt-4 rounded-2xl border border-black/5 bg-white/80 p-4 text-[#0a0a0f]">
       <summary className="flex cursor-pointer list-none items-center gap-2 text-sm font-semibold">
         <CalendarClock size={16} />
         Upraviť termín alebo online odkaz
@@ -187,21 +140,23 @@ export default function EditLessonForm({
         <label className="text-sm font-medium">
           Dátum a čas
           <input
+            disabled={saving}
             type="datetime-local"
             value={dateTime}
-            onChange={(event) => setDateTime(event.target.value)}
-            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
+            onChange={(event) => { setDateTime(event.target.value); setSaved(false); }}
+            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#2F3AA2]"
           />
         </label>
 
         <label className="text-sm font-medium">
           Odkaz na online hodinu
           <input
+            disabled={saving}
             type="url"
             value={link}
-            onChange={(event) => setLink(event.target.value)}
+            onChange={(event) => { setLink(event.target.value); setSaved(false); }}
             placeholder="https://meet.google.com/..."
-            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
+            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#2F3AA2]"
           />
         </label>
       </div>
@@ -211,20 +166,20 @@ export default function EditLessonForm({
           type="button"
           onClick={save}
           disabled={saving}
-          className="inline-flex items-center gap-2 rounded-xl bg-[#183f38] px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-xl bg-[#2F3AA2] px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
         >
           <Save size={16} />
           {saving ? "Ukladám..." : "Uložiť zmeny"}
         </button>
 
         {saved && (
-          <span className="text-sm font-medium text-[#527064]">
+          <span role="status" className="text-sm font-medium text-[#3730A3]">
             Zmeny boli uložené.
           </span>
         )}
 
         {error && (
-          <span className="text-sm text-red-700">{error}</span>
+          <span role="alert" className="text-sm text-red-700">{error}</span>
         )}
       </div>
 

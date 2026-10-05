@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CalendarClock, Send } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
+import { bratislavaLocalToUtc, INVALID_LESSON_TIME } from "@/lib/lesson-time";
 
 type Props = {
   lessonId: string;
@@ -11,57 +12,6 @@ type Props = {
   hasPendingRequest: boolean;
 };
 
-function getTimeZoneOffset(date: Date, timeZone: string) {
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hourCycle: "h23",
-  }).formatToParts(date);
-
-  const values = Object.fromEntries(
-    parts
-      .filter((part) => part.type !== "literal")
-      .map((part) => [part.type, Number(part.value)])
-  );
-
-  return (
-    Date.UTC(
-      values.year,
-      values.month - 1,
-      values.day,
-      values.hour,
-      values.minute,
-      values.second
-    ) - date.getTime()
-  );
-}
-
-function bratislavaLocalToUtc(value: string) {
-  const [datePart, timePart] = value.split("T");
-  const [year, month, day] = datePart.split("-").map(Number);
-  const [hour, minute] = timePart.split(":").map(Number);
-
-  const localAsUtc = new Date(
-    Date.UTC(year, month - 1, day, hour, minute, 0)
-  );
-
-  let offset = getTimeZoneOffset(localAsUtc, "Europe/Bratislava");
-  let result = new Date(localAsUtc.getTime() - offset);
-
-  const correctedOffset = getTimeZoneOffset(result, "Europe/Bratislava");
-
-  if (correctedOffset !== offset) {
-    offset = correctedOffset;
-    result = new Date(localAsUtc.getTime() - offset);
-  }
-
-  return result;
-}
 
 export default function ProposeScheduleChangeForm({
   lessonId,
@@ -76,7 +26,7 @@ export default function ProposeScheduleChangeForm({
   const [error, setError] = useState("");
 
   async function submit() {
-    if (saving) return;
+    if (saving || sent || hasPendingRequest) return;
 
     setError("");
     setSent(false);
@@ -88,8 +38,12 @@ export default function ProposeScheduleChangeForm({
 
     const proposed = bratislavaLocalToUtc(preferredAt);
 
+    if (Number.isNaN(proposed.getTime())) {
+      setError(INVALID_LESSON_TIME);
+      return;
+    }
+
     if (
-      Number.isNaN(proposed.getTime()) ||
       proposed.getTime() <= Date.now()
     ) {
       setError("Navrhovaný termín musí byť v budúcnosti.");
@@ -98,73 +52,74 @@ export default function ProposeScheduleChangeForm({
 
     setSaving(true);
 
-    const supabase = createSupabaseBrowserClient();
+    try {
+      const supabase = createSupabaseBrowserClient();
 
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
 
-    if (userError || !user) {
-      setError("Vaše prihlásenie vypršalo. Prihláste sa prosím znova.");
+      if (userError || !user) {
+        setError("Vaše prihlásenie vypršalo. Prihláste sa prosím znova.");
+        return;
+      }
+
+      const { data: existingRequest, error: checkError } = await supabase
+        .from("schedule_change_requests")
+        .select("id")
+        .eq("lesson_id", lessonId)
+        .eq("status", "pending")
+        .limit(1)
+        .maybeSingle();
+
+      if (checkError) {
+        setError("Nepodarilo sa skontrolovať existujúce žiadosti. Skúste to znova.");
+        return;
+      }
+
+      if (existingRequest) {
+        setError("Pre túto hodinu už existuje čakajúca žiadosť o zmenu termínu.");
+        return;
+      }
+
+      const { error: insertError } = await supabase
+        .from("schedule_change_requests")
+        .insert({
+          lesson_id: lessonId,
+          student_id: studentId,
+          requested_by: user.id,
+          preferred_at: proposed.toISOString(),
+          message: message.trim() || null,
+          status: "pending",
+        });
+
+      if (insertError) {
+        setError("Návrh termínu sa nepodarilo odoslať. Skúste to prosím znova.");
+        return;
+      }
+
+      setPreferredAt("");
+      setMessage("");
+      setSent(true);
+      router.refresh();
+    } catch {
+      setError("Návrh sa nepodarilo odoslať. Skontrolujte pripojenie a skúste to znova.");
+    } finally {
       setSaving(false);
-      return;
     }
-
-    const { data: existingRequest, error: checkError } = await supabase
-      .from("schedule_change_requests")
-      .select("id")
-      .eq("lesson_id", lessonId)
-      .eq("status", "pending")
-      .limit(1)
-      .maybeSingle();
-
-    if (checkError) {
-      setError("Nepodarilo sa skontrolovať existujúce žiadosti. Skúste to znova.");
-      setSaving(false);
-      return;
-    }
-
-    if (existingRequest) {
-      setError("Pre túto hodinu už existuje čakajúca žiadosť o zmenu termínu.");
-      setSaving(false);
-      return;
-    }
-
-    const { error: insertError } = await supabase
-      .from("schedule_change_requests")
-      .insert({
-        lesson_id: lessonId,
-        student_id: studentId,
-        requested_by: user.id,
-        preferred_at: proposed.toISOString(),
-        message: message.trim() || null,
-        status: "pending",
-      });
-
-    if (insertError) {
-      setError("Návrh termínu sa nepodarilo odoslať. Skúste to prosím znova.");
-      setSaving(false);
-      return;
-    }
-
-    setPreferredAt("");
-    setMessage("");
-    setSent(true);
-    setSaving(false);
-    router.refresh();
   }
 
   if (hasPendingRequest) {
     return (
-      <div className="mt-3 rounded-2xl border border-[#c6a65b]/20 bg-[#faf6eb] p-4 text-sm text-[#7e693a]">
+      <div className="mt-3 rounded-2xl border border-[#2F3AA2]/20 bg-[#faf6eb] p-4 text-sm text-[#92400e]">
         Pre túto hodinu už existuje čakajúca žiadosť o zmenu termínu.
       </div>
     );
   }
 
   return (
-    <details className="mt-3 rounded-2xl border border-black/5 bg-white/80 p-4 text-[#183f38]">
+    <details className="mt-3 rounded-2xl border border-black/5 bg-white/80 p-4 text-[#0a0a0f]">
       <summary className="flex cursor-pointer list-none items-center gap-2 text-sm font-semibold">
         <CalendarClock size={16} />
         Navrhnúť študentovi nový termín
@@ -174,21 +129,23 @@ export default function ProposeScheduleChangeForm({
         <label className="text-sm font-medium">
           Navrhovaný dátum a čas
           <input
+            disabled={saving}
             type="datetime-local"
             value={preferredAt}
             onChange={(event) => setPreferredAt(event.target.value)}
-            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
+            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#2F3AA2]"
           />
         </label>
 
         <label className="text-sm font-medium">
           Správa pre študenta <span className="font-normal text-gray-400">(voliteľné)</span>
           <textarea
+            disabled={saving}
             rows={2}
             value={message}
             onChange={(event) => setMessage(event.target.value)}
             placeholder="Napríklad: Potrebovala by som presunúť hodinu na tento termín."
-            className="mt-2 w-full resize-none rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#183f38]"
+            className="mt-2 w-full resize-none rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#2F3AA2]"
           />
         </label>
       </div>
@@ -197,21 +154,21 @@ export default function ProposeScheduleChangeForm({
         <button
           type="button"
           onClick={submit}
-          disabled={saving}
-          className="inline-flex items-center gap-2 rounded-xl bg-[#183f38] px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
+          disabled={saving || sent}
+          className="inline-flex items-center gap-2 rounded-xl bg-[#2F3AA2] px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
         >
           <Send size={16} />
           {saving ? "Odosielam..." : "Odoslať návrh"}
         </button>
 
         {sent && (
-          <span className="text-sm font-medium text-[#527064]">
+          <span role="status" className="text-sm font-medium text-[#3730A3]">
             Návrh bol odoslaný študentovi.
           </span>
         )}
 
         {error && (
-          <span className="text-sm text-red-700">{error}</span>
+          <span role="alert" className="text-sm text-red-700">{error}</span>
         )}
       </div>
 

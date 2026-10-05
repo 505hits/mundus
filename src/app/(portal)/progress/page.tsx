@@ -9,6 +9,7 @@ import {
   Target,
   TrendingUp,
 } from "lucide-react";
+import type { StudentLessonReport } from "@/lib/student-report";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatLanguage, formatLessonType, formatProgressLabel } from "@/lib/portalLabels";
@@ -40,11 +41,7 @@ export default async function ProgressPage() {
         .order("purchased_at", { ascending: false }),
 
       supabase
-        .from("lesson_reports")
-        .select(
-          "id,lesson_id,topic,progress,student_note,homework,next_focus,updated_at"
-        )
-        .eq("student_id", user.id)
+        .rpc("student_lesson_reports")
         .order("updated_at", { ascending: false }),
     ]);
 
@@ -55,7 +52,7 @@ export default async function ProgressPage() {
   );
 
   const activePackages = packages ?? [];
-  const teacherReports = reports ?? [];
+  const teacherReports: StudentLessonReport[] = Array.isArray(reports) ? reports : [];
   const latestReport = teacherReports[0] ?? null;
 
   const totalLessons = activePackages.reduce(
@@ -85,7 +82,7 @@ export default async function ProgressPage() {
     allLessons.find((lesson) => lesson.language)?.language ||
     "Váš jazyk";
 
-  const nextFocus =
+  const nextFocus = reportsError ? "Ďalšie zameranie sa nepodarilo načítať." :
     latestReport?.next_focus ||
     "Lektor doplní ďalšie zameranie po hodine.";
 
@@ -99,13 +96,13 @@ export default async function ProgressPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f7f8f5] text-[#183f38]">
+    <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
       {/* Header */}
       <header className="border-b border-black/5 bg-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
           <Link
             href="/dashboard"
-            className="flex items-center gap-2 text-sm font-medium transition hover:text-[#9a8049]"
+            className="flex items-center gap-2 text-sm font-medium transition hover:text-[#2F3AA2]"
           >
             <ArrowLeft size={17} />
             Prehľad
@@ -120,7 +117,7 @@ export default async function ProgressPage() {
       <div className="mx-auto max-w-6xl px-5 py-8 sm:px-8 lg:py-10">
         {/* Intro */}
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a8049]">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
             Môj pokrok
           </p>
 
@@ -140,7 +137,7 @@ export default async function ProgressPage() {
           </div>
         )}
 
-        <section className="mt-8 rounded-3xl bg-[#183f38] p-6 text-white shadow-sm sm:p-8">
+        <section className="mt-8 rounded-3xl bg-[#2F3AA2] p-6 text-white shadow-sm sm:p-8">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <p className="text-sm font-medium text-white/55">
@@ -169,11 +166,11 @@ export default async function ProgressPage() {
           <article className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CheckCircle2
               size={20}
-              className="text-[#9a8049]"
+              className="text-[#2F3AA2]"
             />
 
             <p className="mt-4 text-3xl font-semibold">
-              {completedLessons.length}
+              {lessonsError ? "—" : completedLessons.length}
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
@@ -184,11 +181,11 @@ export default async function ProgressPage() {
           <article className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CalendarDays
               size={20}
-              className="text-[#9a8049]"
+              className="text-[#2F3AA2]"
             />
 
             <p className="mt-4 text-3xl font-semibold">
-              {remainingLessons}
+              {packagesError ? "—" : remainingLessons}
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
@@ -199,11 +196,11 @@ export default async function ProgressPage() {
           <article className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <FileText
               size={20}
-              className="text-[#9a8049]"
+              className="text-[#2F3AA2]"
             />
 
             <p className="mt-4 text-3xl font-semibold">
-              {teacherReports.length}
+              {reportsError ? "—" : teacherReports.length}
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
@@ -213,7 +210,7 @@ export default async function ProgressPage() {
         </section>
 
         {/* Package progress */}
-        {totalLessons > 0 && (
+        {!packagesError && totalLessons > 0 && (
           <section className="mt-6 rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
             <div className="flex items-start justify-between gap-4">
               <div>
@@ -228,13 +225,13 @@ export default async function ProgressPage() {
 
               <BookOpen
                 size={21}
-                className="text-[#9a8049]"
+                className="text-[#2F3AA2]"
               />
             </div>
 
-            <div className="mt-6 h-3 overflow-hidden rounded-full bg-[#edf0ec]">
+            <div className="mt-6 h-3 overflow-hidden rounded-full bg-[#E0E7FF]">
               <div
-                className="h-full rounded-full bg-[#183f38]"
+                className="h-full rounded-full bg-[#2F3AA2]"
                 style={{
                   width: `${packageProgress}%`,
                 }}
@@ -254,7 +251,7 @@ export default async function ProgressPage() {
         {/* Ďalšie zameranie */}
         <section className="mt-6 rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
           <div className="flex items-start gap-4">
-            <div className="rounded-2xl bg-[#faf6eb] p-3 text-[#9a8049]">
+            <div className="rounded-2xl bg-[#faf6eb] p-3 text-[#2F3AA2]">
               <Target size={22} />
             </div>
 
@@ -267,7 +264,7 @@ export default async function ProgressPage() {
                 {nextFocus}
               </h2>
 
-              {!latestReport && (
+              {!reportsError && !latestReport && (
                 <p className="mt-3 text-sm leading-6 text-gray-500">
                   Lektor zatiaľ nepridal ďalšie zameranie. Zobrazí sa po uložení záznamu z hodiny.
                 </p>
@@ -285,12 +282,12 @@ export default async function ProgressPage() {
               </p>
 
               <h2 className="mt-1 text-xl font-semibold">
-                {latestReport?.topic ||
+                {reportsError ? "Spätnú väzbu sa nepodarilo načítať" : latestReport?.topic ||
                   "Zatiaľ bez záznamu od lektora"}
               </h2>
             </div>
 
-            <div className="rounded-2xl bg-[#eef3ef] p-3">
+            <div className="rounded-2xl bg-[#EEF2FF] p-3">
               <MessageCircle size={22} />
             </div>
           </div>
@@ -298,7 +295,7 @@ export default async function ProgressPage() {
           {latestReport ? (
             <>
               {latestReport.progress && (
-                <span className="mt-5 inline-flex rounded-full bg-[#eef3ef] px-3 py-1.5 text-xs font-semibold text-[#527064]">
+                <span className="mt-5 inline-flex rounded-full bg-[#EEF2FF] px-3 py-1.5 text-xs font-semibold text-[#3730A3]">
                   {formatProgressLabel(latestReport.progress)}
                 </span>
               )}
@@ -314,8 +311,8 @@ export default async function ProgressPage() {
               )}
 
               {latestReport.homework && (
-                <div className="mt-6 rounded-2xl bg-[#f7f8f5] p-5">
-                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#9a8049]">
+                <div className="mt-6 rounded-2xl bg-[#FAFAF9] p-5">
+                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#2F3AA2]">
                     Domáca úloha
                   </p>
 
@@ -331,7 +328,7 @@ export default async function ProgressPage() {
             </>
           ) : (
             <p className="mt-5 max-w-2xl text-sm leading-6 text-gray-500">
-              Najnovšia spätná väzba sa zobrazí po uložení záznamu z hodiny.
+              {reportsError ? "Obnovte stránku alebo skúste načítať spätnú väzbu o chvíľu znova." : "Najnovšia spätná väzba sa zobrazí po uložení záznamu z hodiny."}
             </p>
           )}
         </section>
@@ -373,7 +370,7 @@ export default async function ProgressPage() {
                       </p>
                     </div>
 
-                    <span className="rounded-full bg-[#eef3ef] px-3 py-1.5 text-xs font-semibold text-[#527064]">
+                    <span className="rounded-full bg-[#EEF2FF] px-3 py-1.5 text-xs font-semibold text-[#3730A3]">
                       Dokončená
                     </span>
                   </div>
@@ -383,11 +380,11 @@ export default async function ProgressPage() {
           ) : (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
               <p className="font-medium">
-                Zatiaľ nemáte dokončené hodiny
+                {lessonsError ? "Históriu hodín sa nepodarilo načítať" : "Zatiaľ nemáte dokončené hodiny"}
               </p>
 
               <p className="mt-1 text-sm text-gray-400">
-                História hodín sa zobrazí po prvej dokončenej hodine.
+                {lessonsError ? "Obnovte stránku alebo to skúste o chvíľu znova." : "História hodín sa zobrazí po prvej dokončenej hodine."}
               </p>
             </div>
           )}

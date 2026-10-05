@@ -1,0 +1,62 @@
+import type { AssessmentQuestion } from "./placement";
+type Row = readonly [string, readonly string[], number, string?];
+function bank(rows: Row[]): readonly AssessmentQuestion[] {
+  const bands = ["A1", "A2", "B1", "B2", "C1", "C2"];
+  return rows.map(([prompt, options, answer, audio], index) => ({
+    id: `${bands[Math.floor(index / 4)].toLowerCase()}-${index % 4 === 3 ? "listen" : index % 4 + 1}`,
+    band: bands[Math.floor(index / 4)], prompt, options, answer,
+    ...(audio ? { audio, skill: "listening" } : {}),
+  }));
+}
+export const SPANISH_PLACEMENT = bank([
+  ["Yo ___ de Eslovaquia.", ["es", "soy", "eres", "son"], 1],
+  ["María tiene ___ hermana.", ["un", "unos", "una", "unas"], 2],
+  ["Luis vive en Madrid y trabaja en una tienda. ¿Dónde vive Luis?", ["En una tienda", "En Barcelona", "En Madrid", "En Valencia"], 2],
+  ["¿A qué hora empieza la clase?", ["A las ocho", "A las nueve", "A las diez", "A las once"], 0, "Hola. Nuestra clase de español empieza hoy a las ocho de la mañana."],
+  ["Ayer nosotros ___ al cine.", ["vamos", "iremos", "fuimos", "ir"], 2],
+  ["Este libro es ___ que aquel.", ["interesante más", "más interesante", "muy interesante", "más interesantísimo"], 1],
+  ["El museo abre de martes a domingo. Los lunes está cerrado. ¿Cuándo puedes visitarlo?", ["El lunes por la mañana", "El martes", "Solo el lunes", "Todos los lunes"], 1],
+  ["¿Por qué llegará Elena tarde?", ["Su tren lleva retraso", "Está enferma", "Tiene que comprar comida", "Ha perdido las llaves"], 0, "Voy a llegar quince minutos tarde. El tren está parado y lleva retraso. Nos vemos en la estación."],
+  ["Cuando era pequeño, ___ al parque todos los días.", ["iba", "fui una vez", "iré", "he ir"], 0],
+  ["Espero que tú ___ mañana.", ["vienes", "vendrás", "venir", "vengas"], 3],
+  ["Aunque llovía, Marta salió a caminar. ¿Qué hizo Marta?", ["Se quedó en casa", "Esperó a que saliera el sol", "Caminó a pesar de la lluvia", "Canceló el paseo"], 2],
+  ["¿Qué hará el hablante primero?", ["Visitará el museo", "Recogerá a su hermana", "Comprará la entrada", "Volverá a casa"], 1, "Antes de visitar el museo, voy a recoger a mi hermana en la estación. Después iremos juntos a ver la exposición."],
+  ["Si tuviera más tiempo, ___ otro idioma.", ["aprendo", "aprenderé", "aprendería", "aprendiendo"], 2],
+  ["No creo que la propuesta ___ viable.", ["es", "sea", "ser", "será siendo"], 1],
+  ["La medida reducirá el consumo de energía a largo plazo, pero requiere una inversión inicial elevada. ¿Qué dificultad se menciona?", ["No ahorra energía", "Solo funciona unos días", "Los costes iniciales son altos", "No necesita financiación"], 2],
+  ["¿Por qué no se aplicará la misma norma a todos?", ["La empresa va a cerrar", "Algunas tareas requieren presencia física", "Nadie quiere trabajar desde casa", "Todos trabajan menos horas"], 1, "El trabajo a distancia ofrece flexibilidad. Sin embargo, algunas tareas exigen estar en la oficina, por lo que cada equipo tendrá que acordar su propio sistema."],
+  ["De haber conocido el riesgo, no ___ el acuerdo.", ["firmaré", "firmo", "habría firmado", "firmando"], 2],
+  ["La decisión está pendiente. Esto significa que ___.", ["ya es definitiva", "todavía no se ha tomado", "ha sido anulada para siempre", "no hace falta decidir"], 1],
+  ["La autora reconoce los avances, pero cuestiona que sus beneficios alcancen por igual a todos los sectores de la población. ¿Qué cuestiona?", ["La existencia de cualquier avance", "La distribución equitativa de los beneficios", "La necesidad de estudiar la población", "La posibilidad de progresar"], 1],
+  ["¿Qué se sugiere sobre la consulta pública?", ["Determinó completamente la decisión", "Se canceló por falta de participantes", "Tuvo escasa influencia en una decisión ya tomada", "Se celebrará después de las elecciones"], 2, "Se presentó la consulta como una oportunidad para escuchar a la ciudadanía. No obstante, las líneas principales del proyecto estaban cerradas antes de que llegaran las primeras aportaciones."],
+  ["¿Qué frase expresa una aceptación con reservas?", ["Lo apruebo sin la menor objeción.", "Lo acepto, no sin ciertas reticencias.", "Lo rechazo de manera tajante.", "No me han pedido opinión."], 1],
+  ["El elogio llevaba un dardo escondido. ¿Qué implica esta expresión?", ["El elogio era completamente sincero", "Incluía una crítica o una ofensa disimulada", "No se podía escuchar", "Se refería únicamente al deporte"], 1],
+  ["La reseña describe el ensayo como una fachada brillante sostenida por argumentos endebles. ¿Cuál es la crítica?", ["La presentación convence más que el razonamiento", "Los argumentos son sólidos y originales", "El ensayo trata de arquitectura", "La reseña elogia todos sus aspectos"], 0],
+  ["¿Qué actitud transmite el hablante?", ["Admiración por la rapidez del comité", "Una crítica irónica a su lentitud", "Preocupación por una decisión precipitada", "Satisfacción por la ausencia de cambios"], 1, "Acusar al comité de precipitación sería, desde luego, excesivo. Cuando por fin anunció su solución, las circunstancias que la habían hecho necesaria ya habían desaparecido."],
+]);
+export const SPANISH_PROGRESS = bank([
+  ["Mis padres ___ en Valencia.", ["vive", "vivimos", "vives", "viven"], 3],
+  ["Tengo dos ___ pequeños.", ["gato", "gatos", "gata", "gatito"], 1],
+  ["Ana tiene un perro y tres gatos. ¿Cuántos gatos tiene?", ["Uno", "Dos", "Tres", "Ninguno"], 2],
+  ["¿Dónde trabaja Pablo?", ["En un hospital", "En un banco", "En una escuela", "En un restaurante"], 3, "Me llamo Pablo. Soy cocinero y trabajo en un restaurante cerca de mi casa."],
+  ["La semana pasada yo ___ a mi abuela.", ["visité", "visito mañana", "visitaré", "visitar"], 0],
+  ["Hoy hace ___ frío que ayer.", ["mucho de", "más", "muy", "tan de"], 1],
+  ["La entrada cuesta doce euros por internet y quince en la taquilla. ¿Dónde sale más barata?", ["En la taquilla", "Por internet", "Cuesta lo mismo", "Solo por la mañana"], 1],
+  ["¿Cuándo debe llevar una chaqueta?", ["Esta noche", "La semana que viene", "Mañana", "En verano"], 2, "Lleva una chaqueta mañana. Por la mañana hará calor, pero la temperatura bajará bastante al anochecer."],
+  ["Este cuadro ___ por una artista local.", ["pintó", "fue pintado", "ha pintar", "pintando"], 1],
+  ["Es importante que nosotros ___ a tiempo.", ["llegamos", "llegar", "lleguemos", "llegaremos llegando"], 2],
+  ["Sofía suele ir al trabajo en bicicleta. Cuando llueve, toma el autobús. Hoy ha elegido el autobús por la lluvia. ¿Por qué no usa la bicicleta hoy?", ["Porque se ha roto", "Porque llueve", "Porque la ha vendido", "Porque no sabe montar"], 1],
+  ["¿Por qué cambiaron el día de la reunión?", ["El director estaba enfermo", "Nadie quería asistir", "La sala ya estaba reservada", "El edificio estaba cerrado"], 2, "La reunión iba a ser el martes, pero la sala ya estaba reservada. Por eso la hemos pasado al miércoles."],
+  ["Te habría ayudado si me lo ___ pedido.", ["has", "habrás", "hubieras", "haber"], 2],
+  ["Por mucho que lo ___, no consigue convencerme.", ["intenta", "intente", "intentará", "intentar"], 1],
+  ["El servicio resulta cómodo; aun así, algunos usuarios temen que sus datos se utilicen sin permiso. ¿Qué contraste se plantea?", ["Comodidad y preocupación por la privacidad", "Precio y velocidad", "Horario y distancia", "Calidad y variedad"], 0],
+  ["¿Por qué repetirán el taller?", ["Porque fue obligatorio", "Porque asistieron más personas de las previstas", "Porque no costó nada", "Porque las valoraciones fueron positivas"], 3, "Vinieron menos personas de las que esperábamos, pero quienes asistieron valoraron muy bien el taller. Lo repetiremos y mejoraremos la publicidad."],
+  ["No es que me ___ la idea; es que todavía faltan detalles.", ["disgusta", "disguste", "disgustar", "disgustará siendo"], 1],
+  ["Dar por sentado un resultado significa ___.", ["considerarlo seguro sin comprobarlo", "rechazarlo de inmediato", "anotarlo por escrito", "calcularlo con precisión"], 0],
+  ["El estudio ofrece indicios, no pruebas concluyentes: una muestra tan reducida impide generalizar los resultados. ¿Qué recomienda esta observación?", ["Aceptar los resultados sin reservas", "Interpretarlos con cautela", "Dejar de investigar", "Ignorar cualquier dato disponible"], 1],
+  ["¿Qué grupo queda fuera de la garantía explícita?", ["La plantilla fija", "La dirección", "El personal externo", "Toda la plantilla"], 2, "La garantía de que no habría recortes se refería expresamente a la plantilla fija. La situación del personal externo seguía sin aclararse."],
+  ["¿Qué frase indica que su intervención evitó un fracaso?", ["El plan fracasó antes de empezar.", "Sin su intervención, el plan habría fracasado.", "El éxito estaba garantizado desde el principio.", "Nadie intervino en el proyecto."], 1],
+  ["Su promesa se quedó en papel mojado. ¿Qué quiere decir?", ["Se cumplió antes de tiempo", "Perdió toda eficacia o valor práctico", "Se transmitió solo de forma oral", "Incluía un documento escrito a mano"], 1],
+  ["El comentario llama a la reforma un triunfo de la puesta en escena sobre el contenido. ¿Qué cuestiona?", ["Que sus resultados justifiquen su presentación grandilocuente", "Que se haya explicado al público", "Que tenga una imagen pública", "Que incluya referencias a acontecimientos históricos"], 0],
+  ["¿Cómo valora el hablante la respuesta?", ["Como un ejemplo de tacto", "Como una explicación demasiado breve para juzgarla", "Como una intervención poco prudente que agravó el conflicto", "Como un acuerdo aceptado por todos"], 2, "Calificar aquella respuesta de diplomática sería un gesto de notable generosidad. En apenas dos frases consiguió enemistarse tanto con sus críticos como con quienes aún estaban dispuestos a apoyarlo."],
+]);

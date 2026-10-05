@@ -1,6 +1,6 @@
 export default function TeacherPortalLoading() {
   return (
-    <main className="min-h-screen bg-[#f7f8f5] px-5 py-10 text-[#183f38]">
+    <main className="min-h-screen bg-[#FAFAF9] px-5 py-10 text-[#0a0a0f]">
       <div className="mx-auto max-w-7xl">
         <div className="h-4 w-28 animate-pulse rounded-full bg-black/10" />
         <div className="mt-4 h-10 w-64 max-w-full animate-pulse rounded-2xl bg-black/10" />

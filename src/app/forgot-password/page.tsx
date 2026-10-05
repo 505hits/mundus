@@ -18,29 +18,27 @@ export default function ForgotPasswordPage() {
     setSent(false);
     setLoading(true);
 
-    const supabase = createSupabaseBrowserClient();
-
-    const { error: resetError } = await supabase.auth.resetPasswordForEmail(
-      email.trim(),
-      {
+    try {
+      const supabase = createSupabaseBrowserClient();
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.trim(), {
         redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (resetError) {
+        setError("E-mail na obnovu hesla sa nepodarilo odoslať. Skúste to prosím znova.");
+        return;
       }
-    );
-
-    if (resetError) {
-      setError("E-mail na obnovu hesla sa nepodarilo odoslať. Skúste to prosím znova.");
+      setSent(true);
+    } catch {
+      setError("Obnova hesla je momentálne nedostupná. Skúste to prosím znova.");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    setSent(true);
-    setLoading(false);
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#f7f8f5] px-6 py-12 text-[#163f3a]">
+    <main className="flex min-h-screen items-center justify-center bg-[#FAFAF9] px-6 py-12 text-[#2F3AA2]">
       <div className="w-full max-w-md rounded-3xl border border-black/5 bg-white p-7 shadow-sm sm:p-9">
-        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#8a7445]">
+        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
           Mundus portál
         </p>
 
@@ -53,7 +51,7 @@ export default function ForgotPasswordPage() {
         </p>
 
         {sent ? (
-          <div className="mt-7 rounded-2xl bg-[#eef3ef] p-5">
+          <div role="status" aria-live="polite" className="mt-7 rounded-2xl bg-[#eef3ef] p-5">
             <p className="font-semibold">Skontrolujte si e-mail</p>
             <p className="mt-2 text-sm leading-6 text-gray-600">
               Ak je tento e-mail priradený k účtu Mundus, dostanete odkaz na obnovu hesla.
@@ -70,12 +68,12 @@ export default function ForgotPasswordPage() {
                 required
                 autoComplete="email"
                 placeholder="meno@email.com"
-                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 outline-none focus:border-[#163f3a]"
+                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 outline-none focus:border-[#2F3AA2]"
               />
             </label>
 
             {error && (
-              <p className="mt-4 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
+              <p role="alert" className="mt-4 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
                 {error}
               </p>
             )}
@@ -83,7 +81,7 @@ export default function ForgotPasswordPage() {
             <button
               type="submit"
               disabled={loading}
-              className="mt-5 w-full rounded-2xl bg-[#163f3a] px-5 py-3.5 font-semibold text-white disabled:opacity-60"
+              className="mt-5 w-full rounded-2xl bg-[#2F3AA2] px-5 py-3.5 font-semibold text-white disabled:opacity-60"
             >
               {loading ? "Odosielam..." : "Poslať odkaz na obnovu"}
             </button>
@@ -92,7 +90,7 @@ export default function ForgotPasswordPage() {
 
         <Link
           href="/login"
-          className="mt-6 inline-flex text-sm font-medium text-[#163f3a] hover:underline"
+          className="mt-6 inline-flex text-sm font-medium text-[#2F3AA2] hover:underline"
         >
           ← Späť na prihlásenie
         </Link>

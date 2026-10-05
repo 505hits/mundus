@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {allowedLearningFile,LEARNING_FILE_LIMIT} from '../src/lib/learning-files.ts';
+const text=new TextEncoder();
+assert.ok(allowedLearningFile(text.encode('%PDF-1.7\n'),'application/pdf'));
+assert.ok(allowedLearningFile(new Uint8Array([137,80,78,71,13,10,26,10]),'image/png'));
+assert.ok(allowedLearningFile(new Uint8Array([255,216,255,12]),'image/jpeg'));
+assert.ok(allowedLearningFile(text.encode('Domáca úloha'),'text/plain'));
+assert.equal(allowedLearningFile(text.encode('<script>bad</script>'),'image/png'),false);
+assert.equal(allowedLearningFile(new Uint8Array([0,1,2]),'text/plain'),false);
+assert.equal(allowedLearningFile(new Uint8Array([255]),'text/plain'),false);
+assert.equal(allowedLearningFile(new Uint8Array(LEARNING_FILE_LIMIT+1),'image/jpeg'),false);
+assert.equal(allowedLearningFile(text.encode('x'),'application/octet-stream'),false);
+console.log('PASS: file limits, allowed signatures, fake MIME and invalid text');

@@ -48,11 +48,11 @@ export default async function RetentionPage(){
       <section><p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">Retencia</p><h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Študenti, ktorí potrebujú pozornosť</h1><p className="mt-2 text-gray-500">Kombinácia zostávajúcich hodín, ďalšej rezervácie a poslednej dokončenej hodiny.</p></section>
       <section className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {[
-          [high,"Vysoké riziko",AlertTriangle],
-          [lowCredits,"0–2 hodiny",PackageOpen],
-          [noUpcoming,"Bez ďalšej hodiny",CalendarX2],
-          [inactive30,"30+ dní neaktívni",UserRoundX],
-        ].map(([value,label,Icon]:any)=><div key={label} className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm"><Icon size={20} className="text-[#2F3AA2]"/><p className="mt-4 text-3xl font-semibold">{value}</p><p className="mt-1 text-sm text-gray-500">{label}</p></div>)}
+          {value:high,label:"Vysoké riziko",Icon:AlertTriangle},
+          {value:lowCredits,label:"0–2 hodiny",Icon:PackageOpen},
+          {value:noUpcoming,label:"Bez ďalšej hodiny",Icon:CalendarX2},
+          {value:inactive30,label:"30+ dní neaktívni",Icon:UserRoundX},
+        ].map(({value,label,Icon})=><div key={label} className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm"><Icon size={20} className="text-[#2F3AA2]"/><p className="mt-4 text-3xl font-semibold">{value}</p><p className="mt-1 text-sm text-gray-500">{label}</p></div>)}
       </section>
       <section className="mt-8 overflow-hidden rounded-3xl border border-black/5 bg-white shadow-sm">
         <div className="divide-y divide-gray-100">

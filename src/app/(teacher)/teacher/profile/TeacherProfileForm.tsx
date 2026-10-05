@@ -7,7 +7,11 @@ type Record={headline:string;bio:string;languages:string[];photoUrl:string|null;
 export default function TeacherProfileForm({record}:{record:Record}){
  const [state,action,pending]=useActionState<TeacherProfileState,FormData>(saveTeacherProfile,{});
  return <form action={action} className="mt-6 space-y-6 rounded-3xl border border-black/5 bg-white p-6 shadow-sm" aria-busy={pending}>
-  {record.photoUrl&&<img src={record.photoUrl} alt="Aktuálna profilová fotka" className="h-28 w-28 rounded-3xl object-cover"/>}
+  {record.photoUrl&&<>
+    {/* Profile photos come from the teacher-public Supabase bucket. */}
+    {/* eslint-disable-next-line @next/next/no-img-element */}
+    <img src={record.photoUrl} alt="Aktuálna profilová fotka" className="h-28 w-28 rounded-3xl object-cover"/>
+  </>}
   <label className="block text-sm font-medium">Profilová fotka<input name="photo" type="file" accept="image/jpeg,image/png,image/webp" className="mt-2 block w-full rounded-xl border border-black/10 p-3 text-sm"/></label>
   <label className="block text-sm font-medium">Krátky titulok<input name="headline" maxLength={120} defaultValue={record.headline} placeholder="Napr. Angličtina a nemčina · konverzácia a pracovný jazyk" className="mt-2 w-full rounded-xl border border-black/10 p-3"/></label>
   <label className="block text-sm font-medium">O vás<textarea name="bio" maxLength={1000} rows={5} defaultValue={record.bio} placeholder="Krátko sa predstavte budúcim študentom." className="mt-2 w-full rounded-xl border border-black/10 p-3"/></label>

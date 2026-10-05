@@ -20,7 +20,12 @@ export function bratislavaMonth(year: number, month: number) {
   if (!Number.isInteger(year) || year < 2000 || year > 2100 || !Number.isInteger(month) || month < 1 || month > 12) {
     throw new Error("Invalid month");
   }
-  return bratislavaMonth(year, month);
+  const key = `${year}-${String(month).padStart(2, "0")}-01`;
+  const start = bratislavaMonthStartUtc(year, month);
+  const nextYear = month === 12 ? year + 1 : year;
+  const nextMonth = month === 12 ? 1 : month + 1;
+  const end = bratislavaMonthStartUtc(nextYear, nextMonth);
+  return { key, year, month, start: start.toISOString(), end: end.toISOString() };
 }
 
 export function currentBratislavaMonth() {
@@ -32,12 +37,7 @@ export function currentBratislavaMonth() {
   }).formatToParts(now);
   const year = Number(parts.find((part) => part.type === "year")?.value);
   const month = Number(parts.find((part) => part.type === "month")?.value);
-  const key = `${year}-${String(month).padStart(2, "0")}-01`;
-  const start = bratislavaMonthStartUtc(year, month);
-  const nextYear = month === 12 ? year + 1 : year;
-  const nextMonth = month === 12 ? 1 : month + 1;
-  const end = bratislavaMonthStartUtc(nextYear, nextMonth);
-  return { key, year, month, start: start.toISOString(), end: end.toISOString() };
+  return bratislavaMonth(year, month);
 }
 
 export function parseBratislavaMonth(value: string | null | undefined) {

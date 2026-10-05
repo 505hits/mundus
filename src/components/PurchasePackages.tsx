@@ -24,9 +24,9 @@ export default function PurchasePackages({ paymentsAvailable, signupAvailable }:
       {PACKAGE_PRICES.map(({ lessons, amountCents }) => <article key={lessons} className={`relative flex flex-col rounded-3xl border p-6 ${lessons === 5 ? "border-[#2F3AA2] bg-[#f0f2ff] shadow-lg shadow-indigo-100/50" : "border-gray-200 bg-white"}`}>
         {lessons === 5 && <span className="mb-4 self-start rounded-full bg-[#2F3AA2] px-3 py-1 text-xs font-semibold text-white">{sk ? "Na dobrý začiatok" : "A great start"}</span>}
         <h4 className="text-xl font-semibold">{lessons} × 60 min</h4>
-        <p className="mt-4 text-3xl font-semibold tracking-tight text-[#181818]">{money(amountCents)}</p>
-        <p className="mt-1 text-xs text-gray-500">{sk ? "Cena za celý balíček" : "Total package price"}</p>
-        <div className="mt-5 rounded-xl border border-[#2F3AA2]/10 bg-white/70 p-3 text-sm"><p className="font-semibold text-[#2F3AA2]">{sk ? "Prvý balíček −10 %" : "First package −10%"}</p><p className="mt-1 font-semibold">{money(amountCents * 9 / 10)}</p><p className="mt-1 text-xs text-gray-500">{sk ? "Pre oprávnené študentské účty." : "For eligible student accounts."}</p></div>
+        <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-gray-400">{sk ? "Bežná cena" : "Regular price"}</p>
+        <p className="mt-1 text-lg font-medium text-gray-400 line-through">{money(amountCents)}</p>
+        <div className="mt-3 rounded-xl border border-[#2F3AA2]/10 bg-white/70 p-3"><p className="text-sm font-semibold text-[#2F3AA2]">{sk ? "Prvý balíček −10 %" : "First package −10%"}</p><p className="mt-1 text-3xl font-semibold tracking-tight text-[#181818]">{money(amountCents * 9 / 10)}</p><p className="mt-1 text-xs text-gray-500">{sk ? "Pre oprávnené študentské účty." : "For eligible student accounts."}</p></div>
         <p className="my-5 flex items-center gap-2 text-sm text-gray-600"><Check size={16} className="shrink-0 text-[#2F3AA2]" />{sk ? "Individuálna výučba" : "One-to-one teaching"}</p>
         <Link href={paymentsAvailable ? `/signup?next=${encodeURIComponent(`/packages?selected=${lessons}`)}` : "/contact"} className="mt-auto flex items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-3 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#252E82] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#2F3AA2]">{paymentsAvailable ? sk ? "Vytvoriť účet a kúpiť" : "Create account & buy" : t.pricing.individual.contactLabel}<ArrowRight size={16} /></Link>
       </article>)}

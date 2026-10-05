@@ -51,8 +51,8 @@ export default function PortalNav({ paymentsEnabled }: { paymentsEnabled: boolea
   return (
     <>
       {/* Desktop navigation */}
-      <aside className="hidden w-64 shrink-0 border-r border-black/5 bg-white lg:block">
-        <div className="sticky top-0 flex h-screen flex-col p-5">
+      <aside className="hidden w-64 shrink-0 border-r border-[#E5E7F0] bg-white/95 lg:block">
+        <div className="sticky top-0 flex h-screen flex-col overflow-y-auto p-5">
           <div className="px-3 py-1"><BrandLogo compact /></div>
 
           <p className="mt-6 px-3 text-xs font-semibold uppercase tracking-[0.14em] text-gray-400">
@@ -82,7 +82,7 @@ export default function PortalNav({ paymentsEnabled }: { paymentsEnabled: boolea
           </nav>
 
           <div className="mt-auto space-y-3">
-            <div className="rounded-2xl bg-[#F5F5F4] p-4">
+            <div className="rounded-2xl bg-[#F3F5FB] p-4">
             <p className="text-sm font-semibold text-[#0a0a0f]">
               Potrebujete pomoc?
             </p>

@@ -7,6 +7,7 @@ import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatLanguage } from "@/lib/portalLabels";
 import StudentSearchList from "./StudentSearchList";
+import { currentLanguage } from "@/lib/i18n";
 
 function getName(
   profile:
@@ -14,10 +15,12 @@ function getName(
     | null
     | undefined
 ) {
-  return profile?.full_name?.trim() || profile?.email || "Študent";
+  return profile?.full_name?.trim() || profile?.email || "Student";
 }
 
 export default async function TeacherStudentsPage() {
+  const language = await currentLanguage();
+  const sk = language === "sk";
   const { user } = await requireRole("teacher");
   const supabase = await createSupabaseServerClient();
   const studentDirectory = await teacherDirectory(supabase);
@@ -53,7 +56,7 @@ export default async function TeacherStudentsPage() {
     : { data: [], error: null };
 
   if (lessonsError || packagesError) {
-    return <main className="mx-auto max-w-5xl px-5 py-10"><h1 className="text-3xl font-semibold">Moji študenti</h1><p role="alert" className="mt-5 text-red-700">Študentov alebo zostatky sa nepodarilo načítať. Obnovte stránku alebo to skúste o chvíľu znova.</p></main>;
+    return <main className="mx-auto max-w-5xl px-5 py-10"><h1 className="text-3xl font-semibold">{sk ? "Moji študenti" : "My students"}</h1><p role="alert" className="mt-5 text-red-700">{sk ? "Študentov alebo zostatky sa nepodarilo načítať. Obnovte stránku alebo to skúste o chvíľu znova." : "Students or lesson balances could not be loaded. Refresh the page or try again shortly."}</p></main>;
   }
 
   const packageMap = new Map<
@@ -102,7 +105,7 @@ export default async function TeacherStudentsPage() {
       studentMap.set(lesson.student_id, {
         id: lesson.student_id,
         name: getName(student),
-        language: formatLanguage(lesson.language),
+        language: formatLanguage(lesson.language, language),
         nextLesson: isFuture ? lesson.scheduled_at : null,
         remaining:
           packageMap.get(lesson.student_id)?.remaining ?? 0,
@@ -140,15 +143,15 @@ export default async function TeacherStudentsPage() {
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
-            Študenti
+            {sk ? "Študenti" : "Students"}
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Moji študenti
+            {sk ? "Moji študenti" : "My students"}
           </h1>
 
           <p className="mt-2 text-gray-500">
-            Pozrite si svojich študentov a ich aktivitu vo výučbe.
+            {sk ? "Pozrite si svojich študentov a ich aktivitu vo výučbe." : "See your students and their learning activity."}
           </p>
         </section>
 
@@ -161,7 +164,7 @@ export default async function TeacherStudentsPage() {
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
-              Študenti s hodinami
+              {sk ? "Študenti s hodinami" : "Students with lessons"}
             </p>
           </div>
 
@@ -173,7 +176,7 @@ export default async function TeacherStudentsPage() {
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
-              Zostávajúce hodiny
+              {sk ? "Zostávajúce hodiny" : "Remaining lessons"}
             </p>
           </div>
         </section>

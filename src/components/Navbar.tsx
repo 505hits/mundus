@@ -46,12 +46,12 @@ export default function Navbar() {
                 transition={{ duration: 0.5, ease: "easeOut" }}
                 className={`navbar ${isScrolled ? "bg-white/90 backdrop-blur-md shadow-sm" : "bg-transparent"}`}
             >
-                <div className="navbar-inner flex items-center justify-between px-6 py-4 w-full">
+                <div className="navbar-inner flex w-full items-center justify-between px-5 sm:px-6">
                     {/* Logo */}
                     {/* Logo */}
                     {/* Logo */}
                     {/* Logo */}
-                    <Link href="/" className="nav-logo relative h-24 w-44 sm:h-24 sm:w-[20rem] md:h-28 md:w-[28rem] shrink-0">
+                    <Link href="/" className="nav-logo relative h-12 w-36 sm:w-40 shrink-0">
                         <Image
                             src="/logo-removebg-preview.png"
                             alt="Mundus"
@@ -62,14 +62,14 @@ export default function Navbar() {
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <div className="nav-links hidden xl:flex items-center gap-10 mr-10">
+                    <div className="nav-links hidden xl:flex items-center gap-7">
                         {navLinks.map((link) => (
                             <Link key={link.name} href={link.href} className="nav-link text-sm font-medium hover:text-primary transition-colors whitespace-nowrap">
                                 {link.name}
                             </Link>
                         ))}
                         {/* Language Toggle */}
-                        <div className="flex items-center gap-2 bg-gray-100 rounded-full p-1 ml-2">
+                        <div className="flex items-center gap-1 rounded-full border border-[#E5E7F0] bg-white/75 p-1">
                             <button
                                 onClick={() => setLanguage("en")}
                                 className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${language === "en" ? "bg-white shadow text-gray-900" : "text-gray-500 hover:text-gray-900"}`}
@@ -90,7 +90,7 @@ export default function Navbar() {
 
                     {/* Desktop CTA */}
                     <div className="hidden xl:flex items-center">
-                        <Link href="/login" className="mr-4 whitespace-nowrap text-sm font-semibold text-gray-900 hover:text-primary">
+                        <Link href="/login" className="mr-3 whitespace-nowrap text-sm font-semibold text-[#171A2B] transition hover:text-[#2F3AA2]">
                             Prihlásenie
                         </Link>
                         <motion.div

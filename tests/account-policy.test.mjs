@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { canAcceptTeacherInvitation, hasCompletedOnboarding, portalDestination, validEmail, validPassword } from "../src/lib/account-policy.ts";
+import { STUDENT_LANGUAGES, canAcceptTeacherInvitation, hasCompletedOnboarding, portalDestination, validEmail, validPassword } from "../src/lib/account-policy.ts";
 
 test("teacher access requires an unexpired, unconsumed trusted invitation", () => {
   const now = Date.parse("2026-09-29T00:00:00Z");
@@ -33,4 +33,10 @@ test("account inputs reject malformed email and short or oversized passwords", (
 test("onboarding requires a real completion timestamp, not just an existing row", () => {
   for (const record of [null, undefined, {}, {completed_at:null}, {completed_at:""}, {completed_at:"invalid"}]) assert.equal(hasCompletedOnboarding(record),false);
   assert.equal(hasCompletedOnboarding({completed_at:"2026-10-03T00:00:00Z"}),true);
+});
+
+
+test("onboarding exposes the current Mundus language offer without Turkish", () => {
+  assert.deepEqual(STUDENT_LANGUAGES, ["Angličtina", "Nemčina", "Španielčina", "Taliančina", "Francúzština", "Portugalčina", "Maďarčina", "Poľština", "Ruština", "Čínština", "Slovenčina", "Ukrajinčina", "Moderná hebrejčina"]);
+  assert.equal(STUDENT_LANGUAGES.includes("Turečtina"), false);
 });

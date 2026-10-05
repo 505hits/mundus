@@ -46,32 +46,18 @@ export default async function AdminTeachersPage() {
   });
 
   const todayKey = bratislavaDateKey.format(now);
-  const [year, month, dayOfMonth] = todayKey.split("-").map(Number);
-  const todayUtc = new Date(Date.UTC(year, month - 1, dayOfMonth));
-  const weekday = todayUtc.getUTCDay();
-  const mondayOffset = weekday === 0 ? -6 : 1 - weekday;
-  const mondayUtc = new Date(todayUtc);
-  mondayUtc.setUTCDate(todayUtc.getUTCDate() + mondayOffset);
+  const currentMonthKey = todayKey.slice(0, 7);
 
-  const weekKeys = new Set(
-    Array.from({ length: 7 }, (_, index) => {
-      const date = new Date(mondayUtc);
-      date.setUTCDate(mondayUtc.getUTCDate() + index);
-      return date.toISOString().slice(0, 10);
-    })
-  );
-
-  const teacherRows = (teachers ?? []).map((teacher) => {
+  const teacherRows =teachers ?? []).map((teacher) => {
     const teacherLessons = (lessons ?? []).filter(
       (lesson) => lesson.teacher_id === teacher.id
     );
     const studentCount = new Set(
       teacherLessons.map((lesson) => lesson.student_id)
     ).size;
-    const lessonsThisWeek = teacherLessons.filter((lesson) =>
-      weekKeys.has(
-        bratislavaDateKey.format(new Date(lesson.scheduled_at))
-      )
+    const completedThisMonth = teacherLessons.filter((lesson) =>
+      lesson.status === "completed" &&
+      bratislavaDateKey.format(new Date(lesson.scheduled_at)).startsWith(currentMonthKey)
     ).length;
     const preference = (preferences ?? []).find((item) => item.teacher_id === teacher.id);
     const websiteProfile = (publicProfiles ?? []).find((item) => item.teacher_id === teacher.id);
@@ -93,7 +79,7 @@ export default async function AdminTeachersPage() {
     return {
       ...teacher,
       studentCount,
-      lessonsThisWeek,
+      completedThisMonth,
       languages: languageValues.length ? languageValues.map((language) => formatLanguage(language)).join(", ") : "—",
       publicProfileComplete,
       websiteVisible: Boolean(websiteProfile?.website_visible),
@@ -109,8 +95,8 @@ export default async function AdminTeachersPage() {
   const assignedStudents = new Set(
     (lessons ?? []).map((lesson) => lesson.student_id)
   ).size;
-  const lessonsThisWeek = teacherRows.reduce(
-    (sum, teacher) => sum + teacher.lessonsThisWeek,
+  const completedThisMonth = teacherRows.reduce(
+    (sum, teacher) => sum + teacher.completedThisMonth,
     0
   );
 
@@ -150,8 +136,8 @@ export default async function AdminTeachersPage() {
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CalendarDays size={20} className="text-[#2F3AA2]" />
-            <p className="mt-4 text-3xl font-semibold">{lessonsThisWeek}</p>
-            <p className="mt-1 text-sm text-gray-500">Hodiny tento týždeň</p>
+            <p className="mt-4 text-3xl font-semibold">{completedThisMonth}</p>
+            <p className="mt-1 text-sm text-gray-500">Dokončené hodiny tento mesiac</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <AlertCircle size={20} className="text-[#2F3AA2]" />
@@ -197,9 +183,9 @@ export default async function AdminTeachersPage() {
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 lg:hidden">Tento týždeň</p>
+                      <p className="text-xs text-gray-400 lg:hidden">Tento mesiac</p>
                       <p className="mt-1 text-sm font-medium lg:mt-0">
-                        {teacher.lessonsThisWeek} hodín
+                        {teacher.completedThisMonth} hodín
                       </p>
                     </div>
                     <div>

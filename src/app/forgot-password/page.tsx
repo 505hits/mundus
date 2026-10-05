@@ -51,7 +51,7 @@ export default function ForgotPasswordPage() {
         </p>
 
         {sent ? (
-          <div className="mt-7 rounded-2xl bg-[#eef3ef] p-5">
+          <div role="status" aria-live="polite" className="mt-7 rounded-2xl bg-[#eef3ef] p-5">
             <p className="font-semibold">Skontrolujte si e-mail</p>
             <p className="mt-2 text-sm leading-6 text-gray-600">
               Ak je tento e-mail priradený k účtu Mundus, dostanete odkaz na obnovu hesla.
@@ -73,7 +73,7 @@ export default function ForgotPasswordPage() {
             </label>
 
             {error && (
-              <p className="mt-4 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
+              <p role="alert" className="mt-4 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
                 {error}
               </p>
             )}

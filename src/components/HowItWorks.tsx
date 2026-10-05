@@ -51,7 +51,7 @@ export default function HowItWorks() {
                             key={index}
                             variants={fadeInUp}
                             whileHover={{ y: -4 }}
-                            className="step-card"
+                            className="step-card rounded-3xl border border-[#E5E7F0] bg-white p-7 shadow-[0_10px_30px_rgba(23,26,43,0.04)]"
                         >
                             <motion.div
                                 className="step-number bg-[#2F3AA2] text-white"

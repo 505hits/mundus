@@ -16,7 +16,7 @@ export default async function AdminTeachersPage() {
 
   const [
     { data: teachers, error },
-    { data: lessons },
+    { data: lessons, error: lessonsError },
     { data: preferences, error: preferencesError },
     { data: publicProfiles, error: publicProfilesError },
   ] = await Promise.all([
@@ -131,7 +131,7 @@ export default async function AdminTeachersPage() {
 
         <InviteTeacherForm enabled={process.env.MUNDUS_INVITATIONS_ENABLED === "true"} />
 
-        {(error || preferencesError || publicProfilesError) && (
+        {(error || lessonsError || preferencesError || publicProfilesError) && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             Nepodarilo sa načítať účty lektorov. Obnovte stránku a skúste to znova.
           </div>

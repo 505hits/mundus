@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Settings2 } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
+import {useLanguage} from "@/context/LanguageContext";
 
 type Props = {
   packageId: string;
@@ -19,6 +20,7 @@ export default function PackageAdminActions({
   status,
 }: Props) {
   const router = useRouter();
+  const {language}=useLanguage(); const sk=language==="sk";
 
   const [remaining, setRemaining] = useState(
     String(remainingLessons)
@@ -45,13 +47,13 @@ export default function PackageAdminActions({
       remainingValue > totalLessons
     ) {
       setError(
-        `Zostatok musí byť od 0 do ${totalLessons} hodín.`
+        sk?`Zostatok musí byť od 0 do ${totalLessons} hodín.`:`Remaining lessons must be between 0 and ${totalLessons}.`
       );
       return;
     }
 
     if (remainingValue > 0 && packageStatus === "completed") {
-      setError("Balíček so zostávajúcimi hodinami nemožno označiť ako dokončený.");
+      setError(sk?"Balíček so zostávajúcimi hodinami nemožno označiť ako dokončený.":"A package with remaining lessons cannot be marked completed.");
       return;
     }
 
@@ -79,7 +81,7 @@ export default function PackageAdminActions({
 
       if (updateError || !updatedPackage) {
         setError(
-          "Balíček sa nepodarilo aktualizovať. Obnovte stránku a skontrolujte aktuálny zostatok."
+          sk?"Balíček sa nepodarilo aktualizovať. Obnovte stránku a skontrolujte aktuálny zostatok.":"The package could not be updated. Refresh the page and check the current balance."
         );
         return;
       }
@@ -87,7 +89,7 @@ export default function PackageAdminActions({
       setSaved(true);
       router.refresh();
     } catch {
-      setError("Uloženie sa nepodarilo. Skontrolujte pripojenie a skúste to znova.");
+      setError(sk?"Uloženie sa nepodarilo. Skontrolujte pripojenie a skúste to znova.":"Saving failed. Check your connection and try again.");
     } finally {
       setSaving(false);
     }
@@ -97,15 +99,15 @@ export default function PackageAdminActions({
     <details className="relative">
       <summary
         className="inline-flex cursor-pointer list-none items-center gap-1.5 rounded-xl border border-black/10 px-3 py-2 text-xs font-semibold text-[#0a0a0f]"
-        aria-label="Upraviť balíček"
+        aria-label={sk?"Upraviť balíček":"Edit package"}
       >
         <Settings2 size={15} />
-        Upraviť
+        {sk?"Upraviť":"Edit"}
       </summary>
 
       <div className="mt-3 min-w-[230px] rounded-2xl border border-black/10 bg-[#FAFAF9] p-4">
         <label className="block text-xs font-medium text-gray-600">
-          Zostávajúce hodiny
+          {sk?"Zostávajúce hodiny":"Remaining lessons"}
           <input
             disabled={saving}
             type="number"
@@ -118,17 +120,17 @@ export default function PackageAdminActions({
         </label>
 
         <label className="mt-3 block text-xs font-medium text-gray-600">
-          Stav
+          {sk?"Stav":"Status"}
           <select
             disabled={saving}
             value={packageStatus}
             onChange={(event) => { setPackageStatus(event.target.value); setSaved(false); }}
             className="mt-1.5 w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-[#2F3AA2]"
           >
-            <option value="active">Aktívny</option>
-            <option value="completed">Dokončený</option>
-            <option value="expired">Po platnosti</option>
-            <option value="cancelled">Zrušený</option>
+            <option value="active">{sk?"Aktívny":"Active"}</option>
+            <option value="completed">{sk?"Dokončený":"Completed"}</option>
+            <option value="expired">{sk?"Po platnosti":"Expired"}</option>
+            <option value="cancelled">{sk?"Zrušený":"Cancelled"}</option>
           </select>
         </label>
 
@@ -138,12 +140,12 @@ export default function PackageAdminActions({
           disabled={saving}
           className="mt-3 w-full rounded-xl bg-[#2F3AA2] px-3 py-2 text-xs font-semibold text-white disabled:opacity-60"
         >
-          {saving ? "Ukladám..." : "Uložiť zmenu"}
+          {saving?(sk?"Ukladám...":"Saving..."):(sk?"Uložiť zmenu":"Save change")}
         </button>
 
         {saved && (
           <p role="status" className="mt-2 text-xs font-medium text-[#3730A3]">
-            Uložené.
+            {sk?"Uložené.":"Saved."}
           </p>
         )}
 

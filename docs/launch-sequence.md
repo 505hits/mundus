@@ -40,6 +40,8 @@ Code is merged to main. The reviewed database activation is applied. The current
    - 202610050010_require_teacher_photo.sql
    - 202610050011_teacher_monthly_feedback.sql
    - 202610050012_teacher_feedback_timezone.sql
+   - 202610050013_operations_quality_layer.sql
+   - 202610050014_sync_lesson_attendance.sql
    `202610050001_teacher_language_offer.sql` removes the retired Turkish preference value from existing teacher preference rows and expands the allowed teacher-language list to the current 13-language offer. These augment an existing base schema, not an empty database. Check profile creation trigger compatibility and discounted pending-order identity duplicates before applying. Run preflight again afterward.
 3. Run npm run launch:check in an environment with deployment variables, or npm run launch:check -- --env-file <local-env-file>. Never commit that file or paste secret values into chat. The command outputs only status, checks presence/shape, and does not validate credentials or prove launch readiness. Disabled optional features are reported as disabled, not missing. Public Supabase values must be supplied at build time and require a fresh deployment build.
 4. Use docs/account-onboarding.md for Auth redirects, confirmed email and signup/invite checks; docs/payments.md for Stripe test mode; docs/placement-tests.md for language/audio tests; docs/learning-and-notifications.md for private files/SMTP/scheduler. Enable each feature only after its preview checks. SMTP and scheduling remain off until configured; no production cron is created by this work.
@@ -94,3 +96,16 @@ Supabase performance advisors report no remaining unindexed foreign keys from th
 ## Monthly teacher quality feedback
 
 Students can rate each teacher once per calendar month after at least one completed lesson with that teacher in the same Europe/Bratislava month. Ratings are 1–5 with optional feedback up to 1500 characters and can be updated during the month. Database RLS enforces student ownership and completed-lesson eligibility. Admins can review historical monthly rankings with average rating, response count, completed lesson count, unique students and written comments. Students receive a dashboard reminder when a completed teacher/month remains unrated.
+
+
+## Operations and quality layer
+
+Admin now has:
+- student retention signals (0–2 credits, no upcoming lesson, 14/30-day inactivity),
+- private student/teacher notes,
+- monthly teacher payout reports with month-specific rates and CSV export,
+- Teacher Performance with quality alerts, six-month rating/lesson trends and structured feedback categories.
+
+Attendance is stored separately from package accounting and is synchronized from the existing lesson closeout status. Completed lessons map to attended; no-show/cancellation outcomes retain their existing lesson statuses and are mirrored into attendance metadata. This does not install a second credit-deduction path.
+
+Teachers see only their own aggregate monthly summary (completed lessons, unique students, average rating, response count and prior-month comparison). Student identities and written feedback are not exposed through the teacher summary.

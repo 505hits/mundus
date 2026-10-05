@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import LogoutButton from "@/components/LogoutButton";
 import BrandLogo from "@/components/BrandLogo";
+import LanguageToggle from "@/components/LanguageToggle";
+import { useLanguage } from "@/context/LanguageContext";
 import {
   CalendarDays,
   CalendarRange,
@@ -19,22 +21,23 @@ import {
 } from "lucide-react";
 
 const navItems = [
-  { name: "Domov", href: "/admin/dashboard", icon: Home },
-  { name: "Kalendár", href: "/admin/calendar", icon: CalendarRange },
-  { name: "Priradenie", href: "/admin/matching", icon: Users },
-  { name: "Študenti", href: "/admin/students", icon: Users },
-  { name: "Lektori", href: "/admin/teachers", icon: GraduationCap },
-  { name: "Hodiny", href: "/admin/lessons", icon: CalendarDays },
-  { name: "Výkon", href: "/admin/teacher-ranking", icon: Trophy },
-  { name: "Retencia", href: "/admin/retention", icon: HeartPulse },
-  { name: "Balíčky", href: "/admin/packages", icon: Package },
-  { name: "Výplaty", href: "/admin/payouts", icon: WalletCards },
-  { name: "Poznámky", href: "/admin/notes", icon: NotebookPen },
+  { sk: "Domov", en: "Home", href: "/admin/dashboard", icon: Home },
+  { sk: "Kalendár", en: "Calendar", href: "/admin/calendar", icon: CalendarRange },
+  { sk: "Priradenie", en: "Matching", href: "/admin/matching", icon: Users },
+  { sk: "Študenti", en: "Students", href: "/admin/students", icon: Users },
+  { sk: "Lektori", en: "Teachers", href: "/admin/teachers", icon: GraduationCap },
+  { sk: "Hodiny", en: "Lessons", href: "/admin/lessons", icon: CalendarDays },
+  { sk: "Výkon", en: "Performance", href: "/admin/teacher-ranking", icon: Trophy },
+  { sk: "Retencia", en: "Retention", href: "/admin/retention", icon: HeartPulse },
+  { sk: "Balíčky", en: "Packages", href: "/admin/packages", icon: Package },
+  { sk: "Výplaty", en: "Payouts", href: "/admin/payouts", icon: WalletCards },
+  { sk: "Poznámky", en: "Notes", href: "/admin/notes", icon: NotebookPen },
 ];
 
 export default function AdminNav({ paymentsEnabled = false }: { paymentsEnabled?: boolean }) {
   const pathname = usePathname();
-  const items = paymentsEnabled ? [...navItems, { name: "Platby", href: "/admin/payments", icon: CreditCard }] : navItems;
+  const { language } = useLanguage();
+  const items = paymentsEnabled ? [...navItems, { sk: "Platby", en: "Payments", href: "/admin/payments", icon: CreditCard }] : navItems;
 
   return (
     <>
@@ -44,9 +47,11 @@ export default function AdminNav({ paymentsEnabled = false }: { paymentsEnabled?
           <BrandLogo href="/admin/dashboard" compact />
 
           <p className="mt-1 text-xs font-medium uppercase tracking-[0.16em] text-[#2F3AA2]">
-            Admin portál
+            {language === "sk" ? "Admin portál" : "Admin portal"}
           </p>
         </div>
+
+        <div className="px-6 pb-4"><LanguageToggle /></div>
 
         <nav className="flex-1 overflow-y-auto px-3 pb-4">
           <div className="space-y-1">
@@ -60,7 +65,7 @@ export default function AdminNav({ paymentsEnabled = false }: { paymentsEnabled?
 
               return (
                 <Link
-                  key={item.name}
+                  key={language === "sk" ? item.sk : item.en}
                   href={item.href}
                   aria-current={active ? "page" : undefined}
                   className={`focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F3AA2] flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition ${
@@ -69,7 +74,7 @@ export default function AdminNav({ paymentsEnabled = false }: { paymentsEnabled?
                   }`}
                 >
                   <Icon size={18} />
-                  {item.name}
+                  {language === "sk" ? item.sk : item.en}
                 </Link>
               );
             })}
@@ -84,7 +89,7 @@ export default function AdminNav({ paymentsEnabled = false }: { paymentsEnabled?
               Mundus Languages
             </p>
             <p className="mt-1 text-xs text-gray-400">
-              Administrátor Mundus
+              {language === "sk" ? "Administrátor Mundus" : "Mundus administrator"}
             </p>
           </div>
         </div>
@@ -105,7 +110,7 @@ export default function AdminNav({ paymentsEnabled = false }: { paymentsEnabled?
 
             return (
               <Link
-                key={item.name}
+                key={language === "sk" ? item.sk : item.en}
                 href={item.href}
                   aria-current={active ? "page" : undefined}
                 className={`focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F3AA2] flex min-w-[80px] flex-1 flex-col items-center gap-1 rounded-xl px-1 py-2 text-[10px] font-medium ${
@@ -113,7 +118,7 @@ export default function AdminNav({ paymentsEnabled = false }: { paymentsEnabled?
                 }`}
               >
                 <Icon size={18} />
-                <span className="max-w-full truncate">{item.name}</span>
+                <span className="max-w-full truncate">{language === "sk" ? item.sk : item.en}</span>
               </Link>
             );
           })}

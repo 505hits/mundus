@@ -4,15 +4,18 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatPackageStatus, formatPackageType } from "@/lib/portalLabels";
 import AddPackageForm from "./AddPackageForm";
 import PackageAdminActions from "./PackageAdminActions";
+import {currentLanguage,localeFor} from "@/lib/i18n";
+import type {Language} from "@/context/LanguageContext";
 
-function formatDate(value: string | null) {
+function formatDate(value: string | null,language:Language) {
   if (!value) return "—";
-  return new Intl.DateTimeFormat("sk-SK", {
+  return new Intl.DateTimeFormat(localeFor(language), {
     day: "numeric", month: "short", year: "numeric", timeZone: "Europe/Bratislava",
   }).format(new Date(value));
 }
 
 export default async function AdminPackagesPage() {
+  const language=await currentLanguage(); const sk=language==="sk";
   await requireRole("admin");
   const supabase = await createSupabaseServerClient();
 
@@ -50,16 +53,16 @@ export default async function AdminPackagesPage() {
     <main className="min-h-screen bg-transparent text-[#0a0a0f]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">Balíčky</p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Prehľad balíčkov</h1>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">{sk?"Balíčky":"Packages"}</p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">{sk?"Prehľad balíčkov":"Package overview"}</h1>
           <p className="mt-2 max-w-2xl text-gray-500">
-            Aktuálny stav hodín v balíčkoch a upozornenia na pokračovanie.
+            {sk?"Aktuálny stav hodín v balíčkoch a upozornenia na pokračovanie.":"Current lesson balances and continuation alerts."}
           </p>
         </section>
 
         {(error || studentsError) && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            Nepodarilo sa načítať údaje o balíčkoch. Obnovte stránku a skúste to znova.
+            {sk?"Nepodarilo sa načítať údaje o balíčkoch. Obnovte stránku a skúste to znova.":"Package data could not be loaded. Refresh the page and try again."}
           </div>
         )}
 
@@ -69,28 +72,28 @@ export default async function AdminPackagesPage() {
           <div className="rounded-3xl border border-[#E5E7F0] bg-white p-5 shadow-sm">
             <Package size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{active.length}</p>
-            <p className="mt-1 text-sm text-gray-500">Aktívne balíčky</p>
+            <p className="mt-1 text-sm text-gray-500">{sk?"Aktívne balíčky":"Active packages"}</p>
           </div>
           <div className="rounded-3xl border border-[#E5E7F0] bg-white p-5 shadow-sm">
             <AlertCircle size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{renewalSoon.length}</p>
-            <p className="mt-1 text-sm text-gray-500">2 alebo menej hodín</p>
+            <p className="mt-1 text-sm text-gray-500">{sk?"2 alebo menej hodín":"2 or fewer lessons"}</p>
           </div>
           <div className="rounded-3xl border border-[#E5E7F0] bg-white p-5 shadow-sm">
             <RefreshCw size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{renewalDue.length}</p>
-            <p className="mt-1 text-sm text-gray-500">Je čas pokračovať</p>
+            <p className="mt-1 text-sm text-gray-500">{sk?"Je čas pokračovať":"Time to continue"}</p>
           </div>
           <div className="rounded-3xl border border-[#E5E7F0] bg-white p-5 shadow-sm">
             <CheckCircle2 size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{totalUsed}</p>
-            <p className="mt-1 text-sm text-gray-500">Využité hodiny vo všetkých balíčkoch</p>
+            <p className="mt-1 text-sm text-gray-500">{sk?"Využité hodiny vo všetkých balíčkoch":"Used lessons across all packages"}</p>
           </div>
         </section>
 
         <section className="mt-8 overflow-hidden rounded-3xl border border-[#E5E7F0] bg-white shadow-sm">
           {rows.length === 0 ? (
-            <div className="p-8 text-center text-sm text-gray-500">Zatiaľ nie sú vytvorené žiadne balíčky.</div>
+            <div className="p-8 text-center text-sm text-gray-500">{sk?"Zatiaľ nie sú vytvorené žiadne balíčky.":"No packages have been created yet."}</div>
           ) : (
             <div className="divide-y divide-gray-100">
               {rows.map((item) => {
@@ -103,34 +106,34 @@ export default async function AdminPackagesPage() {
                 const warning = item.status === "active" && remaining <= 2;
                 const displayStatus =
                   item.status === "active" && remaining === 0
-                    ? "Je čas pokračovať"
+                    ? (sk?"Je čas pokračovať":"Time to continue")
                     : item.status === "active" && remaining <= 2
-                      ? "Čoskoro pokračovanie"
-                      : formatPackageStatus(item.status);
+                      ? (sk?"Čoskoro pokračovanie":"Continuation soon")
+                      : formatPackageStatus(item.status,language);
 
                 return (
                   <div key={item.id} className="grid gap-4 px-5 py-5 lg:grid-cols-[1.5fr_0.7fr_0.7fr_0.7fr_0.9fr_1fr_0.8fr] lg:items-center lg:px-6">
                     <div>
                       <p className="font-semibold">
-                        {student?.full_name?.trim() || student?.email || "Študent"}
+                        {student?.full_name?.trim() || student?.email || (sk?"Študent":"Student")}
                       </p>
                       <p className="mt-1 text-sm text-gray-400">
-                        {formatPackageType(item.package_type)} · {formatDate(item.purchased_at)}
+                        {formatPackageType(item.package_type,language)} · {formatDate(item.purchased_at,language)}
                       </p>
                       <div className="mt-3 h-1.5 max-w-[180px] overflow-hidden rounded-full bg-gray-100">
                         <div className="h-full rounded-full bg-[#2F3AA2]" style={{ width: `${percentage}%` }} />
                       </div>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 lg:hidden">Zakúpené</p>
+                      <p className="text-xs text-gray-400 lg:hidden">{sk?"Zakúpené":"Purchased"}</p>
                       <p className="mt-1 text-sm font-medium lg:mt-0">{purchased}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 lg:hidden">Využité</p>
+                      <p className="text-xs text-gray-400 lg:hidden">{sk?"Využité":"Used"}</p>
                       <p className="mt-1 text-sm font-medium lg:mt-0">{used}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 lg:hidden">Zostáva</p>
+                      <p className="text-xs text-gray-400 lg:hidden">{sk?"Zostáva":"Remaining"}</p>
                       <p className={`mt-1 text-lg font-semibold lg:mt-0 ${warning ? "text-[#2F3AA2]" : ""}`}>
                         {remaining}
                       </p>
@@ -143,7 +146,7 @@ export default async function AdminPackagesPage() {
                       </span>
                     </div>
                     <div className="text-sm text-gray-400">
-                      {item.expires_at ? `Platí do ${formatDate(item.expires_at)}` : "Bez expirácie"}
+                      {item.expires_at ? `${sk?"Platí do":"Valid until"} ${formatDate(item.expires_at,language)}` : (sk?"Bez expirácie":"No expiration")}
                     </div>
                     <PackageAdminActions
                       packageId={item.id}

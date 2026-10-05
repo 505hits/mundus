@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - mundus-portal
+      - main
   pull_request:
     branches:
       - main

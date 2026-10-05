@@ -6,6 +6,7 @@ import LogoutButton from "@/components/LogoutButton";
 import BrandLogo from "@/components/BrandLogo";
 import {
   CalendarDays,
+  CalendarRange,
   GraduationCap,
   Home,
   Package,
@@ -14,6 +15,7 @@ import {
 } from "lucide-react";
 
 const navItems = [
+  {name:"Kalendár",href:"/admin/calendar",icon:CalendarRange},
   {name:"Priradenie",href:"/admin/matching",icon:Users},
   {
     name: "Domov",

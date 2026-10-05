@@ -237,7 +237,7 @@ export default async function DashboardPage() {
 
         {hasLoadError && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            {sk ? "Niektoré údaje sa nepodarilo načítať. sk ? "Obnovte stránku alebo to skúste o chvíľu znova." : "Refresh the page or try again shortly."" : "Some data could not be loaded. Refresh the page or try again shortly."}
+            {sk ? "Niektoré údaje sa nepodarilo načítať. Obnovte stránku alebo to skúste o chvíľu znova." : "Some data could not be loaded. Refresh the page or try again shortly."}
           </div>
         )}
 

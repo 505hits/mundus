@@ -57,9 +57,10 @@ export default async function TeacherDashboardPage() {
   const supabase = await createSupabaseServerClient();
   const studentDirectory = await teacherDirectory(supabase);
 
-  const [{ data: teacherProfile }, { data: publicProfile }] = await Promise.all([
+  const [{ data: teacherProfile }, { data: publicProfile }, { data: matchingPreferences }] = await Promise.all([
     supabase.from("profiles").select("full_name, email").eq("id", user.id).single(),
     supabase.from("teacher_public_profiles").select("headline,bio,languages,photo_path,website_visible").eq("teacher_id", user.id).maybeSingle(),
+    supabase.from("teacher_preferences").select("languages,levels,days,time_from,time_to,max_new_students,accepting_students").eq("teacher_id", user.id).maybeSingle(),
   ]);
 
   const now = new Date();
@@ -211,6 +212,14 @@ export default async function TeacherDashboardPage() {
     publicProfile?.bio?.trim().length >= 20 &&
     publicProfile?.languages?.length
   );
+  const matchingPreferencesComplete = Boolean(
+    matchingPreferences?.languages?.length &&
+    matchingPreferences?.levels?.length &&
+    matchingPreferences?.days?.length &&
+    matchingPreferences?.time_from &&
+    matchingPreferences?.time_to &&
+    Number(matchingPreferences?.max_new_students ?? 0) > 0
+  );
 
   return (
     <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
@@ -253,6 +262,16 @@ export default async function TeacherDashboardPage() {
               <p className="mt-1 text-sm leading-6 text-gray-600">Pridajte profilovú fotku, jazyky, krátky titulok a predstavenie. Po dokončení sa profil môže zobraziť aj na hlavnom webe Mundus.</p>
             </div>
             <Link href="/teacher/profile" className="shrink-0 rounded-xl bg-[#2F3AA2] px-4 py-3 text-sm font-semibold text-white">Dokončiť profil</Link>
+          </section>
+        )}
+
+        {!matchingPreferencesComplete && (
+          <section className="mt-4 flex flex-col gap-4 rounded-3xl border border-amber-200 bg-amber-50 p-5 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="font-semibold text-amber-900">Nastavte dostupnosť pre priraďovanie študentov</p>
+              <p className="mt-1 text-sm leading-6 text-amber-900/75">Doplňte jazyky, úrovne, dni, časové okno a kapacitu. Bez týchto údajov vás smart matching nevie správne odporučiť novým študentom.</p>
+            </div>
+            <Link href="/teacher/availability" className="shrink-0 rounded-xl bg-[#2F3AA2] px-4 py-3 text-sm font-semibold text-white">Nastaviť dostupnosť</Link>
           </section>
         )}
 

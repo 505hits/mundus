@@ -10,6 +10,7 @@ import {
   GraduationCap,
   Home,
   Package,
+  Star,
 } from "lucide-react";
 
 const navItems = [
@@ -32,6 +33,11 @@ const navItems = [
     label: "Pokrok",
     href: "/progress",
     icon: ChartNoAxesColumnIncreasing,
+  },
+  {
+    label: "Hodnotenie",
+    href: "/feedback",
+    icon: Star,
   },
   { label: "Vstupný test", href: "/level-test", icon: BookOpen },
   { label: "Kontrolný test", href: "/progress-test", icon: ChartNoAxesColumnIncreasing },

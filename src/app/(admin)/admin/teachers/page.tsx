@@ -9,8 +9,11 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatLanguage, formatProfileStatus } from "@/lib/portalLabels";
 import InviteTeacherForm from "./invite/InviteTeacherForm";
 import TeacherApprovalAction from "./TeacherApprovalAction";
+import { currentLanguage } from "@/lib/i18n";
 
 export default async function AdminTeachersPage() {
+  const language=await currentLanguage();
+  const sk=language==="sk";
   await requireRole("admin");
   const supabase = await createSupabaseServerClient();
 
@@ -80,7 +83,7 @@ export default async function AdminTeachersPage() {
       ...teacher,
       studentCount,
       completedThisMonth,
-      languages: languageValues.length ? languageValues.map((language: string) => formatLanguage(language)).join(", ") : "—",
+      languages: languageValues.length ? languageValues.map((value: string) => formatLanguage(value,language)).join(", ") : "—",
       publicProfileComplete,
       websiteVisible: Boolean(websiteProfile?.website_visible),
     };
@@ -105,13 +108,13 @@ export default async function AdminTeachersPage() {
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
-            Lektori
+            {sk?"Lektori":"Teachers"}
           </p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Správa lektorov
+            {sk?"Správa lektorov":"Teacher management"}
           </h1>
           <p className="mt-2 text-gray-500">
-            Reálne účty lektorov a aktuálna výučba.
+            {sk?"Reálne účty lektorov a aktuálna výučba.":"Real teacher accounts and current teaching activity."}
           </p>
         </section>
 
@@ -119,7 +122,7 @@ export default async function AdminTeachersPage() {
 
         {(error || lessonsError || preferencesError || publicProfilesError) && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            Nepodarilo sa načítať účty lektorov. Obnovte stránku a skúste to znova.
+            {sk?"Nepodarilo sa načítať účty lektorov. Obnovte stránku a skúste to znova.":"Teacher accounts could not be loaded. Refresh the page and try again."}
           </div>
         )}
 
@@ -127,32 +130,32 @@ export default async function AdminTeachersPage() {
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <GraduationCap size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{activeTeachers}</p>
-            <p className="mt-1 text-sm text-gray-500">Aktívni lektori</p>
+            <p className="mt-1 text-sm text-gray-500">{sk?"Aktívni lektori":"Active teachers"}</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <Users size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{assignedStudents}</p>
-            <p className="mt-1 text-sm text-gray-500">Priradení študenti</p>
+            <p className="mt-1 text-sm text-gray-500">{sk?"Priradení študenti":"Assigned students"}</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <CalendarDays size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{completedThisMonth}</p>
-            <p className="mt-1 text-sm text-gray-500">Dokončené hodiny tento mesiac</p>
+            <p className="mt-1 text-sm text-gray-500">{sk?"Dokončené hodiny tento mesiac":"Completed lessons this month"}</p>
           </div>
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <AlertCircle size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{pendingTeachers}</p>
-            <p className="mt-1 text-sm text-gray-500">Čakajúci / neaktívni</p>
+            <p className="mt-1 text-sm text-gray-500">{sk?"Čakajúci / neaktívni":"Pending / inactive"}</p>
           </div>
         </section>
 
         <section className="mt-10">
-          <p className="text-sm text-gray-400">Tím</p>
-          <h2 className="mt-1 text-xl font-semibold">Účty lektorov</h2>
+          <p className="text-sm text-gray-400">{sk?"Tím":"Team"}</p>
+          <h2 className="mt-1 text-xl font-semibold">{sk?"Účty lektorov":"Teacher accounts"}</h2>
 
           {teacherRows.length === 0 ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 text-sm text-gray-500 shadow-sm">
-              Zatiaľ nie sú vytvorené žiadne účty lektorov.
+              {sk?"Zatiaľ nie sú vytvorené žiadne účty lektorov.":"No teacher accounts have been created yet."}
             </div>
           ) : (
             <div className="mt-4 overflow-hidden rounded-3xl border border-black/5 bg-white shadow-sm">
@@ -164,7 +167,7 @@ export default async function AdminTeachersPage() {
                   >
                     <div>
                       <p className="font-semibold">
-                        {teacher.full_name?.trim() || teacher.email || "Lektor"}
+                        {teacher.full_name?.trim() || teacher.email || (sk?"Lektor":"Teacher")}
                       </p>
                       <p className="mt-1 text-sm text-gray-400">
                         {teacher.languages}
@@ -177,30 +180,30 @@ export default async function AdminTeachersPage() {
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 lg:hidden">Študenti</p>
+                      <p className="text-xs text-gray-400 lg:hidden">{sk?"Študenti":"Students"}</p>
                       <p className="mt-1 text-sm font-medium lg:mt-0">
                         {teacher.studentCount}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 lg:hidden">Tento mesiac</p>
+                      <p className="text-xs text-gray-400 lg:hidden">{sk?"Tento mesiac":"This month"}</p>
                       <p className="mt-1 text-sm font-medium lg:mt-0">
-                        {teacher.completedThisMonth} hodín
+                        {teacher.completedThisMonth} {sk?"hodín":"lessons"}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 lg:hidden">Web profil</p>
+                      <p className="text-xs text-gray-400 lg:hidden">{sk?"Web profil":"Web profile"}</p>
                       <span className={teacher.publicProfileComplete && teacher.websiteVisible
                         ? "rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700"
                         : "rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-800"}>
                         {teacher.publicProfileComplete
-                          ? teacher.websiteVisible ? "Zobrazený" : "Pripravený"
-                          : "Nedokončený"}
+                          ? teacher.websiteVisible ? (sk?"Zobrazený":"Visible") : (sk?"Pripravený":"Ready")
+                          : (sk?"Nedokončený":"Incomplete")}
                       </span>
                     </div>
                     <div>
                       <span className="rounded-full bg-[#EEF2FF] px-3 py-1 text-xs font-semibold capitalize text-[#3730A3]">
-                        {formatProfileStatus(teacher.status)}
+                        {formatProfileStatus(teacher.status,language)}
                       </span>
                     </div>
                     <div>

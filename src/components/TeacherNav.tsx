@@ -13,28 +13,12 @@ import {
 } from "lucide-react";
 
 const navItems = [
-  {label:"Profil",href:"/teacher/profile",icon:UserRound},
-  {label:"Kapacita",href:"/teacher/availability",icon:CalendarDays},
-  {
-    label: "Domov",
-    href: "/teacher/dashboard",
-    icon: Home,
-  },
-  {
-    label: "Rozvrh",
-    href: "/teacher/schedule",
-    icon: CalendarDays,
-  },
-  {
-    label: "Študenti",
-    href: "/teacher/students",
-    icon: Users,
-  },
-  {
-    label: "Záznamy",
-    href: "/teacher/reports",
-    icon: ClipboardCheck,
-  },
+  { label: "Domov", href: "/teacher/dashboard", icon: Home },
+  { label: "Rozvrh", href: "/teacher/schedule", icon: CalendarDays },
+  { label: "Študenti", href: "/teacher/students", icon: Users },
+  { label: "Záznamy", href: "/teacher/reports", icon: ClipboardCheck },
+  { label: "Kapacita", href: "/teacher/availability", icon: CalendarDays },
+  { label: "Profil", href: "/teacher/profile", icon: UserRound },
 ];
 
 export default function TeacherNav() {
@@ -43,8 +27,8 @@ export default function TeacherNav() {
   return (
     <>
       {/* Desktop navigation */}
-      <aside className="hidden w-64 shrink-0 border-r border-black/5 bg-white lg:block">
-        <div className="sticky top-0 flex h-screen flex-col p-5">
+      <aside className="hidden w-64 shrink-0 border-r border-[#E5E7F0] bg-white/95 lg:block">
+        <div className="sticky top-0 flex h-screen flex-col overflow-y-auto p-5">
           <div className="px-3 py-1"><BrandLogo compact /></div>
 
           <p className="mt-6 px-3 text-xs font-semibold uppercase tracking-[0.14em] text-gray-400">
@@ -78,7 +62,7 @@ export default function TeacherNav() {
           </nav>
 
           <div className="mt-auto space-y-3">
-            <div className="rounded-2xl bg-[#F5F5F4] p-4">
+            <div className="rounded-2xl bg-[#F3F5FB] p-4">
             <p className="text-sm font-semibold text-[#0a0a0f]">
               Účet lektora
             </p>

@@ -31,9 +31,9 @@ Code is on mundus-portal. The reviewed database activation is applied; website p
    - 20261004120115_report_table_grants.sql
    - 202610050001_teacher_language_offer.sql
    - 202610050003_foreign_key_indexes.sql
-   - 202610050006_portal_email_notifications.sql
-   - 202610050005_teacher_public_profiles.sql
    - 202610050004_student_matching_preferences.sql
+   - 202610050005_teacher_public_profiles.sql
+   - 202610050006_portal_email_notifications.sql
    `202610050001_teacher_language_offer.sql` removes the retired Turkish preference value from existing teacher preference rows and expands the allowed teacher-language list to the current 13-language offer. These augment an existing base schema, not an empty database. Check profile creation trigger compatibility and discounted pending-order identity duplicates before applying. Run preflight again afterward.
 3. Run npm run launch:check in an environment with deployment variables, or npm run launch:check -- --env-file <local-env-file>. Never commit that file or paste secret values into chat. The command outputs only status, checks presence/shape, and does not validate credentials or prove launch readiness. Disabled optional features are reported as disabled, not missing. Public Supabase values must be supplied at build time and require a fresh deployment build.
 4. Use docs/account-onboarding.md for Auth redirects, confirmed email and signup/invite checks; docs/payments.md for Stripe test mode; docs/placement-tests.md for language/audio tests; docs/learning-and-notifications.md for private files/SMTP/scheduler. Enable each feature only after its preview checks. SMTP and scheduling remain off until configured; no production cron is created by this work.
@@ -66,7 +66,7 @@ GitHub reports successful Vercel deployments for mundus and mundus-5at5 on porta
 
 The older https://mundus-chi.vercel.app/login address returns HTTP 404. Do not give that address as a working portal preview. Main remains at 8803d08 (September 30); it does not contain the subsequent portal safeguards. Preparing a draft PR is review preparation, not production publication. A read-only merge-tree check finds no merge conflict against the current portal branch.
 
-Supabase is connected. All24 reviewed sources were applied atomically as 20261004115305_mundus_v1_portal_activation, followed by report_table_grants. Existing3 profiles/1lesson/1package were preserved; all13 public tables have RLS. Read-only teacher/student/anonymous role checks pass. Auth browser tests and real checkout/email/upload checks remain pending. Preflight now audits table grants as well as RLS: teachers require authenticated SELECT/INSERT/UPDATE on lesson_reports; server-only feature tables must not grant client writes. No changes to Vercel access restrictions or live payment/email flags were made.
+Supabase is connected. All 24 reviewed sources were applied atomically as 20261004115305_mundus_v1_portal_activation, followed by report_table_grants. Existing 3 profiles / 1 lesson / 1 package were preserved; all13 public tables have RLS. Read-only teacher/student/anonymous role checks pass. Auth browser tests and real checkout/email/upload checks remain pending. Preflight now audits table grants as well as RLS: teachers require authenticated SELECT/INSERT/UPDATE on lesson_reports; server-only feature tables must not grant client writes. No changes to Vercel access restrictions or live payment/email flags were made.
 
 
 ## New purchase → teacher assignment flow

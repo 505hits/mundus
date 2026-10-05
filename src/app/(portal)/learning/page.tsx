@@ -9,9 +9,11 @@ import {
 import type { StudentLessonReport } from "@/lib/student-report";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { currentLanguage, localeFor } from "@/lib/i18n";
+import type { Language } from "@/context/LanguageContext";
 
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat("sk-SK", {
+function formatDate(value: string, language: Language) {
+  return new Intl.DateTimeFormat(localeFor(language), {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -20,6 +22,8 @@ function formatDate(value: string) {
 }
 
 export default async function LearningPage() {
+  const language = await currentLanguage();
+  const sk = language === "sk";
   const { user } = await requireRole("student");
   const supabase = await createSupabaseServerClient();
 
@@ -45,31 +49,31 @@ export default async function LearningPage() {
             className="flex items-center gap-2 text-sm font-medium"
           >
             <ArrowLeft size={17} />
-            Prehľad
+            {sk ? "Prehľad" : "Overview"}
           </Link>
 
-          <p className="text-sm font-semibold">Vzdelávací portál Mundus</p>
+          <p className="text-sm font-semibold">{sk ? "Vzdelávací portál Mundus" : "Mundus learning portal"}</p>
         </div>
       </header>
 
       <div className="mx-auto max-w-6xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
-            Učenie
+            {sk ? "Učenie" : "Learning"}
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Domáce úlohy a poznámky
+            {sk ? "Domáce úlohy a poznámky" : "Homework and notes"}
           </h1>
 
           <p className="mt-2 max-w-2xl text-gray-500">
-            Domáce úlohy a odporúčania od vášho lektora Mundus.
+            {sk ? "Domáce úlohy a odporúčania od vášho lektora Mundus." : "Homework and recommendations from your Mundus teacher."}
           </p>
         </section>
 
         {error && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            Nepodarilo sa načítať údaje o učení. Obnovte stránku alebo to skúste o chvíľu znova.
+            {sk ? "Nepodarilo sa načítať údaje o učení. Obnovte stránku alebo to skúste o chvíľu znova." : "Learning data could not be loaded. Refresh the page or try again shortly."}
           </div>
         )}
 
@@ -77,13 +81,13 @@ export default async function LearningPage() {
           <div className="flex items-start justify-between gap-5">
             <div>
               <p className="text-sm font-medium text-white/55">
-                Aktuálna domáca úloha
+                {sk ? "Aktuálna domáca úloha" : "Current homework"}
               </p>
 
               {latestHomework ? (
                 <>
                   <h2 className="mt-3 text-2xl font-semibold">
-                    {latestHomework.topic || "Vaša posledná úloha"}
+                    {latestHomework.topic || (sk ? "Vaša posledná úloha" : "Your latest assignment")}
                   </h2>
 
                   <p className="mt-4 max-w-2xl leading-7 text-white/70">
@@ -91,17 +95,17 @@ export default async function LearningPage() {
                   </p>
 
                   <p className="mt-5 text-sm text-white/45">
-                    Aktualizované {formatDate(latestHomework.updated_at)}
+                    {sk ? "Aktualizované" : "Updated"} {formatDate(latestHomework.updated_at, language)}
                   </p>
                 </>
               ) : (
                 <>
                   <h2 className="mt-3 text-2xl font-semibold">
-                    {error ? "Domácu úlohu sa nepodarilo načítať" : "Zatiaľ nemáte zadanú domácu úlohu"}
+                    {error ? (sk ? "Domácu úlohu sa nepodarilo načítať" : "Homework could not be loaded") : (sk ? "Zatiaľ nemáte zadanú domácu úlohu" : "No homework assigned yet")}
                   </h2>
 
                   <p className="mt-4 max-w-xl leading-7 text-white/60">
-                    {error ? "Obnovte stránku alebo to skúste o chvíľu znova." : "Domáca úloha od lektora sa zobrazí po uložení záznamu z hodiny."}
+                    {error ? (sk ? "Obnovte stránku alebo to skúste o chvíľu znova." : "Refresh the page or try again shortly.") : (sk ? "Domáca úloha od lektora sa zobrazí po uložení záznamu z hodiny." : "Homework from your teacher will appear after a lesson report is saved.")}
                   </p>
                 </>
               )}
@@ -120,11 +124,11 @@ export default async function LearningPage() {
             </div>
 
             <div>
-              <p className="text-sm text-gray-400">Ďalšie zameranie</p>
+              <p className="text-sm text-gray-400">{sk ? "Ďalšie zameranie" : "Next focus"}</p>
 
               <h2 className="mt-1 text-xl font-semibold">
-                {error ? "Odporúčanie sa nepodarilo načítať." : latestReport?.next_focus?.trim() ||
-                  "Tu sa zobrazí odporúčanie, na čo sa zamerať ďalej."}
+                {error ? (sk ? "Odporúčanie sa nepodarilo načítať." : "Recommendation could not be loaded.") : latestReport?.next_focus?.trim() ||
+                  (sk ? "Tu sa zobrazí odporúčanie, na čo sa zamerať ďalej." : "Your teacher’s recommendation for what to focus on next will appear here.")}
               </h2>
 
               {latestReport?.student_note?.trim() && (
@@ -139,7 +143,7 @@ export default async function LearningPage() {
         <section className="mt-10">
           <div className="flex items-center gap-2">
             <BookOpen size={20} className="text-[#2F3AA2]" />
-            <h2 className="text-xl font-semibold">História domácich úloh</h2>
+            <h2 className="text-xl font-semibold">{sk ? "História domácich úloh" : "Homework history"}</h2>
           </div>
 
           {homeworkReports.length > 0 ? (
@@ -156,7 +160,7 @@ export default async function LearningPage() {
 
                     <div>
                       <p className="font-semibold">
-                        {report.topic || "Domáca úloha"}
+                        {report.topic || (sk ? "Domáca úloha" : "Homework")}
                       </p>
 
                       <p className="mt-2 text-sm leading-6 text-gray-600">
@@ -164,7 +168,7 @@ export default async function LearningPage() {
                       </p>
 
                       <p className="mt-3 text-xs text-gray-400">
-                        Aktualizované {formatDate(report.updated_at)}
+                        {sk ? "Aktualizované" : "Updated"} {formatDate(report.updated_at, language)}
                       </p>
                     </div>
                   </div>
@@ -173,10 +177,10 @@ export default async function LearningPage() {
             </div>
           ) : (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
-              <p className="font-medium">{error ? "Históriu domácich úloh sa nepodarilo načítať" : "Zatiaľ žiadne domáce úlohy"}</p>
+              <p className="font-medium">{error ? (sk ? "Históriu domácich úloh sa nepodarilo načítať" : "Homework history could not be loaded") : (sk ? "Zatiaľ žiadne domáce úlohy" : "No homework yet")}</p>
 
               <p className="mt-1 text-sm text-gray-400">
-                {error ? "Obnovte stránku alebo to skúste o chvíľu znova." : "Zadania od lektora sa zobrazia tu."}
+                {error ? (sk ? "Obnovte stránku alebo to skúste o chvíľu znova." : "Refresh the page or try again shortly.") : (sk ? "Zadania od lektora sa zobrazia tu." : "Teacher assignments will appear here.")}
               </p>
             </div>
           )}

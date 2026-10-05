@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Users, Brain, Globe, Zap, MessageCircle, Award } from "lucide-react";
+import { Users, Brain, CalendarClock, UserRoundCheck, MessageCircle, MessageSquareText } from "lucide-react";
 
 const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
@@ -14,49 +14,13 @@ const stagger = {
 };
 
 
-const features = [
-    {
-        icon: Users,
-        title: "Interakcia s rodeným hovorcom",
-        description: "Žiadne ďalšie aplikácie alebo platformy — hovorte so skutočnými učiteľmi priamo v Mundus.",
-        color: "from-blue-600 to-indigo-600",
-        shadow: "shadow-blue-200",
-    },
-    {
-        icon: Brain,
-        title: "Smart sledovanie pokroku",
-        description: "Sledujte svoju cestu učením a prispôsobte lekcie svojmu tempu.",
-        color: "from-blue-600 to-indigo-600",
-        shadow: "shadow-blue-200",
-    },
-    {
-        icon: Globe,
-        title: "Dostupnosť 24/7",
-        description: "Nájdite tútorov vo všetkých časových pásmach, pripravených keď ste vy.",
-        color: "from-blue-600 to-indigo-600",
-        shadow: "shadow-blue-200",
-    },
-    {
-        icon: Zap,
-        title: "Okamžité priradenie",
-        description: "Získajte perfektného tútora za pár sekúnd na základe vašich cieľov.",
-        color: "from-blue-600 to-indigo-600",
-        shadow: "shadow-blue-200",
-    },
-    {
-        icon: MessageCircle,
-        title: "Skutočné konverzácie",
-        description: "Precvičujte autentické dialógy, nie napísané scenáre.",
-        color: "from-blue-600 to-indigo-600",
-        shadow: "shadow-blue-200",
-    },
-    {
-        icon: Award,
-        title: "Certifikovaný pokrok",
-        description: "Získajte personalizovaný certifikát po dokončení kurzu.",
-        color: "from-blue-600 to-indigo-600",
-        shadow: "shadow-blue-200",
-    },
+const featureIcons = [
+    Users,
+    Brain,
+    CalendarClock,
+    UserRoundCheck,
+    MessageCircle,
+    MessageSquareText,
 ];
 
 import { useLanguage } from "@/context/LanguageContext";
@@ -93,19 +57,18 @@ export default function FeaturesBento() {
                 >
                     {t.features.items.map((feature, index) => {
                         // We map the static icons to the translated items based on index
-                        const FeatureIcon = features[index].icon;
+                        const FeatureIcon = featureIcons[index];
 
                         return (
                             <motion.div
                                 key={index}
                                 variants={fadeInUp}
                                 whileHover={{ y: -5, transition: { duration: 0.3 } }}
-                                className={`group relative p-8 rounded-3xl bg-white border border-gray-100 shadow-xl shadow-gray-200/50 hover:shadow-2xl hover:shadow-blue-200/50 transition-all duration-300 overflow-hidden flex flex-col justify-between ${index === 0 || index === 3 ? "md:col-span-1" : ""
-                                    }`}
+                                className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-[#E5E7F0] bg-white p-7 shadow-[0_10px_30px_rgba(23,26,43,0.04)] transition-all duration-300 hover:-translate-y-1 hover:border-[#C7D2FE] hover:shadow-[0_18px_42px_rgba(47,58,162,0.09)]"
                             >
                                 <div className={`absolute top-0 right-0 w-32 h-32 bg-[#2F3AA2] opacity-[0.1] rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-150 duration-500`} />
 
-                                <div className={`w-14 h-14 rounded-2xl bg-[#2F3AA2] flex items-center justify-center text-white mb-6 shadow-lg shadow-blue-200/50 group-hover:scale-110 transition-transform duration-300`}>
+                                <div className={`w-14 h-14 rounded-2xl bg-[#2F3AA2] flex items-center justify-center text-white mb-6 shadow-[0_10px_24px_rgba(47,58,162,0.2)] group-hover:scale-110 transition-transform duration-300`}>
                                     <FeatureIcon size={28} />
                                 </div>
 

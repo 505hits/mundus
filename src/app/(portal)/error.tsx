@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { AlertCircle, RefreshCw } from "lucide-react";
+import {useLanguage} from "@/context/LanguageContext";
 
 export default function StudentPortalError({
   error,
@@ -10,6 +11,7 @@ export default function StudentPortalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const {language}=useLanguage(); const sk=language==="sk";
   useEffect(() => {
     console.error(error);
   }, [error]);
@@ -21,10 +23,10 @@ export default function StudentPortalError({
           <AlertCircle size={24} />
         </div>
         <h1 className="mt-5 text-2xl font-semibold">
-          Niečo sa nepodarilo načítať
+          {sk?"Niečo sa nepodarilo načítať":"Something could not be loaded"}
         </h1>
         <p className="mt-2 leading-7 text-gray-500">
-          Vaše údaje zostali v bezpečí. Skúste stránku načítať znova.
+          {sk?"Vaše údaje zostali v bezpečí. Skúste stránku načítať znova.":"Your data is safe. Try loading the page again."}
         </p>
         <button
           type="button"
@@ -32,7 +34,7 @@ export default function StudentPortalError({
           className="mt-6 inline-flex items-center gap-2 rounded-2xl bg-[#2F3AA2] px-5 py-3 font-semibold text-white"
         >
           <RefreshCw size={17} />
-          Skúsiť znova
+          {sk?"Skúsiť znova":"Try again"}
         </button>
       </div>
     </main>

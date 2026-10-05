@@ -58,11 +58,11 @@ export default async function AdminDashboardPage() {
     { data: requests, error: requestsError },
   ] = await Promise.all([
     supabase.from("profiles").select("id,full_name,email").eq("role", "student").eq("status", "active"),
-    supabase.from("profiles").select("id").eq("role", "teacher").eq("status", "active"),
+    supabase.from("profiles").select("id,full_name,email").eq("role", "teacher").eq("status", "active"),
     supabase
       .from("lessons")
       .select(`
-        id,student_id,scheduled_at,status,language,
+        id,student_id,teacher_id,scheduled_at,status,language,
         student:profiles!lessons_student_id_fkey(full_name,email),
         teacher:profiles!lessons_teacher_id_fkey(full_name,email)
       `)
@@ -116,6 +116,18 @@ export default async function AdminDashboardPage() {
       )
       .map((lesson) => lesson.student_id)
   );
+
+  const workloadCutoff = now.getTime() + 7 * 24 * 60 * 60 * 1000;
+  const teacherWorkload = (teachers ?? []).map((teacher) => ({
+    ...teacher,
+    upcoming: (lessons ?? []).filter(
+      (lesson) =>
+        lesson.teacher_id === teacher.id &&
+        ["scheduled", "rescheduled"].includes(lesson.status) &&
+        new Date(lesson.scheduled_at).getTime() >= now.getTime() &&
+        new Date(lesson.scheduled_at).getTime() < workloadCutoff
+    ).length,
+  })).sort((a, b) => b.upcoming - a.upcoming || getName(a, "").localeCompare(getName(b, ""), "sk"));
 
   const lowPackages = (packages ?? []).filter(
     (pkg) => pkg.status === "active" && (pkg.remaining_lessons ?? 0) > 0 && (pkg.remaining_lessons ?? 0) <= 2
@@ -209,6 +221,35 @@ export default async function AdminDashboardPage() {
             <p className="mt-2 text-sm text-white/65">Aktívne balíčky s poslednými 1–2 hodinami</p>
           </section>
         </div>
+
+        <section className="mt-8 rounded-3xl border border-indigo-100 bg-white p-6 shadow-sm">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h2 className="text-xl font-semibold text-[#2F3AA2]">Vyťaženie lektorov</h2>
+              <p className="mt-2 text-sm text-gray-600">Naplánované a presunuté hodiny počas najbližších 7 dní. Je to orientačný prehľad pre priraďovanie nových študentov.</p>
+            </div>
+            <Link href="/admin/matching" className="font-semibold text-[#2F3AA2] underline">Otvoriť priradenie</Link>
+          </div>
+          {teachersError || lessonsError ? (
+            <p role="alert" className="mt-4 text-red-700">Vyťaženie lektorov sa nepodarilo načítať.</p>
+          ) : teacherWorkload.length === 0 ? (
+            <p className="mt-4 text-gray-600">Zatiaľ nemáte aktívnych lektorov.</p>
+          ) : (
+            <ul className="mt-4 divide-y divide-indigo-100">
+              {teacherWorkload.map((teacher) => (
+                <li key={teacher.id} className="flex items-center justify-between gap-4 py-3">
+                  <div>
+                    <p className="font-semibold">{getName(teacher, "Lektor")}</p>
+                    <p className="text-sm text-gray-500">Najbližších 7 dní</p>
+                  </div>
+                  <span className="rounded-full bg-indigo-50 px-3 py-2 text-sm font-semibold text-[#2F3AA2]">
+                    {teacher.upcoming === 1 ? "1 hodina" : teacher.upcoming >= 2 && teacher.upcoming <= 4 ? `${teacher.upcoming} hodiny` : `${teacher.upcoming} hodín`}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
 
         <section className="mt-8 rounded-3xl border border-indigo-100 bg-white p-6 shadow-sm">
           <h2 className="text-xl font-semibold text-[#2F3AA2]">Dokončené hodiny bez záznamu lektora</h2>

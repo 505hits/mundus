@@ -33,7 +33,7 @@ where n.nspname='public' and c.relkind='r'
 -- Server grants on tables not used by service operations need not be enabled.
 
 -- Teacher-language preferences must match the current offer before matching is enabled.
-do $ declare retired_languages bigint; unsupported_languages bigint;
+do $language_check$ declare retired_languages bigint; unsupported_languages bigint;
 begin
  if to_regclass('public.teacher_preferences') is not null then
   execute 'select count(*) from public.teacher_preferences where languages @> array[''Turkish'']::text[]' into retired_languages;
@@ -41,7 +41,7 @@ begin
   raise notice 'Teacher preferences containing retired Turkish: %',retired_languages;
   raise notice 'Teacher preferences containing unsupported languages: %',unsupported_languages;
  end if;
-end $;
+end $language_check$;
 
 -- Teacher contact privacy must be active before launch.
 select to_regprocedure('public.teacher_student_directory()') is not null as teacher_directory_exists,

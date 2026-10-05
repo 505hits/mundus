@@ -24,8 +24,9 @@ export default function TeacherSection({teachers}:{teachers:PublicTeacher[]}) {
   const { t, language } = useLanguage();
   const sk=language==="sk";
   const displayLanguage=(value:string)=>sk ? MUNDUS_LANGUAGE_OPTIONS.find(item=>item.value===value)?.label ?? value : value;
-  const existingNames=new Set(t.teachers.list.map(item=>item.name.trim().split(/\s+/)[0].toLowerCase()));
-  const newTeachers=teachers.filter(teacher=>!existingNames.has(teacher.name.trim().split(/\s+/)[0].toLowerCase()));
+  const normalizeName=(value:string)=>value.trim().replace(/\s+/g," ").toLocaleLowerCase("sk");
+  const existingNames=new Set(t.teachers.list.map(item=>normalizeName(item.name)));
+  const newTeachers=teachers.filter(teacher=>!existingNames.has(normalizeName(teacher.name)));
 
   return <section id="teachers" className="section bg-white py-24">
     <div className="container">

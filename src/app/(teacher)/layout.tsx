@@ -9,7 +9,7 @@ export default async function TeacherLayout({
   await requireRole("teacher");
 
   return (
-    <div className="min-h-screen bg-[#FAFAF9] lg:flex">
+    <div className="portal-surface min-h-screen lg:flex">
       <TeacherNav />
 
       <div className="min-w-0 flex-1 pb-24 lg:pb-0">

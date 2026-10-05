@@ -16,13 +16,15 @@ import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatLanguage, formatLessonType } from "@/lib/portalLabels";
 import CreateLessonForm from "./CreateLessonForm";
+import { currentLanguage, localeFor } from "@/lib/i18n";
+import type { Language } from "@/context/LanguageContext";
 
 type Props = {
   params: Promise<{ id: string }>;
 };
 
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat("sk-SK", {
+function formatDate(value: string, language: Language) {
+  return new Intl.DateTimeFormat(localeFor(language), {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -30,16 +32,16 @@ function formatDate(value: string) {
   }).format(new Date(value));
 }
 
-function formatShortDate(value: string) {
-  return new Intl.DateTimeFormat("sk-SK", {
+function formatShortDate(value: string, language: Language) {
+  return new Intl.DateTimeFormat(localeFor(language), {
     day: "numeric",
     month: "short",
     timeZone: "Europe/Bratislava",
   }).format(new Date(value));
 }
 
-function formatTime(value: string) {
-  return new Intl.DateTimeFormat("sk-SK", {
+function formatTime(value: string, language: Language) {
+  return new Intl.DateTimeFormat(localeFor(language), {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -53,12 +55,14 @@ function getName(
     | null
     | undefined
 ) {
-  return profile?.full_name?.trim() || profile?.email || "Študent";
+  return profile?.full_name?.trim() || profile?.email || "Student";
 }
 
 export default async function TeacherStudentPage({
   params,
 }: Props) {
+  const languagePreference = await currentLanguage();
+  const sk = languagePreference === "sk";
   const { user } = await requireRole("teacher");
   const { id } = await params;
 
@@ -80,14 +84,16 @@ export default async function TeacherStudentPage({
     notFound();
   }
 
-  return renderStudentPage(supabase, user.id, assignedLesson.student_id);
+  return renderStudentPage(supabase, user.id, assignedLesson.student_id, languagePreference);
 }
 
 async function renderStudentPage(
   supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
   teacherId: string,
-  studentId: string
+  studentId: string,
+  languagePreference: Language
 ) {
+  const sk = languagePreference === "sk";
   const [
     profileResult,
     lessonsResult,
@@ -191,11 +197,11 @@ async function renderStudentPage(
             className="flex items-center gap-2 text-sm font-medium"
           >
             <ArrowLeft size={17} />
-            Moji študenti
+            {sk ? "Moji študenti" : "My students"}
           </Link>
 
           <p className="text-sm font-semibold">
-            Prehľad študenta
+            {sk ? "Prehľad študenta" : "Student overview"}
           </p>
         </div>
       </header>
@@ -204,7 +210,7 @@ async function renderStudentPage(
         <section className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
-              Môj študent
+              {sk ? "Môj študent" : "My student"}
             </p>
 
             <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -212,12 +218,12 @@ async function renderStudentPage(
             </h1>
 
             <p className="mt-2 text-gray-500">
-              {formatLanguage(language)} · {formatLessonType(lessonType)}
+              {formatLanguage(language, languagePreference)} · {formatLessonType(lessonType, languagePreference)}
             </p>
           </div>
 
           <span className="w-fit rounded-full bg-[#eaf4ed] px-3 py-1.5 text-xs font-semibold text-[#3730A3]">
-            Aktívny študent
+            {sk ? "Aktívny študent" : "Active student"}
           </span>
         </section>
 
@@ -226,7 +232,7 @@ async function renderStudentPage(
             <BookOpen size={19} className="text-[#2F3AA2]" />
 
             <p className="mt-4 text-sm text-gray-400">
-              Dokončené hodiny
+              {sk ? "Dokončené hodiny" : "Completed lessons"}
             </p>
 
             <p className="mt-1 text-2xl font-semibold">
@@ -238,7 +244,7 @@ async function renderStudentPage(
             <CalendarDays size={19} className="text-[#2F3AA2]" />
 
             <p className="mt-4 text-sm text-gray-400">
-              Zostávajúce hodiny
+              {sk ? "Zostávajúce hodiny" : "Remaining lessons"}
             </p>
 
             <p className="mt-1 text-2xl font-semibold">
@@ -250,13 +256,13 @@ async function renderStudentPage(
             <TrendingUp size={19} className="text-[#2F3AA2]" />
 
             <p className="mt-4 text-sm text-gray-400">
-              Aktivita študenta
+              {sk ? "Aktivita študenta" : "Student activity"}
             </p>
 
             <p className="mt-1 text-sm font-semibold">
               {completedLessons.length > 0
-                ? "Prebiehajúca výučba"
-                : "Začiatok výučby"}
+                ? (sk ? "Prebiehajúca výučba" : "Learning in progress")
+                : (sk ? "Začiatok výučby" : "Getting started")}
             </p>
           </article>
         </div>
@@ -266,23 +272,23 @@ async function renderStudentPage(
             <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm text-white/55">
-                  Najbližšia hodina
+                  {sk ? "Najbližšia hodina" : "Next lesson"}
                 </p>
 
                 <h2 className="mt-2 text-2xl font-semibold">
-                  {formatLanguage(nextLesson.language || language)} ·{" "}
-                  {formatLessonType(nextLesson.lesson_type)}
+                  {formatLanguage(nextLesson.language || language, languagePreference)} ·{" "}
+                  {formatLessonType(nextLesson.lesson_type, languagePreference)}
                 </h2>
 
                 <div className="mt-4 flex flex-wrap gap-4 text-sm text-white/65">
                   <span className="flex items-center gap-2">
                     <CalendarDays size={16} />
-                    {formatDate(nextLesson.scheduled_at)}
+                    {formatDate(nextLesson.scheduled_at, languagePreference)}
                   </span>
 
                   <span className="flex items-center gap-2">
                     <Clock3 size={16} />
-                    {formatTime(nextLesson.scheduled_at)}
+                    {formatTime(nextLesson.scheduled_at, languagePreference)}
                   </span>
                 </div>
               </div>
@@ -295,11 +301,11 @@ async function renderStudentPage(
                   className="flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 font-semibold text-[#0a0a0f]"
                 >
                   <Video size={18} />
-                  Pripojiť sa na hodinu
+                  {sk ? "Pripojiť sa na hodinu" : "Join lesson"}
                 </a>
               ) : (
                 <span className="rounded-xl bg-white/10 px-5 py-3 text-sm text-white/60">
-                  Odkaz na Meet zatiaľ nie je pridaný
+                  {sk ? "Odkaz na Meet zatiaľ nie je pridaný" : "Meet link has not been added yet"}
                 </span>
               )}
             </div>
@@ -316,22 +322,22 @@ async function renderStudentPage(
         <section className="mt-10">
           <div>
             <p className="text-sm text-gray-400">
-              História
+              {sk ? "História" : "History"}
             </p>
 
             <h2 className="mt-1 text-xl font-semibold">
-              Posledné hodiny
+              {sk ? "Posledné hodiny" : "Recent lessons"}
             </h2>
           </div>
 
           {completedLessons.length === 0 ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
               <p className="font-medium">
-                Zatiaľ žiadne dokončené hodiny
+                {sk ? "Zatiaľ žiadne dokončené hodiny" : "No completed lessons yet"}
               </p>
 
               <p className="mt-1 text-sm text-gray-400">
-                Dokončené hodiny sa zobrazia tu.
+                {sk ? "Dokončené hodiny sa zobrazia tu." : "Completed lessons will appear here."}
               </p>
             </div>
           ) : (
@@ -350,19 +356,17 @@ async function renderStudentPage(
                     <div>
                       <p className="font-semibold">
                         {lesson.lesson_type
-                          ? formatLessonType(lesson.lesson_type)
-                          : formatLanguage(lesson.language)}
+                          ? formatLessonType(lesson.lesson_type, languagePreference)
+                          : formatLanguage(lesson.language, languagePreference)}
                       </p>
 
                       <p className="mt-1 text-sm text-gray-400">
-                        {formatShortDate(
-                          lesson.scheduled_at
-                        )}
+                        {formatShortDate(lesson.scheduled_at, languagePreference)}
                       </p>
                     </div>
 
                     <span className="rounded-full bg-[#EEF2FF] px-3 py-1.5 text-xs font-semibold text-[#3730A3]">
-                      Dokončená
+                      {sk ? "Dokončená" : "Completed"}
                     </span>
                   </div>
                 )
@@ -379,7 +383,7 @@ async function renderStudentPage(
             />
 
             <h2 className="text-lg font-semibold">
-              Poznámky pre študenta
+              {sk ? "Poznámky pre študenta" : "Notes for student"}
             </h2>
           </div>
 
@@ -395,12 +399,12 @@ async function renderStudentPage(
                   {latestReport.student_note}
                 </p>
                 <p className="mt-3 text-xs text-gray-400">
-                  Aktualizované {formatShortDate(latestReport.updated_at)}
+                  {sk ? "Aktualizované" : "Updated"} {formatShortDate(latestReport.updated_at, languagePreference)}
                 </p>
               </>
             ) : (
               <p className="text-sm leading-6 text-gray-500">
-                Zatiaľ nie je uložená žiadna poznámka pre študenta.
+                {sk ? "Zatiaľ nie je uložená žiadna poznámka pre študenta." : "No note for the student has been saved yet."}
               </p>
             )}
           </div>

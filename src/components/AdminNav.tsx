@@ -19,53 +19,17 @@ import {
 } from "lucide-react";
 
 const navItems = [
-  {name:"Kalendár",href:"/admin/calendar",icon:CalendarRange},
-  {name:"Priradenie",href:"/admin/matching",icon:Users},
-  {
-    name: "Domov",
-    href: "/admin/dashboard",
-    icon: Home,
-  },
-  {
-    name: "Študenti",
-    href: "/admin/students",
-    icon: Users,
-  },
-  {
-    name: "Lektori",
-    href: "/admin/teachers",
-    icon: GraduationCap,
-  },
-  {
-    name: "Výkon",
-    href: "/admin/teacher-ranking",
-    icon: Trophy,
-  },
-  {
-    name: "Retencia",
-    href: "/admin/retention",
-    icon: HeartPulse,
-  },
-  {
-    name: "Výplaty",
-    href: "/admin/payouts",
-    icon: WalletCards,
-  },
-  {
-    name: "Poznámky",
-    href: "/admin/notes",
-    icon: NotebookPen,
-  },
-  {
-    name: "Hodiny",
-    href: "/admin/lessons",
-    icon: CalendarDays,
-  },
-  {
-    name: "Balíčky",
-    href: "/admin/packages",
-    icon: Package,
-  },
+  { name: "Domov", href: "/admin/dashboard", icon: Home },
+  { name: "Kalendár", href: "/admin/calendar", icon: CalendarRange },
+  { name: "Priradenie", href: "/admin/matching", icon: Users },
+  { name: "Študenti", href: "/admin/students", icon: Users },
+  { name: "Lektori", href: "/admin/teachers", icon: GraduationCap },
+  { name: "Hodiny", href: "/admin/lessons", icon: CalendarDays },
+  { name: "Výkon", href: "/admin/teacher-ranking", icon: Trophy },
+  { name: "Retencia", href: "/admin/retention", icon: HeartPulse },
+  { name: "Balíčky", href: "/admin/packages", icon: Package },
+  { name: "Výplaty", href: "/admin/payouts", icon: WalletCards },
+  { name: "Poznámky", href: "/admin/notes", icon: NotebookPen },
 ];
 
 export default function AdminNav({ paymentsEnabled = false }: { paymentsEnabled?: boolean }) {
@@ -75,7 +39,7 @@ export default function AdminNav({ paymentsEnabled = false }: { paymentsEnabled?
   return (
     <>
       {/* Desktop navigation */}
-      <aside className="hidden min-h-screen w-64 shrink-0 border-r border-black/5 bg-white lg:flex lg:flex-col">
+      <aside className="hidden min-h-screen w-64 shrink-0 border-r border-[#E5E7F0] bg-white/95 lg:flex lg:flex-col">
         <div className="px-6 py-7">
           <BrandLogo href="/admin/dashboard" compact />
 
@@ -84,7 +48,7 @@ export default function AdminNav({ paymentsEnabled = false }: { paymentsEnabled?
           </p>
         </div>
 
-        <nav className="flex-1 px-3">
+        <nav className="flex-1 overflow-y-auto px-3 pb-4">
           <div className="space-y-1">
             {items.map((item) => {
               const Icon = item.icon;
@@ -115,9 +79,9 @@ export default function AdminNav({ paymentsEnabled = false }: { paymentsEnabled?
         <div className="border-t border-black/5 p-5">
           <LogoutButton />
           <div className="mt-3">
-          <div className="rounded-2xl bg-[#FAFAF9] p-4">
+          <div className="rounded-2xl bg-[#F3F5FB] p-4">
             <p className="text-sm font-semibold text-[#0a0a0f]">
-              Anikó
+              Mundus Languages
             </p>
             <p className="mt-1 text-xs text-gray-400">
               Administrátor Mundus

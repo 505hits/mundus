@@ -16,7 +16,7 @@ This file separates work that is complete in the repository from release work th
 - Accessibility/error-state hardening for account flows.
 - Current language catalog shared by lesson creation, teacher preferences and server validation.
 - Launch preflight, migration ordering and regression tests.
-- Prepared database hardening for the current language constraint, anonymous helper privilege removal and covering foreign-key indexes.
+- Prepared database hardening for the current language constraint and covering foreign-key indexes.
 
 ## Verified without deployment changes
 
@@ -32,11 +32,13 @@ Read-only checks against the connected Mundus Supabase project confirmed:
 
 The live teacher-preference database constraint still contains the old 8-language list. The repository contains the ordered migration that fixes it, but that migration has not been applied here because changing the live database requires separate approval.
 
+`mundus_active_portal_account()` intentionally remains executable by `anon` because the restrictive RLS policy applies to `public` and needs to evaluate the helper for anonymous requests. With no authenticated `auth.uid()`, the helper returns `false`; regression coverage verifies anonymous table access remains blocked.
+
 ## External/integration work still required
 
 These cannot be completed or honestly verified from repository work alone:
 
-1. Apply and verify the three latest prepared database migrations in the approved environment.
+1. Apply and verify the two latest prepared database migrations in the approved environment.
 2. Enable leaked-password protection in Supabase Auth if desired for launch.
 3. Verify real student signup, confirmation email, login, logout and password recovery.
 4. Verify a real teacher invitation and password setup.

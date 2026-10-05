@@ -19,13 +19,11 @@ function timeLabel(value:string){
 export default async function AdminCalendarPage(){
   await requireRole("admin");
   const db=await createSupabaseServerClient();
-  const from=new Date(Date.now()-14*24*60*60*1000).toISOString();
-  const to=new Date(Date.now()+60*24*60*60*1000).toISOString();
   const {data,error}=await db.from("lessons").select(`
     id,scheduled_at,duration_minutes,status,language,
     student:profiles!lessons_student_id_fkey(full_name,email),
     teacher:profiles!lessons_teacher_id_fkey(full_name,email)
-  `).gte("scheduled_at",from).lte("scheduled_at",to).order("scheduled_at",{ascending:true});
+  `).order("scheduled_at",{ascending:true});
 
   const groups=new Map<string,typeof data>();
   for(const lesson of data??[]){
@@ -38,10 +36,10 @@ export default async function AdminCalendarPage(){
   return <main className="mx-auto max-w-7xl px-5 py-10 sm:px-8">
     <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">Centrálny kalendár</p>
     <h1 className="mt-2 text-3xl font-semibold">Všetky hodiny Mundus</h1>
-    <p className="mt-3 max-w-3xl text-gray-600">Spoločný admin prehľad hodín všetkých lektorov a študentov: 14 dní dozadu a 60 dní dopredu.</p>
+    <p className="mt-3 max-w-3xl text-gray-600">Spoločný admin prehľad všetkých evidovaných hodín — minulých aj naplánovaných — naprieč všetkými lektormi a študentmi.</p>
 
     {error?<p role="alert" className="mt-6 rounded-2xl bg-red-50 p-4 text-red-700">Kalendár sa nepodarilo načítať.</p>:
-      groups.size===0?<div className="mt-8 rounded-3xl border border-black/5 bg-white p-8 text-gray-500 shadow-sm">V tomto období nie sú žiadne hodiny.</div>:
+      groups.size===0?<div className="mt-8 rounded-3xl border border-black/5 bg-white p-8 text-gray-500 shadow-sm">Zatiaľ nie sú evidované žiadne hodiny.</div>:
       <div className="mt-8 space-y-6">{Array.from(groups.entries()).map(([key,lessons])=><section key={key} className="rounded-3xl border border-black/5 bg-white shadow-sm">
         <div className="flex items-center justify-between border-b border-black/5 px-5 py-4 sm:px-6">
           <div className="flex items-center gap-3"><CalendarDays size={19} className="text-[#2F3AA2]"/><h2 className="font-semibold capitalize">{dateLabel(lessons?.[0]?.scheduled_at||key)}</h2></div>

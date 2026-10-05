@@ -1,27 +1,12 @@
 import { Star, Trophy, Users, CalendarDays } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-
-function monthBounds() {
-  const now = new Date();
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Europe/Bratislava",
-    year: "numeric",
-    month: "2-digit",
-  }).formatToParts(now);
-  const year = parts.find((part) => part.type === "year")?.value ?? "";
-  const month = parts.find((part) => part.type === "month")?.value ?? "";
-  const key = `${year}-${month}-01`;
-  const start = new Date(`${key}T00:00:00+02:00`);
-  const end = new Date(start);
-  end.setUTCMonth(end.getUTCMonth() + 1);
-  return { key, start: start.toISOString(), end: end.toISOString() };
-}
+import { BRATISLAVA_TIME_ZONE, currentBratislavaMonth } from "@/lib/month";
 
 export default async function TeacherRankingPage() {
   await requireRole("admin");
   const db = await createSupabaseServerClient();
-  const month = monthBounds();
+  const month = currentBratislavaMonth();
 
   const [
     { data: teachers, error: teachersError },
@@ -70,7 +55,7 @@ export default async function TeacherRankingPage() {
   const monthLabel = new Intl.DateTimeFormat("sk-SK", {
     month: "long",
     year: "numeric",
-    timeZone: "Europe/Bratislava",
+    timeZone: BRATISLAVA_TIME_ZONE,
   }).format(new Date(month.start));
 
   return (

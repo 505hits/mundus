@@ -5,6 +5,7 @@ import { confirmScheduleResponse, ScheduleResponseError } from "@/lib/schedule-r
 import { useRouter } from "next/navigation";
 import { Check, X } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
+import { useLanguage } from "@/context/LanguageContext";
 
 type Props = {
   requestId: string;
@@ -14,6 +15,8 @@ export default function StudentScheduleRequestActions({
   requestId,
 }: Props) {
   const router = useRouter();
+  const { language } = useLanguage();
+  const sk = language === "sk";
   const [loading, setLoading] = useState<"accepted" | "declined" | null>(null);
   const [error, setError] = useState("");
 
@@ -46,7 +49,7 @@ export default function StudentScheduleRequestActions({
     setSaved(true);
     router.refresh();
     } catch (error) {
-      setError(error instanceof ScheduleResponseError ? error.message : "Odpoveď sa nepodarilo uložiť. Skúste znova alebo kontaktujte Mundus.");
+      setError(error instanceof ScheduleResponseError ? error.message : (sk ? "Odpoveď sa nepodarilo uložiť. Skúste znova alebo kontaktujte Mundus." : "The response could not be saved. Try again or contact Mundus."));
     } finally {
       busy.current = false;
       setLoading(null);
@@ -63,7 +66,7 @@ export default function StudentScheduleRequestActions({
           className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
         >
           <Check size={16} />
-          {loading === "accepted" ? "Potvrdzujem..." : "Potvrdiť nový termín"}
+          {loading === "accepted" ? (sk ? "Potvrdzujem..." : "Confirming...") : (sk ? "Potvrdiť nový termín" : "Confirm new time")}
         </button>
 
         <button
@@ -73,11 +76,11 @@ export default function StudentScheduleRequestActions({
           className="inline-flex items-center justify-center gap-2 rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm font-medium text-[#0a0a0f] disabled:cursor-not-allowed disabled:opacity-60"
         >
           <X size={16} />
-          {loading === "declined" ? "Odmietam..." : "Ponechať pôvodný termín"}
+          {loading === "declined" ? (sk ? "Odmietam..." : "Declining...") : (sk ? "Ponechať pôvodný termín" : "Keep original time")}
         </button>
       </div>
 
-      {saved && <p role="status" className="mt-3 text-sm text-[#2F3AA2]">Odpoveď bola uložená. Aktuálny termín nájdete v rozvrhu.</p>}
+      {saved && <p role="status" className="mt-3 text-sm text-[#2F3AA2]">{sk ? "Odpoveď bola uložená. Aktuálny termín nájdete v rozvrhu." : "Your response was saved. The current lesson time is shown in your schedule."}</p>}
 
       {error && (
         <p role="alert" className="mt-2 text-sm text-red-700">{error}</p>

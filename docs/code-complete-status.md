@@ -5,14 +5,15 @@ This file separates work that is complete in the repository from release work th
 ## Complete in code
 
 - Student, teacher and admin role routing, verified-email/session guards and invitation-only teacher activation.
-- Student onboarding and the current 13-language teaching offer.
-- Admin lesson creation, teacher matching/preferences and a 7-day teacher workload overview.
+- Student onboarding and the current 13-language teaching offer, including preferred days/times for matching.
+- Admin lesson creation, ranked teacher recommendations, teacher matching/preferences, a central lesson calendar and a 7-day teacher workload overview.
 - Fixed lesson packages, first-package discount rules, Stripe Checkout/webhook fulfillment logic, repurchase flow and refund-review workflow.
 - Verified lesson completion around the existing package-accounting trigger, completed-lesson history protection and retry safeguards.
 - Student dashboard, schedules, reschedule requests, lesson reports, progress views and renewal prompts.
 - Private learning-file upload/download authorization and retry handling.
-- Schedule-change notification outbox, retry/recovery logic and worker authentication.
+- Schedule-change notification outbox, assignment/renewal email queues, retry/recovery logic and worker authentication.
 - English, German, Spanish, Italian, French and Portuguese placement/progress assessments; Russian remains a disabled teacher-review draft.
+- Teacher-managed public profiles with photo, languages and bio, automatically surfaced on the main website when visible.
 - Accessibility/error-state hardening for account flows.
 - Current language catalog shared by lesson creation, teacher preferences and server validation.
 - Launch preflight, migration ordering and regression tests.

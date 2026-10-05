@@ -1,129 +1,93 @@
-export function formatLanguage(value: string | null | undefined) {
-  if (!value) return "Jazyk";
+import type { Language } from "@/context/LanguageContext";
 
-  const labels: Record<string, string> = {
-    english: "Angličtina",
-    german: "Nemčina",
-    spanish: "Španielčina",
-    italian: "Taliančina",
-    french: "Francúzština",
-    portuguese: "Portugalčina",
-    russian: "Ruština",
-    hungarian: "Maďarčina",
-    polish: "Poľština",
-    slovak: "Slovenčina",
-    chinese: "Čínština",
-    ukrainian: "Ukrajinčina",
-    hebrew: "Moderná hebrejčina",
-    modern_hebrew: "Moderná hebrejčina",
+const choose = (language: Language, sk: string, en: string) => language === "en" ? en : sk;
+
+export function formatLanguage(value: string | null | undefined, language: Language = "sk") {
+  if (!value) return choose(language, "Jazyk", "Language");
+  const labels: Record<string, [string,string]> = {
+    english: ["Angličtina","English"], german: ["Nemčina","German"], spanish: ["Španielčina","Spanish"],
+    italian: ["Taliančina","Italian"], french: ["Francúzština","French"], portuguese: ["Portugalčina","Portuguese"],
+    russian: ["Ruština","Russian"], hungarian: ["Maďarčina","Hungarian"], polish: ["Poľština","Polish"],
+    slovak: ["Slovenčina","Slovak"], chinese: ["Čínština","Chinese"], ukrainian: ["Ukrajinčina","Ukrainian"],
+    hebrew: ["Moderná hebrejčina","Modern Hebrew"], modern_hebrew: ["Moderná hebrejčina","Modern Hebrew"],
   };
-
-  return labels[value.trim().toLowerCase()] || value;
+  const pair = labels[value.trim().toLowerCase()];
+  return pair ? choose(language,pair[0],pair[1]) : value;
 }
 
-export function formatLessonType(value: string | null | undefined) {
-  if (!value) return "Hodina";
-
-  const labels: Record<string, string> = {
-    regular: "Bežná hodina",
-    trial: "Úvodná hodina",
-    individual: "Individuálna hodina",
-    group: "Skupinová hodina",
-    conversation: "Konverzácia",
+export function formatLessonType(value: string | null | undefined, language: Language = "sk") {
+  if (!value) return choose(language, "Hodina", "Lesson");
+  const labels: Record<string,[string,string]> = {
+    regular:["Bežná hodina","Regular lesson"], trial:["Úvodná hodina","Intro lesson"],
+    individual:["Individuálna hodina","Individual lesson"], group:["Skupinová hodina","Group lesson"],
+    conversation:["Konverzácia","Conversation"],
   };
-
-  return labels[value.trim().toLowerCase()] || value.replaceAll("_", " ");
+  const pair=labels[value.trim().toLowerCase()];
+  return pair ? choose(language,pair[0],pair[1]) : value.replaceAll("_"," ");
 }
 
-export function formatLessonStatus(value: string | null | undefined) {
-  if (!value) return "Neznámy stav";
-
-  const labels: Record<string, string> = {
-    scheduled: "Naplánovaná",
-    rescheduled: "Presunutá",
-    completed: "Dokončená",
-    student_no_show: "Študent sa nedostavil",
-    teacher_cancelled: "Zrušená lektorom",
-    student_cancelled: "Zrušená študentom",
-    late_cancellation: "Neskoré zrušenie",
-    cancelled: "Zrušená",
-    pending: "Čaká na vybavenie",
-    accepted: "Schválená",
-    declined: "Zamietnutá",
+export function formatLessonStatus(value: string | null | undefined, language: Language = "sk") {
+  if (!value) return choose(language,"Neznámy stav","Unknown status");
+  const labels: Record<string,[string,string]> = {
+    scheduled:["Naplánovaná","Scheduled"], rescheduled:["Presunutá","Rescheduled"], completed:["Dokončená","Completed"],
+    student_no_show:["Študent sa nedostavil","Student no-show"], teacher_cancelled:["Zrušená lektorom","Cancelled by teacher"],
+    student_cancelled:["Zrušená študentom","Cancelled by student"], late_cancellation:["Neskoré zrušenie","Late cancellation"],
+    cancelled:["Zrušená","Cancelled"], pending:["Čaká na vybavenie","Pending"], accepted:["Schválená","Approved"], declined:["Zamietnutá","Declined"],
   };
-
-  return labels[value.trim().toLowerCase()] || value.replaceAll("_", " ");
+  const pair=labels[value.trim().toLowerCase()];
+  return pair ? choose(language,pair[0],pair[1]) : value.replaceAll("_"," ");
 }
 
-export function formatPackageStatus(value: string | null | undefined) {
-  if (!value) return "Neznámy";
-
-  const labels: Record<string, string> = {
-    active: "Aktívny",
-    completed: "Dokončený",
-    expired: "Po platnosti",
-    cancelled: "Zrušený",
+export function formatPackageStatus(value: string | null | undefined, language: Language = "sk") {
+  if (!value) return choose(language,"Neznámy","Unknown");
+  const labels: Record<string,[string,string]> = {
+    active:["Aktívny","Active"], completed:["Dokončený","Completed"], expired:["Po platnosti","Expired"], cancelled:["Zrušený","Cancelled"],
   };
-
-  return labels[value.trim().toLowerCase()] || value.replaceAll("_", " ");
+  const pair=labels[value.trim().toLowerCase()];
+  return pair ? choose(language,pair[0],pair[1]) : value.replaceAll("_"," ");
 }
 
-
-export function formatProgressLabel(value: string | null | undefined) {
+export function formatProgressLabel(value: string | null | undefined, language: Language = "sk") {
   if (!value) return "";
-
-  const labels: Record<string, string> = {
-    "good progress": "Dobrý pokrok",
-    good_progress: "Dobrý pokrok",
-    "normal progress": "Bežný pokrok",
-    normal_progress: "Bežný pokrok",
-    "needs attention": "Vyžaduje pozornosť",
-    needs_attention: "Vyžaduje pozornosť",
-    improving: "Zlepšuje sa",
-    stable: "Stabilný pokrok",
+  const labels: Record<string,[string,string]> = {
+    "good progress":["Dobrý pokrok","Good progress"], good_progress:["Dobrý pokrok","Good progress"],
+    "normal progress":["Bežný pokrok","Normal progress"], normal_progress:["Bežný pokrok","Normal progress"],
+    "needs attention":["Vyžaduje pozornosť","Needs attention"], needs_attention:["Vyžaduje pozornosť","Needs attention"],
+    improving:["Zlepšuje sa","Improving"], stable:["Stabilný pokrok","Stable progress"],
   };
-
-  return labels[value.trim().toLowerCase()] || value;
+  const pair=labels[value.trim().toLowerCase()];
+  return pair ? choose(language,pair[0],pair[1]) : value;
 }
 
-
-export function formatProfileStatus(value: string | null | undefined) {
-  if (!value) return "Neznámy stav";
-
-  const labels: Record<string, string> = {
-    active: "Aktívny",
-    pending: "Čaká na schválenie",
-    inactive: "Neaktívny",
-    suspended: "Pozastavený",
+export function formatProfileStatus(value: string | null | undefined, language: Language = "sk") {
+  if (!value) return choose(language,"Neznámy stav","Unknown status");
+  const labels: Record<string,[string,string]> = {
+    active:["Aktívny","Active"], pending:["Čaká na schválenie","Pending approval"],
+    inactive:["Neaktívny","Inactive"], suspended:["Pozastavený","Suspended"],
   };
-
-  return labels[value.trim().toLowerCase()] || value.replaceAll("_", " ");
+  const pair=labels[value.trim().toLowerCase()];
+  return pair ? choose(language,pair[0],pair[1]) : value.replaceAll("_"," ");
 }
 
-export function formatPackageType(value: string | null | undefined) {
-  if (!value) return "Balíček hodín";
-
-  const normalized = value.trim().toLowerCase();
-  const direct: Record<string, string> = {
-    "1_lesson": "1 hodina",
-    "5_lessons": "Balíček 5 hodín",
-    "10_lessons": "Balíček 10 hodín",
-    "20_lessons": "Balíček 20 hodín",
-    "30_lessons": "Balíček 30 hodín",
+export function formatPackageType(value: string | null | undefined, language: Language = "sk") {
+  if (!value) return choose(language,"Balíček hodín","Lesson package");
+  const normalized=value.trim().toLowerCase();
+  const direct: Record<string,[string,string]> = {
+    "1_lesson":["1 hodina","1 lesson"], "5_lessons":["Balíček 5 hodín","5-lesson package"],
+    "10_lessons":["Balíček 10 hodín","10-lesson package"], "20_lessons":["Balíček 20 hodín","20-lesson package"],
+    "30_lessons":["Balíček 30 hodín","30-lesson package"],
   };
-
-  if (direct[normalized]) return direct[normalized];
-
-  const lessonMatch = normalized.match(/^(\d+)[_-]?(?:lessons?|hours?)$/);
-  if (lessonMatch) return `Balíček ${lessonMatch[1]} hodín`;
-
-  return value.replaceAll("_", " ");
+  const pair=direct[normalized];
+  if(pair) return choose(language,pair[0],pair[1]);
+  const match=normalized.match(/^(\d+)[_-]?(?:lessons?|hours?)$/);
+  if(match) return language==="en" ? `${match[1]}-lesson package` : `Balíček ${match[1]} hodín`;
+  return value.replaceAll("_"," ");
 }
 
-
-export function formatLessonCount(count: number) {
-  const absolute = Math.abs(count);
-  if (absolute === 1) return `${count} hodina`;
-  if (absolute >= 2 && absolute <= 4) return `${count} hodiny`;
+export function formatLessonCount(count:number, language: Language = "sk") {
+  if(language==="en") return `${count} ${Math.abs(count)===1?"lesson":"lessons"}`;
+  const absolute=Math.abs(count);
+  if(absolute===1) return `${count} hodina`;
+  if(absolute>=2&&absolute<=4) return `${count} hodiny`;
   return `${count} hodín`;
 }

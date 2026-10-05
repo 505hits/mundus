@@ -81,7 +81,7 @@ export default async function AdminStudentsPage({searchParams}:{searchParams:Pro
   const visibleStudents=studentRows.filter(student=>(!statusFilter||student.status===statusFilter)&&(!search||`${student.full_name||""} ${student.email||""}`.toLocaleLowerCase("sk").includes(search.toLocaleLowerCase("sk"))));
 
   return (
-    <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
+    <main className="min-h-screen bg-transparent text-[#0a0a0f]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">Študenti</p>
@@ -96,17 +96,17 @@ export default async function AdminStudentsPage({searchParams}:{searchParams:Pro
         )}
 
         <section className="mt-8 grid gap-4 sm:grid-cols-3">
-          <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border border-[#E5E7F0] bg-white p-5 shadow-sm">
             <Users size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{profilesError ? "—" : activeStudents}</p>
             <p className="mt-1 text-sm text-gray-500">Aktívni študenti</p>
           </div>
-          <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border border-[#E5E7F0] bg-white p-5 shadow-sm">
             <BookOpen size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{profilesError || packagesError ? "—" : renewalSoon}</p>
             <p className="mt-1 text-sm text-gray-500">Blíži sa pokračovanie</p>
           </div>
-          <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border border-[#E5E7F0] bg-white p-5 shadow-sm">
             <AlertCircle size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{profilesError || lessonsError || packagesError ? "—" : needsAttention}</p>
             <p className="mt-1 text-sm text-gray-500">Vyžaduje pozornosť</p>
@@ -120,7 +120,7 @@ export default async function AdminStudentsPage({searchParams}:{searchParams:Pro
           <p className="w-full text-sm text-gray-500">Prehľadové počty vyššie zahŕňajú všetkých načítaných študentov; filtre menia zoznam nižšie.</p>
         </form>
 
-        <section className="mt-8 overflow-hidden rounded-3xl border border-black/5 bg-white shadow-sm">
+        <section className="mt-8 overflow-hidden rounded-3xl border border-[#E5E7F0] bg-white shadow-sm">
           {visibleStudents.length === 0 ? (
             <div className="p-8 text-center text-sm text-gray-500">{profilesError ? "Účty sa nepodarilo načítať. Obnovte stránku." : search || statusFilter ? "Žiadny študent nezodpovedá zvolenému vyhľadávaniu." : "Zatiaľ nie sú vytvorené žiadne účty študentov."}</div>
           ) : (

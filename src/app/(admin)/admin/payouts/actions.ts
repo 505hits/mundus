@@ -4,7 +4,8 @@ import {requireRole} from "@/lib/auth";
 import {createSupabaseServerClient} from "@/lib/supabase/server";
 import {parseBratislavaMonth} from "@/lib/month";
 
-export async function saveTeacherRate(_state:{error?:string;success?:string},form:FormData){
+export type TeacherRateState={error?:string;success?:string};
+export async function saveTeacherRate(_state:TeacherRateState,form:FormData):Promise<TeacherRateState>{
  const {user}=await requireRole("admin");
  const teacherId=String(form.get("teacher_id")??"");
  const monthValue=String(form.get("month")??"");

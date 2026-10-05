@@ -14,9 +14,11 @@ import {
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatLanguage, formatLessonStatus } from "@/lib/portalLabels";
+import { currentLanguage, localeFor } from "@/lib/i18n";
+import type { Language } from "@/context/LanguageContext";
 
-function formatTime(value: string) {
-  return new Intl.DateTimeFormat("sk-SK", {
+function formatTime(value: string, language: Language) {
+  return new Intl.DateTimeFormat(localeFor(language), {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -28,25 +30,30 @@ function getName(profile: { full_name?: string | null; email?: string | null } |
   return profile?.full_name?.trim() || profile?.email || fallback;
 }
 
-function packageAlertLabel(count: number) {
+function packageAlertLabel(count: number, language: Language) {
+  if (language === "en") return `${count} package${count === 1 ? "" : "s"} with 1–2 lessons remaining`;
   if (count === 1) return "1 balíček s 1–2 zostávajúcimi hodinami";
   if (count >= 2 && count <= 4) return `${count} balíčky s 1–2 zostávajúcimi hodinami`;
   return `${count} balíčkov s 1–2 zostávajúcimi hodinami`;
 }
 
-function requestAlertLabel(count: number) {
+function requestAlertLabel(count: number, language: Language) {
+  if (language === "en") return `${count} pending schedule-change request${count === 1 ? "" : "s"}`;
   if (count === 1) return "1 čakajúca žiadosť o zmenu termínu";
   if (count >= 2 && count <= 4) return `${count} čakajúce žiadosti o zmenu termínu`;
   return `${count} čakajúcich žiadostí o zmenu termínu`;
 }
 
-function noUpcomingLabel(count: number) {
+function noUpcomingLabel(count: number, language: Language) {
+  if (language === "en") return `${count} active student${count === 1 ? "" : "s"} without a next scheduled lesson`;
   if (count === 1) return "1 aktívny študent bez naplánovanej ďalšej hodiny";
   if (count >= 2 && count <= 4) return `${count} aktívni študenti bez naplánovanej ďalšej hodiny`;
   return `${count} aktívnych študentov bez naplánovanej ďalšej hodiny`;
 }
 
 export default async function AdminDashboardPage() {
+  const language = await currentLanguage();
+  const sk = language === "sk";
   const { profile } = await requireRole("admin");
   const supabase = await createSupabaseServerClient();
 
@@ -193,36 +200,36 @@ export default async function AdminDashboardPage() {
   const renewalRows = studentsError || packagesError ? null : renewalAttention(students ?? [], packages ?? []);
 
   const firstName =
-    profile?.full_name?.trim()?.split(/\s+/)[0] || "Administrátor";
+    profile?.full_name?.trim()?.split(/\s+/)[0] || (sk ? "Administrátor" : "Administrator");
 
   return (
     <main className="min-h-screen bg-transparent text-[#0a0a0f]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
-            Administrácia Mundus
+            {sk ? "Administrácia Mundus" : "Mundus administration"}
           </p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Vitajte, {firstName}
+            {sk ? "Vitajte" : "Welcome"}, {firstName}
           </h1>
           <p className="mt-2 text-gray-500">
-            Aktuálny prehľad študentov, lektorov, balíčkov a dnešných hodín.
+            {sk ? "Aktuálny prehľad študentov, lektorov, balíčkov a dnešných hodín." : "Current overview of students, teachers, packages and today’s lessons."}
           </p>
         </section>
 
-        <div className="mt-5 flex flex-wrap gap-3"><Link href="/admin/matching" className="inline-block rounded-xl bg-[#2F3AA2] px-5 py-3 font-semibold text-white">Priradiť študenta k lektorovi</Link><Link href="/admin/calendar" className="inline-block rounded-xl border border-[#2F3AA2]/20 bg-white px-5 py-3 font-semibold text-[#2F3AA2]">Otvoriť kalendár</Link></div>
+        <div className="mt-5 flex flex-wrap gap-3"><Link href="/admin/matching" className="inline-block rounded-xl bg-[#2F3AA2] px-5 py-3 font-semibold text-white">{sk ? "Priradiť študenta k lektorovi" : "Match student with teacher"}</Link><Link href="/admin/calendar" className="inline-block rounded-xl border border-[#2F3AA2]/20 bg-white px-5 py-3 font-semibold text-[#2F3AA2]">{sk ? "Otvoriť kalendár" : "Open calendar"}</Link></div>
 
         {newPaidUnassigned.length > 0 && <section className="mt-6 rounded-3xl border border-amber-200 bg-amber-50 p-5">
           <div className="flex flex-wrap items-start justify-between gap-4">
-            <div><p className="text-sm font-semibold uppercase tracking-[0.14em] text-amber-800">Nový nákup</p><h2 className="mt-1 text-xl font-semibold text-amber-950">Priraďte lektora</h2><p className="mt-2 text-sm text-amber-900/75">Títo študenti majú zaplatený balíček a zatiaľ nemajú vytvorenú žiadnu hodinu.</p></div>
-            <Link href="/admin/matching" className="rounded-xl bg-[#2F3AA2] px-4 py-2.5 text-sm font-semibold text-white">Zobraziť odporúčania</Link>
+            <div><p className="text-sm font-semibold uppercase tracking-[0.14em] text-amber-800">{sk ? "Nový nákup" : "New purchase"}</p><h2 className="mt-1 text-xl font-semibold text-amber-950">{sk ? "Priraďte lektora" : "Assign a teacher"}</h2><p className="mt-2 text-sm text-amber-900/75">{sk ? "Títo študenti majú zaplatený balíček a zatiaľ nemajú vytvorenú žiadnu hodinu." : "These students have a paid package but no lesson has been created yet."}</p></div>
+            <Link href="/admin/matching" className="rounded-xl bg-[#2F3AA2] px-4 py-2.5 text-sm font-semibold text-white">{sk ? "Zobraziť odporúčania" : "View recommendations"}</Link>
           </div>
-          <ul className="mt-4 divide-y divide-amber-200">{newPaidUnassigned.map(student=><li key={student.id} className="flex flex-wrap items-center justify-between gap-3 py-3"><div><p className="font-semibold text-amber-950">{getName(student,"Študent")}</p><p className="text-sm text-amber-900/70">{student.email}</p></div><span className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-amber-900">Čaká na priradenie</span></li>)}</ul>
+          <ul className="mt-4 divide-y divide-amber-200">{newPaidUnassigned.map(student=><li key={student.id} className="flex flex-wrap items-center justify-between gap-3 py-3"><div><p className="font-semibold text-amber-950">{getName(student,"Študent")}</p><p className="text-sm text-amber-900/70">{student.email}</p></div><span className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-amber-900">{sk ? "Čaká na priradenie" : "Waiting for assignment"}</span></li>)}</ul>
         </section>}
 
         {hasLoadError && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            Niektoré údaje sa nepodarilo načítať. Obnovte stránku a skúste to znova.
+            {sk ? "Niektoré údaje sa nepodarilo načítať. Obnovte stránku a skúste to znova." : "Some data could not be loaded. Refresh the page and try again."}
           </div>
         )}
 
@@ -230,22 +237,22 @@ export default async function AdminDashboardPage() {
           <div className="rounded-3xl border border-[#E5E7F0] bg-white p-5 shadow-sm">
             <Users size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{studentsError ? "—" : students?.length ?? 0}</p>
-            <p className="mt-1 text-sm text-gray-500">Aktívni študenti</p>
+            <p className="mt-1 text-sm text-gray-500">{sk ? "Aktívni študenti" : "Active students"}</p>
           </div>
           <div className="rounded-3xl border border-[#E5E7F0] bg-white p-5 shadow-sm">
             <GraduationCap size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{teachersError ? "—" : teachers?.length ?? 0}</p>
-            <p className="mt-1 text-sm text-gray-500">Aktívni lektori</p>
+            <p className="mt-1 text-sm text-gray-500">{sk ? "Aktívni lektori" : "Active teachers"}</p>
           </div>
           <div className="rounded-3xl border border-[#E5E7F0] bg-white p-5 shadow-sm">
             <CalendarDays size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{lessonsError ? "—" : todayLessons.length}</p>
-            <p className="mt-1 text-sm text-gray-500">Dnešné hodiny</p>
+            <p className="mt-1 text-sm text-gray-500">{sk ? "Dnešné hodiny" : "Today’s lessons"}</p>
           </div>
           <div className="rounded-3xl border border-[#E5E7F0] bg-white p-5 shadow-sm">
             <AlertCircle size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{requestsError ? "—" : pendingRequests}</p>
-            <p className="mt-1 text-sm text-gray-500">Čakajúce žiadosti o zmenu termínu</p>
+            <p className="mt-1 text-sm text-gray-500">{sk ? "Čakajúce žiadosti o zmenu termínu" : "Pending schedule-change requests"}</p>
           </div>
         </section>
 
@@ -253,28 +260,28 @@ export default async function AdminDashboardPage() {
           <section className="rounded-3xl border border-[#E5E7F0] bg-white p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-400">Priorita</p>
-                <h2 className="mt-1 text-xl font-semibold">Vyžaduje pozornosť</h2>
+                <p className="text-sm text-gray-400">{sk ? "Priorita" : "Priority"}</p>
+                <h2 className="mt-1 text-xl font-semibold">{sk ? "Vyžaduje pozornosť" : "Needs attention"}</h2>
               </div>
               <AlertCircle size={21} className="text-[#2F3AA2]" />
             </div>
 
             <div className="mt-5 space-y-3">
               <div className="rounded-2xl bg-amber-50 p-4">
-                <p className="font-medium">{paidOrdersError || lessonsError ? "Nové nákupy sa nepodarilo overiť" : newPaidUnassigned.length === 1 ? "1 nový platený študent čaká na lektora" : newPaidUnassigned.length + " nových platených študentov čaká na lektora"}</p>
-                <p className="mt-1 text-sm text-gray-500">Po nákupe skontrolujte smart matching a vytvorte prvú hodinu.</p>
+                <p className="font-medium">{paidOrdersError || lessonsError ? (sk ? "Nové nákupy sa nepodarilo overiť" : "New purchases could not be verified") : sk ? (newPaidUnassigned.length === 1 ? "1 nový platený študent čaká na lektora" : newPaidUnassigned.length + " nových platených študentov čaká na lektora") : `${newPaidUnassigned.length} paid student${newPaidUnassigned.length === 1 ? "" : "s"} waiting for a teacher`}</p>
+                <p className="mt-1 text-sm text-gray-500">{sk ? "Po nákupe skontrolujte smart matching a vytvorte prvú hodinu." : "After purchase, check smart matching and create the first lesson."}</p>
               </div>
               <div className="rounded-2xl bg-[#EEF2FF] p-4">
-                <p className="font-medium">{packagesError ? "Stav balíčkov sa nepodarilo načítať" : packageAlertLabel(lowPackages.length)}</p>
-                <p className="mt-1 text-sm text-gray-500">Odporúčame kontaktovať študenta ohľadom pokračovania.</p>
+                <p className="font-medium">{packagesError ? "Stav balíčkov sa nepodarilo načítať" : packageAlertLabel(lowPackages.length, language)}</p>
+                <p className="mt-1 text-sm text-gray-500">{sk ? "Odporúčame kontaktovať študenta ohľadom pokračovania." : "We recommend contacting the student about continuing."}</p>
               </div>
               <div className="rounded-2xl bg-[#EEF2FF] p-4">
-                <p className="font-medium">{requestsError ? "Žiadosti sa nepodarilo načítať" : requestAlertLabel(pendingRequests)}</p>
-                <p className="mt-1 text-sm text-gray-500">Čaká sa na kontrolu alebo odpoveď lektora.</p>
+                <p className="font-medium">{requestsError ? "Žiadosti sa nepodarilo načítať" : requestAlertLabel(pendingRequests, language)}</p>
+                <p className="mt-1 text-sm text-gray-500">{sk ? "Čaká sa na kontrolu alebo odpoveď lektora." : "Waiting for teacher review or response."}</p>
               </div>
               <div className="rounded-2xl bg-[#EEF2FF] p-4">
-                <p className="font-medium">{studentsError || lessonsError ? "Ďalšie termíny sa nepodarilo overiť" : noUpcomingLabel(noUpcoming)}</p>
-                <p className="mt-1 text-sm text-gray-500">Môže byť potrebné dohodnúť ďalší termín.</p>
+                <p className="font-medium">{studentsError || lessonsError ? "Ďalšie termíny sa nepodarilo overiť" : noUpcomingLabel(noUpcoming, language)}</p>
+                <p className="mt-1 text-sm text-gray-500">{sk ? "Môže byť potrebné dohodnúť ďalší termín." : "A new lesson time may need to be arranged."}</p>
               </div>
               <div className="rounded-2xl bg-amber-50 p-4">
                 <p className="font-medium">{onboardingError ? "Onboarding študentov sa nepodarilo overiť" : studentsMissingOnboarding.length === 1 ? "1 aktívny študent nemá dokončený onboarding" : `${studentsMissingOnboarding.length} aktívnych študentov nemá dokončený onboarding`}</p>
@@ -293,23 +300,23 @@ export default async function AdminDashboardPage() {
 
           <section className="rounded-3xl border border-black/5 bg-[#2F3AA2] p-6 text-white shadow-sm">
             <Package size={21} className="text-[#C7D2FE]" />
-            <p className="mt-5 text-sm text-white/50">Balíčky</p>
-            <h2 className="mt-1 text-xl font-semibold">Prehľad pokračovania</h2>
+            <p className="mt-5 text-sm text-white/50">{sk ? "Balíčky" : "Packages"}</p>
+            <h2 className="mt-1 text-xl font-semibold">{sk ? "Prehľad pokračovania" : "Continuation overview"}</h2>
             <p className="mt-7 text-4xl font-semibold">{packagesError ? "—" : lowPackages.length}</p>
-            <p className="mt-2 text-sm text-white/65">Aktívne balíčky s poslednými 1–2 hodinami</p>
+            <p className="mt-2 text-sm text-white/65">{sk ? "Aktívne balíčky s poslednými 1–2 hodinami" : "Active packages with the final 1–2 lessons"}</p>
           </section>
         </div>
 
         <section className="mt-8 rounded-3xl border border-indigo-100 bg-white p-6 shadow-sm">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <h2 className="text-xl font-semibold text-[#2F3AA2]">Vyťaženie lektorov</h2>
+              <h2 className="text-xl font-semibold text-[#2F3AA2]">{sk ? "Vyťaženie lektorov" : "Teacher workload"}</h2>
               <p className="mt-2 text-sm text-gray-600">Naplánované a presunuté hodiny počas najbližších 7 dní. Je to orientačný prehľad pre priraďovanie nových študentov.</p>
             </div>
-            <Link href="/admin/matching" className="font-semibold text-[#2F3AA2] underline">Otvoriť priradenie</Link>
+            <Link href="/admin/matching" className="font-semibold text-[#2F3AA2] underline">{sk ? "Otvoriť priradenie" : "Open matching"}</Link>
           </div>
           {teachersError || lessonsError ? (
-            <p role="alert" className="mt-4 text-red-700">Vyťaženie lektorov sa nepodarilo načítať.</p>
+            <p role="alert" className="mt-4 text-red-700">{sk ? "Vyťaženie lektorov" : "Teacher workload"} sa nepodarilo načítať.</p>
           ) : teacherWorkload.length === 0 ? (
             <p className="mt-4 text-gray-600">Zatiaľ nemáte aktívnych lektorov.</p>
           ) : (
@@ -318,10 +325,10 @@ export default async function AdminDashboardPage() {
                 <li key={teacher.id} className="flex items-center justify-between gap-4 py-3">
                   <div>
                     <p className="font-semibold">{getName(teacher, "Lektor")}</p>
-                    <p className="text-sm text-gray-500">Najbližších 7 dní</p>
+                    <p className="text-sm text-gray-500">{sk ? "Najbližších 7 dní" : "Next 7 days"}</p>
                   </div>
                   <span className="rounded-full bg-indigo-50 px-3 py-2 text-sm font-semibold text-[#2F3AA2]">
-                    {teacher.upcoming === 1 ? "1 hodina" : teacher.upcoming >= 2 && teacher.upcoming <= 4 ? `${teacher.upcoming} hodiny` : `${teacher.upcoming} hodín`}
+                    {sk ? (teacher.upcoming === 1 ? "1 hodina" : teacher.upcoming >= 2 && teacher.upcoming <= 4 ? `${teacher.upcoming} hodiny` : `${teacher.upcoming} hodín`) : `${teacher.upcoming} lesson${teacher.upcoming === 1 ? "" : "s"}`}
                   </span>
                 </li>
               ))}
@@ -330,44 +337,44 @@ export default async function AdminDashboardPage() {
         </section>
 
         <section className="mt-8 rounded-3xl border border-indigo-100 bg-white p-6 shadow-sm">
-          <h2 className="text-xl font-semibold text-[#2F3AA2]">Dokončené hodiny bez záznamu lektora</h2>
+          <h2 className="text-xl font-semibold text-[#2F3AA2]">{sk ? "Dokončené hodiny bez záznamu lektora" : "Completed lessons without teacher reports"}</h2>
           <p className="mt-2 text-sm text-gray-600">Kontrola posledných 50 dokončených hodín. Záznam pomáha študentovi vidieť spätnú väzbu a ďalšie zameranie; jeho uloženie nemení zostatok balíčka.</p>
-          {missingReports === null ? <p role="alert" className="mt-4 text-red-700">Záznamy hodín sa nepodarilo overiť. Obnovte stránku.</p> : !missingReports.length ? <p className="mt-4 text-gray-600">Skontrolované dokončené hodiny majú uložený záznam alebo zatiaľ nemáte dokončené hodiny.</p> : <ul className="mt-4 divide-y divide-indigo-100">{missingReports.map(lesson=>{const student=Array.isArray(lesson.student)?lesson.student[0]:lesson.student;const teacher=Array.isArray(lesson.teacher)?lesson.teacher[0]:lesson.teacher;return <li key={lesson.id} className="flex flex-wrap items-center justify-between gap-3 py-4"><div><p className="font-semibold">{getName(student,"Študent")} · {formatLanguage(lesson.language)}</p><p className="mt-1 text-sm text-gray-600">{new Intl.DateTimeFormat("sk-SK",{dateStyle:"medium",timeStyle:"short",timeZone:"Europe/Bratislava"}).format(new Date(lesson.scheduled_at))} · Lektor: {getName(teacher,"Nepriradený")}</p></div><span className="rounded-full bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-900">Doplniť záznam</span></li>;})}</ul>}
-          <Link href="/admin/lessons" className="mt-5 inline-block font-semibold text-[#2F3AA2] underline">Otvoriť prehľad hodín</Link>
+          {missingReports === null ? <p role="alert" className="mt-4 text-red-700">Záznamy hodín sa nepodarilo overiť. Obnovte stránku.</p> : !missingReports.length ? <p className="mt-4 text-gray-600">Skontrolované dokončené hodiny majú uložený záznam alebo zatiaľ nemáte dokončené hodiny.</p> : <ul className="mt-4 divide-y divide-indigo-100">{missingReports.map(lesson=>{const student=Array.isArray(lesson.student)?lesson.student[0]:lesson.student;const teacher=Array.isArray(lesson.teacher)?lesson.teacher[0]:lesson.teacher;return <li key={lesson.id} className="flex flex-wrap items-center justify-between gap-3 py-4"><div><p className="font-semibold">{getName(student,"Študent")} · {formatLanguage(lesson.language, language)}</p><p className="mt-1 text-sm text-gray-600">{new Intl.DateTimeFormat(localeFor(language),{dateStyle:"medium",timeStyle:"short",timeZone:"Europe/Bratislava"}).format(new Date(lesson.scheduled_at))} · Lektor: {getName(teacher,"Nepriradený")}</p></div><span className="rounded-full bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-900">Doplniť záznam</span></li>;})}</ul>}
+          <Link href="/admin/lessons" className="mt-5 inline-block font-semibold text-[#2F3AA2] underline">{sk ? "Otvoriť prehľad hodín" : "Open lesson overview"}</Link>
         </section>
 
         <section className="mt-8 rounded-3xl border border-indigo-100 bg-white p-6 shadow-sm">
-          <h2 className="text-xl font-semibold text-[#2F3AA2]">Plán kontaktovania študentov</h2>
+          <h2 className="text-xl font-semibold text-[#2F3AA2]">{sk ? "Plán kontaktovania študentov" : "Student follow-up plan"}</h2>
           <p className="mt-2 text-sm text-gray-600">Otvorené záznamy podľa ďalšieho kontaktovania, aj po zakúpení nového balíčka. Dátumy sa posudzujú podľa Bratislavy. Uzavreté záznamy a neaktívne účty sa nezobrazujú.</p>
           {contactQueue === null ? <p role="alert" className="mt-4 text-red-700">Plán kontaktovania sa nepodarilo načítať. Overte pripravenie databázy alebo obnovte stránku.</p> : !contactQueue.length ? <p className="mt-4 text-gray-600">Zatiaľ žiadne otvorené záznamy. Pridajte záznam pri študentovi v zozname pokračovania nižšie.</p> : <ul className="mt-4 divide-y divide-indigo-100">{contactQueue.map(({student,record,due})=><li key={student.id} className="py-4"><div className="flex flex-wrap items-center justify-between gap-3"><div><p className="font-semibold">{getName(student,"Študent")}</p><p className="break-all text-sm text-gray-600">{student.email||"E-mail nie je uvedený"}</p></div><span className={`rounded-full px-3 py-2 text-sm font-semibold ${due ? "bg-amber-50 text-amber-900" : "bg-indigo-50 text-[#2F3AA2]"}`}>{!record.next_followup ? "Doplniť dátum" : due ? "Ozvať sa dnes / po termíne" : "Naplánované"}</span></div><p className="mt-2 text-sm text-gray-600">{({to_contact:"Ozvať sa",contacted:"Kontaktovaný",waiting:"Čaká sa na odpoveď",later:"Ozvať sa neskôr"} as Record<string,string>)[record.status]||record.status}</p><FollowupForm key={`${student.id}:${record.updated_at}`} studentId={student.id} record={record}/></li>)}</ul>}
           <p className="mt-4 text-sm text-gray-500">Ide o interný plán. Kontaktovanie vykonáte sami; žiadna správa sa automaticky neodosiela.</p>
         </section>
 
         <section className="mt-8 rounded-3xl border border-indigo-100 bg-white p-6 shadow-sm">
-          <h2 className="text-xl font-semibold text-[#2F3AA2]">Komu sa ozvať ohľadom pokračovania</h2>
-          <p className="mt-2 text-sm text-gray-600">Aktívni študenti s celkovým zostatkom 0–2 hodiny. Nové účty bez zakúpeného balíčka sem nepatria. Pred kontaktovaním skontrolujte balíčky a dohodnuté termíny.</p>
+          <h2 className="text-xl font-semibold text-[#2F3AA2]">{sk ? "Komu sa ozvať ohľadom pokračovania" : "Students to contact about continuing"}</h2>
+          <p className="mt-2 text-sm text-gray-600">{sk ? "Aktívni študenti" : "Active students"} s celkovým zostatkom 0–2 hodiny. Nové účty bez zakúpeného balíčka sem nepatria. Pred kontaktovaním skontrolujte balíčky a dohodnuté termíny.</p>
           {renewalRows === null ? <p role="alert" className="mt-4 text-red-700">Zostatky sa nepodarilo overiť. Obnovte stránku.</p> : renewalRows.length === 0 ? <p className="mt-4 text-gray-600">Momentálne nikto nemá zostatok 0–2 hodiny na pokračovanie.</p> : <ul className="mt-5 divide-y divide-indigo-100">{renewalRows.map(student => <li key={student.id} className="flex flex-wrap items-center justify-between gap-3 py-4"><div><p className="font-semibold">{getName(student,"Študent")}</p><p className="break-all text-sm text-gray-600">{student.email || "E-mail nie je uvedený"}</p></div><span className="rounded-full bg-indigo-50 px-3 py-2 text-sm font-semibold text-[#2F3AA2]">{student.remaining === 0 ? "Balíček vyčerpaný" : student.remaining === 1 ? "Posledná hodina" : "Posledné 2 hodiny"}</span>{!followupError && <FollowupForm key={`${student.id}:${followupRows.find(row=>row.student_id===student.id)?.updated_at||"new"}`} studentId={student.id} record={followupRows.find(row=>row.student_id===student.id)}/>}</li>)}</ul>}
           {followupError && <p role="alert" className="mt-4 text-sm text-red-700">Záznamy kontaktovania nie sú dostupné. Najprv treba pripraviť databázu alebo obnoviť stránku.</p>}
-          <div className="mt-5 flex flex-wrap gap-4"><Link href="/admin/packages" className="font-semibold text-[#2F3AA2] underline">Skontrolovať balíčky</Link><Link href="/admin/students" className="font-semibold text-[#2F3AA2] underline">Prehľad študentov</Link><Link href="/admin/lessons" className="font-semibold text-[#2F3AA2] underline">Dohodnuté hodiny</Link></div>
+          <div className="mt-5 flex flex-wrap gap-4"><Link href="/admin/packages" className="font-semibold text-[#2F3AA2] underline">{sk ? "Skontrolovať balíčky" : "Check packages"}</Link><Link href="/admin/students" className="font-semibold text-[#2F3AA2] underline">{sk ? "Prehľad študentov" : "Student overview"}</Link><Link href="/admin/lessons" className="font-semibold text-[#2F3AA2] underline">{sk ? "Dohodnuté hodiny" : "Scheduled lessons"}</Link></div>
         </section>
 
         <section className="mt-8 rounded-3xl border border-[#E5E7F0] bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-400">
-                {new Intl.DateTimeFormat("sk-SK", {
+                {new Intl.DateTimeFormat(localeFor(language), {
                   day: "numeric",
                   month: "long",
                   timeZone: "Europe/Bratislava",
                 }).format(now)}
               </p>
-              <h2 className="mt-1 text-xl font-semibold">Dnešné hodiny</h2>
+              <h2 className="mt-1 text-xl font-semibold">{sk ? "Dnešné hodiny" : "Today’s lessons"}</h2>
             </div>
             <BookOpen size={21} className="text-[#2F3AA2]" />
           </div>
 
-          {lessonsError ? <p className="mt-5 text-sm text-red-700">Dnešné hodiny sa nepodarilo načítať. Obnovte stránku.</p> : todayLessons.length === 0 ? (
-            <p className="mt-5 text-sm text-gray-500">Na dnes nie sú naplánované žiadne hodiny.</p>
+          {lessonsError ? <p className="mt-5 text-sm text-red-700">{sk ? "Dnešné hodiny" : "Today’s lessons"} sa nepodarilo načítať. Obnovte stránku.</p> : todayLessons.length === 0 ? (
+            <p className="mt-5 text-sm text-gray-500">{sk ? "Na dnes nie sú naplánované žiadne hodiny." : "No lessons are scheduled for today."}</p>
           ) : (
             <div className="mt-5 divide-y divide-gray-100">
               {todayLessons.map((lesson) => {
@@ -378,13 +385,13 @@ export default async function AdminDashboardPage() {
                     <div>
                       <p className="font-semibold">{getName(student, "Študent")}</p>
                       <p className="mt-1 text-sm text-gray-500">
-                        {formatLanguage(lesson.language)} · {getName(teacher, "Lektor")}
+                        {formatLanguage(lesson.language, language)} · {getName(teacher, "Lektor")}
                       </p>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className="font-semibold">{formatTime(lesson.scheduled_at)}</span>
+                      <span className="font-semibold">{formatTime(lesson.scheduled_at, language)}</span>
                       <span className="rounded-full bg-[#EEF2FF] px-3 py-1 text-xs font-semibold capitalize text-[#3730A3]">
-                        {formatLessonStatus(lesson.status)}
+                        {formatLessonStatus(lesson.status, language)}
                       </span>
                     </div>
                   </div>

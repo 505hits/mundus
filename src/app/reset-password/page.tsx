@@ -5,8 +5,12 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import { preparePasswordRecovery } from "@/lib/password-recovery";
 import { validPassword } from "@/lib/account-policy";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
+import { useLanguage } from "@/context/LanguageContext";
+import LanguageToggle from "@/components/LanguageToggle";
 
 export default function ResetPasswordPage() {
+  const { language } = useLanguage();
+  const sk = language === "sk";
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -33,7 +37,7 @@ export default function ResetPasswordPage() {
     void preparation.current.then(() => {
       if (!cancelled) setReady(true);
     }).catch(() => {
-      if (!cancelled) setLinkError("Odkaz nie je platný alebo vypršal. Požiadajte o nový odkaz na obnovu hesla.");
+      if (!cancelled) setLinkError(sk ? "Odkaz nie je platný alebo vypršal. Požiadajte o nový odkaz na obnovu hesla." : "This link is invalid or expired. Request a new password reset link.");
     });
     return () => { cancelled = true; };
   }, []);
@@ -46,12 +50,12 @@ export default function ResetPasswordPage() {
     setSaved(false);
 
     if (!validPassword(password)) {
-      setError("Nové heslo musí mať 10 až 128 znakov.");
+      setError(sk ? "Nové heslo musí mať 10 až 128 znakov." : "Your new password must be 10 to 128 characters long.");
       return;
     }
 
     if (password !== confirmPassword) {
-      setError("Heslá sa nezhodujú.");
+      setError(sk ? "Heslá sa nezhodujú." : "Passwords do not match.");
       return;
     }
 
@@ -61,38 +65,39 @@ export default function ResetPasswordPage() {
       const supabase = createSupabaseBrowserClient();
       const { error: updateError } = await supabase.auth.updateUser({ password });
       if (updateError) {
-        setError("Heslo sa nepodarilo zmeniť. Otvorte odkaz z e-mailu znova alebo požiadajte o nový.");
+        setError(sk ? "Heslo sa nepodarilo zmeniť. Otvorte odkaz z e-mailu znova alebo požiadajte o nový." : "We could not change the password. Reopen the email link or request a new one.");
         return;
       }
       setSaved(true);
     } catch {
-      setError("Heslo sa nepodarilo uložiť. Skúste to prosím znova.");
+      setError(sk ? "Heslo sa nepodarilo uložiť. Skúste to prosím znova." : "We could not save the password. Please try again.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#FAFAF9] px-6 py-12 text-[#2F3AA2]">
+    <main className="relative flex min-h-screen items-center justify-center bg-[#FAFAF9] px-6 py-12 text-[#2F3AA2]">
+      <div className="absolute right-5 top-5"><LanguageToggle /></div>
       <div className="w-full max-w-md rounded-3xl border border-black/5 bg-white p-7 shadow-sm sm:p-9">
         <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
-          Mundus portál
+          {sk ? "Mundus portál" : "Mundus portal"}
         </p>
 
         <h1 className="mt-3 text-3xl font-semibold tracking-tight">
-          Nastaviť nové heslo
+          {sk ? "Nastaviť nové heslo" : "Set a new password"}
         </h1>
 
         {linkError ? (
-          <div className="mt-7"><p role="alert" className="text-sm text-red-700">{linkError}</p><Link href="/forgot-password" className="mt-4 inline-block font-semibold underline">Poslať nový odkaz</Link></div>
+          <div className="mt-7"><p role="alert" className="text-sm text-red-700">{linkError}</p><Link href="/forgot-password" className="mt-4 inline-block font-semibold underline">{sk ? "Poslať nový odkaz" : "Send a new link"}</Link></div>
         ) : !ready ? (
-          <p role="status" className="mt-7 text-sm text-gray-500">Overujem odkaz…</p>
+          <p role="status" className="mt-7 text-sm text-gray-500">{sk ? "Overujem odkaz…" : "Verifying link…"}</p>
         ) : saved ? (
           <>
             <div role="status" aria-live="polite" className="mt-7 rounded-2xl bg-[#eef3ef] p-5">
-              <p className="font-semibold">Heslo bolo zmenené</p>
+              <p className="font-semibold">{sk ? "Heslo bolo zmenené" : "Password changed"}</p>
               <p className="mt-2 text-sm leading-6 text-gray-600">
-                Teraz sa môžete prihlásiť pomocou nového hesla.
+                {sk ? "Teraz sa môžete prihlásiť pomocou nového hesla." : "You can now sign in with your new password."}
               </p>
             </div>
 
@@ -100,13 +105,13 @@ export default function ResetPasswordPage() {
               href="/login"
               className="mt-6 inline-flex w-full justify-center rounded-2xl bg-[#2F3AA2] px-5 py-3.5 font-semibold text-white"
             >
-              Prejsť na prihlásenie
+              {sk ? "Prejsť na prihlásenie" : "Go to sign in"}
             </Link>
           </>
         ) : (
           <form onSubmit={handleSubmit} className="mt-7 space-y-5">
             <label className="block text-sm font-medium text-gray-700">
-              Nové heslo
+              {sk ? "Nové heslo" : "New password"}
               <input
                 type="password"
                 value={password}
@@ -120,7 +125,7 @@ export default function ResetPasswordPage() {
             </label>
 
             <label className="block text-sm font-medium text-gray-700">
-              Zopakujte nové heslo
+              {sk ? "Zopakujte nové heslo" : "Repeat new password"}
               <input
                 type="password"
                 value={confirmPassword}
@@ -144,7 +149,7 @@ export default function ResetPasswordPage() {
               disabled={loading}
               className="w-full rounded-2xl bg-[#2F3AA2] px-5 py-3.5 font-semibold text-white disabled:opacity-60"
             >
-              {loading ? "Ukladám..." : "Uložiť nové heslo"}
+              {loading ? (sk ? "Ukladám..." : "Saving...") : (sk ? "Uložiť nové heslo" : "Save new password")}
             </button>
           </form>
         )}

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ArrowRight, Search } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 type StudentItem = {
   id: string;
@@ -13,16 +14,16 @@ type StudentItem = {
   completed: number;
 };
 
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat("sk-SK", {
+function formatDate(value: string, locale: string) {
+  return new Intl.DateTimeFormat(locale, {
     day: "numeric",
     month: "short",
     timeZone: "Europe/Bratislava",
   }).format(new Date(value));
 }
 
-function formatTime(value: string) {
-  return new Intl.DateTimeFormat("sk-SK", {
+function formatTime(value: string, locale: string) {
+  return new Intl.DateTimeFormat(locale, {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -35,19 +36,22 @@ export default function StudentSearchList({
 }: {
   students: StudentItem[];
 }) {
+  const { language } = useLanguage();
+  const sk = language === "sk";
+  const locale = sk ? "sk-SK" : "en-GB";
   const [query, setQuery] = useState("");
 
   const filteredStudents = useMemo(() => {
-    const normalized = query.trim().toLocaleLowerCase("sk-SK");
+    const normalized = query.trim().toLocaleLowerCase(locale);
     if (!normalized) return students;
 
     return students.filter((student) =>
       [student.name, student.language]
         .join(" ")
-        .toLocaleLowerCase("sk-SK")
+        .toLocaleLowerCase(locale)
         .includes(normalized)
     );
-  }, [query, students]);
+  }, [query, students, locale]);
 
   return (
     <section className="mt-8">
@@ -60,8 +64,8 @@ export default function StudentSearchList({
           type="search"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Vyhľadať študenta alebo jazyk"
-          aria-label="Vyhľadať študenta"
+          placeholder={sk ? "Vyhľadať študenta alebo jazyk" : "Search student or language"}
+          aria-label={sk ? "Vyhľadať študenta" : "Search student"}
           className="w-full rounded-2xl border border-black/5 bg-white py-3 pl-11 pr-4 text-sm outline-none transition placeholder:text-gray-400 focus:border-[#2F3AA2]"
         />
       </label>
@@ -69,17 +73,17 @@ export default function StudentSearchList({
       {students.length === 0 ? (
         <div className="mt-5 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
           <p className="font-medium">
-            Zatiaľ nemáte priradených študentov
+            {sk ? "Zatiaľ nemáte priradených študentov" : "You do not have assigned students yet"}
           </p>
           <p className="mt-1 text-sm text-gray-400">
-            Študenti sa zobrazia, keď budú mať s vami naplánované hodiny.
+            {sk ? "Študenti sa zobrazia, keď budú mať s vami naplánované hodiny." : "Students will appear once they have lessons scheduled with you."}
           </p>
         </div>
       ) : filteredStudents.length === 0 ? (
         <div className="mt-5 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
-          <p className="font-medium">Nenašli sa žiadni študenti</p>
+          <p className="font-medium">{sk ? "Nenašli sa žiadni študenti" : "No students found"}</p>
           <p className="mt-1 text-sm text-gray-400">
-            Skúste zadať iné meno alebo jazyk.
+            {sk ? "Skúste zadať iné meno alebo jazyk." : "Try another name or language."}
           </p>
         </div>
       ) : (
@@ -99,7 +103,7 @@ export default function StudentSearchList({
                     <div className="flex flex-wrap items-center gap-2">
                       <h2 className="font-semibold">{student.name}</h2>
                       <span className="rounded-full bg-[#EEF2FF] px-2.5 py-1 text-xs font-semibold text-[#3730A3]">
-                        Aktívny
+                        {sk ? "Aktívny" : "Active"}
                       </span>
                     </div>
                     <p className="mt-1 text-sm text-gray-500">
@@ -110,25 +114,25 @@ export default function StudentSearchList({
 
                 <div className="grid gap-4 sm:grid-cols-3 md:flex md:items-center md:gap-8">
                   <div>
-                    <p className="text-xs text-gray-400">Zostáva hodín</p>
+                    <p className="text-xs text-gray-400">{sk ? "Zostáva hodín" : "Lessons remaining"}</p>
                     <p className="mt-1 text-sm font-semibold">
                       {student.remaining}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-xs text-gray-400">Dokončené</p>
+                    <p className="text-xs text-gray-400">{sk ? "Dokončené" : "Completed"}</p>
                     <p className="mt-1 text-sm font-semibold">
                       {student.completed}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-xs text-gray-400">Najbližšia hodina</p>
+                    <p className="text-xs text-gray-400">{sk ? "Najbližšia hodina" : "Next lesson"}</p>
                     <p className="mt-1 text-sm font-medium">
                       {student.nextLesson
-                        ? `${formatDate(student.nextLesson)} · ${formatTime(student.nextLesson)}`
-                        : "Nenaplánované"}
+                        ? `${formatDate(student.nextLesson, locale)} · ${formatTime(student.nextLesson, locale)}`
+                        : (sk ? "Nenaplánované" : "Not scheduled")}
                     </p>
                   </div>
 
@@ -136,7 +140,7 @@ export default function StudentSearchList({
                     href={`/teacher/student/${student.id}`}
                     className="flex items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-4 py-2.5 text-sm font-semibold text-white"
                   >
-                    Zobraziť študenta
+                    {sk ? "Zobraziť študenta" : "View student"}
                     <ArrowRight size={16} />
                   </Link>
                 </div>

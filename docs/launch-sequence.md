@@ -38,6 +38,8 @@ Code is merged to main. The reviewed database activation is applied. The current
    - 202610050008_teacher_profile_visibility.sql
    - 202610050009_suppress_redundant_renewal.sql
    - 202610050010_require_teacher_photo.sql
+   - 202610050011_teacher_monthly_feedback.sql
+   - 202610050012_teacher_feedback_timezone.sql
    `202610050001_teacher_language_offer.sql` removes the retired Turkish preference value from existing teacher preference rows and expands the allowed teacher-language list to the current 13-language offer. These augment an existing base schema, not an empty database. Check profile creation trigger compatibility and discounted pending-order identity duplicates before applying. Run preflight again afterward.
 3. Run npm run launch:check in an environment with deployment variables, or npm run launch:check -- --env-file <local-env-file>. Never commit that file or paste secret values into chat. The command outputs only status, checks presence/shape, and does not validate credentials or prove launch readiness. Disabled optional features are reported as disabled, not missing. Public Supabase values must be supplied at build time and require a fresh deployment build.
 4. Use docs/account-onboarding.md for Auth redirects, confirmed email and signup/invite checks; docs/payments.md for Stripe test mode; docs/placement-tests.md for language/audio tests; docs/learning-and-notifications.md for private files/SMTP/scheduler. Enable each feature only after its preview checks. SMTP and scheduling remain off until configured; no production cron is created by this work.
@@ -87,3 +89,8 @@ When an active package drops to two remaining lessons, admins receive a renewal 
 The connected project now records the following additional migrations after the original V1 activation and report grants: teacher_language_offer, foreign_key_indexes, student_matching_preferences, teacher_public_profiles, portal_email_notifications, portal_email_indexes, teacher_profile_visibility, suppress_redundant_renewal, and require_teacher_photo. Read-back verification confirms the 13-language constraints, matching preference columns, teacher profile table/RLS, intentional public teacher-photo bucket, service-only portal notification queue, assignment trigger, renewal trigger, and zero retained Turkish teacher preferences.
 
 Supabase performance advisors report no remaining unindexed foreign keys from the new notification queue. Existing RLS init-plan and multiple-permissive-policy advisories predate this feature pass and are not being broadly refactored immediately before V1 launch. The service-only outbox tables intentionally have RLS enabled with no client policies. Leaked-password protection remains an Auth setting to enable separately if desired.
+
+
+## Monthly teacher quality feedback
+
+Students can rate each teacher once per calendar month after at least one completed lesson with that teacher in the same Europe/Bratislava month. Ratings are 1–5 with optional feedback up to 1500 characters and can be updated during the month. Database RLS enforces student ownership and completed-lesson eligibility. Admins can review historical monthly rankings with average rating, response count, completed lesson count, unique students and written comments. Students receive a dashboard reminder when a completed teacher/month remains unrated.

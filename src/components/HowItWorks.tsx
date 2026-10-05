@@ -27,11 +27,11 @@ export default function HowItWorks() {
                     variants={stagger}
                     className="section-header"
                 >
-                    <motion.span variants={fadeInUp} className="section-label inline-block px-4 py-1.5 rounded-full bg-lime-100 text-lime-700 font-semibold text-sm mb-4">
+                    <motion.span variants={fadeInUp} className="section-label inline-block px-4 py-1.5 rounded-full bg-[#EEF2FF] text-[#2F3AA2] font-semibold text-sm mb-4">
                         {t.howItWorks.label}
                     </motion.span>
                     <motion.h2 variants={fadeInUp} className="section-title">
-                        {t.howItWorks.titleStart} <span className="accent-word text-lime-600">{t.howItWorks.titleEnd}</span>
+                        {t.howItWorks.titleStart} <span className="accent-word text-[#2F3AA2]">{t.howItWorks.titleEnd}</span>
                     </motion.h2>
                     <motion.p variants={fadeInUp} className="section-subtitle">
                         {t.howItWorks.subtitle}
@@ -54,7 +54,7 @@ export default function HowItWorks() {
                             className="step-card"
                         >
                             <motion.div
-                                className="step-number bg-lime-400 text-lime-900"
+                                className="step-number bg-[#2F3AA2] text-white"
                                 whileHover={{ scale: 1.1 }}
                                 transition={{ type: "spring", stiffness: 400 }}
                             >

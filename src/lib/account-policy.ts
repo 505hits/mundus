@@ -1,4 +1,4 @@
-export const STUDENT_LANGUAGES = ["Angličtina", "Nemčina", "Španielčina", "Taliančina", "Francúzština", "Portugalčina", "Ruština", "Turečtina"] as const;
+export const STUDENT_LANGUAGES = ["Angličtina", "Nemčina", "Španielčina", "Taliančina", "Francúzština", "Portugalčina", "Maďarčina", "Poľština", "Ruština", "Čínština", "Slovenčina", "Ukrajinčina", "Moderná hebrejčina"] as const;
 export const STUDENT_LEVELS = ["Neviem posúdiť", "Úplný začiatočník", "A1", "A2", "B1", "B2", "C1", "C2"] as const;
 
 export type AccountFormState = { error?: string; success?: string };

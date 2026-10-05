@@ -57,6 +57,9 @@ export default async function AdminDashboardPage() {
     { data: packages, error: packagesError },
     { data: requests, error: requestsError },
     { data: paidOrders, error: paidOrdersError },
+    { data: onboardingRows, error: onboardingError },
+    { data: teacherPreferences, error: teacherPreferencesError },
+    { data: teacherPublicProfiles, error: teacherPublicProfilesError },
   ] = await Promise.all([
     supabase.from("profiles").select("id,full_name,email").eq("role", "student").eq("status", "active"),
     supabase.from("profiles").select("id,full_name,email").eq("role", "teacher").eq("status", "active"),
@@ -81,6 +84,15 @@ export default async function AdminDashboardPage() {
       .select("student_id,paid_at,status")
       .eq("status", "paid")
       .order("paid_at", { ascending: false }),
+    supabase
+      .from("student_onboarding")
+      .select("student_id"),
+    supabase
+      .from("teacher_preferences")
+      .select("teacher_id,languages,levels,days,time_from,time_to,max_new_students"),
+    supabase
+      .from("teacher_public_profiles")
+      .select("teacher_id,headline,bio,languages,photo_path"),
   ]);
 
   const hasLoadError = Boolean(
@@ -89,7 +101,10 @@ export default async function AdminDashboardPage() {
       lessonsError ||
       packagesError ||
       requestsError ||
-      paidOrdersError
+      paidOrdersError ||
+      onboardingError ||
+      teacherPreferencesError ||
+      teacherPublicProfilesError
   );
 
   const { data: followups, error: followupError } = await supabase.from("renewal_followups").select("student_id,status,last_contact,next_followup,note,updated_at");
@@ -141,6 +156,32 @@ export default async function AdminDashboardPage() {
   const newPaidUnassigned = (students ?? []).filter(
     (student) => paidStudentIds.has(student.id) && !allLessonStudentIds.has(student.id)
   );
+
+  const onboardingStudentIds = new Set((onboardingRows ?? []).map((row) => row.student_id));
+  const studentsMissingOnboarding = (students ?? []).filter((student) => !onboardingStudentIds.has(student.id));
+
+  const preferencesByTeacher = new Map((teacherPreferences ?? []).map((row) => [row.teacher_id, row]));
+  const publicProfileByTeacher = new Map((teacherPublicProfiles ?? []).map((row) => [row.teacher_id, row]));
+  const teachersMissingMatching = (teachers ?? []).filter((teacher) => {
+    const pref = preferencesByTeacher.get(teacher.id);
+    return !(
+      pref?.languages?.length &&
+      pref?.levels?.length &&
+      pref?.days?.length &&
+      pref?.time_from &&
+      pref?.time_to &&
+      Number(pref?.max_new_students ?? 0) > 0
+    );
+  });
+  const teachersMissingPublicProfile = (teachers ?? []).filter((teacher) => {
+    const publicProfile = publicProfileByTeacher.get(teacher.id);
+    return !(
+      publicProfile?.photo_path &&
+      publicProfile?.headline?.trim() &&
+      publicProfile?.bio?.trim().length >= 20 &&
+      publicProfile?.languages?.length
+    );
+  });
 
   const lowPackages = (packages ?? []).filter(
     (pkg) => pkg.status === "active" && (pkg.remaining_lessons ?? 0) > 0 && (pkg.remaining_lessons ?? 0) <= 2
@@ -234,6 +275,18 @@ export default async function AdminDashboardPage() {
               <div className="rounded-2xl bg-[#EEF2FF] p-4">
                 <p className="font-medium">{studentsError || lessonsError ? "Ďalšie termíny sa nepodarilo overiť" : noUpcomingLabel(noUpcoming)}</p>
                 <p className="mt-1 text-sm text-gray-500">Môže byť potrebné dohodnúť ďalší termín.</p>
+              </div>
+              <div className="rounded-2xl bg-amber-50 p-4">
+                <p className="font-medium">{onboardingError ? "Onboarding študentov sa nepodarilo overiť" : studentsMissingOnboarding.length === 1 ? "1 aktívny študent nemá dokončený onboarding" : `${studentsMissingOnboarding.length} aktívnych študentov nemá dokončený onboarding`}</p>
+                <p className="mt-1 text-sm text-gray-500">Bez onboardingu môžu chýbať údaje potrebné pre matching a správne nastavenie výučby.</p>
+              </div>
+              <div className="rounded-2xl bg-amber-50 p-4">
+                <p className="font-medium">{teacherPreferencesError ? "Matching nastavenia lektorov sa nepodarilo overiť" : teachersMissingMatching.length === 1 ? "1 aktívny lektor nemá kompletné matching nastavenia" : `${teachersMissingMatching.length} aktívnych lektorov nemá kompletné matching nastavenia`}</p>
+                <p className="mt-1 text-sm text-gray-500">Lektor potrebuje jazyky, úrovne, dni, časové okno a kapacitu.</p>
+              </div>
+              <div className="rounded-2xl bg-amber-50 p-4">
+                <p className="font-medium">{teacherPublicProfilesError ? "Verejné profily lektorov sa nepodarilo overiť" : teachersMissingPublicProfile.length === 1 ? "1 aktívny lektor nemá kompletný verejný profil" : `${teachersMissingPublicProfile.length} aktívnych lektorov nemá kompletný verejný profil`}</p>
+                <p className="mt-1 text-sm text-gray-500">Pred zverejnením je potrebná fotka, jazyky, titulok a predstavenie.</p>
               </div>
             </div>
           </section>

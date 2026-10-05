@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 import { MUNDUS_LANGUAGE_OPTIONS } from "@/lib/language-offer";
 
@@ -57,7 +58,11 @@ export default function TeacherSection({teachers}:{teachers:PublicTeacher[]}) {
           <motion.article key={teacher.id} initial="hidden" whileInView="visible" viewport={{once:true,margin:"-40px"}} variants={fade} className="group">
             <div className="relative mb-4 aspect-[3/4] overflow-hidden rounded-3xl bg-[#EEF2FF] shadow-sm">
               {teacher.photoUrl
-                ? <img src={teacher.photoUrl} alt={teacher.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"/>
+                ? <>
+                    {/* Dynamic Supabase-hosted teacher photos intentionally use the public object URL directly. */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={teacher.photoUrl} alt={teacher.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"/>
+                  </>
                 : <div className="flex h-full items-center justify-center text-6xl font-semibold text-[#2F3AA2]">{teacher.name.slice(0,1).toUpperCase()}</div>}
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent"/>
               <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
@@ -74,7 +79,7 @@ export default function TeacherSection({teachers}:{teachers:PublicTeacher[]}) {
       </div>
 
       <div className="mt-10 text-center">
-        <a href="/#buy-packages" className="inline-flex rounded-xl bg-[#2F3AA2] px-6 py-3 font-semibold text-white">{sk?"Vybrať balíček":"Choose a package"}</a>
+        <Link href="/#buy-packages" className="inline-flex rounded-xl bg-[#2F3AA2] px-6 py-3 font-semibold text-white">{sk?"Vybrať balíček":"Choose a package"}</Link>
       </div>
     </div>
   </section>;

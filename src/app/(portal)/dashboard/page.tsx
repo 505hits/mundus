@@ -45,6 +45,8 @@ export default async function DashboardPage() {
     { data: lessons, error: lessonsError },
     { data: reports, error: reportsError },
     { data: pendingRequests, error: requestsError },
+    { data: completedThisMonth, error: completedThisMonthError },
+    { data: monthlyFeedback, error: monthlyFeedbackError },
   ] = await Promise.all([
     supabase
       .from("profiles")
@@ -81,16 +83,51 @@ export default async function DashboardPage() {
       .select("lesson_id,preferred_at")
       .eq("student_id", user.id)
       .eq("status", "pending"),
+
+    (() => {
+      const now = new Date();
+      const year = new Intl.DateTimeFormat("en", { year: "numeric", timeZone: "Europe/Bratislava" }).format(now);
+      const month = new Intl.DateTimeFormat("en", { month: "2-digit", timeZone: "Europe/Bratislava" }).format(now);
+      const key = `${year}-${month}-01`;
+      const start = new Date(`${key}T00:00:00+02:00`);
+      const end = new Date(start);
+      end.setUTCMonth(end.getUTCMonth() + 1);
+      return supabase
+        .from("lessons")
+        .select("teacher_id")
+        .eq("student_id", user.id)
+        .eq("status", "completed")
+        .gte("scheduled_at", start.toISOString())
+        .lt("scheduled_at", end.toISOString());
+    })(),
+
+    (() => {
+      const now = new Date();
+      const year = new Intl.DateTimeFormat("en", { year: "numeric", timeZone: "Europe/Bratislava" }).format(now);
+      const month = new Intl.DateTimeFormat("en", { month: "2-digit", timeZone: "Europe/Bratislava" }).format(now);
+      return supabase
+        .from("teacher_monthly_feedback")
+        .select("teacher_id")
+        .eq("student_id", user.id)
+        .eq("feedback_month", `${year}-${month}-01`);
+    })(),
   ]);
 
   const hasLoadError = Boolean(
-    profileError || packagesError || lessonsError || reportsError || requestsError
+    profileError || packagesError || lessonsError || reportsError || requestsError || completedThisMonthError || monthlyFeedbackError
   );
 
   const activePackages = packages ?? [];
   const upcomingLessons = lessons ?? [];
   const nextLesson = upcomingLessons[0] ?? null;
   const teacherReports: StudentLessonReport[] = Array.isArray(reports) ? reports : [];
+  const ratedTeachers = new Set((monthlyFeedback ?? []).map((item) => item.teacher_id));
+  const teachersToRate = new Set(
+    (completedThisMonth ?? [])
+      .map((item) => item.teacher_id)
+      .filter((teacherId) => !ratedTeachers.has(teacherId))
+  );
+
   const pendingRequestMap = new Map(
     (pendingRequests ?? []).map((request) => [
       request.lesson_id,
@@ -175,6 +212,14 @@ export default async function DashboardPage() {
       </header>
 
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
+        {teachersToRate.size > 0 && <section className="mb-6 flex flex-col gap-4 rounded-3xl border border-amber-200 bg-amber-50 p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="font-semibold text-amber-900">Ako sa vám tento mesiac učilo?</p>
+            <p className="mt-1 text-sm text-amber-900/75">Máte dokončenú hodinu s lektorom, ktorého ste tento mesiac ešte neohodnotili. Vaša spätná väzba nám pomáha udržať kvalitu výučby.</p>
+          </div>
+          <Link href="/feedback" className="shrink-0 rounded-xl bg-[#2F3AA2] px-4 py-3 text-sm font-semibold text-white">Ohodnotiť lektora</Link>
+        </section>}
+
         {renewalDue && <section className="mb-6 flex flex-col gap-4 rounded-3xl border border-[#2F3AA2]/20 bg-[#EEF2FF] p-5 sm:flex-row sm:items-center sm:justify-between">
           <div><p className="font-semibold text-[#2F3AA2]">Je čas myslieť na ďalší balíček</p><p className="mt-1 text-sm text-gray-600">Máte už len posledné hodiny. Ak chcete pokračovať bez prestávky, môžete si ďalší balíček pripraviť už teraz.</p></div>
           {paymentsAvailable?<Link href="/packages" className="shrink-0 rounded-xl bg-[#2F3AA2] px-4 py-3 text-sm font-semibold text-white">Kúpiť ďalší balíček</Link>:<Link href="/contact" className="shrink-0 rounded-xl bg-[#2F3AA2] px-4 py-3 text-sm font-semibold text-white">Kontaktovať Mundus</Link>}

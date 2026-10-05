@@ -3,9 +3,11 @@ import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatLanguage, formatProfileStatus } from "@/lib/portalLabels";
 import StudentStatusAction from "./StudentStatusAction";
+import { currentLanguage, localeFor } from "@/lib/i18n";
+import type { Language } from "@/context/LanguageContext";
 
-function formatDateTime(value: string) {
-  return new Intl.DateTimeFormat("sk-SK", {
+function formatDateTime(value: string, language: Language) {
+  return new Intl.DateTimeFormat(localeFor(language), {
     day: "numeric",
     month: "short",
     hour: "2-digit",
@@ -16,6 +18,8 @@ function formatDateTime(value: string) {
 }
 
 export default async function AdminStudentsPage({searchParams}:{searchParams:Promise<{q?:string;status?:string}>}) {
+  const language=await currentLanguage();
+  const sk=language==="sk";
   const filters=await searchParams;
   const search=(typeof filters.q === "string" ? filters.q : "").trim().slice(0,100);
   const statusFilter=["active","inactive","pending"].includes(filters.status||"") ? filters.status : "";
@@ -63,8 +67,8 @@ export default async function AdminStudentsPage({searchParams}:{searchParams:Pro
 
     return {
       ...profile,
-      language: nextLesson?.language || latestWithLanguage?.language ? formatLanguage(nextLesson?.language || latestWithLanguage?.language) : "—",
-      teacher: lessonsError ? "Nedostupné" : teacher?.full_name?.trim() || teacher?.email || (nextLesson ? "Lektor nie je uvedený" : "Bez nasledujúcej hodiny"),
+      language: nextLesson?.language || latestWithLanguage?.language ? formatLanguage(nextLesson?.language || latestWithLanguage?.language,language) : "—",
+      teacher: lessonsError ? (sk?"Nedostupné":"Unavailable") : teacher?.full_name?.trim() || teacher?.email || (nextLesson ? (sk?"Lektor nie je uvedený":"Teacher not listed") : (sk?"Bez nasledujúcej hodiny":"No upcoming lesson")),
       remaining,
       nextLesson: nextLesson?.scheduled_at ?? null,
     };
@@ -84,14 +88,14 @@ export default async function AdminStudentsPage({searchParams}:{searchParams:Pro
     <main className="min-h-screen bg-transparent text-[#0a0a0f]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">Študenti</p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Správa študentov</h1>
-          <p className="mt-2 text-gray-500">Reálne účty študentov, balíčky a najbližšie hodiny.</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">{sk?"Študenti":"Students"}</p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">{sk?"Správa študentov":"Student management"}</h1>
+          <p className="mt-2 text-gray-500">{sk?"Reálne účty študentov, balíčky a najbližšie hodiny.":"Real student accounts, packages and upcoming lessons."}</p>
         </section>
 
         {(profilesError || lessonsError || packagesError) && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            Niektoré účty, hodiny alebo zostatky sa nepodarilo načítať. Obnovte stránku a skúste to znova.
+            {sk?"Niektoré účty, hodiny alebo zostatky sa nepodarilo načítať. Obnovte stránku a skúste to znova.":"Some accounts, lessons or balances could not be loaded. Refresh the page and try again."}
           </div>
         )}
 
@@ -99,63 +103,63 @@ export default async function AdminStudentsPage({searchParams}:{searchParams:Pro
           <div className="rounded-3xl border border-[#E5E7F0] bg-white p-5 shadow-sm">
             <Users size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{profilesError ? "—" : activeStudents}</p>
-            <p className="mt-1 text-sm text-gray-500">Aktívni študenti</p>
+            <p className="mt-1 text-sm text-gray-500">{sk?"Aktívni študenti":"Active students"}</p>
           </div>
           <div className="rounded-3xl border border-[#E5E7F0] bg-white p-5 shadow-sm">
             <BookOpen size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{profilesError || packagesError ? "—" : renewalSoon}</p>
-            <p className="mt-1 text-sm text-gray-500">Blíži sa pokračovanie</p>
+            <p className="mt-1 text-sm text-gray-500">{sk?"Blíži sa pokračovanie":"Continuation due soon"}</p>
           </div>
           <div className="rounded-3xl border border-[#E5E7F0] bg-white p-5 shadow-sm">
             <AlertCircle size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{profilesError || lessonsError || packagesError ? "—" : needsAttention}</p>
-            <p className="mt-1 text-sm text-gray-500">Vyžaduje pozornosť</p>
+            <p className="mt-1 text-sm text-gray-500">{sk?"Vyžaduje pozornosť":"Needs attention"}</p>
           </div>
         </section>
 
         <form action="/admin/students" method="get" className="mt-8 flex flex-wrap items-end gap-3 rounded-2xl border border-indigo-100 bg-white p-5">
-          <label className="flex-1 text-sm font-semibold">Meno alebo e-mail<input name="q" type="search" defaultValue={search} maxLength={100} className="mt-2 block w-full min-w-48 rounded-xl border border-gray-200 p-3"/></label>
-          <label className="text-sm font-semibold">Stav účtu<select name="status" defaultValue={statusFilter} className="mt-2 block rounded-xl border border-gray-200 p-3"><option value="">Všetky účty</option><option value="active">Aktívne</option><option value="inactive">Neaktívne</option><option value="pending">Čakajúce</option></select></label>
-          <button className="rounded-xl bg-[#2F3AA2] px-5 py-3 font-semibold text-white">Vyhľadať</button><a href="/admin/students" className="px-3 py-3 font-semibold text-[#2F3AA2] underline">Zrušiť filtre</a>
-          <p className="w-full text-sm text-gray-500">Prehľadové počty vyššie zahŕňajú všetkých načítaných študentov; filtre menia zoznam nižšie.</p>
+          <label className="flex-1 text-sm font-semibold">{sk?"Meno alebo e-mail":"Name or email"}<input name="q" type="search" defaultValue={search} maxLength={100} className="mt-2 block w-full min-w-48 rounded-xl border border-gray-200 p-3"/></label>
+          <label className="text-sm font-semibold">{sk?"Stav účtu":"Account status"}<select name="status" defaultValue={statusFilter} className="mt-2 block rounded-xl border border-gray-200 p-3"><option value="">{sk?"Všetky účty":"All accounts"}</option><option value="active">{sk?"Aktívne":"Active"}</option><option value="inactive">{sk?"Neaktívne":"Inactive"}</option><option value="pending">{sk?"Čakajúce":"Pending"}</option></select></label>
+          <button className="rounded-xl bg-[#2F3AA2] px-5 py-3 font-semibold text-white">{sk?"Vyhľadať":"Search"}</button><a href="/admin/students" className="px-3 py-3 font-semibold text-[#2F3AA2] underline">{sk?"Zrušiť filtre":"Clear filters"}</a>
+          <p className="w-full text-sm text-gray-500">{sk?"Prehľadové počty vyššie zahŕňajú všetkých načítaných študentov; filtre menia zoznam nižšie.":"The overview counts above include all loaded students; filters change only the list below."}</p>
         </form>
 
         <section className="mt-8 overflow-hidden rounded-3xl border border-[#E5E7F0] bg-white shadow-sm">
           {visibleStudents.length === 0 ? (
-            <div className="p-8 text-center text-sm text-gray-500">{profilesError ? "Účty sa nepodarilo načítať. Obnovte stránku." : search || statusFilter ? "Žiadny študent nezodpovedá zvolenému vyhľadávaniu." : "Zatiaľ nie sú vytvorené žiadne účty študentov."}</div>
+            <div className="p-8 text-center text-sm text-gray-500">{profilesError ? (sk?"Účty sa nepodarilo načítať. Obnovte stránku.":"Accounts could not be loaded. Refresh the page.") : search || statusFilter ? (sk?"Žiadny študent nezodpovedá zvolenému vyhľadávaniu.":"No student matches the selected search.") : (sk?"Zatiaľ nie sú vytvorené žiadne účty študentov.":"No student accounts have been created yet.")}</div>
           ) : (
             <div className="divide-y divide-gray-100">
               {visibleStudents.map((student) => (
                 <div key={student.id} className="grid gap-4 px-5 py-5 lg:grid-cols-[1.4fr_1fr_0.7fr_1.2fr_0.8fr_0.9fr] lg:items-center lg:px-6">
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
-                      <p className="font-semibold">{student.full_name?.trim() || student.email || "Študent"}</p>
+                      <p className="font-semibold">{student.full_name?.trim() || student.email || (sk?"Študent":"Student")}</p>
                       {!packagesError && student.status === "active" && student.remaining > 0 && student.remaining <= 2 && (
                         <span className="rounded-full bg-[#faf1d9] px-2.5 py-1 text-xs font-semibold text-[#2F3AA2]">
-                          Blíži sa pokračovanie
+                          {sk?"Blíži sa pokračovanie":"Continuation due soon"}
                         </span>
                       )}
                     </div>
                     <p className="mt-1 break-all text-sm text-gray-500">{student.email}</p>
-                    <p className="mt-1 text-sm text-gray-400">{lessonsError ? "Jazyk sa nepodarilo načítať" : student.language}</p>
+                    <p className="mt-1 text-sm text-gray-400">{lessonsError ? (sk?"Jazyk sa nepodarilo načítať":"Language could not be loaded") : student.language}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-400">Lektor</p>
+                    <p className="text-xs text-gray-400">{sk?"Lektor":"Teacher"}</p>
                     <p className="mt-1 text-sm font-medium lg:mt-0">{student.teacher}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-400">Zostáva hodín</p>
+                    <p className="text-xs text-gray-400">{sk?"Zostáva hodín":"Lessons remaining"}</p>
                     <p className="mt-1 text-sm font-semibold lg:mt-0">{packagesError ? "—" : student.remaining}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-400">Najbližšia hodina</p>
+                    <p className="text-xs text-gray-400">{sk?"Najbližšia hodina":"Next lesson"}</p>
                     <p className="mt-1 text-sm text-gray-500 lg:mt-0">
-                      {lessonsError ? "Nedostupné" : student.nextLesson ? formatDateTime(student.nextLesson) : "Nenaplánované"}
+                      {lessonsError ? (sk?"Nedostupné":"Unavailable") : student.nextLesson ? formatDateTime(student.nextLesson,language) : (sk?"Nenaplánované":"Not scheduled")}
                     </p>
                   </div>
                   <div>
                     <span className="rounded-full bg-[#EEF2FF] px-3 py-1 text-xs font-semibold capitalize text-[#3730A3]">
-                      {formatProfileStatus(student.status)}
+                      {formatProfileStatus(student.status,language)}
                     </span>
                   </div>
                   <div>

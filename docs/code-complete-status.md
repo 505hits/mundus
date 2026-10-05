@@ -17,37 +17,38 @@ This file separates work that is complete in the repository from release work th
 - Accessibility/error-state hardening for account flows.
 - Current language catalog shared by lesson creation, teacher preferences and server validation.
 - Launch preflight, migration ordering and regression tests.
-- Prepared database hardening for the current language constraint and covering foreign-key indexes.
+- Database hardening for the current language constraints, teacher public profiles, notification queues and covering foreign-key indexes is applied and verified in the connected Supabase project.
 
-## Verified without deployment changes
+## Verified in the connected Supabase project
 
 Read-only checks against the connected Mundus Supabase project confirmed:
 
-- All 13 key public tables have RLS enabled.
+- Existing portal tables plus the new teacher-public-profile and portal-email-outbox tables have the expected RLS/service-only posture.
 - The learning bucket is private.
 - Existing lesson-package counters are internally consistent.
 - Student report, teacher directory and verified lesson-completion RPCs exist.
 - Report private-field and teacher-contact privacy policies exist.
 - Existing accounting trigger is present.
 - There are no stored teacher preferences using the retired Turkish value.
+- Student onboarding stores current 13-language choices plus preferred days/times.
+- Teacher public profile storage is a deliberate public-read image bucket with a 5 MB JPG/PNG/WebP limit; profile writes remain controlled server-side.
+- Paid-order assignment and low-credit renewal triggers are installed.
+- Notification queue foreign keys and pending-work lookup are indexed.
 
-The live teacher-preference database constraint still contains the old 8-language list. The repository contains the ordered migration that fixes it, but that migration has not been applied here because changing the live database requires separate approval.
-
-`mundus_active_portal_account()` intentionally remains executable by `anon` because the restrictive RLS policy applies to `public` and needs to evaluate the helper for anonymous requests. With no authenticated `auth.uid()`, the helper returns `false`; regression coverage verifies anonymous table access remains blocked.
+The live teacher-preference and student-onboarding constraints now match the current 13-language offer. `mundus_active_portal_account()` intentionally remains executable by `anon` because the restrictive RLS policy applies to `public` and needs to evaluate the helper for anonymous requests. With no authenticated `auth.uid()`, the helper returns `false`; regression coverage verifies anonymous table access remains blocked.
 
 ## External/integration work still required
 
 These cannot be completed or honestly verified from repository work alone:
 
-1. Apply and verify the two latest prepared database migrations in the approved environment.
-2. Enable leaked-password protection in Supabase Auth if desired for launch.
-3. Verify real student signup, confirmation email, login, logout and password recovery.
-4. Verify a real teacher invitation and password setup.
-5. Configure Stripe test credentials/webhook and run purchase, retry, repurchase, discount, delayed-payment and refund scenarios.
-6. Configure SMTP plus the notification scheduler and verify actual inbox receipt/retries.
-7. Test real private upload/download flows with student, assigned teacher and unrelated accounts.
-8. Test lesson accounting with disposable preview records and the existing trigger.
-9. Run mobile/desktop/browser/device QA, including assessment audio.
-10. Merge/promote the tested branch and enable production features only after the above checks.
+1. Enable leaked-password protection in Supabase Auth if desired for launch.
+2. Verify real student signup, confirmation email, login, logout and password recovery.
+3. Verify a real teacher invitation, profile completion/photo upload and password setup.
+4. Configure the Stripe test webhook against the final deployed callback URL and run purchase, retry, repurchase, discount, delayed-payment and refund scenarios.
+5. Configure SMTP plus the notification scheduler and verify actual assignment/renewal/schedule emails and retries.
+6. Test real private upload/download flows with student, assigned teacher and unrelated accounts.
+7. Test lesson accounting with disposable preview records and the existing trigger.
+8. Run mobile/desktop/browser/device QA, including assessment audio and the central admin calendar.
+9. Merge/promote the tested branch and enable production features only after the above checks.
 
 Large CRM, corporate HR portal, advanced LMS features, additional automated assessment languages, AI transcription, gamification and certificates are intentionally outside the V1 launch scope.

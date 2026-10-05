@@ -1,6 +1,6 @@
 # Mundus preview activation sequence
 
-Code is on mundus-portal. The reviewed database activation is applied; website production promotion and live payment/email enablement remain pending.
+Code is merged to main. The reviewed database activation is applied. The current public domain still serves the older Vercel project until the correct `505hits-projects` team/domain is re-authorized and promoted; live payment/email enablement remains pending.
 
 1. Run supabase/launch-preflight.sql in the EXISTING project's SQL editor. It is read-only and reports missing tables, RLS/policies, trigger names, accounting candidates, counter inconsistencies and private storage. Inspect candidate trigger functions before adding any lesson-credit logic; candidate names alone do not prove correct accounting. Stop if counters are inconsistent or the learning bucket is public. Do not reset existing users, packages or balances.
 2. In an isolated verified preview database, apply only missing migrations in this dependency order (inspect migration history first; do not rerun creation migrations blindly):
@@ -37,6 +37,7 @@ Code is on mundus-portal. The reviewed database activation is applied; website p
    - 202610050007_portal_email_indexes.sql
    - 202610050008_teacher_profile_visibility.sql
    - 202610050009_suppress_redundant_renewal.sql
+   - 202610050010_require_teacher_photo.sql
    `202610050001_teacher_language_offer.sql` removes the retired Turkish preference value from existing teacher preference rows and expands the allowed teacher-language list to the current 13-language offer. These augment an existing base schema, not an empty database. Check profile creation trigger compatibility and discounted pending-order identity duplicates before applying. Run preflight again afterward.
 3. Run npm run launch:check in an environment with deployment variables, or npm run launch:check -- --env-file <local-env-file>. Never commit that file or paste secret values into chat. The command outputs only status, checks presence/shape, and does not validate credentials or prove launch readiness. Disabled optional features are reported as disabled, not missing. Public Supabase values must be supplied at build time and require a fresh deployment build.
 4. Use docs/account-onboarding.md for Auth redirects, confirmed email and signup/invite checks; docs/payments.md for Stripe test mode; docs/placement-tests.md for language/audio tests; docs/learning-and-notifications.md for private files/SMTP/scheduler. Enable each feature only after its preview checks. SMTP and scheduling remain off until configured; no production cron is created by this work.
@@ -67,7 +68,7 @@ Admin completion now also uses mundus_complete_lesson(), without a direct-update
 
 GitHub reports successful Vercel deployments for mundus and mundus-5at5 on portal commit 8a62e0bc163a5e6b1926c5721b9520d828c11a22. The associated branch preview links are https://mundus-git-mundus-portal-505hits-projects.vercel.app and https://mundus-5at5-git-mundus-portal-505hits-projects.vercel.app. Requests to their login routes redirect; the mundus-5at5 redirect was followed and ends at Vercel login, not the Mundus login page. Do not treat a successful deployment status or Vercel login HTTP 200 as a successful Mundus authentication check.
 
-The older https://mundus-chi.vercel.app/login address returns HTTP 404. Do not give that address as a working portal preview. Main remains at 8803d08 (September 30); it does not contain the subsequent portal safeguards. Preparing a draft PR is review preparation, not production publication. A read-only merge-tree check finds no merge conflict against the current portal branch.
+The older https://mundus-chi.vercel.app/login address returns HTTP 404. Do not give that address as a working portal preview. `main` now contains the Mundus V1 portal and subsequent launch safeguards. The remaining production blocker is Vercel scope/domain configuration under the `505hits-projects` team, not an unmerged Git branch. A read-only merge-tree check finds no merge conflict against the current portal branch.
 
 Supabase is connected. All 24 reviewed sources were applied atomically as 20261004115305_mundus_v1_portal_activation, followed by report_table_grants. Existing 3 profiles / 1 lesson / 1 package were preserved; all 13 public tables have RLS. Read-only teacher/student/anonymous role checks pass. Auth browser tests and real checkout/email/upload checks remain pending. Preflight now audits table grants as well as RLS: teachers require authenticated SELECT/INSERT/UPDATE on lesson_reports; server-only feature tables must not grant client writes. No changes to Vercel access restrictions or live payment/email flags were made.
 
@@ -83,6 +84,6 @@ When an active package drops to two remaining lessons, admins receive a renewal 
 
 ## Connected Supabase evidence — 2026-10-05
 
-The connected project now records the following additional migrations after the original V1 activation and report grants: teacher_language_offer, foreign_key_indexes, student_matching_preferences, teacher_public_profiles, portal_email_notifications, and portal_email_indexes. Read-back verification confirms the 13-language constraints, matching preference columns, teacher profile table/RLS, intentional public teacher-photo bucket, service-only portal notification queue, assignment trigger, renewal trigger, and zero retained Turkish teacher preferences.
+The connected project now records the following additional migrations after the original V1 activation and report grants: teacher_language_offer, foreign_key_indexes, student_matching_preferences, teacher_public_profiles, portal_email_notifications, portal_email_indexes, teacher_profile_visibility, suppress_redundant_renewal, and require_teacher_photo. Read-back verification confirms the 13-language constraints, matching preference columns, teacher profile table/RLS, intentional public teacher-photo bucket, service-only portal notification queue, assignment trigger, renewal trigger, and zero retained Turkish teacher preferences.
 
 Supabase performance advisors report no remaining unindexed foreign keys from the new notification queue. Existing RLS init-plan and multiple-permissive-policy advisories predate this feature pass and are not being broadly refactored immediately before V1 launch. The service-only outbox tables intentionally have RLS enabled with no client policies. Leaked-password protection remains an Auth setting to enable separately if desired.

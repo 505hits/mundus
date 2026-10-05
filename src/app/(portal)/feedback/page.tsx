@@ -2,8 +2,11 @@ import TeacherFeedbackForm from "./TeacherFeedbackForm";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { BRATISLAVA_TIME_ZONE, currentBratislavaMonth } from "@/lib/month";
+import { currentLanguage, localeFor } from "@/lib/i18n";
 
 export default async function FeedbackPage() {
+  const language = await currentLanguage();
+  const sk = language === "sk";
   const { user } = await requireRole("student");
   const db = await createSupabaseServerClient();
   const month = currentBratislavaMonth();
@@ -48,12 +51,12 @@ export default async function FeedbackPage() {
     }
     teachers.set(lesson.teacher_id, {
       id: lesson.teacher_id,
-      name: teacher?.full_name?.trim() || teacher?.email || "Lektor Mundus",
+      name: teacher?.full_name?.trim() || teacher?.email || (sk ? "Lektor Mundus" : "Mundus teacher"),
       lessons: 1,
     });
   }
 
-  const monthLabel = new Intl.DateTimeFormat("sk-SK", {
+  const monthLabel = new Intl.DateTimeFormat(localeFor(language), {
     month: "long",
     year: "numeric",
     timeZone: BRATISLAVA_TIME_ZONE,
@@ -63,18 +66,18 @@ export default async function FeedbackPage() {
     <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
       <div className="mx-auto max-w-5xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">Hodnotenie lektora</p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Ako sa vám tento mesiac učilo?</h1>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">{sk ? "Hodnotenie lektora" : "Teacher feedback"}</p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">{sk ? "Ako sa vám tento mesiac učilo?" : "How was learning this month?"}</h1>
           <p className="mt-2 max-w-2xl text-gray-500">
-            Raz mesačne môžete ohodnotiť každého lektora, s ktorým ste mali dokončenú hodinu. Hodnotenie môžete počas mesiaca ešte upraviť.
+            {sk ? "Raz mesačne môžete ohodnotiť každého lektora, s ktorým ste mali dokončenú hodinu. Hodnotenie môžete počas mesiaca ešte upraviť." : "Once per month, you can rate every teacher you completed a lesson with. You can update the rating during the month."}
           </p>
           <p className="mt-2 text-sm font-medium text-[#2F3AA2]">{monthLabel}</p>
         </section>
 
         {teachers.size === 0 ? (
           <section className="mt-8 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
-            <p className="font-medium">Tento mesiac zatiaľ nemáte dokončenú hodinu.</p>
-            <p className="mt-1 text-sm text-gray-500">Hodnotenie sa sprístupní po dokončení hodiny s lektorom.</p>
+            <p className="font-medium">{sk ? "Tento mesiac zatiaľ nemáte dokončenú hodinu." : "You do not have a completed lesson this month yet."}</p>
+            <p className="mt-1 text-sm text-gray-500">{sk ? "Hodnotenie sa sprístupní po dokončení hodiny s lektorom." : "Feedback becomes available after you complete a lesson with a teacher."}</p>
           </section>
         ) : (
           <div className="mt-8 grid gap-5 lg:grid-cols-2">
@@ -91,7 +94,7 @@ export default async function FeedbackPage() {
                     initialCategories={existing?.categories ?? []}
                   />
                   <p className="mt-2 px-1 text-xs text-gray-400">
-                    Dokončené hodiny s týmto lektorom tento mesiac: {teacher.lessons}
+                    {sk ? "Dokončené hodiny s týmto lektorom tento mesiac:" : "Completed lessons with this teacher this month:"} {teacher.lessons}
                   </p>
                 </div>
               );

@@ -1,6 +1,7 @@
 import { teacherDirectory } from "@/lib/teacher-directory";
 import { safeLessonLink } from "@/lib/lesson-link";
 import Link from "next/link";
+import BrandLogo from "@/components/BrandLogo";
 import {
   AlertCircle,
   CalendarDays,
@@ -210,9 +211,7 @@ export default async function TeacherDashboardPage() {
     <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
       <header className="border-b border-black/5 bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
-          <Link href="/" className="text-xl font-bold tracking-tight">
-            mundus
-          </Link>
+          <BrandLogo compact />
 
           <div className="flex items-center gap-3">
             <div className="hidden text-right sm:block">

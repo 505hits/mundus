@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
-/* ===== MUNDUS - TALKEE-INSPIRED DESIGN SYSTEM ===== */
+/* ===== MUNDUS DESIGN SYSTEM ===== */
 
 :root {
-  /* Colors - Light Theme with Lime Green Accent */
-  --background: #FAFAF9;
-  --background-alt: #F5F5F4;
-  --foreground: #181818;
-  --foreground-muted: #525252;
-  --foreground-subtle: #A3A3A3;
+  /* Calm, premium light theme */
+  --background: #F7F8FC;
+  --background-alt: #F0F2F8;
+  --foreground: #171A2B;
+  --foreground-muted: #62677A;
+  --foreground-subtle: #9CA3B5;
 
   /* Blue Accent (Updated) */
   --accent: #2F3AA2;
@@ -21,11 +21,15 @@
 
   /* Card & Border */
   --card-bg: #FFFFFF;
-  --card-border: #E5E5E5;
-  --card-shadow: rgba(0, 0, 0, 0.06);
+  --card-border: #E5E7F0;
+  --card-shadow: rgba(47, 58, 162, 0.08);
 
-  /* Success */
-  --success: #22C55E;
+  --accent-soft: #EEF2FF;
+  --accent-mid: #C7D2FE;
+  --ink-soft: #252A3E;
+
+  /* Status */
+  --success: #16A34A;
 }
 
 /* ===== BASE STYLES ===== */
@@ -43,7 +47,7 @@ body {
   color: var(--foreground);
   font-family: 'Inter Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 16px;
-  line-height: 1.6;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -54,8 +58,8 @@ h3,
 h4,
 h5,
 h6 {
-  font-weight: 600;
-  line-height: 1.2;
+  font-weight: 650;
+  line-height: 1.16;
   color: var(--foreground);
   letter-spacing: -0.02em;
 }
@@ -168,7 +172,7 @@ h3 {
 }
 
 .section {
-  padding: 100px 0;
+  padding: 88px 0;
 }
 
 .section-header {
@@ -404,14 +408,16 @@ h3 {
 .card {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
-  border-radius: 20px;
+  border-radius: 24px;
   padding: 32px;
-  transition: all 0.3s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 10px 30px rgba(23, 26, 43, 0.04);
 }
 
 .card:hover {
-  box-shadow: 0 20px 40px var(--card-shadow);
-  transform: translateY(-4px);
+  border-color: var(--accent-mid);
+  box-shadow: 0 18px 48px var(--card-shadow);
+  transform: translateY(-2px);
 }
 
 /* ===== TEACHER CARDS ===== */
@@ -834,4 +840,42 @@ h3 {
   50% {
     transform: translate(-25px, 15px) scale(1.1);
   }
+}
+
+
+/* ===== SHARED APP SURFACES ===== */
+::selection {
+  background: var(--accent-mid);
+  color: var(--foreground);
+}
+
+:focus-visible {
+  outline: 3px solid rgba(47, 58, 162, 0.28);
+  outline-offset: 3px;
+}
+
+.portal-surface {
+  background:
+    radial-gradient(circle at 8% 0%, rgba(199, 210, 254, 0.34), transparent 28rem),
+    var(--background);
+}
+
+.portal-card {
+  border: 1px solid var(--card-border);
+  border-radius: 24px;
+  background: rgba(255,255,255,0.94);
+  box-shadow: 0 10px 30px rgba(23, 26, 43, 0.045);
+}
+
+.portal-kicker {
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+  .section { padding: 68px 0; }
+  .section-header { margin-bottom: 40px; }
 }

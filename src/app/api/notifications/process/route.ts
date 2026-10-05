@@ -4,6 +4,7 @@ import nodemailer from "nodemailer";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { accountOrigin } from "@/lib/account-config";
 import { scheduleEmail } from "@/lib/schedule-email";
+import { portalEmail } from "@/lib/portal-email";
 export const runtime="nodejs";
 export const maxDuration=120;
 export async function GET(request:NextRequest) {
@@ -45,6 +46,28 @@ export async function GET(request:NextRequest) {
     if(retryError)throw retryError;
     failed++;
    }
+  }
+  const {data:portalJobs,error:portalError}=await admin.rpc("claim_portal_emails",{batch_size:5});
+  if(portalError) throw portalError;
+  for(const job of portalJobs||[]) {
+    try {
+      const {data:recipient}=await admin.from("profiles").select("status,email,role").eq("id",job.recipient_id).single();
+      const {data:student}=await admin.from("profiles").select("full_name,email").eq("id",job.student_id).single();
+      const {data:auth}=await admin.auth.admin.getUserById(job.recipient_id);
+      if(recipient?.status!=="active" || recipient.email!==job.recipient_email || !auth.user?.email_confirmed_at) throw new Error("Recipient unavailable");
+      const studentName=student?.full_name?.trim()||student?.email||"študent";
+      const href=job.kind==="admin_assignment"?"/admin/matching":job.kind==="admin_renewal"?"/admin/dashboard":"/packages";
+      const content=portalEmail(job.kind,studentName,origin+href);
+      const result=await transport.sendMail({from:process.env.MUNDUS_EMAIL_FROM,to:job.recipient_email,...content,messageId:"<mundus-"+job.id+"@"+new URL(origin).hostname+">"});
+      if(!result.accepted.length) throw new Error("SMTP rejected");
+      const {error:finishError}=await admin.from("portal_email_outbox").update({status:"sent",sent_at:new Date().toISOString(),lease_until:null}).eq("id",job.id).eq("lease_token",job.lease_token);
+      if(finishError) throw finishError;
+      sent++;
+    } catch {
+      const {error:retryError}=await admin.from("portal_email_outbox").update({status:job.attempts>=5?"failed":"pending",available_at:new Date(Date.now()+15*60*1000).toISOString(),lease_until:null}).eq("id",job.id).eq("lease_token",job.lease_token);
+      if(retryError) throw retryError;
+      failed++;
+    }
   }
   return NextResponse.json({sent,failed});
  }catch{return NextResponse.json({error:"Notification processing unavailable"},{status:503});}

@@ -18,9 +18,11 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { bratislavaMonth, currentBratislavaMonth } from "@/lib/month";
 import { formatLanguage } from "@/lib/portalLabels";
+import { currentLanguage, localeFor } from "@/lib/i18n";
+import type { Language } from "@/context/LanguageContext";
 
-function formatTime(value: string) {
-  return new Intl.DateTimeFormat("sk-SK", {
+function formatTime(value: string, language: Language) {
+  return new Intl.DateTimeFormat(localeFor(language), {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -28,8 +30,8 @@ function formatTime(value: string) {
   }).format(new Date(value));
 }
 
-function formatShortDate(value: string) {
-  return new Intl.DateTimeFormat("sk-SK", {
+function formatShortDate(value: string, language: Language) {
+  return new Intl.DateTimeFormat(localeFor(language), {
     day: "numeric",
     month: "short",
     timeZone: "Europe/Bratislava",
@@ -42,7 +44,7 @@ function getName(
     | null
     | undefined
 ) {
-  return profile?.full_name?.trim() || profile?.email || "Študent";
+  return profile?.full_name?.trim() || profile?.email || "Student";
 }
 
 function getInitials(name: string) {
@@ -57,6 +59,8 @@ function getInitials(name: string) {
 }
 
 export default async function TeacherDashboardPage() {
+  const language = await currentLanguage();
+  const sk = language === "sk";
   const { user } = await requireRole("teacher");
   const supabase = await createSupabaseServerClient();
   const adminDb = createSupabaseAdminClient();
@@ -228,7 +232,7 @@ export default async function TeacherDashboardPage() {
     uniqueStudents.set(lesson.student_id, {
       id: lesson.student_id,
       name: getName(student),
-      language: formatLanguage(lesson.language),
+      language: formatLanguage(lesson.language, language),
       nextLesson: lesson.scheduled_at,
     });
   }
@@ -246,7 +250,7 @@ export default async function TeacherDashboardPage() {
     teacherProfile?.full_name?.trim() ||
     teacherProfile?.email ||
     user.email ||
-    "Lektor";
+    (sk ? "Lektor" : "Teacher");
 
   const firstName = teacherName.split(" ")[0];
   const publicProfileComplete = Boolean(
@@ -273,7 +277,7 @@ export default async function TeacherDashboardPage() {
           <div className="flex items-center gap-3">
             <div className="hidden text-right sm:block">
               <p className="text-sm font-semibold">{teacherName}</p>
-              <p className="text-xs text-gray-400">Portál lektora</p>
+              <p className="text-xs text-gray-400">{sk ? "Portál lektora" : "Teacher portal"}</p>
             </div>
 
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#2F3AA2] text-sm font-semibold text-white">
@@ -286,58 +290,58 @@ export default async function TeacherDashboardPage() {
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
-            Prehľad lektora
+            {sk ? "Prehľad lektora" : "Teacher overview"}
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Vitajte, {firstName} 👋
+            {sk ? "Vitajte" : "Welcome"}, {firstName} 👋
           </h1>
 
           <p className="mt-2 text-gray-500">
-            Tu nájdete prehľad dnešných hodín, študentov a žiadostí o zmenu termínu.
+            {sk ? "Tu nájdete prehľad dnešných hodín, študentov a žiadostí o zmenu termínu." : "Here you can see today’s lessons, students and schedule-change requests."}
           </p>
         </section>
 
         {!publicProfileComplete && (
           <section className="mt-6 flex flex-col gap-4 rounded-3xl border border-[#2F3AA2]/20 bg-[#EEF2FF] p-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="font-semibold text-[#2F3AA2]">Dokončite svoj profil lektora</p>
-              <p className="mt-1 text-sm leading-6 text-gray-600">Pridajte profilovú fotku, jazyky, krátky titulok a predstavenie. Po dokončení sa profil môže zobraziť aj na hlavnom webe Mundus.</p>
+              <p className="font-semibold text-[#2F3AA2]">{sk ? "Dokončite svoj profil lektora" : "Complete your teacher profile"}</p>
+              <p className="mt-1 text-sm leading-6 text-gray-600">{sk ? "Pridajte profilovú fotku, jazyky, krátky titulok a predstavenie. Po dokončení sa profil môže zobraziť aj na hlavnom webe Mundus." : "Add a profile photo, languages, a short headline and introduction. Once complete, your profile can also appear on the main Mundus website."}</p>
             </div>
-            <Link href="/teacher/profile" className="shrink-0 rounded-xl bg-[#2F3AA2] px-4 py-3 text-sm font-semibold text-white">Dokončiť profil</Link>
+            <Link href="/teacher/profile" className="shrink-0 rounded-xl bg-[#2F3AA2] px-4 py-3 text-sm font-semibold text-white">{sk ? "Dokončiť profil" : "Complete profile"}</Link>
           </section>
         )}
 
         {!matchingPreferencesComplete && (
           <section className="mt-4 flex flex-col gap-4 rounded-3xl border border-amber-200 bg-amber-50 p-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="font-semibold text-amber-900">Nastavte dostupnosť pre priraďovanie študentov</p>
-              <p className="mt-1 text-sm leading-6 text-amber-900/75">Doplňte jazyky, úrovne, dni, časové okno a kapacitu. Bez týchto údajov vás smart matching nevie správne odporučiť novým študentom.</p>
+              <p className="font-semibold text-amber-900">{sk ? "Nastavte dostupnosť pre priraďovanie študentov" : "Set availability for student matching"}</p>
+              <p className="mt-1 text-sm leading-6 text-amber-900/75">{sk ? "Doplňte jazyky, úrovne, dni, časové okno a kapacitu. Bez týchto údajov vás smart matching nevie správne odporučiť novým študentom." : "Add your languages, levels, days, time window and capacity. Without these details, smart matching cannot recommend you accurately to new students."}</p>
             </div>
-            <Link href="/teacher/availability" className="shrink-0 rounded-xl bg-[#2F3AA2] px-4 py-3 text-sm font-semibold text-white">Nastaviť dostupnosť</Link>
+            <Link href="/teacher/availability" className="shrink-0 rounded-xl bg-[#2F3AA2] px-4 py-3 text-sm font-semibold text-white">{sk ? "Nastaviť dostupnosť" : "Set availability"}</Link>
           </section>
         )}
 
         <section className="mt-8 rounded-3xl border border-black/5 bg-white p-5 shadow-sm sm:p-6">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
-              <p className="text-sm text-gray-400">Môj mesačný súhrn</p>
-              <h2 className="mt-1 text-xl font-semibold">Výkon tento mesiac</h2>
+              <p className="text-sm text-gray-400">{sk ? "Môj mesačný súhrn" : "My monthly summary"}</p>
+              <h2 className="mt-1 text-xl font-semibold">{sk ? "Výkon tento mesiac" : "Performance this month"}</h2>
             </div>
             <TrendingUp size={20} className="text-[#2F3AA2]" />
           </div>
           <div className="mt-5 grid gap-4 sm:grid-cols-4">
-            <div className="rounded-2xl bg-[#FAFAF9] p-4"><p className="text-xs text-gray-400">Dokončené hodiny</p><p className="mt-1 text-2xl font-semibold">{currentLessons.length}</p><p className="mt-1 text-xs text-gray-400">minulý mesiac {previousLessons.length}</p></div>
-            <div className="rounded-2xl bg-[#FAFAF9] p-4"><p className="text-xs text-gray-400">Unikátni študenti</p><p className="mt-1 text-2xl font-semibold">{new Set(currentLessons.map((lesson) => lesson.student_id)).size}</p></div>
-            <div className="rounded-2xl bg-[#FAFAF9] p-4"><p className="text-xs text-gray-400">Priemerné hodnotenie</p><p className="mt-1 flex items-center gap-1 text-2xl font-semibold"><Star size={18} fill="currentColor" />{currentAverage === null ? "—" : currentAverage.toFixed(2)}</p><p className="mt-1 text-xs text-gray-400">minulý mesiac {previousAverage === null ? "—" : previousAverage.toFixed(2)}</p></div>
-            <div className="rounded-2xl bg-[#FAFAF9] p-4"><p className="text-xs text-gray-400">Počet hodnotení</p><p className="mt-1 text-2xl font-semibold">{currentRatings.length}</p><p className="mt-1 text-xs text-gray-400">Spätná väzba je zobrazená iba súhrnne.</p></div>
+            <div className="rounded-2xl bg-[#FAFAF9] p-4"><p className="text-xs text-gray-400">{sk ? "Dokončené hodiny" : "Completed lessons"}</p><p className="mt-1 text-2xl font-semibold">{currentLessons.length}</p><p className="mt-1 text-xs text-gray-400">{sk ? "minulý mesiac" : "last month"} {previousLessons.length}</p></div>
+            <div className="rounded-2xl bg-[#FAFAF9] p-4"><p className="text-xs text-gray-400">{sk ? "Unikátni študenti" : "Unique students"}</p><p className="mt-1 text-2xl font-semibold">{new Set(currentLessons.map((lesson) => lesson.student_id)).size}</p></div>
+            <div className="rounded-2xl bg-[#FAFAF9] p-4"><p className="text-xs text-gray-400">{sk ? "Priemerné hodnotenie" : "Average rating"}</p><p className="mt-1 flex items-center gap-1 text-2xl font-semibold"><Star size={18} fill="currentColor" />{currentAverage === null ? "—" : currentAverage.toFixed(2)}</p><p className="mt-1 text-xs text-gray-400">{sk ? "minulý mesiac" : "last month"} {previousAverage === null ? "—" : previousAverage.toFixed(2)}</p></div>
+            <div className="rounded-2xl bg-[#FAFAF9] p-4"><p className="text-xs text-gray-400">{sk ? "Počet hodnotení" : "Rating count"}</p><p className="mt-1 text-2xl font-semibold">{currentRatings.length}</p><p className="mt-1 text-xs text-gray-400">{sk ? "Spätná väzba je zobrazená iba súhrnne." : "Feedback is shown only in aggregate."}</p></div>
           </div>
         </section>
 
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
           <article className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-400">Dnes</p>
+              <p className="text-sm text-gray-400">{sk ? "Dnes" : "Today"}</p>
               <CalendarDays size={19} className="text-[#2F3AA2]" />
             </div>
 
@@ -345,12 +349,12 @@ export default async function TeacherDashboardPage() {
               {todayLessons?.length ?? 0}
             </p>
 
-            <p className="mt-1 text-sm text-gray-500">hodín</p>
+            <p className="mt-1 text-sm text-gray-500">{sk ? "hodín" : "lessons"}</p>
           </article>
 
           <article className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-400">Moji študenti</p>
+              <p className="text-sm text-gray-400">{sk ? "Moji študenti" : "My students"}</p>
               <Users size={19} className="text-[#2F3AA2]" />
             </div>
 
@@ -359,14 +363,14 @@ export default async function TeacherDashboardPage() {
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
-              priradených študentov
+              {sk ? "priradených študentov" : "assigned students"}
             </p>
           </article>
 
           <article className="rounded-3xl border border-[#2F3AA2]/20 bg-[#faf6eb] p-5">
             <div className="flex items-center justify-between">
               <p className="text-sm text-[#92400e]/70">
-                Žiadosti o zmenu termínu
+                {sk ? "Žiadosti o zmenu termínu" : "Schedule change requests"}
               </p>
               <Clock3 size={19} className="text-[#2F3AA2]" />
             </div>
@@ -376,7 +380,7 @@ export default async function TeacherDashboardPage() {
             </p>
 
             <p className="mt-1 text-sm text-[#92400e]/70">
-              čakajú na vybavenie
+              {sk ? "čakajú na vybavenie" : "awaiting action"}
             </p>
           </article>
         </div>
@@ -384,9 +388,9 @@ export default async function TeacherDashboardPage() {
         <section className="mt-10">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-400">Rozvrh</p>
+              <p className="text-sm text-gray-400">{sk ? "Rozvrh" : "Schedule"}</p>
               <h2 className="mt-1 text-xl font-semibold">
-                Dnešné hodiny
+                {sk ? "Dnešné hodiny" : "Today’s lessons"}
               </h2>
             </div>
 
@@ -394,15 +398,15 @@ export default async function TeacherDashboardPage() {
               href="/teacher/schedule"
               className="rounded-xl bg-[#2F3AA2] px-4 py-2.5 text-sm font-semibold text-white"
             >
-              Zobraziť rozvrh
+              {sk ? "Zobraziť rozvrh" : "View schedule"}
             </Link>
           </div>
 
           {!todayLessons?.length ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
-              <p className="font-medium">Dnes nemáte naplánované hodiny</p>
+              <p className="font-medium">{sk ? "Dnes nemáte naplánované hodiny" : "You have no lessons scheduled today"}</p>
               <p className="mt-1 text-sm text-gray-400">
-                Naplánované dnešné hodiny sa zobrazia tu.
+                {sk ? "Naplánované dnešné hodiny sa zobrazia tu." : "Today’s scheduled lessons will appear here."}
               </p>
             </div>
           ) : (
@@ -428,7 +432,7 @@ export default async function TeacherDashboardPage() {
                               : "bg-[#EEF2FF] text-[#0a0a0f]"
                           }`}
                         >
-                          {formatTime(lesson.scheduled_at)}
+                          {formatTime(lesson.scheduled_at, language)}
                         </div>
 
                         <div>
@@ -439,7 +443,7 @@ export default async function TeacherDashboardPage() {
 
                             {lesson.id === nextTodayLessonId && (
                               <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold">
-                                Najbližšia
+                                {sk ? "Najbližšia" : "Next"}
                               </span>
                             )}
                           </div>
@@ -451,7 +455,7 @@ export default async function TeacherDashboardPage() {
                                 : "text-gray-400"
                             }`}
                           >
-                            {formatLanguage(lesson.language)} ·{" "}
+                            {formatLanguage(lesson.language, language)} ·{" "}
                             {lesson.duration_minutes || 60} min
                           </p>
                         </div>
@@ -469,7 +473,7 @@ export default async function TeacherDashboardPage() {
                           }`}
                         >
                           <Video size={17} />
-                          Pripojiť sa na hodinu
+                          {sk ? "Pripojiť sa na hodinu" : "Join lesson"}
                         </a>
                       ) : (
                         <span
@@ -479,7 +483,7 @@ export default async function TeacherDashboardPage() {
                               : "bg-gray-100 text-gray-400"
                           }`}
                         >
-                          Odkaz na Meet zatiaľ nie je pridaný
+                          {sk ? "Odkaz na Meet zatiaľ nie je pridaný" : "Meet link has not been added yet"}
                         </span>
                       )}
                     </div>
@@ -495,13 +499,13 @@ export default async function TeacherDashboardPage() {
             <div className="flex items-center gap-2">
               <AlertCircle size={20} className="text-[#2F3AA2]" />
               <h2 className="text-xl font-semibold">
-                Vyžaduje vašu pozornosť
+                {sk ? "Vyžaduje vašu pozornosť" : "Needs your attention"}
               </h2>
             </div>
 
             <div className="mt-4 rounded-3xl border border-[#2F3AA2]/20 bg-[#faf6eb] p-6">
               <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#2F3AA2]">
-                Zmeny termínov
+                {sk ? "Zmeny termínov" : "Schedule changes"}
               </p>
 
               <h3 className="mt-3 font-semibold text-[#92400e]">

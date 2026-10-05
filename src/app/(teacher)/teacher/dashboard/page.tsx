@@ -10,9 +10,13 @@ import {
   GraduationCap,
   Users,
   Video,
+  Star,
+  TrendingUp,
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { bratislavaMonth, currentBratislavaMonth } from "@/lib/month";
 import { formatLanguage } from "@/lib/portalLabels";
 
 function formatTime(value: string) {
@@ -55,6 +59,7 @@ function getInitials(name: string) {
 export default async function TeacherDashboardPage() {
   const { user } = await requireRole("teacher");
   const supabase = await createSupabaseServerClient();
+  const adminDb = createSupabaseAdminClient();
   const studentDirectory = await teacherDirectory(supabase);
 
   const [{ data: teacherProfile }, { data: publicProfile }, { data: matchingPreferences }] = await Promise.all([
@@ -64,6 +69,44 @@ export default async function TeacherDashboardPage() {
   ]);
 
   const now = new Date();
+
+  const currentMonth = currentBratislavaMonth();
+  const previousMonth = currentMonth.month === 1
+    ? bratislavaMonth(currentMonth.year - 1, 12)
+    : bratislavaMonth(currentMonth.year, currentMonth.month - 1);
+
+  const [
+    { data: performanceLessons },
+    { data: performanceFeedback },
+  ] = await Promise.all([
+    adminDb.from("lessons")
+      .select("student_id,scheduled_at,status")
+      .eq("teacher_id", user.id)
+      .eq("status", "completed")
+      .gte("scheduled_at", previousMonth.start)
+      .lt("scheduled_at", currentMonth.end),
+    adminDb.from("teacher_monthly_feedback")
+      .select("feedback_month,rating")
+      .eq("teacher_id", user.id)
+      .in("feedback_month", [previousMonth.key, currentMonth.key]),
+  ]);
+
+  const currentLessons = (performanceLessons ?? []).filter((lesson) =>
+    new Date(lesson.scheduled_at) >= new Date(currentMonth.start) &&
+    new Date(lesson.scheduled_at) < new Date(currentMonth.end)
+  );
+  const previousLessons = (performanceLessons ?? []).filter((lesson) =>
+    new Date(lesson.scheduled_at) >= new Date(previousMonth.start) &&
+    new Date(lesson.scheduled_at) < new Date(previousMonth.end)
+  );
+  const currentRatings = (performanceFeedback ?? []).filter((item) => item.feedback_month === currentMonth.key);
+  const previousRatings = (performanceFeedback ?? []).filter((item) => item.feedback_month === previousMonth.key);
+  const average = (items: Array<{ rating: number }>) =>
+    items.length ? items.reduce((sum, item) => sum + Number(item.rating), 0) / items.length : null;
+  const currentAverage = average(currentRatings);
+  const previousAverage = average(previousRatings);
+
+
 
   const bratislavaDateFormatter = new Intl.DateTimeFormat("en-CA", {
     year: "numeric",
@@ -274,6 +317,22 @@ export default async function TeacherDashboardPage() {
             <Link href="/teacher/availability" className="shrink-0 rounded-xl bg-[#2F3AA2] px-4 py-3 text-sm font-semibold text-white">Nastaviť dostupnosť</Link>
           </section>
         )}
+
+        <section className="mt-8 rounded-3xl border border-black/5 bg-white p-5 shadow-sm sm:p-6">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <p className="text-sm text-gray-400">Môj mesačný súhrn</p>
+              <h2 className="mt-1 text-xl font-semibold">Výkon tento mesiac</h2>
+            </div>
+            <TrendingUp size={20} className="text-[#2F3AA2]" />
+          </div>
+          <div className="mt-5 grid gap-4 sm:grid-cols-4">
+            <div className="rounded-2xl bg-[#FAFAF9] p-4"><p className="text-xs text-gray-400">Dokončené hodiny</p><p className="mt-1 text-2xl font-semibold">{currentLessons.length}</p><p className="mt-1 text-xs text-gray-400">minulý mesiac {previousLessons.length}</p></div>
+            <div className="rounded-2xl bg-[#FAFAF9] p-4"><p className="text-xs text-gray-400">Unikátni študenti</p><p className="mt-1 text-2xl font-semibold">{new Set(currentLessons.map((lesson) => lesson.student_id)).size}</p></div>
+            <div className="rounded-2xl bg-[#FAFAF9] p-4"><p className="text-xs text-gray-400">Priemerné hodnotenie</p><p className="mt-1 flex items-center gap-1 text-2xl font-semibold"><Star size={18} fill="currentColor" />{currentAverage === null ? "—" : currentAverage.toFixed(2)}</p><p className="mt-1 text-xs text-gray-400">minulý mesiac {previousAverage === null ? "—" : previousAverage.toFixed(2)}</p></div>
+            <div className="rounded-2xl bg-[#FAFAF9] p-4"><p className="text-xs text-gray-400">Počet hodnotení</p><p className="mt-1 text-2xl font-semibold">{currentRatings.length}</p><p className="mt-1 text-xs text-gray-400">Spätná väzba je zobrazená iba súhrnne.</p></div>
+          </div>
+        </section>
 
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
           <article className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">

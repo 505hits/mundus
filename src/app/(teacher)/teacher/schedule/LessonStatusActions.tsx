@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CheckCircle2 } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
+import {useLanguage} from "@/context/LanguageContext";
 
 type Props = {
   lessonId: string;
@@ -12,12 +13,10 @@ type Props = {
   scheduledAt: string;
 };
 
-const statusOptions = [
-  { value: "completed", label: "Dokončená" },
-  { value: "student_no_show", label: "Študent sa nedostavil" },
-  { value: "student_cancelled", label: "Zrušená študentom" },
-  { value: "late_cancellation", label: "Neskoré zrušenie" },
-  { value: "teacher_cancelled", label: "Zrušená lektorom" },
+const statusOptions=(sk:boolean)=>[
+  {value:"completed",label:sk?"Dokončená":"Completed"},{value:"student_no_show",label:sk?"Študent sa nedostavil":"Student no-show"},
+  {value:"student_cancelled",label:sk?"Zrušená študentom":"Cancelled by student"},{value:"late_cancellation",label:sk?"Neskoré zrušenie":"Late cancellation"},
+  {value:"teacher_cancelled",label:sk?"Zrušená lektorom":"Cancelled by teacher"},
 ];
 
 export default function LessonStatusActions({
@@ -26,6 +25,7 @@ export default function LessonStatusActions({
   scheduledAt,
 }: Props) {
   const router = useRouter();
+  const {language}=useLanguage(); const sk=language==="sk";
   const [status, setStatus] = useState("completed");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -42,8 +42,8 @@ export default function LessonStatusActions({
     ) {
       setError(
         status === "completed"
-          ? "Budúcu hodinu nie je možné označiť ako dokončenú."
-          : "Budúcu hodinu nie je možné označiť ako neprítomnosť študenta."
+          ? (sk?"Budúcu hodinu nie je možné označiť ako dokončenú.":"A future lesson cannot be marked completed.")
+          : (sk?"Budúcu hodinu nie je možné označiť ako neprítomnosť študenta.":"A future lesson cannot be marked as student no-show.")
       );
       return;
     }
@@ -55,7 +55,7 @@ export default function LessonStatusActions({
 
       if (status === "completed") {
         if (!packageId) {
-          setError("K hodine nie je priradený balíček. Kontaktujte administrátora.");
+          setError(sk?"K hodine nie je priradený balíček. Kontaktujte administrátora.":"No package is assigned to this lesson. Contact the administrator.");
           return;
         }
       }
@@ -73,8 +73,8 @@ export default function LessonStatusActions({
       if (updateError || !updatedLesson) {
         setError(
           status === "completed"
-            ? "Hodinu sa nepodarilo dokončiť a overiť odpočítanie kreditu. Obnovte stránku alebo kontaktujte Mundus."
-            : "Stav hodiny sa nepodarilo uložiť. Skúste to prosím znova."
+            ? (sk?"Hodinu sa nepodarilo dokončiť a overiť odpočítanie kreditu. Obnovte stránku alebo kontaktujte Mundus.":"The lesson could not be completed and credit deduction verified. Refresh the page or contact Mundus.")
+            : (sk?"Stav hodiny sa nepodarilo uložiť. Skúste to prosím znova.":"The lesson status could not be saved. Please try again.")
         );
         return;
       }
@@ -82,7 +82,7 @@ export default function LessonStatusActions({
       setSaved(true);
       router.refresh();
     } catch {
-      setError("Stav hodiny sa nepodarilo uložiť. Skontrolujte pripojenie a skúste to znova.");
+      setError(sk?"Stav hodiny sa nepodarilo uložiť. Skontrolujte pripojenie a skúste to znova.":"The lesson status could not be saved. Check your connection and try again.");
     } finally {
       setSaving(false);
     }
@@ -96,7 +96,7 @@ export default function LessonStatusActions({
         disabled={saving || saved}
         className="rounded-xl border border-black/10 bg-white px-3 py-2.5 text-sm text-[#0a0a0f] outline-none focus:border-[#2F3AA2]"
       >
-        {statusOptions.map((option) => (
+        {statusOptions(sk).map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}
           </option>
@@ -110,7 +110,7 @@ export default function LessonStatusActions({
         className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
       >
         <CheckCircle2 size={16} />
-        {saving ? "Ukladám..." : saved ? "Uložené" : "Uložiť stav"}
+        {saving?(sk?"Ukladám...":"Saving..."):saved?(sk?"Uložené":"Saved"):(sk?"Uložiť stav":"Save status")}
       </button>
 
       {error && (

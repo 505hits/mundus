@@ -7,9 +7,13 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 import { canAcceptTeacherInvitation, hasCompletedOnboarding, portalDestination } from "@/lib/account-policy";
 import { purchaseReturnPath } from "@/lib/purchase-intent";
+import { useLanguage } from "@/context/LanguageContext";
+import LanguageToggle from "@/components/LanguageToggle";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { language } = useLanguage();
+  const sk = language === "sk";
   const errorRef = useRef<HTMLDivElement>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,7 +33,7 @@ export default function LoginPage() {
     if (loading) return;
     setError("");
     if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY) {
-      setError("Prihlásenie je momentálne nedostupné. Prosím, kontaktujte nás.");
+      setError(sk ? "Prihlásenie je momentálne nedostupné. Prosím, kontaktujte nás." : "Sign in is currently unavailable. Please contact us.");
       return;
     }
 
@@ -39,17 +43,17 @@ export default function LoginPage() {
       const supabase = createSupabaseBrowserClient();
       const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
       if (error || !data.user) {
-        setError("Nesprávny e-mail alebo heslo. Skontrolujte údaje a overenie e-mailu.");
+        setError(sk ? "Nesprávny e-mail alebo heslo. Skontrolujte údaje a overenie e-mailu." : "Incorrect email or password. Check your details and email verification.");
         return;
       }
       if (!data.user.email_confirmed_at) {
-        setError("Najprv potvrďte svoju e-mailovú adresu cez odkaz v e-maile.");
+        setError(sk ? "Najprv potvrďte svoju e-mailovú adresu cez odkaz v e-maile." : "Please confirm your email address using the link in your email first.");
         return;
       }
       const { data: profile, error: profileError } = await supabase
         .from("profiles").select("role, status").eq("id", data.user.id).single();
       if (profileError || !profile) {
-        setError("Nepodarilo sa načítať váš Mundus profil. Skúste to prosím znova.");
+        setError(sk ? "Nepodarilo sa načítať váš Mundus profil. Skúste to prosím znova." : "We could not load your Mundus profile. Please try again.");
         return;
       }
       if (profile.role === "teacher" && profile.status === "pending" && !canAcceptTeacherInvitation(data.user.app_metadata)) {
@@ -58,7 +62,7 @@ export default function LoginPage() {
       }
       const destination = portalDestination(profile.role, profile.status);
       if (destination === "/auth/error") {
-        setError("Váš účet zatiaľ nie je aktívny. Kontaktujte Mundus Languages.");
+        setError(sk ? "Váš účet zatiaľ nie je aktívny. Kontaktujte Mundus Languages." : "Your account is not active yet. Contact Mundus Languages.");
         return;
       }
       const desired = purchaseReturnPath(new URLSearchParams(window.location.search).get("next"));
@@ -67,7 +71,7 @@ export default function LoginPage() {
         const { data: onboarding, error: onboardingError } = await supabase
           .from("student_onboarding").select("completed_at").eq("student_id", data.user.id).maybeSingle();
         if (onboardingError) {
-          setError("Nepodarilo sa overiť nastavenie účtu. Skúste to znova alebo kontaktujte Mundus.");
+          setError(sk ? "Nepodarilo sa overiť nastavenie účtu. Skúste to znova alebo kontaktujte Mundus." : "We could not verify your account setup. Try again or contact Mundus.");
           return;
         }
         needsOnboarding = !hasCompletedOnboarding(onboarding);
@@ -76,13 +80,14 @@ export default function LoginPage() {
         ? `/onboarding${desired ? `?next=${encodeURIComponent(desired)}` : ""}`
         : profile.role === "student" && desired ? desired : destination);
     } catch {
-      setError("Prihlásenie je momentálne nedostupné. Skúste to znova.");
+      setError(sk ? "Prihlásenie je momentálne nedostupné. Skúste to znova." : "Sign in is currently unavailable. Please try again.");
     } finally {
       setLoading(false);
     }
   }
   return (
-    <main className="min-h-screen bg-[#FAFAF9] flex">
+    <main className="relative min-h-screen bg-[#FAFAF9] flex">
+      <div className="absolute right-5 top-5 z-20"><LanguageToggle /></div>
       <section className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-[#0a0a0f] p-12 flex-col justify-between">
         <div className="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-[#2F3AA2]/50 blur-3xl" />
         <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-[#6575ff]/20 blur-3xl" />
@@ -100,17 +105,15 @@ export default function LoginPage() {
 
         <div className="relative z-10 max-w-lg">
           <p className="mb-5 text-sm font-semibold uppercase tracking-[0.2em] text-[#b7c0ff]">
-            Vzdelávací portál Mundus
+            {sk ? "Vzdelávací portál Mundus" : "Mundus learning portal"}
           </p>
 
           <h1 className="text-5xl font-semibold leading-tight text-white" style={{ color: "#ffffff" }}>
-            Vaše jazykové napredovanie,
-            <br />
-            všetko na jednom mieste.
+            {sk ? <>Vaše jazykové napredovanie,<br />všetko na jednom mieste.</> : <>Your language progress,<br />all in one place.</>}
           </h1>
 
           <p className="mt-6 max-w-md text-lg leading-8 text-white/70">
-            Majte prehľad o svojich hodinách, materiáloch a pokroku v Mundus.
+            {sk ? "Majte prehľad o svojich hodinách, materiáloch a pokroku v Mundus." : "Keep track of your lessons, materials and progress in Mundus."}
           </p>
         </div>
 
@@ -135,21 +138,21 @@ export default function LoginPage() {
           </div>
 
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
-            Vzdelávací portál
+            {sk ? "Vzdelávací portál" : "Learning portal"}
           </p>
 
           <h2 className="mt-3 text-4xl font-semibold tracking-tight text-[#2F3AA2]">
-            Vitajte späť
+            {sk ? "Vitajte späť" : "Welcome back"}
           </h2>
 
           <p className="mt-3 text-base leading-7 text-gray-500">
-            Prihláste sa a majte prehľad o svojich hodinách, materiáloch a pokroku.
+            {sk ? "Prihláste sa a majte prehľad o svojich hodinách, materiáloch a pokroku." : "Sign in to see your lessons, materials and progress."}
           </p>
 
           <form onSubmit={handleLogin} aria-busy={loading} className="mt-9 space-y-5">
             <label className="block">
               <span className="text-sm font-medium text-gray-700">
-                E-mailová adresa
+                {sk ? "E-mailová adresa" : "Email address"}
               </span>
 
               <input
@@ -166,7 +169,7 @@ export default function LoginPage() {
 
             <label className="block">
               <span className="text-sm font-medium text-gray-700">
-                Heslo
+                {sk ? "Heslo" : "Password"}
               </span>
 
               <input
@@ -183,12 +186,12 @@ export default function LoginPage() {
             </label>
 
             <div className="-mt-2 flex items-center justify-between gap-4">
-              <button type="button" aria-controls="login-password" aria-pressed={showPassword} onClick={() => setShowPassword(value => !value)} className="text-sm font-medium text-[#2F3AA2] hover:underline">{showPassword ? "Skryť heslo" : "Zobraziť heslo"}</button>
+              <button type="button" aria-controls="login-password" aria-pressed={showPassword} onClick={() => setShowPassword(value => !value)} className="text-sm font-medium text-[#2F3AA2] hover:underline">{showPassword ? (sk ? "Skryť heslo" : "Hide password") : (sk ? "Zobraziť heslo" : "Show password")}</button>
               <Link
                 href="/forgot-password"
                 className="text-sm font-medium text-[#2F3AA2] hover:underline"
               >
-                Zabudli ste heslo?
+                {sk ? "Zabudli ste heslo?" : "Forgot password?"}
               </Link>
             </div>
 
@@ -203,17 +206,17 @@ export default function LoginPage() {
               disabled={loading}
               className="w-full rounded-2xl bg-[#2F3AA2] px-5 py-4 font-semibold text-white transition hover:bg-[#252E82] disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {loading ? "Prihlasujem..." : "Prihlásiť sa"}
+              {loading ? (sk ? "Prihlasujem..." : "Signing in...") : (sk ? "Prihlásiť sa" : "Sign in")}
             </button>
           </form>
 
           <p className="mt-6 text-center text-sm text-gray-600">
-            Ešte nemáte účet? <Link href={nextPath ? `/signup?next=${encodeURIComponent(nextPath)}` : "/signup"} className="font-semibold text-[#2F3AA2] underline">Vytvoriť študentský účet</Link>
+            {sk ? "Ešte nemáte účet? " : "Don’t have an account yet? "}<Link href={nextPath ? `/signup?next=${encodeURIComponent(nextPath)}` : "/signup"} className="font-semibold text-[#2F3AA2] underline">{sk ? "Vytvoriť študentský účet" : "Create student account"}</Link>
           </p>
-          <p className="mt-3 text-center text-xs text-gray-500">Lektorský účet získate cez e-mailovú pozvánku od Mundus.</p>
+          <p className="mt-3 text-center text-xs text-gray-500">{sk ? "Lektorský účet získate cez e-mailovú pozvánku od Mundus." : "Teacher accounts are created through an email invitation from Mundus."}</p>
 
           <p className="mt-8 text-center text-sm text-gray-400">
-            Potrebujete pomoc? <Link href="/contact" className="font-medium text-[#2F3AA2] underline">Kontaktujte Mundus Languages.</Link>
+            {sk ? "Potrebujete pomoc? " : "Need help? "}<Link href="/contact" className="font-medium text-[#2F3AA2] underline">{sk ? "Kontaktujte Mundus Languages." : "Contact Mundus Languages."}</Link>
           </p>
 
           <div className="mt-6 text-center">
@@ -221,7 +224,7 @@ export default function LoginPage() {
               href="/"
               className="text-sm font-medium text-[#2F3AA2] hover:underline"
             >
-              ← Späť na Mundus Languages
+              {sk ? "← Späť na Mundus Languages" : "← Back to Mundus Languages"}
             </Link>
           </div>
         </div>

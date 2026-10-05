@@ -8,17 +8,19 @@ import CalendlyWidget from "@/components/CalendlyWidget";
 import Footer from "@/components/Footer";
 import PricingSection from "@/components/PricingSection";
 import { paymentEnabled } from "@/lib/payments";
+import { publicTeachers } from "@/lib/public-teachers";
 
 export const dynamic = "force-dynamic";
 
-export default function Home() {
+export default async function Home() {
+  const teachers = await publicTeachers();
   return (
     <main className="min-h-screen">
       <Navbar />
       <Hero />
       <LanguageSelector />
       <HowItWorks />
-      <TeacherSection />
+      <TeacherSection teachers={teachers} />
       <FeaturesBento />
       <PricingSection paymentsAvailable={paymentEnabled()} signupAvailable={process.env.MUNDUS_SELF_SIGNUP_ENABLED === "true"} />
       <CalendlyWidget />

@@ -362,15 +362,15 @@ export default async function DashboardPage() {
                   <div className="mt-5 rounded-2xl border border-[#2F3AA2]/20 bg-[#faf6eb] p-4">
                     <p className="font-semibold text-[#92400e]">
                       {remainingLessons === 0
-                        ? "sk ? "Balíček je vyčerpaný" : "Package is used up""
+                        ? (sk ? "Balíček je vyčerpaný" : "Package is used up")
                         : remainingLessons === 1
-                          ? "{sk ? "Zostáva" : "Remaining:"} vám posledná hodina"
-                          : "{sk ? "Zostáva" : "Remaining:"}jú vám posledné 2 hodiny"}
+                          ? (sk ? "Zostáva vám posledná hodina" : "You have one lesson left")
+                          : (sk ? "Zostávajú vám posledné 2 hodiny" : "You have two lessons left")}
                     </p>
                     <p className="mt-1 text-sm leading-6 text-[#92400e]/75">
                       {paymentsAvailable
-                        ? "sk ? "Ak chcete pokračovať bez prerušenia, môžete si vybrať ďalší balíček online." : "To continue without a break, choose another package online.""
-                        : "sk ? "Ak chcete pokračovať bez prerušenia, ozvite sa Mundus Languages a pripravíme vám ďalší balíček." : "To continue without a break, contact Mundus Languages and we’ll prepare another package.""}
+                        ? (sk ? "Ak chcete pokračovať bez prerušenia, môžete si vybrať ďalší balíček online." : "To continue without a break, choose another package online.")
+                        : (sk ? "Ak chcete pokračovať bez prerušenia, ozvite sa Mundus Languages a pripravíme vám ďalší balíček." : "To continue without a break, contact Mundus Languages and we’ll prepare another package.")}
                     </p>
                     {paymentsAvailable && (
                       <Link href="/packages" className="mt-3 inline-flex rounded-xl bg-[#2F3AA2] px-4 py-2.5 text-sm font-semibold text-white">

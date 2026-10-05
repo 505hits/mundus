@@ -54,7 +54,7 @@ export async function GET(request:NextRequest) {
       const {data:recipient}=await admin.from("profiles").select("status,email,role").eq("id",job.recipient_id).single();
       const {data:student}=await admin.from("profiles").select("full_name,email").eq("id",job.student_id).single();
       const {data:auth}=await admin.auth.admin.getUserById(job.recipient_id);
-      if(recipient?.status!=="active" || recipient.email!==job.recipient_email || !auth.user?.email_confirmed_at) throw new Error("Recipient unavailable");
+      if(recipient?.status!=="active" || recipient.email!==job.recipient_email || !auth.user?.email_confirmed_at || auth.user.email?.toLowerCase()!==job.recipient_email.toLowerCase()) throw new Error("Recipient unavailable");
       const studentName=student?.full_name?.trim()||student?.email||"študent";
       const href=job.kind==="admin_assignment"?"/admin/matching":job.kind==="admin_renewal"?"/admin/dashboard":"/packages";
       const content=portalEmail(job.kind,studentName,origin+href);

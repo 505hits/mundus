@@ -23,8 +23,10 @@ insert into lesson_reports values('${lesson}','Shared report');
 do $$declare target text;begin foreach target in array array['lessons','lesson_packages','lesson_reports','schedule_change_requests'] loop
 execute format('alter table %I enable row level security',target);
 execute format('create policy legacy_access on %I for all using(true) with check(true)',target);end loop;end $$;`);
-for(const file of ['20260929_portal_update_hardening.sql','20260929_schedule_and_package_guardrails.sql','20260929_schedule_request_integrity.sql','202610030009_portal_session_guards.sql','202610050002_restrict_portal_helper_execute.sql'])await db.exec(readFileSync(new URL('../supabase/migrations/'+file,import.meta.url),'utf8'));
+for(const file of ['20260929_portal_update_hardening.sql','20260929_schedule_and_package_guardrails.sql','20260929_schedule_request_integrity.sql','202610030009_portal_session_guards.sql'])await db.exec(readFileSync(new URL('../supabase/migrations/'+file,import.meta.url),'utf8'));
 await db.exec(readFileSync(new URL('../supabase/migrations/202610030009_portal_session_guards.sql',import.meta.url),'utf8'));
+await db.exec(readFileSync(new URL('../supabase/migrations/202610050002_restrict_portal_helper_execute.sql',import.meta.url),'utf8'));
+await db.exec(readFileSync(new URL('../supabase/migrations/202610050002_restrict_portal_helper_execute.sql',import.meta.url),'utf8'));
 async function login(id){await db.exec(`reset role;set request.jwt.claim.sub='${id}';set role authenticated;`);}
 const insert=`insert into schedule_change_requests(id,lesson_id,student_id,requested_by,status,preferred_at) values($1,$2,$3,$4,$5,now()+interval '3 days')`;
 await login(student);

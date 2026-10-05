@@ -2,12 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 import { canAcceptTeacherInvitation, hasCompletedOnboarding, portalDestination } from "@/lib/account-policy";
 import { purchaseReturnPath } from "@/lib/purchase-intent";
 
 export default function LoginPage() {
+  const router = useRouter();
   const errorRef = useRef<HTMLDivElement>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -51,7 +53,7 @@ export default function LoginPage() {
         return;
       }
       if (profile.role === "teacher" && profile.status === "pending" && !canAcceptTeacherInvitation(data.user.app_metadata)) {
-        window.location.href = "/pending-approval";
+        router.replace("/pending-approval");
         return;
       }
       const destination = portalDestination(profile.role, profile.status);
@@ -70,9 +72,9 @@ export default function LoginPage() {
         }
         needsOnboarding = !hasCompletedOnboarding(onboarding);
       }
-      window.location.href = needsOnboarding
+      router.replace(needsOnboarding
         ? `/onboarding${desired ? `?next=${encodeURIComponent(desired)}` : ""}`
-        : profile.role === "student" && desired ? desired : destination;
+        : profile.role === "student" && desired ? desired : destination);
     } catch {
       setError("Prihlásenie je momentálne nedostupné. Skúste to znova.");
     } finally {

@@ -1,6 +1,6 @@
 "use client";
 import { useLanguage } from "@/context/LanguageContext";
-import type { PublicTeacher } from "@/lib/public-teachers";
+type PublicTeacher={id:string;name:string;headline:string;bio:string;languages:string[];photoUrl:string|null};
 
 export default function TeacherSection({teachers}:{teachers:PublicTeacher[]}) {
   const { language } = useLanguage();

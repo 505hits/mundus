@@ -9,6 +9,8 @@ import { createSupabaseBrowserClient } from "@/lib/supabase";
 import { bratislavaLocalToUtc, INVALID_LESSON_TIME } from "@/lib/lesson-time";
 import { formatLessonCount } from "@/lib/portalLabels";
 import { MUNDUS_LANGUAGE_OPTIONS } from "@/lib/language-offer";
+import {useLanguage} from "@/context/LanguageContext";
+import {formatLanguage} from "@/lib/portalLabels";
 
 type PersonOption = {
   id: string;
@@ -30,7 +32,7 @@ type Props = {
 };
 
 function personName(person: PersonOption) {
-  return person.full_name?.trim() || person.email || "Bez mena";
+  return person.full_name?.trim() || person.email || "—";
 }
 
 export default function AdminCreateLessonForm({
@@ -39,6 +41,7 @@ export default function AdminCreateLessonForm({
   packages,
 }: Props) {
   const router = useRouter();
+  const {language:uiLanguage}=useLanguage(); const sk=uiLanguage==="sk";
 
   const [studentId, setStudentId] = useState(students[0]?.id ?? "");
   const [teacherId, setTeacherId] = useState(teachers[0]?.id ?? "");
@@ -75,33 +78,33 @@ export default function AdminCreateLessonForm({
     setSaved(false);
 
     if (!studentId || !teacherId) {
-      setError("Vyberte študenta aj lektora.");
+      setError(sk?"Vyberte študenta aj lektora.":"Choose both a student and a teacher.");
       return;
     }
 
     if (!effectivePackageId) {
       setError(
-        "Vybraný študent nemá aktívny balíček s voľnými hodinami."
+        sk?"Vybraný študent nemá aktívny balíček s voľnými hodinami.":"The selected student has no active package with available lessons."
       );
       return;
     }
 
     if (!dateTime) {
-      setError("Vyberte dátum a čas hodiny.");
+      setError(sk?"Vyberte dátum a čas hodiny.":"Choose the lesson date and time.");
       return;
     }
 
     const scheduledAt = bratislavaLocalToUtc(dateTime);
 
     if (Number.isNaN(scheduledAt.getTime())) {
-      setError(INVALID_LESSON_TIME);
+      setError(sk?INVALID_LESSON_TIME:"The selected lesson time is invalid.");
       return;
     }
 
     if (
       scheduledAt.getTime() <= Date.now()
     ) {
-      setError("Termín hodiny musí byť v budúcnosti.");
+      setError(sk?"Termín hodiny musí byť v budúcnosti.":"The lesson time must be in the future.");
       return;
     }
 
@@ -112,14 +115,14 @@ export default function AdminCreateLessonForm({
       durationMinutes < 15 ||
       durationMinutes > 180
     ) {
-      setError("Dĺžka hodiny musí byť medzi 15 a 180 minútami.");
+      setError(sk?"Dĺžka hodiny musí byť medzi 15 a 180 minútami.":"Lesson duration must be between 15 and 180 minutes.");
       return;
     }
 
     const trimmedLink = meetLink.trim();
 
     if (trimmedLink && !safeLessonLink(trimmedLink)) {
-      setError("Zadajte platný odkaz na online hodinu s https:// bez prihlasovacích údajov.");
+      setError(sk?"Zadajte platný odkaz na online hodinu s https:// bez prihlasovacích údajov.":"Enter a valid https:// online lesson link without login credentials.");
       return;
     }
 
@@ -157,7 +160,7 @@ export default function AdminCreateLessonForm({
           .eq("id", effectivePackageId).eq("student_id", studentId)
           .eq("status", "active").gt("remaining_lessons", 0).maybeSingle();
         if (packageError || !selectedPackage) {
-          throw new Error("Vybraný balíček už nemá voľný kredit alebo nepatrí tomuto študentovi.");
+          throw new Error(sk?"Vybraný balíček už nemá voľný kredit alebo nepatrí tomuto študentovi.":"The selected package has no available credit or does not belong to this student.");
         }
         const { error } = await supabase.from("lessons").insert({
           ...row, updated_at: new Date().toISOString(),
@@ -171,7 +174,7 @@ export default function AdminCreateLessonForm({
       setMeetLink("");
       router.refresh();
     } catch {
-      setError("Uloženie sa nepodarilo. Skontrolujte pripojenie a skúste to znova.");
+      setError(sk?"Uloženie sa nepodarilo. Skontrolujte pripojenie a skúste to znova.":"Saving failed. Check your connection and try again.");
     } finally {
       busy.current = false;
       setSaving(false);
@@ -181,7 +184,7 @@ export default function AdminCreateLessonForm({
   if (students.length === 0 || teachers.length === 0) {
     return (
       <div className="mt-6 rounded-2xl border border-[#2F3AA2]/20 bg-[#faf6eb] p-4 text-sm text-[#92400e]">
-        Na vytvorenie hodiny je potrebný aspoň jeden aktívny študent a jeden aktívny lektor.
+        {sk?"Na vytvorenie hodiny je potrebný aspoň jeden aktívny študent a jeden aktívny lektor.":"At least one active student and one active teacher are required to create a lesson."}
       </div>
     );
   }
@@ -190,12 +193,12 @@ export default function AdminCreateLessonForm({
     <details className="mt-6 rounded-3xl border border-black/5 bg-white p-5 shadow-sm sm:p-6">
       <summary className="flex cursor-pointer list-none items-center gap-2 font-semibold">
         <CalendarPlus size={19} />
-        Naplánovať novú hodinu
+        {sk?"Naplánovať novú hodinu":"Schedule a new lesson"}
       </summary>
 
       <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         <label className="text-sm font-medium">
-          Študent
+          {sk?"Študent":"Student"}
           <select
             disabled={saving}
             value={studentId}
@@ -215,7 +218,7 @@ export default function AdminCreateLessonForm({
         </label>
 
         <label className="text-sm font-medium">
-          Lektor
+          {sk?"Lektor":"Teacher"}
           <select
             disabled={saving}
             value={teacherId}
@@ -231,23 +234,21 @@ export default function AdminCreateLessonForm({
         </label>
 
         <label className="text-sm font-medium">
-          Jazyk
+          {sk?"Jazyk":"Language"}
           <select
             disabled={saving}
             value={language}
             onChange={(event) => { setLanguage(event.target.value); setSaved(false); }}
             className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#2F3AA2]"
           >
-            {MUNDUS_LANGUAGE_OPTIONS.map(({ value, label }) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
+            {MUNDUS_LANGUAGE_OPTIONS.map(({ value }) => (
+              <option key={value} value={value}>{formatLanguage(value,uiLanguage)}</option>
             ))}
           </select>
         </label>
 
         <label className="text-sm font-medium">
-          Dátum a čas
+          {sk?"Dátum a čas":"Date and time"}
           <input
             disabled={saving}
             type="datetime-local"
@@ -258,22 +259,22 @@ export default function AdminCreateLessonForm({
         </label>
 
         <label className="text-sm font-medium">
-          Dĺžka
+          {sk?"Dĺžka":"Duration"}
           <select
             disabled={saving}
             value={duration}
             onChange={(event) => { setDuration(event.target.value); setSaved(false); }}
             className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#2F3AA2]"
           >
-            <option value="30">30 minút</option>
-            <option value="45">45 minút</option>
-            <option value="60">60 minút</option>
-            <option value="90">90 minút</option>
+            <option value="30">30 {sk?"minút":"minutes"}</option>
+            <option value="45">45 {sk?"minút":"minutes"}</option>
+            <option value="60">60 {sk?"minút":"minutes"}</option>
+            <option value="90">90 {sk?"minút":"minutes"}</option>
           </select>
         </label>
 
         <label className="text-sm font-medium">
-          Balíček
+          {sk?"Balíček":"Package"}
           <select
             value={effectivePackageId}
             onChange={(event) => { setPackageId(event.target.value); setSaved(false); }}
@@ -281,11 +282,11 @@ export default function AdminCreateLessonForm({
             className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none disabled:bg-gray-100 disabled:text-gray-400"
           >
             {studentPackages.length === 0 ? (
-              <option value="">Žiadny dostupný balíček</option>
+              <option value="">{sk?"Žiadny dostupný balíček":"No available package"}</option>
             ) : (
               studentPackages.map((pkg) => (
                 <option key={pkg.id} value={pkg.id}>
-                  {pkg.total_lessons == null ? "Neznámy balíček" : formatLessonCount(pkg.total_lessons)} · zostáva {formatLessonCount(pkg.remaining_lessons ?? 0)}
+                  {pkg.total_lessons == null ? (sk?"Neznámy balíček":"Unknown package") : formatLessonCount(pkg.total_lessons,uiLanguage)} · {sk?"zostáva":"remaining"} {formatLessonCount(pkg.remaining_lessons ?? 0,uiLanguage)}
                 </option>
               ))
             )}
@@ -293,7 +294,7 @@ export default function AdminCreateLessonForm({
         </label>
 
         <label className="text-sm font-medium md:col-span-2 xl:col-span-3">
-          Odkaz na online hodinu
+          {sk?"Odkaz na online hodinu":"Online lesson link"}
           <input
             disabled={saving}
             type="url"
@@ -313,12 +314,12 @@ export default function AdminCreateLessonForm({
           className="inline-flex items-center gap-2 rounded-xl bg-[#2F3AA2] px-5 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
         >
           <CalendarPlus size={17} />
-          {saving ? "Vytváram..." : "Vytvoriť hodinu"}
+          {saving?(sk?"Vytváram...":"Creating..."):(sk?"Vytvoriť hodinu":"Create lesson")}
         </button>
 
         {saved && (
           <span role="status" className="text-sm font-medium text-[#3730A3]">
-            Hodina bola vytvorená.
+            {sk?"Hodina bola vytvorená.":"Lesson created."}
           </span>
         )}
 

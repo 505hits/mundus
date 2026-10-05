@@ -3,19 +3,9 @@
 import { revalidatePath } from "next/cache";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { currentBratislavaMonth } from "@/lib/month";
 
 export type TeacherFeedbackState = { error?: string; success?: string };
-
-function currentMonthStart() {
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Europe/Bratislava",
-    year: "numeric",
-    month: "2-digit",
-  }).formatToParts(new Date());
-  const year = parts.find((part) => part.type === "year")?.value;
-  const month = parts.find((part) => part.type === "month")?.value;
-  return year && month ? `${year}-${month}-01` : "";
-}
 
 export async function saveTeacherFeedback(
   _state: TeacherFeedbackState,
@@ -29,7 +19,7 @@ export async function saveTeacherFeedback(
 
   if (
     !/^[0-9a-f-]{36}$/i.test(teacherId) ||
-    feedbackMonth !== currentMonthStart() ||
+    feedbackMonth !== currentBratislavaMonth().key ||
     !Number.isInteger(rating) ||
     rating < 1 ||
     rating > 5 ||
@@ -39,9 +29,7 @@ export async function saveTeacherFeedback(
   }
 
   const db = await createSupabaseServerClient();
-  const monthStart = new Date(`${feedbackMonth}T00:00:00+02:00`);
-  const monthEnd = new Date(monthStart);
-  monthEnd.setUTCMonth(monthEnd.getUTCMonth() + 1);
+  const month = currentBratislavaMonth();
 
   const { data: completedLesson, error: lessonError } = await db
     .from("lessons")
@@ -49,8 +37,8 @@ export async function saveTeacherFeedback(
     .eq("student_id", user.id)
     .eq("teacher_id", teacherId)
     .eq("status", "completed")
-    .gte("scheduled_at", monthStart.toISOString())
-    .lt("scheduled_at", monthEnd.toISOString())
+    .gte("scheduled_at", month.start)
+    .lt("scheduled_at", month.end)
     .limit(1)
     .maybeSingle();
 

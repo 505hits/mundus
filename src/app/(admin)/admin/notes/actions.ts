@@ -3,7 +3,8 @@ import { revalidatePath } from "next/cache";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-export async function addAdminNote(_state:{error?:string;success?:string},form:FormData){
+export type AdminNoteState={error?:string;success?:string};
+export async function addAdminNote(_state:AdminNoteState,form:FormData):Promise<AdminNoteState>{
   const {user}=await requireRole("admin");
   const subjectId=String(form.get("subject_id")??"");
   const note=String(form.get("note")??"").trim();

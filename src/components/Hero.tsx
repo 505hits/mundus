@@ -38,13 +38,13 @@ export default function Hero() {
     const { t } = useLanguage();
 
     return (
-        <section className="relative overflow-hidden pt-36 pb-20 lg:pt-48 lg:pb-32 min-h-screen flex items-center" style={{ background: '#0a0a0f' }}>
+        <section className="relative flex min-h-[88vh] items-center overflow-hidden bg-[#171A2B] pt-32 pb-20 lg:pt-40 lg:pb-28">
             {/* Animated blue gradient blobs */}
             <div className="absolute inset-0 z-0 overflow-hidden">
                 <div
-                    className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[900px] h-[900px] rounded-full opacity-60 blur-[120px]"
+                    className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[900px] h-[900px] rounded-full opacity-45 blur-[130px]"
                     style={{
-                        background: 'radial-gradient(circle, rgba(47,58,162,0.8) 0%, rgba(30,40,130,0.4) 40%, transparent 70%)',
+                        background: 'radial-gradient(circle, rgba(72,82,190,0.72) 0%, rgba(47,58,162,0.3) 42%, transparent 72%)',
                         animation: 'heroGradientMove 8s ease-in-out infinite',
                     }}
                 />
@@ -88,10 +88,10 @@ export default function Hero() {
                 {/* Animated Title */}
                 <motion.h1
                     variants={titleAnimation}
-                    className="hero-title mt-6 text-4xl md:text-6xl lg:text-7xl font-bold text-center leading-[1.1] !text-white"
+                    className="hero-title mt-6 text-center text-4xl font-semibold leading-[1.06] !text-white md:text-6xl lg:text-[4.4rem]"
                 >
                     {t.hero.titleBefore}{" "}
-                    <span className="relative inline-block text-blue-300" style={{ fontStyle: 'italic' }}>
+                    <span className="relative inline-block text-[#C7D2FE]" style={{ fontStyle: 'italic' }}>
                         {t.hero.nativeSpeakers}
                         <svg className="absolute w-full h-3 -bottom-1 left-0 text-blue-400 opacity-80 -z-10" viewBox="0 0 100 10" preserveAspectRatio="none">
                             <motion.path
@@ -111,7 +111,7 @@ export default function Hero() {
                 <motion.p
                     variants={fadeInUp}
                     transition={{ duration: 0.5, delay: 0.2 }}
-                    className="hero-subtitle mt-6 text-base md:text-xl text-center max-w-2xl mx-auto !text-gray-300"
+                    className="hero-subtitle mx-auto mt-6 max-w-2xl text-center text-base !text-[#D8DBE8] md:text-xl"
                 >
                     {t.hero.subtitle}
                 </motion.p>
@@ -127,7 +127,7 @@ export default function Hero() {
                         whileHover={{ scale: 1.02, y: -2 }}
                         whileTap={{ scale: 0.98 }}
                         className="btn w-full sm:w-auto justify-center text-white font-semibold"
-                        style={{ background: 'linear-gradient(135deg, #2F3AA2, #4a58d6)', boxShadow: '0 0 30px rgba(47,58,162,0.5)' }}
+                        style={{ background: 'linear-gradient(135deg, #4652C2, #2F3AA2)', boxShadow: '0 14px 34px rgba(12,18,72,0.34)' }}
                     >
                         {t.hero.ctaPrimary}
                         <ArrowRight size={18} />
@@ -146,7 +146,7 @@ export default function Hero() {
                 {/* Image Grid - Mobile Scroller / Desktop Grid */}
                 <motion.div
                     variants={stagger}
-                    className="mt-12 md:mt-16"
+                    className="mt-12 md:mt-14"
                 >
                     {/* Mobile Stacked Images */}
                     <div className="md:hidden relative h-[450px] w-full mt-10 flex justify-center items-center">
@@ -242,9 +242,9 @@ export default function Hero() {
                 <motion.div
                     variants={fadeInUp}
                     transition={{ duration: 0.5, delay: 0.8 }}
-                    className="flex flex-wrap items-center justify-center gap-4 md:gap-8 mt-8 md:mt-12 text-sm text-gray-300"
+                    className="mt-8 flex flex-wrap items-center justify-center gap-3 text-sm text-[#D8DBE8] md:mt-10 md:gap-4"
                 >
-                    <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/15 shadow-sm">
+                    <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.07] px-4 py-2 backdrop-blur-sm">
                         <div className="flex -space-x-2">
                             {[
                                 "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
@@ -265,7 +265,7 @@ export default function Hero() {
                         <span className="font-medium text-white">{t.hero.students}</span>
                     </div>
 
-                    <div className="flex items-center gap-1 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/15 shadow-sm">
+                    <div className="flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.07] px-4 py-2 backdrop-blur-sm">
                         {[1, 2, 3, 4, 5].map((i) => (
                             <Star key={i} size={16} className="fill-yellow-400 text-yellow-400" />
                         ))}

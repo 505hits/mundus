@@ -39,8 +39,8 @@ export default async function AdminCalendarPage(){
     <p className="mt-3 max-w-3xl text-gray-600">Spoločný admin prehľad všetkých evidovaných hodín — minulých aj naplánovaných — naprieč všetkými lektormi a študentmi.</p>
 
     {error?<p role="alert" className="mt-6 rounded-2xl bg-red-50 p-4 text-red-700">Kalendár sa nepodarilo načítať.</p>:
-      groups.size===0?<div className="mt-8 rounded-3xl border border-black/5 bg-white p-8 text-gray-500 shadow-sm">Zatiaľ nie sú evidované žiadne hodiny.</div>:
-      <div className="mt-8 space-y-6">{Array.from(groups.entries()).map(([key,lessons])=><section key={key} className="rounded-3xl border border-black/5 bg-white shadow-sm">
+      groups.size===0?<div className="mt-8 rounded-3xl border border-[#E5E7F0] bg-white p-8 text-gray-500 shadow-sm">Zatiaľ nie sú evidované žiadne hodiny.</div>:
+      <div className="mt-8 space-y-6">{Array.from(groups.entries()).map(([key,lessons])=><section key={key} className="rounded-3xl border border-[#E5E7F0] bg-white shadow-sm">
         <div className="flex items-center justify-between border-b border-black/5 px-5 py-4 sm:px-6">
           <div className="flex items-center gap-3"><CalendarDays size={19} className="text-[#2F3AA2]"/><h2 className="font-semibold capitalize">{dateLabel(lessons?.[0]?.scheduled_at||key)}</h2></div>
           <span className="rounded-full bg-[#EEF2FF] px-3 py-1 text-xs font-semibold text-[#2F3AA2]">{lessons?.length??0} hod.</span>

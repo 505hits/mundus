@@ -55,7 +55,7 @@ export default async function DashboardPage() {
     supabase
       .from("lesson_packages")
       .select(
-        "id,total_lessons,remaining_lessons,used_lessons,status"
+        "id,total_lessons,remaining_lessons,used_lessons,status,purchased_at"
       )
       .eq("student_id", user.id)
       .eq("status", "active"),
@@ -124,10 +124,19 @@ export default async function DashboardPage() {
     0
   );
 
-  const renewalDue = activePackages.some(pkg =>
-    (pkg.total_lessons === 5 && (pkg.used_lessons ?? 0) >= 4 && (pkg.remaining_lessons ?? 0) <= 1) ||
-    (pkg.total_lessons !== 5 && (pkg.used_lessons ?? 0) > 0 && (pkg.remaining_lessons ?? 0) <= 2)
-  );
+  const renewalDue = activePackages.some(pkg => {
+    const low =
+      (pkg.total_lessons === 5 && (pkg.used_lessons ?? 0) >= 4 && (pkg.remaining_lessons ?? 0) <= 1) ||
+      (pkg.total_lessons !== 5 && (pkg.used_lessons ?? 0) > 0 && (pkg.remaining_lessons ?? 0) <= 2);
+    if (!low) return false;
+    const purchasedAt = new Date(pkg.purchased_at ?? 0).getTime();
+    const alreadyContinued = activePackages.some(other =>
+      other.id !== pkg.id &&
+      (other.remaining_lessons ?? 0) > 0 &&
+      new Date(other.purchased_at ?? 0).getTime() > purchasedAt
+    );
+    return !alreadyContinued;
+  });
 
   const progress =
     totalLessons > 0

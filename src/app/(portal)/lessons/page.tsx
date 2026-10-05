@@ -42,7 +42,7 @@ export default async function LessonsPage() {
     supabase
       .from("lessons")
       .select(
-        "id,scheduled_at,duration_minutes,status,lesson_type,meet_link,language"
+        "id,scheduled_at,duration_minutes,status,attendance_status,lesson_type,meet_link,language"
       )
       .eq("student_id", user.id)
       .order("scheduled_at", { ascending: true }),
@@ -308,9 +308,20 @@ export default async function LessonsPage() {
                     </p>
                   </div>
 
-                  <span className="w-fit rounded-full bg-[#EEF2FF] px-3 py-1.5 text-xs font-semibold capitalize">
-                    {formatLessonStatus(lesson.status)}
-                  </span>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="w-fit rounded-full bg-[#EEF2FF] px-3 py-1.5 text-xs font-semibold capitalize">
+                      {formatLessonStatus(lesson.status)}
+                    </span>
+                    {lesson.attendance_status && (
+                      <span className="w-fit rounded-full bg-[#FAFAF9] px-3 py-1.5 text-xs font-medium text-gray-600">
+                        {lesson.attendance_status === "attended" ? "Účasť potvrdená" :
+                         lesson.attendance_status === "student_no_show" ? "Neúčasť" :
+                         lesson.attendance_status === "late_cancellation" ? "Neskoré zrušenie" :
+                         lesson.attendance_status === "student_cancelled" ? "Zrušené študentom" :
+                         lesson.attendance_status === "teacher_cancelled" ? "Zrušené lektorom" : lesson.attendance_status}
+                      </span>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>

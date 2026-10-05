@@ -11,9 +11,11 @@ import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatLanguage, formatLessonStatus } from "@/lib/portalLabels";
 import StudentScheduleRequestActions from "./StudentScheduleRequestActions";
+import { currentLanguage, localeFor } from "@/lib/i18n";
+import type { Language } from "@/context/LanguageContext";
 
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat("sk-SK", {
+function formatDate(value: string, language: Language) {
+  return new Intl.DateTimeFormat(localeFor(language), {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -22,8 +24,8 @@ function formatDate(value: string) {
   }).format(new Date(value));
 }
 
-function formatTime(value: string) {
-  return new Intl.DateTimeFormat("sk-SK", {
+function formatTime(value: string, language: Language) {
+  return new Intl.DateTimeFormat(localeFor(language), {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -32,6 +34,8 @@ function formatTime(value: string) {
 }
 
 export default async function LessonsPage() {
+  const language = await currentLanguage();
+  const sk = language === "sk";
   const { user } = await requireRole("student");
   const supabase = await createSupabaseServerClient();
 
@@ -89,40 +93,40 @@ export default async function LessonsPage() {
           className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 transition hover:text-[#0a0a0f]"
         >
           <ArrowLeft size={17} />
-          Späť na prehľad
+          {sk ? "Späť na prehľad" : "Back to overview"}
         </Link>
 
         <section className="mt-7">
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
-            Moje učenie
+            {sk ? "Moje učenie" : "My learning"}
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Moje hodiny
+            {sk ? "Moje hodiny" : "My lessons"}
           </h1>
 
           <p className="mt-2 text-gray-500">
-            Pozrite si najbližšie hodiny, pripojte sa na hodinu alebo požiadajte o zmenu termínu.
+            {sk ? "Pozrite si najbližšie hodiny, pripojte sa na hodinu alebo požiadajte o zmenu termínu." : "See your upcoming lessons, join a lesson or request a schedule change."}
           </p>
         </section>
 
         {(lessonsError || requestsError) && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            Nepodarilo sa načítať vaše hodiny. Obnovte stránku alebo to skúste o chvíľu znova.
+            {sk ? "Nepodarilo sa načítať vaše hodiny. Obnovte stránku alebo to skúste o chvíľu znova." : "We could not load your lessons. Refresh the page or try again shortly."}
           </div>
         )}
 
         <section className="mt-8">
           <div className="flex items-end justify-between gap-4">
             <div>
-              <p className="text-sm text-gray-400">Rozvrh</p>
+              <p className="text-sm text-gray-400">{sk ? "Rozvrh" : "Schedule"}</p>
               <h2 className="mt-1 text-xl font-semibold">
-                Najbližšie hodiny
+                {sk ? "Najbližšie hodiny" : "Upcoming lessons"}
               </h2>
             </div>
 
             <span className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold shadow-sm">
-              {lessonsError ? "Rozvrh nedostupný" : upcomingLessons.length === 1 ? "1 naplánovaná" : upcomingLessons.length >= 2 && upcomingLessons.length <= 4 ? `${upcomingLessons.length} naplánované` : `${upcomingLessons.length} naplánovaných`}
+              {lessonsError ? (sk ? "Rozvrh nedostupný" : "Schedule unavailable") : sk ? (upcomingLessons.length === 1 ? "1 naplánovaná" : upcomingLessons.length >= 2 && upcomingLessons.length <= 4 ? `${upcomingLessons.length} naplánované` : `${upcomingLessons.length} naplánovaných`) : `${upcomingLessons.length} scheduled`}
             </span>
           </div>
 
@@ -141,12 +145,12 @@ export default async function LessonsPage() {
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
                         <h3 className="text-xl font-semibold">
-                          {formatLanguage(lesson.language)} hodina
+                          {formatLanguage(lesson.language, language)} · {sk ? "hodina" : "lesson"}
                         </h3>
 
                         {index === 0 && (
                           <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/80">
-                            Najbližšia
+                            {sk ? "Najbližšia" : "Next"}
                           </span>
                         )}
 
@@ -158,7 +162,7 @@ export default async function LessonsPage() {
                                 : "bg-[#fff7e6] text-[#2F3AA2]"
                             }`}
                           >
-                            Presunutá
+                            {sk ? "Presunutá" : "Rescheduled"}
                           </span>
                         )}
                       </div>
@@ -172,12 +176,12 @@ export default async function LessonsPage() {
                       >
                         <span className="flex items-center gap-2">
                           <CalendarDays size={17} />
-                          {formatDate(lesson.scheduled_at)}
+                          {formatDate(lesson.scheduled_at, language)}
                         </span>
 
                         <span className="flex items-center gap-2">
                           <Clock3 size={17} />
-                          {formatTime(lesson.scheduled_at)}
+                          {formatTime(lesson.scheduled_at, language)}
                         </span>
 
                         <span>
@@ -199,7 +203,7 @@ export default async function LessonsPage() {
                           }`}
                         >
                           <Video size={17} />
-                          Pripojiť sa na hodinu
+                          {sk ? "Pripojiť sa na hodinu" : "Join lesson"}
                         </a>
                       ) : (
                         <button
@@ -211,7 +215,7 @@ export default async function LessonsPage() {
                           }`}
                         >
                           <Video size={17} />
-                          Odkaz na hodinu zatiaľ nie je pridaný
+                          {sk ? "Odkaz na hodinu zatiaľ nie je pridaný" : "Lesson link has not been added yet"}
                         </button>
                       )}
 
@@ -230,15 +234,15 @@ export default async function LessonsPage() {
                             <div className="flex items-center justify-center gap-2">
                               <RefreshCw size={16} />
                               {requestedByStudent
-                                ? "Vaša žiadosť čaká na vybavenie"
-                                : "Lektor navrhol nový termín"}
+                                ? (sk ? "Vaša žiadosť čaká na vybavenie" : "Your request is pending")
+                                : (sk ? "Lektor navrhol nový termín" : "Teacher proposed a new time")}
                             </div>
 
                             <p className={`mt-1 text-center text-xs ${
                               index === 0 ? "text-white/55" : "text-[#2F3AA2]/75"
                             }`}>
-                              Navrhovaný termín: {formatDate(request.preferred_at)} ·{" "}
-                              {formatTime(request.preferred_at)}
+                              {sk ? "Navrhovaný termín:" : "Proposed time:"} {formatDate(request.preferred_at, language)} ·{" "}
+                              {formatTime(request.preferred_at, language)}
                             </p>
 
                             {!requestedByStudent && (
@@ -246,7 +250,7 @@ export default async function LessonsPage() {
                             )}
                           </div>
                         );
-                      })() : requestsError ? <p className="text-center text-sm">Stav žiadosti sa nepodarilo načítať. Obnovte stránku pred žiadosťou o zmenu.</p> : (
+                      })() : requestsError ? <p className="text-center text-sm">{sk ? "Stav žiadosti sa nepodarilo načítať. Obnovte stránku pred žiadosťou o zmenu." : "Request status could not be loaded. Refresh the page before requesting a change."}</p> : (
                         <Link
                           href={`/lessons/${lesson.id}/request-change`}
                           className={`flex items-center justify-center gap-2 rounded-2xl border px-4 py-3 text-sm font-medium ${
@@ -256,7 +260,7 @@ export default async function LessonsPage() {
                           }`}
                         >
                           <RefreshCw size={16} />
-                          Požiadať o zmenu
+                          {sk ? "Požiadať o zmenu" : "Request a change"}
                         </Link>
                       )}
                     </div>
@@ -272,11 +276,11 @@ export default async function LessonsPage() {
               />
 
               <h3 className="mt-4 font-semibold">
-                {lessonsError ? "Rozvrh sa nepodarilo načítať" : "Zatiaľ nemáte naplánované hodiny"}
+                {lessonsError ? (sk ? "Rozvrh sa nepodarilo načítať" : "Schedule could not be loaded") : (sk ? "Zatiaľ nemáte naplánované hodiny" : "You do not have scheduled lessons yet")}
               </h3>
 
               <p className="mt-2 text-sm text-gray-500">
-                {lessonsError ? "Obnovte stránku alebo to skúste o chvíľu znova." : "Vaša najbližšia potvrdená hodina sa zobrazí tu."}
+                {lessonsError ? (sk ? "Obnovte stránku alebo to skúste o chvíľu znova." : "Refresh the page or try again shortly.") : (sk ? "Vaša najbližšia potvrdená hodina sa zobrazí tu." : "Your next confirmed lesson will appear here.")}
               </p>
             </div>
           )}
@@ -284,9 +288,9 @@ export default async function LessonsPage() {
 
         <section className="mt-10">
           <div>
-            <p className="text-sm text-gray-400">História</p>
+            <p className="text-sm text-gray-400">{sk ? "História" : "History"}</p>
             <h2 className="mt-1 text-xl font-semibold">
-              Predchádzajúce hodiny
+              {sk ? "Predchádzajúce hodiny" : "Previous lessons"}
             </h2>
           </div>
 
@@ -299,26 +303,26 @@ export default async function LessonsPage() {
                 >
                   <div>
                     <p className="font-medium">
-                      {formatLanguage(lesson.language)} hodina
+                      {formatLanguage(lesson.language, language)} hodina
                     </p>
 
                     <p className="mt-1 text-sm text-gray-400">
-                      {formatDate(lesson.scheduled_at)} ·{" "}
-                      {formatTime(lesson.scheduled_at)}
+                      {formatDate(lesson.scheduled_at, language)} ·{" "}
+                      {formatTime(lesson.scheduled_at, language)}
                     </p>
                   </div>
 
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="w-fit rounded-full bg-[#EEF2FF] px-3 py-1.5 text-xs font-semibold capitalize">
-                      {formatLessonStatus(lesson.status)}
+                      {formatLessonStatus(lesson.status, language)}
                     </span>
                     {lesson.attendance_status && (
                       <span className="w-fit rounded-full bg-[#FAFAF9] px-3 py-1.5 text-xs font-medium text-gray-600">
-                        {lesson.attendance_status === "attended" ? "Účasť potvrdená" :
-                         lesson.attendance_status === "student_no_show" ? "Neúčasť" :
-                         lesson.attendance_status === "late_cancellation" ? "Neskoré zrušenie" :
-                         lesson.attendance_status === "student_cancelled" ? "Zrušené študentom" :
-                         lesson.attendance_status === "teacher_cancelled" ? "Zrušené lektorom" : lesson.attendance_status}
+                        {lesson.attendance_status === "attended" ? (sk ? "Účasť potvrdená" : "Attendance confirmed") :
+                         lesson.attendance_status === "student_no_show" ? (sk ? "Neúčasť" : "No-show") :
+                         lesson.attendance_status === "late_cancellation" ? (sk ? "Neskoré zrušenie" : "Late cancellation") :
+                         lesson.attendance_status === "student_cancelled" ? (sk ? "Zrušené študentom" : "Cancelled by student") :
+                         lesson.attendance_status === "teacher_cancelled" ? (sk ? "Zrušené lektorom" : "Cancelled by teacher") : lesson.attendance_status}
                       </span>
                     )}
                   </div>
@@ -327,7 +331,7 @@ export default async function LessonsPage() {
             </div>
           ) : (
             <p className="mt-5 rounded-3xl border border-black/5 bg-white p-6 text-sm text-gray-500 shadow-sm">
-              {lessonsError ? "Históriu hodín sa nepodarilo načítať. Obnovte stránku alebo to skúste o chvíľu znova." : "História vašich hodín sa zobrazí tu."}
+              {lessonsError ? (sk ? "Históriu hodín sa nepodarilo načítať. Obnovte stránku alebo to skúste o chvíľu znova." : "Lesson history could not be loaded. Refresh the page or try again shortly.") : (sk ? "História vašich hodín sa zobrazí tu." : "Your lesson history will appear here.")}
             </p>
           )}
         </section>

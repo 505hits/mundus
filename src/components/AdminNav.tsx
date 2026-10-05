@@ -13,6 +13,9 @@ import {
   CreditCard,
   Users,
   Trophy,
+  HeartPulse,
+  WalletCards,
+  NotebookPen,
 } from "lucide-react";
 
 const navItems = [
@@ -34,9 +37,24 @@ const navItems = [
     icon: GraduationCap,
   },
   {
-    name: "Rebríček",
+    name: "Výkon",
     href: "/admin/teacher-ranking",
     icon: Trophy,
+  },
+  {
+    name: "Retencia",
+    href: "/admin/retention",
+    icon: HeartPulse,
+  },
+  {
+    name: "Výplaty",
+    href: "/admin/payouts",
+    icon: WalletCards,
+  },
+  {
+    name: "Poznámky",
+    href: "/admin/notes",
+    icon: NotebookPen,
   },
   {
     name: "Hodiny",

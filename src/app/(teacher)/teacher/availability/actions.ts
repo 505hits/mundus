@@ -2,12 +2,13 @@
 import {requireRole} from "@/lib/auth";
 import {createSupabaseServerClient} from "@/lib/supabase/server";
 import {revalidatePath} from "next/cache";
+import { MUNDUS_LANGUAGE_VALUES } from "@/lib/language-offer";
 export async function savePreferences(_state:{error?:string;success?:string},form:FormData):Promise<{error?:string;success?:string}> {
  const {user}=await requireRole("teacher");
  try {
-  const list=(key:string,allowed:string[])=>{const values=form.getAll(key);if(values.some(value=>typeof value!=="string"||!allowed.includes(value)))throw new Error("choice");return [...new Set(values as string[])];};
+  const list=(key:string,allowed:readonly string[])=>{const values=form.getAll(key);if(values.some(value=>typeof value!=="string"||!allowed.includes(value)))throw new Error("choice");return [...new Set(values as string[])];};
   const accepting=form.get("accepting")==="true";
-  const languages=list("languages",['English','German','Spanish','Italian','French','Portuguese','Hungarian','Polish','Russian','Chinese','Slovak','Ukrainian','Modern Hebrew']);
+  const languages=list("languages",MUNDUS_LANGUAGE_VALUES);
   const levels=list("levels",['A1','A2','B1','B2','C1','C2']);
   const days=list("days",['1','2','3','4','5','6','7']);
   const capacity=String(form.get("capacity")||"");

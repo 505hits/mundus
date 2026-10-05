@@ -9,17 +9,19 @@ import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatLanguage, formatLessonType } from "@/lib/portalLabels";
 import LessonReportForm from "./LessonReportForm";
+import { currentLanguage, localeFor } from "@/lib/i18n";
+import type { Language } from "@/context/LanguageContext";
 
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat("sk-SK", {
+function formatDate(value: string, language: Language) {
+  return new Intl.DateTimeFormat(localeFor(language), {
     day: "numeric",
     month: "long",
     timeZone: "Europe/Bratislava",
   }).format(new Date(value));
 }
 
-function formatTime(value: string) {
-  return new Intl.DateTimeFormat("sk-SK", {
+function formatTime(value: string, language: Language) {
+  return new Intl.DateTimeFormat(localeFor(language), {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -33,10 +35,12 @@ function getStudentName(
     | null
     | undefined
 ) {
-  return profile?.full_name?.trim() || profile?.email || "Študent";
+  return profile?.full_name?.trim() || profile?.email || "Student";
 }
 
 export default async function TeacherReportsPage() {
+  const language = await currentLanguage();
+  const sk = language === "sk";
   const { user } = await requireRole("teacher");
   const supabase = await createSupabaseServerClient();
   const studentDirectory = await teacherDirectory(supabase);
@@ -100,15 +104,15 @@ export default async function TeacherReportsPage() {
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
-            Záznamy
+            {sk ? "Záznamy" : "Reports"}
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Záznamy z hodín
+            {sk ? "Záznamy z hodín" : "Lesson reports"}
           </h1>
 
           <p className="mt-2 max-w-2xl text-gray-500">
-            Po každej dokončenej hodine pridajte krátky záznam, aby mal študent aktuálny prehľad o svojom napredovaní.
+            {sk ? "Po každej dokončenej hodine pridajte krátky záznam, aby mal študent aktuálny prehľad o svojom napredovaní." : "After each completed lesson, add a short report so the student has an up-to-date view of their progress."}
           </p>
         </section>
 
@@ -121,7 +125,7 @@ export default async function TeacherReportsPage() {
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
-              Posledné hodiny
+              {sk ? "Posledné hodiny" : "Recent lessons"}
             </p>
           </div>
 
@@ -133,7 +137,7 @@ export default async function TeacherReportsPage() {
             </p>
 
             <p className="mt-1 text-sm text-[#92400e]/70">
-              Chýbajúce záznamy
+              {sk ? "Chýbajúce záznamy" : "Missing reports"}
             </p>
           </div>
 
@@ -145,28 +149,28 @@ export default async function TeacherReportsPage() {
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
-              Hotové záznamy
+              {sk ? "Hotové záznamy" : "Completed reports"}
             </p>
           </div>
         </section>
 
         <section className="mt-8">
           <p className="text-sm text-gray-400">
-            Posledná aktivita
+            {sk ? "Posledná aktivita" : "Recent activity"}
           </p>
 
           <h2 className="mt-1 text-xl font-semibold">
-            Dokončené hodiny
+            {sk ? "Dokončené hodiny" : "Completed lessons"}
           </h2>
 
           {recentLessons.length === 0 ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
               <p className="font-medium">
-                Zatiaľ nemáte dokončené hodiny
+                {sk ? "Zatiaľ nemáte dokončené hodiny" : "You do not have completed lessons yet"}
               </p>
 
               <p className="mt-1 text-sm text-gray-400">
-                Záznamy bude možné pridávať po dokončení hodín.
+                {sk ? "Záznamy bude možné pridávať po dokončení hodín." : "Reports can be added after lessons are completed."}
               </p>
             </div>
           ) : (
@@ -200,26 +204,26 @@ export default async function TeacherReportsPage() {
                             }`}
                           >
                             {report
-                              ? "Záznam vyplnený"
-                              : "Treba doplniť záznam"}
+                              ? (sk ? "Záznam vyplnený" : "Report completed")
+                              : (sk ? "Treba doplniť záznam" : "Report needed")}
                           </span>
                         </div>
 
                         <p className="mt-2 text-sm text-gray-500">
-                          {formatLanguage(lesson.language)} ·{" "}
-                          {formatLessonType(lesson.lesson_type)}
+                          {formatLanguage(lesson.language, language)} ·{" "}
+                          {formatLessonType(lesson.lesson_type, language)}
                         </p>
 
                         <div className="mt-2 flex items-center gap-2 text-sm text-gray-400">
                           <Clock3 size={15} />
-                          {formatDate(lesson.scheduled_at)} ·{" "}
-                          {formatTime(lesson.scheduled_at)}
+                          {formatDate(lesson.scheduled_at, language)} ·{" "}
+                          {formatTime(lesson.scheduled_at, language)}
                         </div>
                       </div>
 
                       {reportsError ? (
                         <p role="alert" className="text-sm text-red-700">
-                          Záznam sa nepodarilo načítať. Pred úpravou obnovte stránku.
+                          {sk ? "Záznam sa nepodarilo načítať. Pred úpravou obnovte stránku." : "The report could not be loaded. Refresh the page before editing."}
                         </p>
                       ) : <LessonReportForm
                         lessonId={lesson.id}

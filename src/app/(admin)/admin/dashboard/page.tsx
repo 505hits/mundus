@@ -196,7 +196,7 @@ export default async function AdminDashboardPage() {
     profile?.full_name?.trim()?.split(/\s+/)[0] || "Administrátor";
 
   return (
-    <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
+    <main className="min-h-screen bg-transparent text-[#0a0a0f]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
@@ -227,22 +227,22 @@ export default async function AdminDashboardPage() {
         )}
 
         <section className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border border-[#E5E7F0] bg-white p-5 shadow-sm">
             <Users size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{studentsError ? "—" : students?.length ?? 0}</p>
             <p className="mt-1 text-sm text-gray-500">Aktívni študenti</p>
           </div>
-          <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border border-[#E5E7F0] bg-white p-5 shadow-sm">
             <GraduationCap size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{teachersError ? "—" : teachers?.length ?? 0}</p>
             <p className="mt-1 text-sm text-gray-500">Aktívni lektori</p>
           </div>
-          <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border border-[#E5E7F0] bg-white p-5 shadow-sm">
             <CalendarDays size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{lessonsError ? "—" : todayLessons.length}</p>
             <p className="mt-1 text-sm text-gray-500">Dnešné hodiny</p>
           </div>
-          <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border border-[#E5E7F0] bg-white p-5 shadow-sm">
             <AlertCircle size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{requestsError ? "—" : pendingRequests}</p>
             <p className="mt-1 text-sm text-gray-500">Čakajúce žiadosti o zmenu termínu</p>
@@ -250,7 +250,7 @@ export default async function AdminDashboardPage() {
         </section>
 
         <div className="mt-8 grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-          <section className="rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
+          <section className="rounded-3xl border border-[#E5E7F0] bg-white p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-400">Priorita</p>
@@ -351,7 +351,7 @@ export default async function AdminDashboardPage() {
           <div className="mt-5 flex flex-wrap gap-4"><Link href="/admin/packages" className="font-semibold text-[#2F3AA2] underline">Skontrolovať balíčky</Link><Link href="/admin/students" className="font-semibold text-[#2F3AA2] underline">Prehľad študentov</Link><Link href="/admin/lessons" className="font-semibold text-[#2F3AA2] underline">Dohodnuté hodiny</Link></div>
         </section>
 
-        <section className="mt-8 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
+        <section className="mt-8 rounded-3xl border border-[#E5E7F0] bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-400">

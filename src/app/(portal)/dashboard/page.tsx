@@ -35,6 +35,7 @@ function formatTime(value: string) {
 
 export default async function DashboardPage() {
   const { user } = await requireRole("student");
+  const paymentsAvailable = paymentEnabled();
   const supabase = await createSupabaseServerClient();
 
   const [
@@ -277,7 +278,7 @@ export default async function DashboardPage() {
             <p className="text-sm font-medium text-gray-500">
               Aktuálny balíček
             </p>
-            {paymentEnabled() && <Link href="/packages" className="mt-2 inline-block text-sm font-semibold text-[#2F3AA2] underline">Zobraziť balíčky a platby</Link>}
+            {paymentsAvailable && <Link href="/packages" className="mt-2 inline-block text-sm font-semibold text-[#2F3AA2] underline">Zobraziť balíčky a platby</Link>}
 
             {packagesError ? <p className="mt-4 text-sm text-red-700">Zostatok a stav balíčka sa nepodarilo načítať. Obnovte stránku alebo to skúste o chvíľu znova.</p> : activePackages.length > 0 ? (
               <>
@@ -311,15 +312,29 @@ export default async function DashboardPage() {
                           : "Zostávajú vám posledné 2 hodiny"}
                     </p>
                     <p className="mt-1 text-sm leading-6 text-[#92400e]/75">
-                      Ak chcete pokračovať bez prerušenia, ozvite sa Mundus Languages a pripravíme vám ďalší balíček.
+                      {paymentsAvailable
+                        ? "Ak chcete pokračovať bez prerušenia, môžete si vybrať ďalší balíček online."
+                        : "Ak chcete pokračovať bez prerušenia, ozvite sa Mundus Languages a pripravíme vám ďalší balíček."}
                     </p>
+                    {paymentsAvailable && (
+                      <Link href="/packages" className="mt-3 inline-flex rounded-xl bg-[#2F3AA2] px-4 py-2.5 text-sm font-semibold text-white">
+                        Vybrať ďalší balíček
+                      </Link>
+                    )}
                   </div>
                 )}
               </>
             ) : (
-              <p className="mt-4 text-sm leading-6 text-gray-500">
-                Zatiaľ nemáte priradený aktívny balíček hodín.
-              </p>
+              <>
+                <p className="mt-4 text-sm leading-6 text-gray-500">
+                  Zatiaľ nemáte priradený aktívny balíček hodín.
+                </p>
+                {paymentsAvailable && (
+                  <Link href="/packages" className="mt-4 inline-flex rounded-xl bg-[#2F3AA2] px-4 py-2.5 text-sm font-semibold text-white">
+                    Pozrieť balíčky
+                  </Link>
+                )}
+              </>
             )}
           </section>
         </div>

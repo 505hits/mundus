@@ -1,12 +1,20 @@
 import { Star, Trophy, Users, CalendarDays } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { BRATISLAVA_TIME_ZONE, currentBratislavaMonth } from "@/lib/month";
+import { BRATISLAVA_TIME_ZONE, currentBratislavaMonth, parseBratislavaMonth } from "@/lib/month";
 
-export default async function TeacherRankingPage() {
+export default async function TeacherRankingPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ month?: string | string[] }>;
+}) {
   await requireRole("admin");
   const db = await createSupabaseServerClient();
-  const month = currentBratislavaMonth();
+  const params = await searchParams;
+  const requestedMonth = Array.isArray(params?.month) ? params?.month[0] : params?.month;
+  const currentMonth = currentBratislavaMonth();
+  const parsedMonth = parseBratislavaMonth(requestedMonth);
+  const month = parsedMonth && parsedMonth.key <= currentMonth.key ? parsedMonth : currentMonth;
 
   const [
     { data: teachers, error: teachersError },
@@ -65,7 +73,26 @@ export default async function TeacherRankingPage() {
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">Výkon lektorov</p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Mesačný rebríček lektorov</h1>
           <p className="mt-2 text-gray-500">Hodnotenia študentov spolu s počtom dokončených hodín a aktívnych študentov.</p>
-          <p className="mt-2 text-sm font-medium text-[#2F3AA2]">{monthLabel}</p>
+          <div className="mt-4 flex flex-wrap items-end gap-3">
+            <div>
+              <p className="text-sm font-medium text-[#2F3AA2]">{monthLabel}</p>
+            </div>
+            <form method="get" className="flex items-end gap-2">
+              <label className="block">
+                <span className="block text-xs font-medium text-gray-500">Zobraziť mesiac</span>
+                <input
+                  type="month"
+                  name="month"
+                  defaultValue={month.key.slice(0, 7)}
+                  max={currentMonth.key.slice(0, 7)}
+                  className="mt-1 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm"
+                />
+              </label>
+              <button type="submit" className="rounded-xl bg-[#2F3AA2] px-4 py-2 text-sm font-semibold text-white">
+                Zobraziť
+              </button>
+            </form>
+          </div>
         </section>
 
         <section className="mt-8 overflow-hidden rounded-3xl border border-black/5 bg-white shadow-sm">

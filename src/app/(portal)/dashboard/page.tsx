@@ -445,9 +445,11 @@ export default async function DashboardPage() {
                 </p>
 
                 <h2 className="mt-1 text-xl font-semibold">
-                  {reportsError ? "sk ? "Domácu úlohu sa nepodarilo načítať" : "Homework could not be loaded"" : latestHomework
-                    ? "sk ? "Vaša posledná domáca úloha" : "Your latest homework""
-                    : "sk ? "Zatiaľ nemáte domácu úlohu" : "No homework yet""}
+                  {reportsError
+                    ? (sk ? "Domácu úlohu sa nepodarilo načítať" : "Homework could not be loaded")
+                    : latestHomework
+                      ? (sk ? "Vaša posledná domáca úloha" : "Your latest homework")
+                      : (sk ? "Zatiaľ nemáte domácu úlohu" : "No homework yet")}
                 </h2>
               </div>
 

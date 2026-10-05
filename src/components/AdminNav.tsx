@@ -12,6 +12,7 @@ import {
   Package,
   CreditCard,
   Users,
+  Trophy,
 } from "lucide-react";
 
 const navItems = [
@@ -31,6 +32,11 @@ const navItems = [
     name: "Lektori",
     href: "/admin/teachers",
     icon: GraduationCap,
+  },
+  {
+    name: "Rebríček",
+    href: "/admin/teacher-ranking",
+    icon: Trophy,
   },
   {
     name: "Hodiny",

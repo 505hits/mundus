@@ -44,10 +44,9 @@ export function teacherMatchScore(student: StudentMatchInput, teacher: TeacherMa
   let score=60;
   const reasons=["jazyk"];
   const desiredLevel=levelMap[student.level] ?? null;
-  if (!desiredLevel || teacher.levels.includes(desiredLevel)) {
-    score+=20;
-    reasons.push(desiredLevel ? "úroveň" : "flexibilná úroveň");
-  }
+  if (desiredLevel && teacher.levels.length && !teacher.levels.includes(desiredLevel)) return null;
+  score+=20;
+  reasons.push(desiredLevel ? "úroveň" : "flexibilná úroveň");
 
   const wantedDays=student.preferred_days ?? [];
   if (!wantedDays.length) {

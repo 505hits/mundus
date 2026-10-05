@@ -89,7 +89,7 @@ export default function ResetPasswordPage() {
           <p role="status" className="mt-7 text-sm text-gray-500">Overujem odkaz…</p>
         ) : saved ? (
           <>
-            <div className="mt-7 rounded-2xl bg-[#eef3ef] p-5">
+            <div role="status" aria-live="polite" className="mt-7 rounded-2xl bg-[#eef3ef] p-5">
               <p className="font-semibold">Heslo bolo zmenené</p>
               <p className="mt-2 text-sm leading-6 text-gray-600">
                 Teraz sa môžete prihlásiť pomocou nového hesla.
@@ -134,7 +134,7 @@ export default function ResetPasswordPage() {
             </label>
 
             {error && (
-              <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
+              <p role="alert" className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
                 {error}
               </p>
             )}

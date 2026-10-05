@@ -1,8 +1,9 @@
 "use client";
 import {useActionState} from "react";
-import {saveTeacherRate} from "./actions";
+import {saveTeacherRate,type TeacherRateState} from "./actions";
 export default function TeacherRateForm({teachers,month}:{teachers:Array<{id:string;full_name:string|null;email:string|null}>,month:string}){
- const [state,action,pending]=useActionState(saveTeacherRate,{});
+ const initialState:TeacherRateState={};
+ const [state,action,pending]=useActionState(saveTeacherRate,initialState);
  return <form action={action} className="mt-6 rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
   <input type="hidden" name="month" value={month}/>
   <div className="grid gap-4 md:grid-cols-[1.5fr_0.8fr_auto] md:items-end">

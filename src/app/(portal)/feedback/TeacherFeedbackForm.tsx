@@ -10,6 +10,7 @@ type Props = {
   feedbackMonth: string;
   initialRating?: number | null;
   initialFeedback?: string | null;
+  initialCategories?: string[] | null;
 };
 
 const initialState: TeacherFeedbackState = {};
@@ -20,6 +21,7 @@ export default function TeacherFeedbackForm({
   feedbackMonth,
   initialRating,
   initialFeedback,
+  initialCategories,
 }: Props) {
   const [state, action, pending] = useActionState(saveTeacherFeedback, initialState);
 
@@ -50,6 +52,24 @@ export default function TeacherFeedbackForm({
                 <Star size={16} fill="currentColor" />
                 {value}
               </span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      <fieldset className="mt-5">
+        <legend className="text-sm font-medium text-gray-700">Čo oceňujete? <span className="font-normal text-gray-400">(nepovinné)</span></legend>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {[
+            ["preparation","Príprava"],
+            ["explanation","Vysvetľovanie"],
+            ["conversation","Konverzácia"],
+            ["friendly","Prístup"],
+            ["punctuality","Dochvíľnosť"],
+          ].map(([value,label]) => (
+            <label key={value} className="cursor-pointer">
+              <input className="peer sr-only" type="checkbox" name="categories" value={value} defaultChecked={initialCategories?.includes(value)} />
+              <span className="inline-flex rounded-xl border border-gray-200 px-3 py-2 text-sm text-gray-600 transition peer-checked:border-[#2F3AA2] peer-checked:bg-[#EEF2FF] peer-checked:text-[#2F3AA2]">{label}</span>
             </label>
           ))}
         </div>

@@ -123,6 +123,11 @@ export default async function DashboardPage() {
     0
   );
 
+  const renewalDue = activePackages.some(pkg =>
+    (pkg.total_lessons === 5 && (pkg.used_lessons ?? 0) >= 4 && (pkg.remaining_lessons ?? 0) <= 1) ||
+    (pkg.total_lessons !== 5 && (pkg.used_lessons ?? 0) > 0 && (pkg.remaining_lessons ?? 0) <= 2)
+  );
+
   const progress =
     totalLessons > 0
       ? Math.min(
@@ -165,6 +170,10 @@ export default async function DashboardPage() {
       </header>
 
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
+        {renewalDue && <section className="mb-6 flex flex-col gap-4 rounded-3xl border border-[#2F3AA2]/20 bg-[#EEF2FF] p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div><p className="font-semibold text-[#2F3AA2]">Je čas myslieť na ďalší balíček</p><p className="mt-1 text-sm text-gray-600">Máte už len posledné hodiny. Ak chcete pokračovať bez prestávky, môžete si ďalší balíček pripraviť už teraz.</p></div>
+          {paymentsAvailable?<Link href="/packages" className="shrink-0 rounded-xl bg-[#2F3AA2] px-4 py-3 text-sm font-semibold text-white">Kúpiť ďalší balíček</Link>:<Link href="/contact" className="shrink-0 rounded-xl bg-[#2F3AA2] px-4 py-3 text-sm font-semibold text-white">Kontaktovať Mundus</Link>}
+        </section>}
         <section>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
             Moje učenie

@@ -77,7 +77,7 @@ export default function AdminNav({ paymentsEnabled = false }: { paymentsEnabled?
                   aria-current={active ? "page" : undefined}
                   className={`focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F3AA2] flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition ${
                     active ? "bg-[#2F3AA2] text-white shadow-sm"
-                      : "text-gray-500 hover:bg-[#EEF2FF] hover:text-[#0a0a0f]"
+                      : "text-gray-500 hover:bg-[#EEF2FF] hover:text-[#2F3AA2]"
                   }`}
                 >
                   <Icon size={18} />

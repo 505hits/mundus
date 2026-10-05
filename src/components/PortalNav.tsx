@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import LogoutButton from "@/components/LogoutButton";
 import BrandLogo from "@/components/BrandLogo";
+import LanguageToggle from "@/components/LanguageToggle";
+import { useLanguage } from "@/context/LanguageContext";
 import {
   BookOpen,
   ChartNoAxesColumnIncreasing,
@@ -14,38 +16,19 @@ import {
 } from "lucide-react";
 
 const navItems = [
-  {
-    label: "Domov",
-    href: "/dashboard",
-    icon: Home,
-  },
-  {
-    label: "Hodiny",
-    href: "/lessons",
-    icon: GraduationCap,
-  },
-  {
-    label: "Učenie",
-    href: "/learning",
-    icon: BookOpen,
-  },
-  {
-    label: "Pokrok",
-    href: "/progress",
-    icon: ChartNoAxesColumnIncreasing,
-  },
-  {
-    label: "Hodnotenie",
-    href: "/feedback",
-    icon: Star,
-  },
-  { label: "Vstupný test", href: "/level-test", icon: BookOpen },
-  { label: "Kontrolný test", href: "/progress-test", icon: ChartNoAxesColumnIncreasing },
+  { sk: "Domov", en: "Home", href: "/dashboard", icon: Home },
+  { sk: "Hodiny", en: "Lessons", href: "/lessons", icon: GraduationCap },
+  { sk: "Učenie", en: "Learning", href: "/learning", icon: BookOpen },
+  { sk: "Pokrok", en: "Progress", href: "/progress", icon: ChartNoAxesColumnIncreasing },
+  { sk: "Hodnotenie", en: "Feedback", href: "/feedback", icon: Star },
+  { sk: "Vstupný test", en: "Level test", href: "/level-test", icon: BookOpen },
+  { sk: "Kontrolný test", en: "Progress test", href: "/progress-test", icon: ChartNoAxesColumnIncreasing },
 ];
 
 export default function PortalNav({ paymentsEnabled }: { paymentsEnabled: boolean }) {
   const pathname = usePathname();
-  const items = paymentsEnabled ? [...navItems, { label: "Balíčky", href: "/packages", icon: Package }] : navItems;
+  const { language } = useLanguage();
+  const items = paymentsEnabled ? [...navItems, { sk: "Balíčky", en: "Packages", href: "/packages", icon: Package }] : navItems;
   const mobileItems = items.filter((item) => !["/level-test", "/progress-test"].includes(item.href));
 
   return (
@@ -56,10 +39,12 @@ export default function PortalNav({ paymentsEnabled }: { paymentsEnabled: boolea
           <div className="px-3 py-1"><BrandLogo compact /></div>
 
           <p className="mt-6 px-3 text-xs font-semibold uppercase tracking-[0.14em] text-gray-400">
-            Vzdelávací portál
+            {language === "sk" ? "Vzdelávací portál" : "Student portal"}
           </p>
 
-          <nav className="mt-3 space-y-1">
+          <div className="mt-4 px-3"><LanguageToggle /></div>
+
+          <nav className="mt-4 space-y-1">
             {items.map((item) => {
               const Icon = item.icon;
               const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
@@ -75,7 +60,7 @@ export default function PortalNav({ paymentsEnabled }: { paymentsEnabled: boolea
                   }`}
                 >
                   <Icon size={18} />
-                  {item.label}
+                  {language === "sk" ? item.sk : item.en}
                 </Link>
               );
             })}
@@ -84,11 +69,11 @@ export default function PortalNav({ paymentsEnabled }: { paymentsEnabled: boolea
           <div className="mt-auto space-y-3">
             <div className="rounded-2xl bg-[#F3F5FB] p-4">
             <p className="text-sm font-semibold text-[#0a0a0f]">
-              Potrebujete pomoc?
+              {language === "sk" ? "Potrebujete pomoc?" : "Need help?"}
             </p>
 
             <p className="mt-1 text-xs leading-5 text-gray-500">
-              Kontaktujte Mundus Languages a radi vám pomôžeme.
+              {language === "sk" ? "Kontaktujte Mundus Languages a radi vám pomôžeme." : "Contact Mundus Languages and we will be happy to help."}
             </p>
           </div>
             <LogoutButton />
@@ -121,7 +106,7 @@ export default function PortalNav({ paymentsEnabled }: { paymentsEnabled: boolea
                   <Icon size={19} />
                 </div>
 
-                {item.label}
+                {language === "sk" ? item.sk : item.en}
               </Link>
             );
           })}

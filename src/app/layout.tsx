@@ -3,6 +3,7 @@ import "@fontsource-variable/inter";
 import "./globals.css";
 import FloatingCTA from "@/components/FloatingCTA";
 import ClientProviders from "@/components/ClientProviders";
+import { currentLanguage } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: "Mundus Languages | Online jazykové hodiny",
@@ -18,15 +19,16 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const language = await currentLanguage();
   return (
-    <html lang="sk">
+    <html lang={language}>
       <body className="antialiased">
-        <ClientProviders>
+        <ClientProviders initialLanguage={language}>
           {children}
           <FloatingCTA />
         </ClientProviders>

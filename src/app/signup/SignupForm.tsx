@@ -7,7 +7,7 @@ const input = "mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 outline-n
 export default function SignupForm({ next }: { next: string | null }) {
   const [state, action, pending] = useActionState(signUpStudent, {});
   return <>
-    {state.success ? <p role="status" className="rounded-xl bg-green-50 p-4 text-sm leading-6">{state.success}</p> :
+    {state.success ? <p role="status" aria-live="polite" className="rounded-xl bg-green-50 p-4 text-sm leading-6">{state.success}</p> :
       <form action={action} className="space-y-4">
         {next && <input type="hidden" name="next" value={next} />}
         <label className="block text-sm">Celé meno a priezvisko<input className={input} name="name" autoComplete="name" minLength={2} maxLength={100} required /></label>

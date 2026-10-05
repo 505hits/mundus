@@ -95,7 +95,7 @@ export default function TeacherNav() {
       {/* Mobile navigation */}
       <div className="fixed right-4 top-4 z-50 lg:hidden"><LogoutButton compact /></div>
       <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-black/5 bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
-        <div className="mx-auto grid max-w-lg grid-cols-6">
+        <div className="mx-auto flex max-w-3xl overflow-x-auto">
           {navItems.map((item) => {
             const Icon = item.icon;
 
@@ -109,7 +109,7 @@ export default function TeacherNav() {
                 key={item.href}
                 href={item.href}
                   aria-current={active ? "page" : undefined}
-                className={`focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F3AA2] flex flex-col items-center justify-center gap-1 py-3 text-[11px] font-medium ${
+                className={`focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F3AA2] flex min-w-[76px] flex-1 flex-col items-center justify-center gap-1 py-3 text-[11px] font-medium ${
                   active ? "text-[#0a0a0f]" : "text-gray-400"
                 }`}
               >

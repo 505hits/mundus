@@ -43,18 +43,18 @@ export const translations = {
                 },
                 {
                     number: "02",
-                    title: "Choose your course",
-                    description: "Pick the plan that fits your goals: beginner, conversation, business, or exam prep.",
+                    title: "Create your account & choose a package",
+                    description: "Create a student account, confirm your email and choose the lesson package you want to purchase.",
                 },
                 {
                     number: "03",
-                    title: "Start learning online",
-                    description: "Arrange your lesson times with your teacher and join using the saved meeting link.",
+                    title: "We match you with a teacher",
+                    description: "We use your language, level, goals and availability to recommend a suitable teacher and arrange your first lesson.",
                 },
                 {
                     number: "04",
-                    title: "Improve every day",
-                    description: "Review your lesson feedback and homework with your teacher.",
+                    title: "Track lessons and continue",
+                    description: "See your schedule, feedback, homework and remaining lessons in your portal, and buy another package when needed.",
                 },
             ]
         },
@@ -270,18 +270,18 @@ export const translations = {
                 },
                 {
                     number: "02",
-                    title: "Vyberte si kurz",
-                    description: "Zvoľte plán, ktorý sedí vašim cieľom: začiatočník, konverzácia, biznis alebo príprava na skúšky.",
+                    title: "Vytvorte si účet a vyberte balíček",
+                    description: "Vytvorte si študentský účet, potvrďte e-mail a vyberte balíček hodín, ktorý chcete kúpiť.",
                 },
                 {
                     number: "03",
-                    title: "Začnite sa učiť online",
-                    description: "Termíny si dohodnete s lektorom a na hodinu sa pripojíte cez uložený odkaz.",
+                    title: "Odporučíme vám lektora",
+                    description: "Podľa jazyka, úrovne, cieľa a dostupnosti vám odporučíme vhodného lektora a dohodneme prvú hodinu.",
                 },
                 {
                     number: "04",
-                    title: "Zlepšujte sa každý deň",
-                    description: "Sledujte spätnú väzbu z hodín a pracujte na domácich úlohách s lektorom.",
+                    title: "Sledujte hodiny a pokračujte",
+                    description: "V portáli vidíte rozvrh, spätnú väzbu, úlohy aj zostávajúce hodiny a včas si môžete kúpiť ďalší balíček.",
                 },
             ]
         },

@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: portal-build-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: portal-build-${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
 
 jobs:

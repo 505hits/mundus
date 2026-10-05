@@ -80,7 +80,7 @@ export default async function AdminTeachersPage() {
       ...teacher,
       studentCount,
       completedThisMonth,
-      languages: languageValues.length ? languageValues.map((language) => formatLanguage(language)).join(", ") : "—",
+      languages: languageValues.length ? languageValues.map((language: string) => formatLanguage(language)).join(", ") : "—",
       publicProfileComplete,
       websiteVisible: Boolean(websiteProfile?.website_visible),
     };

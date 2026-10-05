@@ -48,10 +48,7 @@ export default function Navbar() {
                 className={`navbar ${isScrolled ? "bg-white/90 backdrop-blur-md shadow-sm" : "bg-transparent"}`}
             >
                 <div className="navbar-inner flex w-full items-center justify-between px-5 sm:px-6">
-                    {/* Logo */}
-                    {/* Logo */}
-                    {/* Logo */}
-                    {/* Logo */}
+                    {/* Brand */}
                     <Link href="/" className="nav-logo relative h-12 w-36 sm:w-40 shrink-0">
                         <Image
                             src="/logo-removebg-preview.png"
@@ -160,7 +157,7 @@ export default function Navbar() {
                                 </a>
                             </motion.div>
 
-                            {{/* Mobile Language Toggle */}
+                            {/* Mobile Language Toggle */}
                             <motion.div
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}

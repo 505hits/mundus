@@ -56,6 +56,7 @@ export default async function AdminDashboardPage() {
     { data: lessons, error: lessonsError },
     { data: packages, error: packagesError },
     { data: requests, error: requestsError },
+    { data: paidOrders, error: paidOrdersError },
   ] = await Promise.all([
     supabase.from("profiles").select("id,full_name,email").eq("role", "student").eq("status", "active"),
     supabase.from("profiles").select("id,full_name,email").eq("role", "teacher").eq("status", "active"),
@@ -75,6 +76,11 @@ export default async function AdminDashboardPage() {
       .from("schedule_change_requests")
       .select("id,status")
       .eq("status", "pending"),
+    supabase
+      .from("payment_orders")
+      .select("student_id,paid_at,status")
+      .eq("status", "paid")
+      .order("paid_at", { ascending: false }),
   ]);
 
   const hasLoadError = Boolean(
@@ -82,7 +88,8 @@ export default async function AdminDashboardPage() {
       teachersError ||
       lessonsError ||
       packagesError ||
-      requestsError
+      requestsError ||
+      paidOrdersError
   );
 
   const { data: followups, error: followupError } = await supabase.from("renewal_followups").select("student_id,status,last_contact,next_followup,note,updated_at");
@@ -129,6 +136,12 @@ export default async function AdminDashboardPage() {
     ).length,
   })).sort((a, b) => b.upcoming - a.upcoming || getName(a, "").localeCompare(getName(b, ""), "sk"));
 
+  const allLessonStudentIds = new Set((lessons ?? []).map((lesson) => lesson.student_id));
+  const paidStudentIds = new Set((paidOrders ?? []).map((order) => order.student_id));
+  const newPaidUnassigned = (students ?? []).filter(
+    (student) => paidStudentIds.has(student.id) && !allLessonStudentIds.has(student.id)
+  );
+
   const lowPackages = (packages ?? []).filter(
     (pkg) => pkg.status === "active" && (pkg.remaining_lessons ?? 0) > 0 && (pkg.remaining_lessons ?? 0) <= 2
   );
@@ -156,7 +169,15 @@ export default async function AdminDashboardPage() {
           </p>
         </section>
 
-        <Link href="/admin/matching" className="mt-5 inline-block rounded-xl bg-[#2F3AA2] px-5 py-3 font-semibold text-white">Priradiť študenta k lektorovi</Link>
+        <div className="mt-5 flex flex-wrap gap-3"><Link href="/admin/matching" className="inline-block rounded-xl bg-[#2F3AA2] px-5 py-3 font-semibold text-white">Priradiť študenta k lektorovi</Link><Link href="/admin/calendar" className="inline-block rounded-xl border border-[#2F3AA2]/20 bg-white px-5 py-3 font-semibold text-[#2F3AA2]">Otvoriť kalendár</Link></div>
+
+        {newPaidUnassigned.length > 0 && <section className="mt-6 rounded-3xl border border-amber-200 bg-amber-50 p-5">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div><p className="text-sm font-semibold uppercase tracking-[0.14em] text-amber-800">Nový nákup</p><h2 className="mt-1 text-xl font-semibold text-amber-950">Priraďte lektora</h2><p className="mt-2 text-sm text-amber-900/75">Títo študenti majú zaplatený balíček a zatiaľ nemajú vytvorenú žiadnu hodinu.</p></div>
+            <Link href="/admin/matching" className="rounded-xl bg-[#2F3AA2] px-4 py-2.5 text-sm font-semibold text-white">Zobraziť odporúčania</Link>
+          </div>
+          <ul className="mt-4 divide-y divide-amber-200">{newPaidUnassigned.map(student=><li key={student.id} className="flex flex-wrap items-center justify-between gap-3 py-3"><div><p className="font-semibold text-amber-950">{getName(student,"Študent")}</p><p className="text-sm text-amber-900/70">{student.email}</p></div><span className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-amber-900">Čaká na priradenie</span></li>)}</ul>
+        </section>}
 
         {hasLoadError && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
@@ -198,6 +219,10 @@ export default async function AdminDashboardPage() {
             </div>
 
             <div className="mt-5 space-y-3">
+              <div className="rounded-2xl bg-amber-50 p-4">
+                <p className="font-medium">{paidOrdersError || lessonsError ? "Nové nákupy sa nepodarilo overiť" : newPaidUnassigned.length === 1 ? "1 nový platený študent čaká na lektora" : newPaidUnassigned.length + " nových platených študentov čaká na lektora"}</p>
+                <p className="mt-1 text-sm text-gray-500">Po nákupe skontrolujte smart matching a vytvorte prvú hodinu.</p>
+              </div>
               <div className="rounded-2xl bg-[#EEF2FF] p-4">
                 <p className="font-medium">{packagesError ? "Stav balíčkov sa nepodarilo načítať" : packageAlertLabel(lowPackages.length)}</p>
                 <p className="mt-1 text-sm text-gray-500">Odporúčame kontaktovať študenta ohľadom pokračovania.</p>

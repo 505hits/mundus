@@ -33,7 +33,10 @@ jobs:
         run: npm ci
 
       - name: Apply nonbreaking audit fixes
-        run: npm audit fix
+        run: |
+          npm audit fix || true
+          echo "Remaining advisories after safe fixes:"
+          npm audit || true
 
       - name: Verify no critical advisories
         run: npm audit --audit-level=critical

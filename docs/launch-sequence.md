@@ -67,7 +67,7 @@ GitHub reports successful Vercel deployments for mundus and mundus-5at5 on porta
 
 The older https://mundus-chi.vercel.app/login address returns HTTP 404. Do not give that address as a working portal preview. Main remains at 8803d08 (September 30); it does not contain the subsequent portal safeguards. Preparing a draft PR is review preparation, not production publication. A read-only merge-tree check finds no merge conflict against the current portal branch.
 
-Supabase is connected. All 24 reviewed sources were applied atomically as 20261004115305_mundus_v1_portal_activation, followed by report_table_grants. Existing 3 profiles / 1 lesson / 1 package were preserved; all13 public tables have RLS. Read-only teacher/student/anonymous role checks pass. Auth browser tests and real checkout/email/upload checks remain pending. Preflight now audits table grants as well as RLS: teachers require authenticated SELECT/INSERT/UPDATE on lesson_reports; server-only feature tables must not grant client writes. No changes to Vercel access restrictions or live payment/email flags were made.
+Supabase is connected. All 24 reviewed sources were applied atomically as 20261004115305_mundus_v1_portal_activation, followed by report_table_grants. Existing 3 profiles / 1 lesson / 1 package were preserved; all 13 public tables have RLS. Read-only teacher/student/anonymous role checks pass. Auth browser tests and real checkout/email/upload checks remain pending. Preflight now audits table grants as well as RLS: teachers require authenticated SELECT/INSERT/UPDATE on lesson_reports; server-only feature tables must not grant client writes. No changes to Vercel access restrictions or live payment/email flags were made.
 
 
 ## New purchase → teacher assignment flow
@@ -77,3 +77,10 @@ After the 2026-10-05 migrations, onboarding stores preferred days/times, teacher
 ## Renewal notifications
 
 When an active package drops to two remaining lessons, admins receive a renewal reminder job. For a five-lesson package, when the fourth lesson is used and one remains, the student receives a renewal reminder job. These messages are only delivered when SMTP notifications are configured and enabled; the student/admin dashboard warnings remain available independently.
+
+
+## Connected Supabase evidence — 2026-10-05
+
+The connected project now records the following additional migrations after the original V1 activation and report grants: teacher_language_offer, foreign_key_indexes, student_matching_preferences, teacher_public_profiles, portal_email_notifications, and portal_email_indexes. Read-back verification confirms the 13-language constraints, matching preference columns, teacher profile table/RLS, intentional public teacher-photo bucket, service-only portal notification queue, assignment trigger, renewal trigger, and zero retained Turkish teacher preferences.
+
+Supabase performance advisors report no remaining unindexed foreign keys from the new notification queue. Existing RLS init-plan and multiple-permissive-policy advisories predate this feature pass and are not being broadly refactored immediately before V1 launch. The service-only outbox tables intentionally have RLS enabled with no client policies. Leaked-password protection remains an Auth setting to enable separately if desired.

@@ -14,7 +14,12 @@ export default async function AdminTeachersPage() {
   await requireRole("admin");
   const supabase = await createSupabaseServerClient();
 
-  const [{ data: teachers, error }, { data: lessons }] = await Promise.all([
+  const [
+    { data: teachers, error },
+    { data: lessons },
+    { data: preferences, error: preferencesError },
+    { data: publicProfiles, error: publicProfilesError },
+  ] = await Promise.all([
     supabase
       .from("profiles")
       .select("id,full_name,email,status")
@@ -24,6 +29,12 @@ export default async function AdminTeachersPage() {
       .from("lessons")
       .select("teacher_id,student_id,scheduled_at,status,language")
       .in("status", ["scheduled", "rescheduled", "completed"]),
+    supabase
+      .from("teacher_preferences")
+      .select("teacher_id,languages"),
+    supabase
+      .from("teacher_public_profiles")
+      .select("teacher_id,headline,bio,languages,photo_path,website_visible"),
   ]);
 
   const now = new Date();
@@ -62,19 +73,30 @@ export default async function AdminTeachersPage() {
         bratislavaDateKey.format(new Date(lesson.scheduled_at))
       )
     ).length;
-    const languages = Array.from(
+    const preference = (preferences ?? []).find((item) => item.teacher_id === teacher.id);
+    const websiteProfile = (publicProfiles ?? []).find((item) => item.teacher_id === teacher.id);
+    const lessonLanguages = Array.from(
       new Set(
         teacherLessons
           .map((lesson) => lesson.language)
           .filter((language): language is string => Boolean(language))
       )
     );
+    const languageValues = preference?.languages?.length ? preference.languages : lessonLanguages;
+    const publicProfileComplete = Boolean(
+      websiteProfile?.photo_path &&
+      websiteProfile?.headline?.trim() &&
+      websiteProfile?.bio?.trim().length >= 20 &&
+      websiteProfile?.languages?.length
+    );
 
     return {
       ...teacher,
       studentCount,
       lessonsThisWeek,
-      languages: languages.length ? languages.map((language) => formatLanguage(language)).join(", ") : "—",
+      languages: languageValues.length ? languageValues.map((language) => formatLanguage(language)).join(", ") : "—",
+      publicProfileComplete,
+      websiteVisible: Boolean(websiteProfile?.website_visible),
     };
   });
 
@@ -109,7 +131,7 @@ export default async function AdminTeachersPage() {
 
         <InviteTeacherForm enabled={process.env.MUNDUS_INVITATIONS_ENABLED === "true"} />
 
-        {error && (
+        {(error || preferencesError || publicProfilesError) && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             Nepodarilo sa načítať účty lektorov. Obnovte stránku a skúste to znova.
           </div>
@@ -152,7 +174,7 @@ export default async function AdminTeachersPage() {
                 {teacherRows.map((teacher) => (
                   <div
                     key={teacher.id}
-                    className="grid gap-4 px-5 py-5 lg:grid-cols-[1.4fr_1fr_0.8fr_0.9fr_0.8fr_1fr] lg:items-center lg:px-6"
+                    className="grid gap-4 px-5 py-5 lg:grid-cols-[1.35fr_1fr_0.7fr_0.8fr_0.9fr_0.9fr_1fr] lg:items-center lg:px-6"
                   >
                     <div>
                       <p className="font-semibold">
@@ -179,6 +201,16 @@ export default async function AdminTeachersPage() {
                       <p className="mt-1 text-sm font-medium lg:mt-0">
                         {teacher.lessonsThisWeek} hodín
                       </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-400 lg:hidden">Web profil</p>
+                      <span className={teacher.publicProfileComplete && teacher.websiteVisible
+                        ? "rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700"
+                        : "rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-800"}>
+                        {teacher.publicProfileComplete
+                          ? teacher.websiteVisible ? "Zobrazený" : "Pripravený"
+                          : "Nedokončený"}
+                      </span>
                     </div>
                     <div>
                       <span className="rounded-full bg-[#EEF2FF] px-3 py-1 text-xs font-semibold capitalize text-[#3730A3]">

@@ -15,6 +15,7 @@ export async function saveTeacherProfile(_previous:TeacherProfileState,form:Form
   const visible=form.get("website_visible")==="true";
   const photo=form.get("photo");
   if(headline.length>120||bio.length>1000||!languages.length) return {error:"Vyberte aspoň jeden jazyk a skontrolujte dĺžku textov."};
+  if(visible && (headline.length<3 || bio.length<20)) return {error:"Ak chcete profil zobraziť na hlavnom webe, doplňte krátky titulok a aspoň 20 znakov predstavenia."};
 
   const admin=createSupabaseAdminClient();
   let photoPath:string|undefined;

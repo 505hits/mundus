@@ -18,6 +18,7 @@ export async function saveTeacherProfile(_previous:TeacherProfileState,form:Form
   if(visible && (headline.length<3 || bio.length<20)) return {error:"Ak chcete profil zobraziť na hlavnom webe, doplňte krátky titulok a aspoň 20 znakov predstavenia."};
 
   const admin=createSupabaseAdminClient();
+  const existing=await admin.from("teacher_public_profiles").select("photo_path").eq("teacher_id",user.id).maybeSingle();
   let photoPath:string|undefined;
   if(photo instanceof File && photo.size>0){
     if(photo.size>5*1024*1024||!["image/jpeg","image/png","image/webp"].includes(photo.type)) return {error:"Fotka musí byť JPG, PNG alebo WebP do 5 MB."};
@@ -28,12 +29,14 @@ export async function saveTeacherProfile(_previous:TeacherProfileState,form:Form
     if(uploadError) return {error:"Fotku sa nepodarilo nahrať. Skúste to znova."};
   }
 
-  const existing=await admin.from("teacher_public_profiles").select("photo_path").eq("teacher_id",user.id).maybeSingle();
   const {error}=await admin.from("teacher_public_profiles").upsert({
     teacher_id:user.id,headline,bio,languages,website_visible:visible,
     photo_path:photoPath??existing.data?.photo_path??null,updated_at:new Date().toISOString()
   });
   if(error) return {error:"Profil sa nepodarilo uložiť."};
+  if(photoPath && existing.data?.photo_path && existing.data.photo_path !== photoPath) {
+    await admin.storage.from("teacher-public").remove([existing.data.photo_path]).catch(()=>undefined);
+  }
 
   const current=await admin.from("teacher_preferences").select("*").eq("teacher_id",user.id).maybeSingle();
   const pref=current.data;

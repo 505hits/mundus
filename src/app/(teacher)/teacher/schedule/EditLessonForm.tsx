@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { CalendarClock, Save } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 import { bratislavaLocalToUtc, INVALID_LESSON_TIME } from "@/lib/lesson-time";
+import { useLanguage } from "@/context/LanguageContext";
 
 type Props = {
   lessonId: string;
@@ -34,6 +35,8 @@ export default function EditLessonForm({
   meetLink,
 }: Props) {
   const router = useRouter();
+  const { language } = useLanguage();
+  const sk = language === "sk";
   const initialDateTime = useMemo(
     () => bratislavaInputValue(scheduledAt),
     [scheduledAt]
@@ -52,7 +55,7 @@ export default function EditLessonForm({
     setSaved(false);
 
     if (!dateTime) {
-      setError("Vyberte dátum a čas hodiny.");
+      setError(sk ? "Vyberte dátum a čas hodiny." : "Choose the lesson date and time.");
       return;
     }
 
@@ -61,12 +64,12 @@ export default function EditLessonForm({
       : bratislavaLocalToUtc(dateTime);
 
     if (Number.isNaN(selectedDate.getTime())) {
-      setError(INVALID_LESSON_TIME);
+      setError(sk ? INVALID_LESSON_TIME : "The selected lesson time is invalid.");
       return;
     }
 
     if (selectedDate.getTime() <= Date.now()) {
-      setError("Nový termín musí byť v budúcnosti.");
+      setError(sk ? "Nový termín musí byť v budúcnosti." : "The new lesson time must be in the future.");
       return;
     }
 
@@ -76,7 +79,7 @@ export default function EditLessonForm({
       trimmedLink &&
       !safeLessonLink(trimmedLink)
     ) {
-      setError("Zadajte platný odkaz na online hodinu s https:// bez prihlasovacích údajov.");
+      setError(sk ? "Zadajte platný odkaz na online hodinu s https:// bez prihlasovacích údajov." : "Enter a valid https:// online lesson link without login credentials.");
       return;
     }
 
@@ -115,7 +118,7 @@ export default function EditLessonForm({
 
       if (updateError || !updatedLesson) {
         setError(
-          "Hodinu sa nepodarilo aktualizovať. Obnovte stránku a skontrolujte aktuálny stav hodiny."
+          (sk ? "Hodinu sa nepodarilo aktualizovať. Obnovte stránku a skontrolujte aktuálny stav hodiny." : "The lesson could not be updated. Refresh the page and check the current lesson status.")
         );
         return;
       }
@@ -123,7 +126,7 @@ export default function EditLessonForm({
       setSaved(true);
       router.refresh();
     } catch {
-      setError("Hodinu sa nepodarilo aktualizovať. Skontrolujte pripojenie a skúste to znova.");
+      setError(sk ? "Hodinu sa nepodarilo aktualizovať. Skontrolujte pripojenie a skúste to znova." : "The lesson could not be updated. Check your connection and try again.");
     } finally {
       setSaving(false);
     }
@@ -133,12 +136,12 @@ export default function EditLessonForm({
     <details className="mt-4 rounded-2xl border border-black/5 bg-white/80 p-4 text-[#0a0a0f]">
       <summary className="flex cursor-pointer list-none items-center gap-2 text-sm font-semibold">
         <CalendarClock size={16} />
-        Upraviť termín alebo online odkaz
+        {sk ? "Upraviť termín alebo online odkaz" : "Edit lesson time or online link"}
       </summary>
 
       <div className="mt-4 grid gap-4 md:grid-cols-2">
         <label className="text-sm font-medium">
-          Dátum a čas
+          {sk ? "Dátum a čas" : "Date and time"}
           <input
             disabled={saving}
             type="datetime-local"
@@ -149,7 +152,7 @@ export default function EditLessonForm({
         </label>
 
         <label className="text-sm font-medium">
-          Odkaz na online hodinu
+          {sk ? "Odkaz na online hodinu" : "Online lesson link"}
           <input
             disabled={saving}
             type="url"
@@ -169,12 +172,12 @@ export default function EditLessonForm({
           className="inline-flex items-center gap-2 rounded-xl bg-[#2F3AA2] px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
         >
           <Save size={16} />
-          {saving ? "Ukladám..." : "Uložiť zmeny"}
+          {saving ? (sk ? "Ukladám..." : "Saving...") : (sk ? "Uložiť zmeny" : "Save changes")}
         </button>
 
         {saved && (
           <span role="status" className="text-sm font-medium text-[#3730A3]">
-            Zmeny boli uložené.
+            {sk ? "Zmeny boli uložené." : "Changes saved."}
           </span>
         )}
 
@@ -184,7 +187,7 @@ export default function EditLessonForm({
       </div>
 
       <p className="mt-3 text-xs leading-5 text-gray-400">
-        Časy v portáli sú vedené v časovom pásme Bratislava.
+        {sk ? "Časy v portáli sú vedené v časovom pásme Bratislava." : "Portal times use the Bratislava time zone."}
       </p>
     </details>
   );

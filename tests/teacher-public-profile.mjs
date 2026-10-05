@@ -11,7 +11,11 @@ create function mundus_matching_role(role_name text) returns boolean language sq
 create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);
 `);
 await db.exec(readFileSync(new URL("../supabase/migrations/202610050005_teacher_public_profiles.sql",import.meta.url),"utf8"));
+await db.exec(readFileSync(new URL("../supabase/migrations/202610050008_teacher_profile_visibility.sql",import.meta.url),"utf8"));
 assert.equal((await db.query("select count(*)::int n from teacher_public_profiles")).rows[0].n,0);
+await db.exec("insert into profiles values('00000000-0000-4000-8000-000000000001','teacher','active')");
+await assert.rejects(db.query("insert into teacher_public_profiles(teacher_id,languages,website_visible) values('00000000-0000-4000-8000-000000000001',array['English'],true)"),/check constraint/);
+await db.query("insert into teacher_public_profiles(teacher_id,headline,bio,languages,website_visible) values('00000000-0000-4000-8000-000000000001','English teacher','Conversation and practical English lessons.',array['English'],true)");
 const bucket=(await db.query("select public,file_size_limit from storage.buckets where id='teacher-public'")).rows[0];
 assert.equal(bucket.public,true);assert.equal(Number(bucket.file_size_limit),5242880);
 await db.close();

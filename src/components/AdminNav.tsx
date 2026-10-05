@@ -97,7 +97,7 @@ export default function AdminNav({ paymentsEnabled = false }: { paymentsEnabled?
       </aside>
 
       {/* Mobile navigation */}
-      <div className="fixed right-4 top-4 z-50 lg:hidden"><LogoutButton compact /></div>
+      <div className="fixed right-4 top-4 z-50 flex items-center gap-2 lg:hidden"><LanguageToggle compact /><LogoutButton compact /></div>
       <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-black/5 bg-white/95 px-2 pt-2 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
         <div className="mx-auto flex max-w-3xl items-center overflow-x-auto">
           {items.map((item) => {

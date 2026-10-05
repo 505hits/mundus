@@ -12,9 +12,11 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatLanguage, formatLessonStatus } from "@/lib/portalLabels";
 import AdminCreateLessonForm from "./AdminCreateLessonForm";
 import AdminLessonActions from "./AdminLessonActions";
+import { currentLanguage, localeFor } from "@/lib/i18n";
+import type { Language } from "@/context/LanguageContext";
 
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat("sk-SK", {
+function formatDate(value: string, language: Language) {
+  return new Intl.DateTimeFormat(localeFor(language), {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -22,8 +24,8 @@ function formatDate(value: string) {
   }).format(new Date(value));
 }
 
-function formatTime(value: string) {
-  return new Intl.DateTimeFormat("sk-SK", {
+function formatTime(value: string, language: Language) {
+  return new Intl.DateTimeFormat(localeFor(language), {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -36,6 +38,8 @@ function name(profile: { full_name?: string | null; email?: string | null } | nu
 }
 
 export default async function AdminLessonsPage() {
+  const language=await currentLanguage();
+  const sk=language==="sk";
   await requireRole("admin");
   const supabase = await createSupabaseServerClient();
 
@@ -90,14 +94,14 @@ export default async function AdminLessonsPage() {
       <ScheduleNotificationStatus />
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">Hodiny</p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Správa hodín</h1>
-          <p className="mt-2 text-gray-500">Reálny prehľad hodín študentov a lektorov Mundus.</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">{sk?"Hodiny":"Lessons"}</p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">{sk?"Správa hodín":"Lesson management"}</h1>
+          <p className="mt-2 text-gray-500">{sk?"Reálny prehľad hodín študentov a lektorov Mundus.":"Real overview of Mundus student and teacher lessons."}</p>
         </section>
 
         {(error || studentsError || teachersError || packagesError) && (
           <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            Nepodarilo sa načítať údaje o hodinách. Obnovte stránku a skúste to znova.
+            {sk?"Nepodarilo sa načítať údaje o hodinách. Obnovte stránku a skúste to znova.":"Lesson data could not be loaded. Refresh the page and try again."}
           </div>
         )}
 
@@ -111,23 +115,23 @@ export default async function AdminLessonsPage() {
           <div className="rounded-3xl border border-[#E5E7F0] bg-white p-5 shadow-sm">
             <CalendarDays size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{today.length}</p>
-            <p className="mt-1 text-sm text-gray-500">Dnes</p>
+            <p className="mt-1 text-sm text-gray-500">{sk?"Dnes":"Today"}</p>
           </div>
           <div className="rounded-3xl border border-[#E5E7F0] bg-white p-5 shadow-sm">
             <CheckCircle2 size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{completed.length}</p>
-            <p className="mt-1 text-sm text-gray-500">Dokončené v načítanej histórii</p>
+            <p className="mt-1 text-sm text-gray-500">{sk?"Dokončené v načítanej histórii":"Completed in loaded history"}</p>
           </div>
           <div className="rounded-3xl border border-[#E5E7F0] bg-white p-5 shadow-sm">
             <AlertCircle size={20} className="text-[#2F3AA2]" />
             <p className="mt-4 text-3xl font-semibold">{attention.length}</p>
-            <p className="mt-1 text-sm text-gray-500">Zrušené / nedostavenie sa</p>
+            <p className="mt-1 text-sm text-gray-500">{sk?"Zrušené / nedostavenie sa":"Cancelled / no-show"}</p>
           </div>
         </section>
 
         <section className="mt-8 overflow-hidden rounded-3xl border border-[#E5E7F0] bg-white shadow-sm">
           {rows.length === 0 ? (
-            <div className="p-8 text-center text-sm text-gray-500">Zatiaľ neboli zaznamenané žiadne hodiny.</div>
+            <div className="p-8 text-center text-sm text-gray-500">{sk?"Zatiaľ neboli zaznamenané žiadne hodiny.":"No lessons have been recorded yet."}</div>
           ) : (
             <div className="divide-y divide-gray-100">
               {rows.map((lesson) => {
@@ -137,32 +141,32 @@ export default async function AdminLessonsPage() {
                   <div key={lesson.id} className="grid gap-4 px-5 py-5 lg:grid-cols-[1.2fr_1fr_0.9fr_0.7fr_0.9fr_0.9fr_0.5fr_0.7fr] lg:items-center lg:px-6">
                     <div>
                       <p className="font-semibold">{name(student)}</p>
-                      <p className="mt-1 text-sm text-gray-400">{formatLanguage(lesson.language)}</p>
+                      <p className="mt-1 text-sm text-gray-400">{formatLanguage(lesson.language,language)}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 lg:hidden">Lektor</p>
+                      <p className="text-xs text-gray-400 lg:hidden">{sk?"Lektor":"Teacher"}</p>
                       <p className="mt-1 text-sm font-medium lg:mt-0">{name(teacher)}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 lg:hidden">Dátum</p>
-                      <p className="mt-1 text-sm lg:mt-0">{formatDate(lesson.scheduled_at)}</p>
+                      <p className="text-xs text-gray-400 lg:hidden">{sk?"Dátum":"Date"}</p>
+                      <p className="mt-1 text-sm lg:mt-0">{formatDate(lesson.scheduled_at,language)}</p>
                     </div>
                     <div className="flex items-center gap-2 text-sm font-semibold">
                       <Clock3 size={15} className="text-gray-400" />
-                      {formatTime(lesson.scheduled_at)}
+                      {formatTime(lesson.scheduled_at,language)}
                     </div>
                     <div>
                       <span className="inline-flex rounded-full bg-[#EEF2FF] px-3 py-1 text-xs font-semibold capitalize text-[#3730A3]">
-                        {formatLessonStatus(lesson.status)}
+                        {formatLessonStatus(lesson.status,language)}
                       </span>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-400 lg:hidden">Dochádzka</p>
-                      <p className="mt-1 text-xs font-medium lg:mt-0">{lesson.attendance_status==="attended"?"Účasť":lesson.attendance_status==="student_no_show"?"No-show":lesson.attendance_status==="late_cancellation"?"Neskoré zrušenie":lesson.attendance_status==="student_cancelled"?"Zrušené študentom":lesson.attendance_status==="teacher_cancelled"?"Zrušené lektorom":"—"}</p>
+                      <p className="text-xs text-gray-400 lg:hidden">{sk?"Dochádzka":"Attendance"}</p>
+                      <p className="mt-1 text-xs font-medium lg:mt-0">{lesson.attendance_status==="attended"?(sk?"Účasť":"Attended"):lesson.attendance_status==="student_no_show"?"No-show":lesson.attendance_status==="late_cancellation"?(sk?"Neskoré zrušenie":"Late cancellation"):lesson.attendance_status==="student_cancelled"?(sk?"Zrušené študentom":"Cancelled by student"):lesson.attendance_status==="teacher_cancelled"?(sk?"Zrušené lektorom":"Cancelled by teacher"):"—"}</p>
                     </div>
                     <div>
                       {safeLessonLink(lesson.meet_link) && (
-                        <a href={safeLessonLink(lesson.meet_link) ?? undefined} target="_blank" rel="noreferrer" aria-label="Otvoriť online hodinu" className="inline-flex rounded-xl p-2 text-[#0a0a0f] hover:bg-[#EEF2FF]">
+                        <a href={safeLessonLink(lesson.meet_link) ?? undefined} target="_blank" rel="noreferrer" aria-label={sk?"Otvoriť online hodinu":"Open online lesson"} className="inline-flex rounded-xl p-2 text-[#0a0a0f] hover:bg-[#EEF2FF]">
                           <Video size={17} />
                         </a>
                       )}

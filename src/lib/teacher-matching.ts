@@ -1,4 +1,4 @@
-import { MUNDUS_LANGUAGE_OPTIONS } from "@/lib/language-offer";
+import { MUNDUS_LANGUAGE_OPTIONS } from "./language-offer.ts";
 
 export type StudentMatchInput = {
   language: string;

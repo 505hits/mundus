@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CheckCircle2, PauseCircle } from "lucide-react";
 import { updateAccountStatus } from "../account-status";
+import {useLanguage} from "@/context/LanguageContext";
 
 type Props = {
   teacherId: string;
@@ -15,6 +16,7 @@ export default function TeacherApprovalAction({
   status,
 }: Props) {
   const router = useRouter();
+  const {language}=useLanguage(); const sk=language==="sk";
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
@@ -29,8 +31,8 @@ export default function TeacherApprovalAction({
     if (!updated) {
       setError(
         nextStatus === "active"
-          ? "Účet lektora sa nepodarilo schváliť. Skúste to prosím znova."
-          : "Účet lektora sa nepodarilo deaktivovať. Skúste to prosím znova."
+          ? (sk?"Účet lektora sa nepodarilo schváliť. Skúste to prosím znova.":"The teacher account could not be approved. Please try again.")
+          : (sk?"Účet lektora sa nepodarilo deaktivovať. Skúste to prosím znova.":"The teacher account could not be deactivated. Please try again.")
       );
       setSaving(false);
       return;
@@ -50,7 +52,7 @@ export default function TeacherApprovalAction({
           className="inline-flex items-center gap-2 rounded-xl border border-black/10 bg-white px-3 py-2 text-xs font-semibold text-[#92400e] disabled:cursor-not-allowed disabled:opacity-60"
         >
           <PauseCircle size={15} />
-          {saving ? "Deaktivujem..." : "Deaktivovať"}
+          {saving?(sk?"Deaktivujem...":"Deactivating..."):(sk?"Deaktivovať":"Deactivate")}
         </button>
       ) : (
         <button
@@ -60,7 +62,7 @@ export default function TeacherApprovalAction({
           className="inline-flex items-center gap-2 rounded-xl bg-[#2F3AA2] px-3 py-2 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
         >
           <CheckCircle2 size={15} />
-          {saving ? "Schvaľujem..." : "Schváliť účet"}
+          {saving?(sk?"Schvaľujem...":"Approving..."):(sk?"Schváliť účet":"Approve account")}
         </button>
       )}
 

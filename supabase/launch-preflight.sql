@@ -32,6 +32,17 @@ where n.nspname='public' and c.relkind='r'
 -- Server-only payment/files/assessment/outbox writes must remain inaccessible to clients.
 -- Server grants on tables not used by service operations need not be enabled.
 
+-- Teacher-language preferences must match the current offer before matching is enabled.
+do $ declare retired_languages bigint; unsupported_languages bigint;
+begin
+ if to_regclass('public.teacher_preferences') is not null then
+  execute 'select count(*) from public.teacher_preferences where languages @> array[''Turkish'']::text[]' into retired_languages;
+  execute 'select count(*) from public.teacher_preferences where not (languages <@ array[''English'',''German'',''Spanish'',''Italian'',''French'',''Portuguese'',''Hungarian'',''Polish'',''Russian'',''Chinese'',''Slovak'',''Ukrainian'',''Modern Hebrew'']::text[])' into unsupported_languages;
+  raise notice 'Teacher preferences containing retired Turkish: %',retired_languages;
+  raise notice 'Teacher preferences containing unsupported languages: %',unsupported_languages;
+ end if;
+end $;
+
 -- Teacher contact privacy must be active before launch.
 select to_regprocedure('public.teacher_student_directory()') is not null as teacher_directory_exists,
  exists(select 1 from pg_policies where schemaname='public' and tablename='profiles' and policyname='teacher_student_contact_privacy' and permissive='RESTRICTIVE') as teacher_contact_privacy_exists;

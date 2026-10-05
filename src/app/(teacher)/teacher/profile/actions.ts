@@ -29,9 +29,12 @@ export async function saveTeacherProfile(_previous:TeacherProfileState,form:Form
     if(uploadError) return {error:"Fotku sa nepodarilo nahrať. Skúste to znova."};
   }
 
+  const effectivePhotoPath=photoPath??existing.data?.photo_path??null;
+  if(visible && !effectivePhotoPath) return {error:"Ak chcete profil zobraziť na hlavnom webe, pridajte profilovú fotku."};
+
   const {error}=await admin.from("teacher_public_profiles").upsert({
     teacher_id:user.id,headline,bio,languages,website_visible:visible,
-    photo_path:photoPath??existing.data?.photo_path??null,updated_at:new Date().toISOString()
+    photo_path:effectivePhotoPath,updated_at:new Date().toISOString()
   });
   if(error) return {error:"Profil sa nepodarilo uložiť."};
   if(photoPath && existing.data?.photo_path && existing.data.photo_path !== photoPath) {

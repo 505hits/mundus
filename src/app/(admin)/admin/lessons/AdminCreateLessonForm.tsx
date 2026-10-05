@@ -35,10 +35,14 @@ const languages = [
   ["Italian", "Taliančina"],
   ["French", "Francúzština"],
   ["Portuguese", "Portugalčina"],
+  ["Hungarian", "Maďarčina"],
+  ["Polish", "Poľština"],
   ["Russian", "Ruština"],
-  ["Turkish", "Turečtina"],
+  ["Chinese", "Čínština"],
+  ["Slovak", "Slovenčina"],
+  ["Ukrainian", "Ukrajinčina"],
+  ["Modern Hebrew", "Moderná hebrejčina"],
 ];
-
 
 function personName(person: PersonOption) {
   return person.full_name?.trim() || person.email || "Bez mena";

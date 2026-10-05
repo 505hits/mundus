@@ -73,10 +73,10 @@ export default async function MatchingPage(){
         </div>
 
         {!recommendations.length?
-          <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 text-gray-600 shadow-sm">Momentálne tu nie je nový platený študent pripravený na priradenie.</div>
+          <div className="mt-4 rounded-3xl border border-[#E5E7F0] bg-white p-6 text-gray-600 shadow-sm">Momentálne tu nie je nový platený študent pripravený na priradenie.</div>
         :
           <div className="mt-4 space-y-5">{recommendations.map(({student,request,ranked})=>
-            <article key={student.id} className="rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
+            <article key={student.id} className="rounded-3xl border border-[#E5E7F0] bg-white p-6 shadow-sm">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
                   <h3 className="text-lg font-semibold">{personName(student)}</h3>

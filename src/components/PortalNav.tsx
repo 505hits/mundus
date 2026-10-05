@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import LogoutButton from "@/components/LogoutButton";
+import BrandLogo from "@/components/BrandLogo";
 import {
   BookOpen,
   ChartNoAxesColumnIncreasing,
@@ -45,12 +46,7 @@ export default function PortalNav({ paymentsEnabled }: { paymentsEnabled: boolea
       {/* Desktop navigation */}
       <aside className="hidden w-64 shrink-0 border-r border-black/5 bg-white lg:block">
         <div className="sticky top-0 flex h-screen flex-col p-5">
-          <Link
-            href="/"
-            className="px-3 py-3 text-xl font-bold tracking-tight text-[#0a0a0f]"
-          >
-            mundus
-          </Link>
+          <div className="px-3 py-1"><BrandLogo compact /></div>
 
           <p className="mt-6 px-3 text-xs font-semibold uppercase tracking-[0.14em] text-gray-400">
             Vzdelávací portál
@@ -67,9 +63,8 @@ export default function PortalNav({ paymentsEnabled }: { paymentsEnabled: boolea
                   href={item.href}
                   aria-current={active ? "page" : undefined}
                   className={`focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F3AA2] flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-medium transition ${
-                    active
-                      ? "bg-[#0a0a0f] text-white"
-                      : "text-gray-500 hover:bg-[#F5F5F4] hover:text-[#0a0a0f]"
+                    active ? "bg-[#2F3AA2] text-white shadow-sm"
+                      : "text-gray-500 hover:bg-[#EEF2FF] hover:text-[#2F3AA2]"
                   }`}
                 >
                   <Icon size={18} />

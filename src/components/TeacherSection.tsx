@@ -42,37 +42,35 @@ export default function TeacherSection({teachers}:{teachers:PublicTeacher[]}) {
 
       <div className="mt-12 grid grid-cols-1 gap-7 md:grid-cols-2 lg:grid-cols-3">
         {t.teachers.list.map((teacher,index)=>
-          <motion.article key={teacher.name} initial="hidden" whileInView="visible" viewport={{once:true,margin:"-40px"}} variants={fade} className="group">
-            <div className="relative mb-4 aspect-[3/4] overflow-hidden rounded-3xl bg-[#F5F5F4] shadow-sm">
-              <Image src={existingTeacherImages[index]} alt={teacher.name} fill className="object-cover transition-transform duration-500 group-hover:scale-105"/>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent"/>
-              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                <h3 className="text-xl font-bold !text-white">{teacher.name}</h3>
-                <p className="mt-1 text-sm font-semibold text-indigo-100">{teacher.specialty}</p>
-                <p className="mt-2 text-sm leading-5 text-white/80">{teacher.description}</p>
-              </div>
+          <motion.article key={teacher.name} initial="hidden" whileInView="visible" viewport={{once:true,margin:"-40px"}} variants={fade} className="group overflow-hidden rounded-3xl border border-[#E5E7F0] bg-white shadow-[0_10px_30px_rgba(23,26,43,0.045)] transition hover:-translate-y-1 hover:border-[#C7D2FE] hover:shadow-[0_18px_42px_rgba(47,58,162,0.09)]">
+            <div className="relative aspect-[4/3] overflow-hidden bg-[#F3F5FB]">
+              <Image src={existingTeacherImages[index]} alt={teacher.name} fill className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"/>
+            </div>
+            <div className="p-5">
+              <h3 className="text-xl font-semibold text-[#171A2B]">{teacher.name}</h3>
+              <p className="mt-1 text-sm font-semibold text-[#2F3AA2]">{teacher.specialty}</p>
+              <p className="mt-3 text-sm leading-6 text-gray-600">{teacher.description}</p>
             </div>
           </motion.article>
         )}
 
         {newTeachers.map(teacher=>
-          <motion.article key={teacher.id} initial="hidden" whileInView="visible" viewport={{once:true,margin:"-40px"}} variants={fade} className="group">
-            <div className="relative mb-4 aspect-[3/4] overflow-hidden rounded-3xl bg-[#EEF2FF] shadow-sm">
+          <motion.article key={teacher.id} initial="hidden" whileInView="visible" viewport={{once:true,margin:"-40px"}} variants={fade} className="group overflow-hidden rounded-3xl border border-[#E5E7F0] bg-white shadow-[0_10px_30px_rgba(23,26,43,0.045)] transition hover:-translate-y-1 hover:border-[#C7D2FE] hover:shadow-[0_18px_42px_rgba(47,58,162,0.09)]">
+            <div className="relative aspect-[4/3] overflow-hidden bg-[#EEF2FF]">
               {teacher.photoUrl
                 ? <>
                     {/* Dynamic Supabase-hosted teacher photos intentionally use the public object URL directly. */}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={teacher.photoUrl} alt={teacher.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"/>
+                    <img src={teacher.photoUrl} alt={teacher.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"/>
                   </>
                 : <div className="flex h-full items-center justify-center text-6xl font-semibold text-[#2F3AA2]">{teacher.name.slice(0,1).toUpperCase()}</div>}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent"/>
-              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                <h3 className="text-xl font-bold !text-white">{teacher.name}</h3>
-                {teacher.headline&&<p className="mt-1 text-sm font-semibold text-indigo-100">{teacher.headline}</p>}
-                <p className="mt-2 text-sm leading-5 text-white/80">{teacher.bio}</p>
-                <div className="mt-3 flex flex-wrap gap-1.5">
-                  {teacher.languages.map(item=><span key={item} className="rounded-full bg-white/15 px-2.5 py-1 text-xs font-medium text-white">{displayLanguage(item)}</span>)}
-                </div>
+            </div>
+            <div className="p-5">
+              <h3 className="text-xl font-semibold text-[#171A2B]">{teacher.name}</h3>
+              {teacher.headline&&<p className="mt-1 text-sm font-semibold text-[#2F3AA2]">{teacher.headline}</p>}
+              <p className="mt-3 text-sm leading-6 text-gray-600">{teacher.bio}</p>
+              <div className="mt-4 flex flex-wrap gap-1.5">
+                {teacher.languages.map(item=><span key={item} className="rounded-full bg-[#EEF2FF] px-2.5 py-1 text-xs font-medium text-[#2F3AA2]">{displayLanguage(item)}</span>)}
               </div>
             </div>
           </motion.article>

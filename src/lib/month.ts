@@ -16,6 +16,13 @@ function bratislavaMonthStartUtc(year: number, month: number) {
   return new Date(utcGuess.getTime() - offsetMinutesAt(utcGuess) * 60_000);
 }
 
+export function bratislavaMonth(year: number, month: number) {
+  if (!Number.isInteger(year) || year < 2000 || year > 2100 || !Number.isInteger(month) || month < 1 || month > 12) {
+    throw new Error("Invalid month");
+  }
+  return bratislavaMonth(year, month);
+}
+
 export function currentBratislavaMonth() {
   const now = new Date();
   const parts = new Intl.DateTimeFormat("en-CA", {
@@ -31,4 +38,14 @@ export function currentBratislavaMonth() {
   const nextMonth = month === 12 ? 1 : month + 1;
   const end = bratislavaMonthStartUtc(nextYear, nextMonth);
   return { key, year, month, start: start.toISOString(), end: end.toISOString() };
+}
+
+export function parseBratislavaMonth(value: string | null | undefined) {
+  const match = value?.match(/^(\d{4})-(\d{2})$/);
+  if (!match) return null;
+  try {
+    return bratislavaMonth(Number(match[1]), Number(match[2]));
+  } catch {
+    return null;
+  }
 }

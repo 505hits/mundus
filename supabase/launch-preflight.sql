@@ -5,13 +5,13 @@ begin read only;
 -- Existing base tables and added feature tables.
 select name, to_regclass('public.'||name) is not null as exists
 from unnest(array['profiles','lessons','lesson_packages','lesson_reports','schedule_change_requests',
- 'student_onboarding','payment_orders','payment_discount_settings','placement_results','learning_files','notification_outbox','renewal_followups','teacher_preferences']) as name;
+ 'student_onboarding','payment_orders','payment_discount_settings','placement_results','learning_files','notification_outbox','portal_email_outbox','renewal_followups','teacher_preferences','teacher_public_profiles']) as name;
 
 -- Verify row security and review existing policies, including old overlapping policies.
 select c.relname as table_name,c.relrowsecurity as rls_enabled
 from pg_class c join pg_namespace n on n.oid=c.relnamespace
 where n.nspname='public' and c.relname in ('profiles','lessons','lesson_packages','lesson_reports','schedule_change_requests',
- 'student_onboarding','payment_orders','payment_discount_settings','placement_results','learning_files','notification_outbox','renewal_followups','teacher_preferences');
+ 'student_onboarding','payment_orders','payment_discount_settings','placement_results','learning_files','notification_outbox','portal_email_outbox','renewal_followups','teacher_preferences','teacher_public_profiles');
 select tablename,policyname,roles,cmd from pg_policies where schemaname='public'
 and tablename in ('profiles','lessons','lesson_packages','lesson_reports','schedule_change_requests','placement_results','learning_files','notification_outbox','renewal_followups','teacher_preferences');
 
@@ -27,7 +27,7 @@ from pg_class c join pg_namespace n on n.oid=c.relnamespace
 where n.nspname='public' and c.relkind='r'
  and c.relname in ('profiles','lessons','lesson_packages','lesson_reports','schedule_change_requests',
  'student_onboarding','payment_orders','payment_discount_settings','placement_results','learning_files',
- 'notification_outbox','renewal_followups','teacher_preferences') order by c.relname;
+ 'notification_outbox','portal_email_outbox','renewal_followups','teacher_preferences','teacher_public_profiles') order by c.relname;
 -- Expected authenticated report SELECT/INSERT/UPDATE; private rows still restricted by RLS.
 -- Server-only payment/files/assessment/outbox writes must remain inaccessible to clients.
 -- Server grants on tables not used by service operations need not be enabled.
@@ -42,6 +42,15 @@ begin
   raise notice 'Teacher preferences containing unsupported languages: %',unsupported_languages;
  end if;
 end $language_check$;
+
+-- Public teacher photos are intentionally public; profile editing remains authenticated/service-controlled.
+do $teacher_public_bucket$ declare bucket_public boolean; bucket_limit bigint;
+begin
+ if to_regclass('storage.buckets') is not null then
+  execute 'select public,file_size_limit from storage.buckets where id=''teacher-public''' into bucket_public,bucket_limit;
+  raise notice 'Teacher public bucket exists/public/5MB: %',case when bucket_public and bucket_limit=5242880 then 'ready' else 'missing or misconfigured' end;
+ end if;
+end $teacher_public_bucket$;
 
 -- Teacher contact privacy must be active before launch.
 select to_regprocedure('public.teacher_student_directory()') is not null as teacher_directory_exists,
@@ -85,5 +94,5 @@ select p.proname,has_function_privilege('anon',p.oid,'EXECUTE') as anon_execute,
  has_function_privilege('authenticated',p.oid,'EXECUTE') as client_execute
 from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public'
 and p.proname in ('mundus_reserve_payment_order','mundus_fulfill_payment_order','mundus_attach_checkout_session',
- 'claim_schedule_emails','retry_schedule_email','mundus_german_assessments_ready','mundus_spanish_assessments_ready','mundus_italian_assessments_ready','mundus_french_assessments_ready','mundus_portuguese_assessments_ready','mundus_complete_lesson','student_lesson_reports','mundus_active_portal_account');
+ 'claim_schedule_emails','retry_schedule_email','claim_portal_emails','mundus_german_assessments_ready','mundus_spanish_assessments_ready','mundus_italian_assessments_ready','mundus_french_assessments_ready','mundus_portuguese_assessments_ready','mundus_complete_lesson','student_lesson_reports','mundus_active_portal_account');
 commit;

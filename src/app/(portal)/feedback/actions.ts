@@ -16,6 +16,8 @@ export async function saveTeacherFeedback(
   const feedbackMonth = String(form.get("feedback_month") ?? "");
   const rating = Number(form.get("rating"));
   const feedback = String(form.get("feedback") ?? "").trim();
+  const allowedCategories = ["preparation","explanation","conversation","friendly","punctuality"];
+  const categories = [...new Set(form.getAll("categories").filter((value): value is string => typeof value === "string" && allowedCategories.includes(value)))];
 
   if (
     !/^[0-9a-f-]{36}$/i.test(teacherId) ||
@@ -23,7 +25,8 @@ export async function saveTeacherFeedback(
     !Number.isInteger(rating) ||
     rating < 1 ||
     rating > 5 ||
-    feedback.length > 1500
+    feedback.length > 1500 ||
+    categories.length > allowedCategories.length
   ) {
     return { error: "Skontrolujte hodnotenie a skúste to znova." };
   }
@@ -59,6 +62,7 @@ export async function saveTeacherFeedback(
   const values = {
     rating,
     feedback,
+    categories,
     updated_at: new Date().toISOString(),
   };
 

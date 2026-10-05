@@ -30,7 +30,6 @@ Code is on mundus-portal. The reviewed database activation is applied; website p
    - 202610040006_completed_lesson_integrity.sql
    - 20261004120115_report_table_grants.sql
    - 202610050001_teacher_language_offer.sql
-   - 202610050002_restrict_portal_helper_execute.sql
    - 202610050003_foreign_key_indexes.sql
    `202610050001_teacher_language_offer.sql` removes the retired Turkish preference value from existing teacher preference rows and expands the allowed teacher-language list to the current 13-language offer. These augment an existing base schema, not an empty database. Check profile creation trigger compatibility and discounted pending-order identity duplicates before applying. Run preflight again afterward.
 3. Run npm run launch:check in an environment with deployment variables, or npm run launch:check -- --env-file <local-env-file>. Never commit that file or paste secret values into chat. The command outputs only status, checks presence/shape, and does not validate credentials or prove launch readiness. Disabled optional features are reported as disabled, not missing. Public Supabase values must be supplied at build time and require a fresh deployment build.

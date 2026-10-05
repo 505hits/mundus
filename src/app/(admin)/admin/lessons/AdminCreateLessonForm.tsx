@@ -8,6 +8,7 @@ import { CalendarPlus } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 import { bratislavaLocalToUtc, INVALID_LESSON_TIME } from "@/lib/lesson-time";
 import { formatLessonCount } from "@/lib/portalLabels";
+import { MUNDUS_LANGUAGE_OPTIONS } from "@/lib/language-offer";
 
 type PersonOption = {
   id: string;
@@ -27,22 +28,6 @@ type Props = {
   teachers: PersonOption[];
   packages: PackageOption[];
 };
-
-const languages = [
-  ["English", "Angličtina"],
-  ["German", "Nemčina"],
-  ["Spanish", "Španielčina"],
-  ["Italian", "Taliančina"],
-  ["French", "Francúzština"],
-  ["Portuguese", "Portugalčina"],
-  ["Hungarian", "Maďarčina"],
-  ["Polish", "Poľština"],
-  ["Russian", "Ruština"],
-  ["Chinese", "Čínština"],
-  ["Slovak", "Slovenčina"],
-  ["Ukrainian", "Ukrajinčina"],
-  ["Modern Hebrew", "Moderná hebrejčina"],
-];
 
 function personName(person: PersonOption) {
   return person.full_name?.trim() || person.email || "Bez mena";
@@ -253,7 +238,7 @@ export default function AdminCreateLessonForm({
             onChange={(event) => { setLanguage(event.target.value); setSaved(false); }}
             className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#2F3AA2]"
           >
-            {languages.map(([value, label]) => (
+            {MUNDUS_LANGUAGE_OPTIONS.map(({ value, label }) => (
               <option key={value} value={value}>
                 {label}
               </option>

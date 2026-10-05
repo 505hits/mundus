@@ -40,6 +40,7 @@ const navItems = [
 export default function PortalNav({ paymentsEnabled }: { paymentsEnabled: boolean }) {
   const pathname = usePathname();
   const items = paymentsEnabled ? [...navItems, { label: "Balíčky", href: "/packages", icon: Package }] : navItems;
+  const mobileItems = items.filter((item) => !["/level-test", "/progress-test"].includes(item.href));
 
   return (
     <>
@@ -93,7 +94,7 @@ export default function PortalNav({ paymentsEnabled }: { paymentsEnabled: boolea
       <div className="fixed right-4 top-4 z-50 lg:hidden"><LogoutButton compact /></div>
       <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-black/5 bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
         <div className="mx-auto flex max-w-3xl overflow-x-auto">
-          {items.map((item) => {
+          {mobileItems.map((item) => {
             const Icon = item.icon;
             const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
 

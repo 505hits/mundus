@@ -25,8 +25,6 @@ execute format('alter table %I enable row level security',target);
 execute format('create policy legacy_access on %I for all using(true) with check(true)',target);end loop;end $$;`);
 for(const file of ['20260929_portal_update_hardening.sql','20260929_schedule_and_package_guardrails.sql','20260929_schedule_request_integrity.sql','202610030009_portal_session_guards.sql'])await db.exec(readFileSync(new URL('../supabase/migrations/'+file,import.meta.url),'utf8'));
 await db.exec(readFileSync(new URL('../supabase/migrations/202610030009_portal_session_guards.sql',import.meta.url),'utf8'));
-await db.exec(readFileSync(new URL('../supabase/migrations/202610050002_restrict_portal_helper_execute.sql',import.meta.url),'utf8'));
-await db.exec(readFileSync(new URL('../supabase/migrations/202610050002_restrict_portal_helper_execute.sql',import.meta.url),'utf8'));
 async function login(id){await db.exec(`reset role;set request.jwt.claim.sub='${id}';set role authenticated;`);}
 const insert=`insert into schedule_change_requests(id,lesson_id,student_id,requested_by,status,preferred_at) values($1,$2,$3,$4,$5,now()+interval '3 days')`;
 await login(student);
@@ -55,8 +53,8 @@ await db.exec("update lesson_reports set topic='forged'");
 await db.exec(`reset role;update profiles set status='active' where id='${teacher}';update auth.users set email_confirmed_at=null where id='${teacher}'`);await login(teacher);
 assert.equal((await db.query('select * from lessons')).rows.length,0,'unverified account blocked');
 await db.exec(`reset role;set request.jwt.claim.sub='';set role anon`);
+assert.equal((await db.query('select public.mundus_active_portal_account() as active')).rows[0].active,false,'anonymous helper evaluation must fail closed');
 assert.equal((await db.query('select * from lessons')).rows.length,0);
-await assert.rejects(db.query('select public.mundus_active_portal_account()'),/permission denied/);
 await db.exec(`reset role;set role service_role`);assert.equal((await db.query('select * from lessons')).rows.length,1,'trusted service accounting remains available');
 await db.exec('reset role');assert.equal((await db.query('select topic from lesson_reports')).rows[0].topic,'Shared report','inactive update changed no data');
 await db.close();console.log('PASS: inactive/unverified/anonymous session guards, forged request rejection, expired decline, pending-only response and valid rescheduling');

@@ -9,9 +9,11 @@ import {
   Home,
   Users,
   ClipboardCheck,
+  UserRound,
 } from "lucide-react";
 
 const navItems = [
+  {label:"Profil",href:"/teacher/profile",icon:UserRound},
   {label:"Kapacita",href:"/teacher/availability",icon:CalendarDays},
   {
     label: "Domov",
@@ -93,7 +95,7 @@ export default function TeacherNav() {
       {/* Mobile navigation */}
       <div className="fixed right-4 top-4 z-50 lg:hidden"><LogoutButton compact /></div>
       <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-black/5 bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
-        <div className="mx-auto grid max-w-lg grid-cols-5">
+        <div className="mx-auto grid max-w-lg grid-cols-6">
           {navItems.map((item) => {
             const Icon = item.icon;
 

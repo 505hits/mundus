@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Settings2 } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 import { bratislavaLocalToUtc, INVALID_LESSON_TIME } from "@/lib/lesson-time";
+import {useLanguage} from "@/context/LanguageContext";
 
 type Props = {
   lessonId: string;
@@ -16,14 +17,10 @@ type Props = {
   currentStatus: string;
 };
 
-const statusOptions = [
-  ["scheduled", "Naplánovaná"],
-  ["rescheduled", "Presunutá"],
-  ["completed", "Dokončená"],
-  ["student_no_show", "Študent sa nedostavil"],
-  ["student_cancelled", "Zrušená študentom"],
-  ["late_cancellation", "Neskoré zrušenie"],
-  ["teacher_cancelled", "Zrušená lektorom"],
+const statusOptions=(sk:boolean)=>[
+  ["scheduled", sk?"Naplánovaná":"Scheduled"],["rescheduled",sk?"Presunutá":"Rescheduled"],["completed",sk?"Dokončená":"Completed"],
+  ["student_no_show",sk?"Študent sa nedostavil":"Student no-show"],["student_cancelled",sk?"Zrušená študentom":"Cancelled by student"],
+  ["late_cancellation",sk?"Neskoré zrušenie":"Late cancellation"],["teacher_cancelled",sk?"Zrušená lektorom":"Cancelled by teacher"],
 ];
 
 function bratislavaInputValue(value: string) {
@@ -47,6 +44,7 @@ export default function AdminLessonActions({
   currentStatus,
 }: Props) {
   const router = useRouter();
+  const {language}=useLanguage(); const sk=language==="sk";
   const initialDateTime = useMemo(
     () => bratislavaInputValue(scheduledAt),
     [scheduledAt]
@@ -69,13 +67,13 @@ export default function AdminLessonActions({
       : bratislavaLocalToUtc(dateTime);
 
     if (Number.isNaN(selectedDate.getTime())) {
-      setError(INVALID_LESSON_TIME);
+      setError(sk?INVALID_LESSON_TIME:"The selected lesson time is invalid.");
       return;
     }
 
     const trimmedLink = link.trim();
     if (trimmedLink && !safeLessonLink(trimmedLink)) {
-      setError("Zadajte platný odkaz na online hodinu s https:// bez prihlasovacích údajov.");
+      setError(sk?"Zadajte platný odkaz na online hodinu s https:// bez prihlasovacích údajov.":"Enter a valid https:// online lesson link without login credentials.");
       return;
     }
 
@@ -96,8 +94,8 @@ export default function AdminLessonActions({
     ) {
       setError(
         nextStatus === "completed"
-          ? "Budúcu hodinu nie je možné označiť ako dokončenú."
-          : "Budúcu hodinu nie je možné označiť ako neprítomnosť študenta."
+          ? (sk?"Budúcu hodinu nie je možné označiť ako dokončenú.":"A future lesson cannot be marked completed.")
+          : (sk?"Budúcu hodinu nie je možné označiť ako neprítomnosť študenta.":"A future lesson cannot be marked as student no-show.")
       );
       return;
     }
@@ -108,17 +106,17 @@ export default function AdminLessonActions({
 
       if (nextStatus === "completed" && currentStatus !== "completed") {
         if (!packageId) {
-          setError("K hodine nie je priradený balíček.");
+          setError(sk?"K hodine nie je priradený balíček.":"No package is assigned to this lesson.");
           return;
         }
 
         if (changedTime || (trimmedLink || null) !== meetLink) {
-          setError("Najprv uložte opravu času alebo odkazu s pôvodným stavom. Potom označte hodinu ako dokončenú.");
+          setError(sk?"Najprv uložte opravu času alebo odkazu s pôvodným stavom. Potom označte hodinu ako dokončenú.":"First save the corrected time or link with the original status. Then mark the lesson completed.");
           return;
         }
         const { data, error } = await supabase.rpc("mundus_complete_lesson", { target_lesson_id: lessonId });
         if (error || !data) {
-          setError("Hodinu sa nepodarilo dokončiť a overiť odpočítanie kreditu. Obnovte stránku alebo skontrolujte balíček.");
+          setError(sk?"Hodinu sa nepodarilo dokončiť a overiť odpočítanie kreditu. Obnovte stránku alebo skontrolujte balíček.":"The lesson could not be completed and credit deduction verified. Refresh the page or check the package.");
           return;
         }
         setSaved(true);
@@ -141,14 +139,14 @@ export default function AdminLessonActions({
         .maybeSingle();
 
       if (updateError || !updatedLesson) {
-        setError("Hodinu sa nepodarilo aktualizovať. Skúste to prosím znova.");
+        setError(sk?"Hodinu sa nepodarilo aktualizovať. Skúste to prosím znova.":"The lesson could not be updated. Please try again.");
         return;
       }
 
       setSaved(true);
       router.refresh();
     } catch {
-      setError("Uloženie sa nepodarilo. Skontrolujte pripojenie a skúste to znova.");
+      setError(sk?"Uloženie sa nepodarilo. Skontrolujte pripojenie a skúste to znova.":"Saving failed. Check your connection and try again.");
     } finally {
       setSaving(false);
     }
@@ -158,12 +156,12 @@ export default function AdminLessonActions({
     <details className="relative">
       <summary className="inline-flex cursor-pointer list-none items-center gap-1.5 rounded-xl border border-black/10 px-3 py-2 text-xs font-semibold">
         <Settings2 size={15} />
-        Upraviť
+        {sk?"Upraviť":"Edit"}
       </summary>
 
       <div className="mt-3 min-w-[260px] rounded-2xl border border-black/10 bg-[#FAFAF9] p-4">
         <label className="block text-xs font-medium text-gray-600">
-          Dátum a čas
+          {sk?"Dátum a čas":"Date and time"}
           <input
             disabled={saving}
             type="datetime-local"
@@ -174,14 +172,14 @@ export default function AdminLessonActions({
         </label>
 
         <label className="mt-3 block text-xs font-medium text-gray-600">
-          Stav
+          {sk?"Stav":"Status"}
           <select
             disabled={saving || currentStatus === "completed"}
             value={status}
             onChange={(event) => { setStatus(event.target.value); setSaved(false); }}
             className="mt-1.5 w-full rounded-xl border border-black/10 bg-white px-3 py-2 text-sm outline-none"
           >
-            {statusOptions.map(([value, label]) => (
+            {statusOptions(sk).map(([value, label]) => (
               <option key={value} value={value}>{label}</option>
             ))}
           </select>
@@ -190,7 +188,7 @@ export default function AdminLessonActions({
         {currentStatus === "completed" && <p className="mt-2 text-xs text-gray-500">Dokončenú hodinu nemožno znovu otvoriť. Opravu účtovania riešte samostatne, aby sa kredit neodpočítal dvakrát.</p>}
 
         <label className="mt-3 block text-xs font-medium text-gray-600">
-          Odkaz na online hodinu
+          {sk?"Odkaz na online hodinu":"Online lesson link"}
           <input
             disabled={saving}
             type="url"
@@ -207,10 +205,10 @@ export default function AdminLessonActions({
           disabled={saving}
           className="mt-3 w-full rounded-xl bg-[#2F3AA2] px-3 py-2 text-xs font-semibold text-white disabled:opacity-60"
         >
-          {saving ? "Ukladám..." : "Uložiť zmeny"}
+          {saving?(sk?"Ukladám...":"Saving..."):(sk?"Uložiť zmeny":"Save changes")}
         </button>
 
-        {saved && <p role="status" className="mt-2 text-xs font-medium text-[#3730A3]">Uložené.</p>}
+        {saved && <p role="status" className="mt-2 text-xs font-medium text-[#3730A3]">{sk?"Uložené.":"Saved."}</p>}
         {error && <p role="alert" className="mt-2 text-xs text-red-700">{error}</p>}
       </div>
     </details>

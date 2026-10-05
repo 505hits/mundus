@@ -9,10 +9,13 @@ export function formatLanguage(value: string | null | undefined) {
     french: "Francúzština",
     portuguese: "Portugalčina",
     russian: "Ruština",
-    turkish: "Turečtina",
+    hungarian: "Maďarčina",
+    polish: "Poľština",
     slovak: "Slovenčina",
     chinese: "Čínština",
     ukrainian: "Ukrajinčina",
+    hebrew: "Moderná hebrejčina",
+    modern_hebrew: "Moderná hebrejčina",
   };
 
   return labels[value.trim().toLowerCase()] || value;

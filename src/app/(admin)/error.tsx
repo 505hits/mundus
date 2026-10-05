@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { AlertCircle, RefreshCw } from "lucide-react";
+import {useLanguage} from "@/context/LanguageContext";
 
 export default function AdminPortalError({
   error,
@@ -10,6 +11,7 @@ export default function AdminPortalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const {language}=useLanguage(); const sk=language==="sk";
   useEffect(() => {
     console.error(error);
   }, [error]);
@@ -22,7 +24,7 @@ export default function AdminPortalError({
         </div>
         <h1 className="mt-5 text-2xl font-semibold">Niečo sa nepodarilo načítať</h1>
         <p className="mt-2 leading-7 text-gray-500">
-          Údaje v administrácii zostali v bezpečí. Skúste stránku načítať znova.
+          {sk?"Údaje v administrácii zostali v bezpečí. Skúste stránku načítať znova.":"Administration data is safe. Try loading the page again."}
         </p>
         <button
           type="button"
@@ -30,7 +32,7 @@ export default function AdminPortalError({
           className="mt-6 inline-flex items-center gap-2 rounded-2xl bg-[#2F3AA2] px-5 py-3 font-semibold text-white"
         >
           <RefreshCw size={17} />
-          Skúsiť znova
+          {sk?"Skúsiť znova":"Try again"}
         </button>
       </div>
     </main>

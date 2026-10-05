@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { CheckCircle2, Save } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
+import { useLanguage } from "@/context/LanguageContext";
 
 type ExistingReport = {
   id: string;
@@ -45,6 +46,8 @@ export default function LessonReportForm({
   studentId,
   existingReport,
 }: Props) {
+  const { language } = useLanguage();
+  const sk = language === "sk";
   const [topic, setTopic] = useState(existingReport?.topic ?? "");
   const [progress, setProgress] = useState(
     normalizeProgress(existingReport?.progress)
@@ -83,7 +86,7 @@ export default function LessonReportForm({
       } = await supabase.auth.getUser();
 
       if (userError || !user) {
-        setError("Vaše prihlásenie vypršalo. Prihláste sa prosím znova.");
+        setError(sk ? "Vaše prihlásenie vypršalo. Prihláste sa prosím znova." : "Your session expired. Please sign in again.");
         return;
       }
 
@@ -110,13 +113,13 @@ export default function LessonReportForm({
         .single();
 
       if (saveError || !savedReport?.id) {
-        setError("Záznam sa nepodarilo uložiť. Skúste to prosím znova.");
+        setError(sk ? "Záznam sa nepodarilo uložiť. Skúste to prosím znova." : "The report could not be saved. Please try again.");
         return;
       }
 
       setSaved(true);
     } catch {
-      setError("Záznam sa nepodarilo uložiť. Skontrolujte pripojenie a skúste to znova.");
+      setError(sk ? "Záznam sa nepodarilo uložiť. Skontrolujte pripojenie a skúste to znova." : "The report could not be saved. Check your connection and try again.");
     } finally {
       savingRef.current = false;
       setSaving(false);
@@ -127,72 +130,72 @@ export default function LessonReportForm({
     <div className="rounded-2xl border border-black/5 bg-[#FAFAF9] p-5">
       <div className="grid gap-5 md:grid-cols-2">
         <label className="text-sm font-medium">
-          Téma hodiny
+          {sk ? "Téma hodiny" : "Lesson topic"}
           <input
             disabled={saving}
             value={topic}
             onChange={(event) => { setTopic(event.target.value); setSaved(false); }}
-            placeholder="napr. minulý čas a konverzácia"
+            placeholder={sk ? "napr. minulý čas a konverzácia" : "e.g. past tense and conversation"}
             className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none transition focus:border-[#2F3AA2]"
           />
         </label>
 
         <label className="text-sm font-medium">
-          Pokrok
+          {sk ? "Pokrok" : "Progress"}
           <select
             disabled={saving}
             value={progress}
             onChange={(event) => { setProgress(event.target.value); setSaved(false); }}
             className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#2F3AA2]"
           >
-            <option value="good_progress">Dobrý pokrok</option>
-            <option value="normal_progress">Bežný pokrok</option>
-            <option value="needs_attention">Vyžaduje pozornosť</option>
+            <option value="good_progress">{sk ? "Dobrý pokrok" : "Good progress"}</option>
+            <option value="normal_progress">{sk ? "Bežný pokrok" : "Normal progress"}</option>
+            <option value="needs_attention">{sk ? "Vyžaduje pozornosť" : "Needs attention"}</option>
           </select>
         </label>
 
         <label className="text-sm font-medium md:col-span-2">
-          Poznámka pre študenta
+          {sk ? "Poznámka pre študenta" : "Note for student"}
           <textarea
             disabled={saving}
             value={studentNote}
             onChange={(event) => { setStudentNote(event.target.value); setSaved(false); }}
             rows={3}
-            placeholder="Čo sa darilo a na čo by sa mal študent zamerať ďalej?"
+            placeholder={sk ? "Čo sa darilo a na čo by sa mal študent zamerať ďalej?" : "What went well and what should the student focus on next?"}
             className="mt-2 w-full resize-none rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#2F3AA2]"
           />
         </label>
 
         <label className="text-sm font-medium">
-          Domáca úloha
+          {sk ? "Domáca úloha" : "Homework"}
           <input
             disabled={saving}
             value={homework}
             onChange={(event) => { setHomework(event.target.value); setSaved(false); }}
-            placeholder="Voliteľné"
+            placeholder={sk ? "Voliteľné" : "Optional"}
             className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#2F3AA2]"
           />
         </label>
 
         <label className="text-sm font-medium">
-          Ďalšie zameranie
+          {sk ? "Ďalšie zameranie" : "Next focus"}
           <input
             disabled={saving}
             value={nextFocus}
             onChange={(event) => { setNextFocus(event.target.value); setSaved(false); }}
-            placeholder="napr. istota pri rozprávaní"
+            placeholder={sk ? "napr. istota pri rozprávaní" : "e.g. confidence when speaking"}
             className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#2F3AA2]"
           />
         </label>
 
         <label className="text-sm font-medium md:col-span-2">
-          Súkromná poznámka lektora
+          {sk ? "Súkromná poznámka lektora" : "Private teacher note"}
           <textarea
             disabled={saving}
             value={privateNote}
             onChange={(event) => { setPrivateNote(event.target.value); setSaved(false); }}
             rows={2}
-            placeholder="Viditeľné iba pre lektorov a administrátora Mundus"
+            placeholder={sk ? "Viditeľné iba pre lektorov a administrátora Mundus" : "Visible only to teachers and the Mundus administrator"}
             className="mt-2 w-full resize-none rounded-xl border border-gray-200 bg-white px-4 py-3 font-normal text-gray-700 outline-none focus:border-[#2F3AA2]"
           />
         </label>
@@ -207,16 +210,16 @@ export default function LessonReportForm({
         >
           <Save size={17} />
           {saving
-            ? "Ukladám..."
+            ? (sk ? "Ukladám..." : "Saving...")
             : existingReport
-              ? "Aktualizovať záznam"
-              : "Uložiť záznam z hodiny"}
+              ? (sk ? "Aktualizovať záznam" : "Update report")
+              : (sk ? "Uložiť záznam z hodiny" : "Save lesson report")}
         </button>
 
         {saved && !saving && (
           <span role="status" className="flex items-center gap-1.5 text-sm font-medium text-[#3730A3]">
             <CheckCircle2 size={17} />
-            Uložené
+            {sk ? "Uložené" : "Saved"}
           </span>
         )}
 

@@ -57,11 +57,10 @@ export default async function TeacherDashboardPage() {
   const supabase = await createSupabaseServerClient();
   const studentDirectory = await teacherDirectory(supabase);
 
-  const { data: teacherProfile } = await supabase
-    .from("profiles")
-    .select("full_name, email")
-    .eq("id", user.id)
-    .single();
+  const [{ data: teacherProfile }, { data: publicProfile }] = await Promise.all([
+    supabase.from("profiles").select("full_name, email").eq("id", user.id).single(),
+    supabase.from("teacher_public_profiles").select("headline,bio,languages,photo_path,website_visible").eq("teacher_id", user.id).maybeSingle(),
+  ]);
 
   const now = new Date();
 
@@ -206,6 +205,12 @@ export default async function TeacherDashboardPage() {
     "Lektor";
 
   const firstName = teacherName.split(" ")[0];
+  const publicProfileComplete = Boolean(
+    publicProfile?.photo_path &&
+    publicProfile?.headline?.trim() &&
+    publicProfile?.bio?.trim().length >= 20 &&
+    publicProfile?.languages?.length
+  );
 
   return (
     <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
@@ -240,6 +245,16 @@ export default async function TeacherDashboardPage() {
             Tu nájdete prehľad dnešných hodín, študentov a žiadostí o zmenu termínu.
           </p>
         </section>
+
+        {!publicProfileComplete && (
+          <section className="mt-6 flex flex-col gap-4 rounded-3xl border border-[#2F3AA2]/20 bg-[#EEF2FF] p-5 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="font-semibold text-[#2F3AA2]">Dokončite svoj profil lektora</p>
+              <p className="mt-1 text-sm leading-6 text-gray-600">Pridajte profilovú fotku, jazyky, krátky titulok a predstavenie. Po dokončení sa profil môže zobraziť aj na hlavnom webe Mundus.</p>
+            </div>
+            <Link href="/teacher/profile" className="shrink-0 rounded-xl bg-[#2F3AA2] px-4 py-3 text-sm font-semibold text-white">Dokončiť profil</Link>
+          </section>
+        )}
 
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
           <article className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">

@@ -40,6 +40,8 @@ export default function ResetPasswordPage() {
       if (!cancelled) setLinkError(sk ? "Odkaz nie je platný alebo vypršal. Požiadajte o nový odkaz na obnovu hesla." : "This link is invalid or expired. Request a new password reset link.");
     });
     return () => { cancelled = true; };
+  // Link preparation only needs to run once for the one-time token.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {

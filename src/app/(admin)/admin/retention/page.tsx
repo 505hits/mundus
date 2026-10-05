@@ -43,7 +43,7 @@ export default async function RetentionPage(){
   const noUpcoming=rows.filter(r=>!r.upcoming).length;
   const inactive30=rows.filter(r=>r.daysInactive!==null&&r.daysInactive>=30).length;
 
-  return <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
+  return <main className="min-h-screen bg-transparent text-[#0a0a0f]">
     <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
       <section><p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">Retencia</p><h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Študenti, ktorí potrebujú pozornosť</h1><p className="mt-2 text-gray-500">Kombinácia zostávajúcich hodín, ďalšej rezervácie a poslednej dokončenej hodiny.</p></section>
       <section className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -52,9 +52,9 @@ export default async function RetentionPage(){
           {value:lowCredits,label:"0–2 hodiny",Icon:PackageOpen},
           {value:noUpcoming,label:"Bez ďalšej hodiny",Icon:CalendarX2},
           {value:inactive30,label:"30+ dní neaktívni",Icon:UserRoundX},
-        ].map(({value,label,Icon})=><div key={label} className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm"><Icon size={20} className="text-[#2F3AA2]"/><p className="mt-4 text-3xl font-semibold">{value}</p><p className="mt-1 text-sm text-gray-500">{label}</p></div>)}
+        ].map(({value,label,Icon})=><div key={label} className="rounded-3xl border border-[#E5E7F0] bg-white p-5 shadow-sm"><Icon size={20} className="text-[#2F3AA2]"/><p className="mt-4 text-3xl font-semibold">{value}</p><p className="mt-1 text-sm text-gray-500">{label}</p></div>)}
       </section>
-      <section className="mt-8 overflow-hidden rounded-3xl border border-black/5 bg-white shadow-sm">
+      <section className="mt-8 overflow-hidden rounded-3xl border border-[#E5E7F0] bg-white shadow-sm">
         <div className="divide-y divide-gray-100">
           {rows.map(row=><div key={row.student.id} className="grid gap-4 px-5 py-5 lg:grid-cols-[1.5fr_0.6fr_0.8fr_0.9fr_0.8fr] lg:items-center lg:px-6">
             <div><p className="font-semibold">{row.student.full_name?.trim()||row.student.email||"Študent"}</p><p className="mt-1 text-sm text-gray-400">{row.student.email}</p></div>

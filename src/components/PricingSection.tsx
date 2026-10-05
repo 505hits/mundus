@@ -29,13 +29,13 @@ export default function PricingSection({ paymentsAvailable = false, signupAvaila
                     variants={fadeInUp}
                     className="section-header text-center mb-16"
                 >
-                    <span className="section-label inline-block px-4 py-1.5 rounded-full bg-blue-100 text-blue-700 font-semibold text-sm mb-4">
+                    <span className="section-label inline-block px-4 py-1.5 rounded-full bg-[#EEF2FF] text-[#2F3AA2] font-semibold text-sm mb-4">
                         {t.pricing.label}
                     </span>
                     <h2 className="section-title text-4xl md:text-5xl font-bold mb-6">
-                        {t.pricing.titleStart} <span className="accent-word relative inline-block text-blue-600">
+                        {t.pricing.titleStart} <span className="accent-word relative inline-block text-[#2F3AA2]">
                             {t.pricing.titleEnd}
-                            <svg className="absolute w-full h-3 bottom-0 left-0 text-yellow-300 -z-10 opacity-40" viewBox="0 0 100 10" preserveAspectRatio="none">
+                            <svg className="absolute w-full h-3 bottom-0 left-0 text-indigo-200 -z-10 opacity-40" viewBox="0 0 100 10" preserveAspectRatio="none">
                                 <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="8" fill="none" />
                             </svg>
                         </span>

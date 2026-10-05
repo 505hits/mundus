@@ -276,11 +276,11 @@ export default async function DashboardPage() {
                 ) : (
                   <>
                     <h2 className="mt-3 text-2xl font-semibold">
-                      {lessonsError ? "sk ? "Najbližšiu hodinu sa nepodarilo načítať" : "Your next lesson could not be loaded"" : "sk ? "Zatiaľ nemáte naplánovanú hodinu" : "You do not have a scheduled lesson yet""}
+                      {lessonsError ? (sk ? "Najbližšiu hodinu sa nepodarilo načítať" : "Your next lesson could not be loaded") : (sk ? "Zatiaľ nemáte naplánovanú hodinu" : "You do not have a scheduled lesson yet")}
                     </h2>
 
                     <p className="mt-4 text-sm text-white/60">
-                      {lessonsError ? "sk ? "Obnovte stránku alebo to skúste o chvíľu znova." : "Refresh the page or try again shortly."" : "sk ? "Vaša najbližšia potvrdená hodina sa zobrazí tu." : "Your next confirmed lesson will appear here.""}
+                      {lessonsError ? (sk ? "Obnovte stránku alebo to skúste o chvíľu znova." : "Refresh the page or try again shortly.") : (sk ? "Vaša najbližšia potvrdená hodina sa zobrazí tu." : "Your next confirmed lesson will appear here.")}
                     </p>
                   </>
                 )}

@@ -48,7 +48,7 @@ export default async function AdminLessonsPage() {
     supabase
       .from("lessons")
       .select(`
-        id,student_id,package_id,scheduled_at,duration_minutes,status,language,meet_link,
+        id,student_id,package_id,scheduled_at,duration_minutes,status,attendance_status,language,meet_link,
         student:profiles!lessons_student_id_fkey(full_name,email),
         teacher:profiles!lessons_teacher_id_fkey(full_name,email)
       `)
@@ -134,7 +134,7 @@ export default async function AdminLessonsPage() {
                 const student = Array.isArray(lesson.student) ? lesson.student[0] : lesson.student;
                 const teacher = Array.isArray(lesson.teacher) ? lesson.teacher[0] : lesson.teacher;
                 return (
-                  <div key={lesson.id} className="grid gap-4 px-5 py-5 lg:grid-cols-[1.2fr_1fr_0.9fr_0.7fr_0.9fr_0.5fr_0.7fr] lg:items-center lg:px-6">
+                  <div key={lesson.id} className="grid gap-4 px-5 py-5 lg:grid-cols-[1.2fr_1fr_0.9fr_0.7fr_0.9fr_0.9fr_0.5fr_0.7fr] lg:items-center lg:px-6">
                     <div>
                       <p className="font-semibold">{name(student)}</p>
                       <p className="mt-1 text-sm text-gray-400">{formatLanguage(lesson.language)}</p>
@@ -155,6 +155,10 @@ export default async function AdminLessonsPage() {
                       <span className="inline-flex rounded-full bg-[#EEF2FF] px-3 py-1 text-xs font-semibold capitalize text-[#3730A3]">
                         {formatLessonStatus(lesson.status)}
                       </span>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-400 lg:hidden">Dochádzka</p>
+                      <p className="mt-1 text-xs font-medium lg:mt-0">{lesson.attendance_status==="attended"?"Účasť":lesson.attendance_status==="student_no_show"?"No-show":lesson.attendance_status==="late_cancellation"?"Neskoré zrušenie":lesson.attendance_status==="student_cancelled"?"Zrušené študentom":lesson.attendance_status==="teacher_cancelled"?"Zrušené lektorom":"—"}</p>
                     </div>
                     <div>
                       {safeLessonLink(lesson.meet_link) && (

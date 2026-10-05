@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import LogoutButton from "@/components/LogoutButton";
+import BrandLogo from "@/components/BrandLogo";
 import {
   CalendarDays,
   GraduationCap,
@@ -50,12 +51,7 @@ export default function AdminNav({ paymentsEnabled = false }: { paymentsEnabled?
       {/* Desktop navigation */}
       <aside className="hidden min-h-screen w-64 shrink-0 border-r border-black/5 bg-white lg:flex lg:flex-col">
         <div className="px-6 py-7">
-          <Link
-            href="/admin/dashboard"
-            className="text-xl font-semibold tracking-tight text-[#0a0a0f]"
-          >
-            Mundus
-          </Link>
+          <BrandLogo href="/admin/dashboard" compact />
 
           <p className="mt-1 text-xs font-medium uppercase tracking-[0.16em] text-[#2F3AA2]">
             Admin portál
@@ -78,8 +74,7 @@ export default function AdminNav({ paymentsEnabled = false }: { paymentsEnabled?
                   href={item.href}
                   aria-current={active ? "page" : undefined}
                   className={`focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F3AA2] flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition ${
-                    active
-                      ? "bg-[#0a0a0f] text-white"
+                    active ? "bg-[#2F3AA2] text-white shadow-sm"
                       : "text-gray-500 hover:bg-[#EEF2FF] hover:text-[#0a0a0f]"
                   }`}
                 >

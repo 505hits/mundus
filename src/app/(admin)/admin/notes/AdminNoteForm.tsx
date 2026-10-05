@@ -1,8 +1,9 @@
 "use client";
 import {useActionState} from "react";
-import {addAdminNote} from "./actions";
+import {addAdminNote,type AdminNoteState} from "./actions";
 export default function AdminNoteForm({profiles}:{profiles:Array<{id:string;full_name:string|null;email:string|null;role:string|null}>}){
- const [state,action,pending]=useActionState(addAdminNote,{});
+ const initialState:AdminNoteState={};
+ const [state,action,pending]=useActionState(addAdminNote,initialState);
  return <form action={action} className="mt-6 rounded-3xl border border-black/5 bg-white p-5 shadow-sm sm:p-6">
   <div className="grid gap-4 md:grid-cols-[1fr_2fr_auto] md:items-end">
    <label className="block"><span className="text-sm font-medium">Študent alebo lektor</span><select name="subject_id" required className="mt-2 w-full rounded-xl border border-gray-200 px-3 py-3 text-sm"><option value="">Vyberte účet</option>{profiles.map(p=><option key={p.id} value={p.id}>{p.full_name?.trim()||p.email||"Účet"} · {p.role==="teacher"?"lektor":"študent"}</option>)}</select></label>

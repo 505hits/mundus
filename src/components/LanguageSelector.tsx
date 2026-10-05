@@ -32,9 +32,9 @@ export default function LanguageSelector() {
         ? ["Angličtina", "Nemčina", "Španielčina", "Taliančina", "Francúzština", "Portugalčina", "Maďarčina", "Poľština", "Ruština", "Čínština", "Slovenčina", "Ukrajinčina", "Moderná hebrejčina"]
         : ["English", "German", "Spanish", "Italian", "French", "Portuguese", "Hungarian", "Polish", "Russian", "Chinese", "Slovak", "Ukrainian", "Modern Hebrew"];
     return (
-        <section id="languages" className="section relative overflow-hidden bg-gradient-to-b from-blue-50/20 to-white py-12 md:py-24">
+        <section id="languages" className="section relative overflow-hidden bg-gradient-to-b from-[#F3F5FB] to-white py-12 md:py-24">
             {/* Background Floating Flags - Adjusted positions to avoid center text */}
-            <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
+            <div className="pointer-events-none absolute inset-0 select-none overflow-hidden opacity-55">
                 {floatingFlags.map((flag, i) => (
                     <motion.div
                         key={i}
@@ -46,12 +46,11 @@ export default function LanguageSelector() {
                             height: flag.size,
                         }}
                         animate={{
-                            y: [0, -15, 0],
-                            x: [0, 8, 0],
-                            rotate: [0, 5, -5, 0],
+                            y: [0, -8, 0],
+                            x: [0, 4, 0],
                         }}
                         transition={{
-                            duration: 6 + i,
+                            duration: 10 + i,
                             repeat: Infinity,
                             ease: "easeInOut",
                             delay: flag.delay,
@@ -77,24 +76,22 @@ export default function LanguageSelector() {
                     className="section-header text-center mb-0 relative z-10"
                 >
                     <motion.div variants={fadeInUp} className="inline-block mb-6">
-                        <span className="px-5 py-2 rounded-full bg-blue-50 text-blue-600 text-sm font-bold border border-blue-100 uppercase tracking-wide">
+                        <span className="rounded-full border border-[#DDE2F4] bg-white px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#2F3AA2]">
                             {t.languageSelector.badge}
                         </span>
                     </motion.div>
-                    <motion.h2 variants={fadeInUp} className="section-title text-5xl md:text-7xl font-bold mb-8 text-gray-900 tracking-tight leading-none">
+                    <motion.h2 variants={fadeInUp} className="section-title mb-6 text-4xl font-semibold tracking-tight text-[#171A2B] md:text-5xl">
                         {t.languageSelector.title} <br className="hidden md:block" />
-                        {t.languageSelector.titleBreak} <span className="text-primary relative inline-block">
+                        {t.languageSelector.titleBreak} <span className="relative inline-block text-[#2F3AA2]">
                             {t.languageSelector.goals}
-                            <svg className="absolute w-full h-3 bottom-0 left-0 text-yellow-300 -z-10 opacity-60" viewBox="0 0 100 10" preserveAspectRatio="none">
-                                <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="8" fill="none" />
-                            </svg>
+                            
                         </span>
                     </motion.h2>
-                    <motion.p variants={fadeInUp} className="section-subtitle text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto font-medium">
+                    <motion.p variants={fadeInUp} className="section-subtitle mx-auto max-w-3xl text-base text-gray-600 md:text-lg">
                         {t.languageSelector.subtitle}
                     </motion.p>
                     <motion.ul variants={fadeInUp} aria-label={language === "sk" ? "Ponúkané jazyky" : "Languages offered"} className="mx-auto mt-8 flex max-w-5xl flex-wrap justify-center gap-2">
-                        {offeredLanguages.map((item) => <li key={item} className="rounded-full border border-blue-100 bg-white/90 px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm">{item}</li>)}
+                        {offeredLanguages.map((item) => <li key={item} className="rounded-full border border-[#E1E5F0] bg-white/90 px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm">{item}</li>)}
                     </motion.ul>
                 </motion.div>
 

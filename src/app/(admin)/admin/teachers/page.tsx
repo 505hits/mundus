@@ -48,7 +48,7 @@ export default async function AdminTeachersPage() {
   const todayKey = bratislavaDateKey.format(now);
   const currentMonthKey = todayKey.slice(0, 7);
 
-  const teacherRows =teachers ?? []).map((teacher) => {
+  const teacherRows = (teachers ?? []).map((teacher) => {
     const teacherLessons = (lessons ?? []).filter(
       (lesson) => lesson.teacher_id === teacher.id
     );

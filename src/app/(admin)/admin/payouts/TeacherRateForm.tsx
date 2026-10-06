@@ -6,7 +6,7 @@ export default function TeacherRateForm({teachers,month}:{teachers:Array<{id:str
  const {language}=useLanguage(); const sk=language==="sk";
  const initialState:TeacherRateState={};
  const [state,action,pending]=useActionState(saveTeacherRate,initialState);
- return <form action={action} className="mt-6 rounded-3xl border border-black/5 bg-white p-5 shadow-sm">
+ return <form action={action} className="mt-6 rounded-3xl border border-black/5 bg-white p-5 shadow-sm"><input type="hidden" name="ui_language" value={language}/>
   <input type="hidden" name="month" value={month}/>
   <div className="grid gap-4 md:grid-cols-[1.5fr_0.8fr_auto] md:items-end">
    <label className="block"><span className="text-sm font-medium">{sk?"Lektor":"Teacher"}</span><select name="teacher_id" required className="mt-2 w-full rounded-xl border border-gray-200 px-3 py-3 text-sm"><option value="">{sk?"Vyberte lektora":"Choose teacher"}</option>{teachers.map(t=><option key={t.id} value={t.id}>{t.full_name?.trim()||t.email||(sk?"Lektor":"Teacher")}</option>)}</select></label>

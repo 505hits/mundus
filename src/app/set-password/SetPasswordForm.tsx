@@ -38,7 +38,7 @@ export default function SetPasswordForm() {
   }, [sk]);
   if (linkError) return <p role="alert" className="text-sm leading-6 text-red-700">{linkError}</p>;
   if (!ready) return <p role="status" className="text-sm text-gray-500">{sk ? "Overujem pozvánku…" : "Verifying invitation…"}</p>;
-  return <form action={action} className="space-y-5">
+  return <form action={action} className="space-y-5"><input type="hidden" name="ui_language" value={language}/>
     <label className="block text-sm">{sk ? "Nové heslo" : "New password"}<input name="password" type="password" autoComplete="new-password" minLength={10} maxLength={128} required className="mt-2 w-full rounded-xl border border-gray-200 p-3" /><span className="mt-1 block text-xs text-gray-500">{sk ? "Aspoň 10 znakov." : "At least 10 characters."}</span></label>
     <label className="block text-sm">{sk ? "Zopakujte heslo" : "Repeat password"}<input name="confirmPassword" type="password" autoComplete="new-password" minLength={10} maxLength={128} required className="mt-2 w-full rounded-xl border border-gray-200 p-3" /></label>
     {state.error && <p role="alert" className="text-sm text-red-700">{state.error}</p>}

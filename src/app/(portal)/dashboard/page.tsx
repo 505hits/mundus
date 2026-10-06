@@ -459,9 +459,11 @@ export default async function DashboardPage() {
             </div>
 
             <p className="mt-5 text-sm leading-6 text-gray-500">
-              {reportsError ? "sk ? "Obnovte stránku alebo to skúste o chvíľu znova." : "Refresh the page or try again shortly."" : latestHomework
-                ? latestHomework
-                : "sk ? "Nové úlohy od lektora sa zobrazia po uložení záznamu z hodiny." : "New teacher assignments will appear after a lesson report is saved.""}
+              {reportsError
+                ? (sk ? "Obnovte stránku alebo to skúste o chvíľu znova." : "Refresh the page or try again shortly.")
+                : latestHomework
+                  ? latestHomework
+                  : (sk ? "Nové úlohy od lektora sa zobrazia po uložení záznamu z hodiny." : "New teacher assignments will appear after a lesson report is saved.")}
             </p>
 
             {latestReport?.updated_at && (

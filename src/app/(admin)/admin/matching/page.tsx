@@ -10,11 +10,10 @@ function personName(person:{full_name?:string|null;email?:string|null}) {
   return person.full_name?.trim() || person.email || "Bez mena";
 }
 
-const days=sk?["","Po","Ut","St","Št","Pi","So","Ne"]:["","Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
-
 export default async function MatchingPage(){
   const language=await currentLanguage();
   const sk=language==="sk";
+  const days=sk?["","Po","Ut","St","Št","Pi","So","Ne"]:["","Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
   await requireRole("admin");
   const db=await createSupabaseServerClient();
   const now=new Date().toISOString();
@@ -102,7 +101,7 @@ export default async function MatchingPage(){
                       <p className="font-semibold">{personName(teacher)}</p>
                       <span className="text-xs font-bold text-[#2F3AA2]">{score} {sk?"bodov":"points"}</span>
                     </div>
-                    <p className="mt-2 text-sm text-gray-600">{pref.languages.map((value)=>formatLanguage(value,language)).join(", ")} · {pref.levels.join(", ")}</p>
+                    <p className="mt-2 text-sm text-gray-600">{pref.languages.map((value:string)=>formatLanguage(value,language)).join(", ")} · {pref.levels.join(", ")}</p>
                     <p className="mt-2 text-xs text-gray-500">{sk?"Zhoda":"Match"}: {reasons.join(", ")} · {sk?"voľná kapacita":"free capacity"} {freeCapacity}</p>
                   </div>
                 ):<p className="text-sm text-gray-500">{sk?"Momentálne nie je dostupný lektor s povinnou jazykovou zhodou a voľnou kapacitou.":"No teacher currently has the required language match and free capacity."}</p>}

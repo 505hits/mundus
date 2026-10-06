@@ -5,8 +5,10 @@ import { requireRole } from "@/lib/auth";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { accountOrigin } from "@/lib/account-config";
 import { PACKAGE_PRICES, paymentEnabled, stripeClient, stripeIntegrationIdentifier } from "@/lib/payments";
+import { formUiLanguage } from "@/lib/i18n";
 
 export async function startPackageCheckout(form: FormData) {
+  const uiLanguage = formUiLanguage(form);
   const lessons = Number(form.get("lessons"));
   const chosen = PACKAGE_PRICES.some(item => item.lessons === lessons);
   const { user } = await requireRole("student", chosen ? `/packages?selected=${lessons}` : undefined);
@@ -34,7 +36,7 @@ export async function startPackageCheckout(form: FormData) {
   try {
     checkout = await stripe.checkout.sessions.create({
       mode: "payment",
-      locale: "sk",
+      locale: uiLanguage,
       customer_email: user.email,
       client_reference_id: order.id,
       metadata: { mundus_order_id: order.id },
@@ -42,7 +44,14 @@ export async function startPackageCheckout(form: FormData) {
       line_items: [{ price_data: {
         currency: "eur",
         unit_amount: order.amount_cents,
-        product_data: { name: `Mundus Languages – ${lessons} ${lessons === 1 ? "hodina" : "hodín"}`, description: "Individuálne online jazykové hodiny, 60 minút" },
+        product_data: {
+          name: uiLanguage === "en"
+            ? `Mundus Languages – ${lessons} ${lessons === 1 ? "lesson" : "lessons"}`
+            : `Mundus Languages – ${lessons} ${lessons === 1 ? "hodina" : "hodín"}`,
+          description: uiLanguage === "en"
+            ? "Individual online language lessons, 60 minutes"
+            : "Individuálne online jazykové hodiny, 60 minút"
+        },
       }, quantity: 1 }],
       success_url: `${origin}/packages/return?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/packages?cancelled=1`,

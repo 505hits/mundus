@@ -29,7 +29,7 @@ export default function TeacherFeedbackForm({
   const [state, action, pending] = useActionState(saveTeacherFeedback, initialState);
 
   return (
-    <form action={action} className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm sm:p-6">
+    <form action={action} className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm sm:p-6"><input type="hidden" name="ui_language" value={language}/>
       <input type="hidden" name="teacher_id" value={teacherId} />
       <input type="hidden" name="feedback_month" value={feedbackMonth} />
 

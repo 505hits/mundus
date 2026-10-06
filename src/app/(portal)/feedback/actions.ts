@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { currentBratislavaMonth } from "@/lib/month";
+import { formUiLanguage, uiText } from "@/lib/i18n";
 
 export type TeacherFeedbackState = { error?: string; success?: string };
 
@@ -12,6 +13,8 @@ export async function saveTeacherFeedback(
   form: FormData
 ): Promise<TeacherFeedbackState> {
   const { user } = await requireRole("student");
+  const language = formUiLanguage(form);
+  const t = (sk:string,en:string) => uiText(language,sk,en);
   const teacherId = String(form.get("teacher_id") ?? "");
   const feedbackMonth = String(form.get("feedback_month") ?? "");
   const rating = Number(form.get("rating"));
@@ -28,7 +31,7 @@ export async function saveTeacherFeedback(
     feedback.length > 1500 ||
     categories.length > allowedCategories.length
   ) {
-    return { error: "Skontrolujte hodnotenie a skúste to znova." };
+    return { error: t("Skontrolujte hodnotenie a skúste to znova.","Check the rating and try again.") };
   }
 
   const db = await createSupabaseServerClient();
@@ -46,7 +49,7 @@ export async function saveTeacherFeedback(
     .maybeSingle();
 
   if (lessonError || !completedLesson) {
-    return { error: "Hodnotiť môžete iba lektora, s ktorým ste mali tento mesiac dokončenú hodinu." };
+    return { error: t("Hodnotiť môžete iba lektora, s ktorým ste mali tento mesiac dokončenú hodinu.","You can only rate a teacher you completed a lesson with this month.") };
   }
 
   const { data: existing, error: existingError } = await db
@@ -57,7 +60,7 @@ export async function saveTeacherFeedback(
     .eq("feedback_month", feedbackMonth)
     .maybeSingle();
 
-  if (existingError) return { error: "Hodnotenie sa nepodarilo načítať. Skúste znova." };
+  if (existingError) return { error: t("Hodnotenie sa nepodarilo načítať. Skúste znova.","The rating could not be loaded. Try again.") };
 
   const values = {
     rating,
@@ -76,10 +79,10 @@ export async function saveTeacherFeedback(
       }).select("id").maybeSingle();
 
   if (result.error || !result.data) {
-    return { error: "Hodnotenie sa nepodarilo uložiť. Skúste znova." };
+    return { error: t("Hodnotenie sa nepodarilo uložiť. Skúste znova.","The rating could not be saved. Try again.") };
   }
 
   revalidatePath("/feedback");
   revalidatePath("/admin/teacher-ranking");
-  return { success: existing ? "Hodnotenie bolo aktualizované." : "Ďakujeme, hodnotenie bolo uložené." };
+  return { success: existing ? t("Hodnotenie bolo aktualizované.","Rating updated.") : t("Ďakujeme, hodnotenie bolo uložené.","Thank you, your rating was saved.") };
 }

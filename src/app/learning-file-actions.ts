@@ -6,6 +6,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { persistLearningMetadata } from "@/lib/learning-upload-persistence";
 import { allowedLearningFile, LEARNING_FILE_LIMIT } from "@/lib/learning-files";
+import { formUiLanguage, uiText } from "@/lib/i18n";
 
 type State = { error?: string; success?: string };
 async function authorizeStudent(studentId: string) {
@@ -23,21 +24,22 @@ async function authorizeStudent(studentId: string) {
  throw new Error("Unauthorized");
 }
 export async function uploadLearningFile(_previous: State, form: FormData): Promise<State> {
+ const language=formUiLanguage(form); const t=(sk:string,en:string)=>uiText(language,sk,en);
  try {
   const studentId=String(form.get("student_id")||""); const {user,role}=await authorizeStudent(studentId);
   const kind=String(form.get("kind")||"");
-  if(role==="student" ? kind!=="homework_submission" : !["material","homework_assignment"].includes(kind)) return {error:"Tento typ súboru nemôžete nahrať."};
+  if(role==="student" ? kind!=="homework_submission" : !["material","homework_assignment"].includes(kind)) return {error:t("Tento typ súboru nemôžete nahrať.","You cannot upload this file type.")};
   const title=String(form.get("title")||"").trim();const file=form.get("file");
-  if(!title || title.length>150 || !(file instanceof File) || file.size>LEARNING_FILE_LIMIT) return {error:"Vyplňte názov a vyberte PDF, PNG, JPG alebo TXT do 3 MB."};
+  if(!title || title.length>150 || !(file instanceof File) || file.size>LEARNING_FILE_LIMIT) return {error:t("Vyplňte názov a vyberte PDF, PNG, JPG alebo TXT do 3 MB.","Enter a title and choose a PDF, PNG, JPG or TXT file up to 3 MB.")};
   const bytes=new Uint8Array(await file.arrayBuffer());
-  if(!allowedLearningFile(bytes,file.type)) return {error:"Nepodporovaný alebo poškodený súbor. Povolené sú PDF, PNG, JPG a TXT do 3 MB."};
+  if(!allowedLearningFile(bytes,file.type)) return {error:t("Nepodporovaný alebo poškodený súbor. Povolené sú PDF, PNG, JPG a TXT do 3 MB.","Unsupported or damaged file. Allowed formats are PDF, PNG, JPG and TXT up to 3 MB.")};
   const admin=createSupabaseAdminClient();
   // Verify metadata storage before uploading, so missing migrations cannot create orphan files.
   const {error:readyError}=await admin.from("learning_files").select("id").limit(1);
-  if(readyError) return {error:"Nahrávanie momentálne nie je dostupné."};
+  if(readyError) return {error:t("Nahrávanie momentálne nie je dostupné.","Uploading is currently unavailable.")};
   const objectPath=`${studentId}/${user.id}/${randomUUID()}`;
   const {error:uploadError}=await admin.storage.from("mundus-learning").upload(objectPath,bytes,{contentType:file.type,upsert:false});
-  if(uploadError) return {error:"Súbor sa nepodarilo nahrať. Skúste znova."};
+  if(uploadError) return {error:t("Súbor sa nepodarilo nahrať. Skúste znova.","The file could not be uploaded. Try again.")};
   const {error}=await persistLearningMetadata(
    () => admin.from("learning_files").insert({student_id:studentId,uploaded_by:user.id,kind,title,object_path:objectPath,file_name:file.name.replace(/[\r\n/\\]/g,"_").slice(0,150),mime_type:file.type,size_bytes:file.size}),
    () => admin.storage.from("mundus-learning").remove([objectPath]),
@@ -48,10 +50,10 @@ export async function uploadLearningFile(_previous: State, form: FormData): Prom
     return Boolean(data);
    },
   );
-  if(error) return {error:"Súbor sa nepodarilo uložiť. Skúste znova."};
+  if(error) return {error:t("Súbor sa nepodarilo uložiť. Skúste znova.","The file could not be saved. Try again.")};
   revalidatePath("/learning"); revalidatePath(`/teacher/student/${studentId}`);
-  return {success:"Súbor bol uložený."};
- } catch{return {error:"Nahrávanie sa nepodarilo. Skúste znova alebo kontaktujte Mundus."};}
+  return {success:t("Súbor bol uložený.","File saved.")};
+ } catch{return {error:t("Nahrávanie sa nepodarilo. Skúste znova alebo kontaktujte Mundus.","Upload failed. Try again or contact Mundus.")};}
 }
 export async function downloadLearningFile(form: FormData) {
  let url:string|null=null;

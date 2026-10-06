@@ -11,7 +11,7 @@ export default function SignupForm({ next }: { next: string | null }) {
   const [state, action, pending] = useActionState(signUpStudent, {});
   return <>
     {state.success ? <p role="status" aria-live="polite" className="rounded-xl bg-green-50 p-4 text-sm leading-6">{state.success}</p> :
-      <form action={action} className="space-y-4">
+      <form action={action} className="space-y-4"><input type="hidden" name="ui_language" value={language}/>
         {next && <input type="hidden" name="next" value={next} />}
         <label className="block text-sm">{sk ? "Celé meno a priezvisko" : "Full name"}<input className={input} name="name" autoComplete="name" minLength={2} maxLength={100} required /></label>
         <label className="block text-sm">{sk ? "E-mailová adresa" : "Email address"}<input className={input} name="email" type="email" autoComplete="email" maxLength={254} required /></label>

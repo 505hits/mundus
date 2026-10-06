@@ -10,7 +10,7 @@ export default function TeacherProfileForm({record}:{record:Record}){
  const {language}=useLanguage();
  const sk=language==="sk";
  const [state,action,pending]=useActionState<TeacherProfileState,FormData>(saveTeacherProfile,{});
- return <form action={action} className="mt-6 space-y-6 rounded-3xl border border-black/5 bg-white p-6 shadow-sm" aria-busy={pending}>
+ return <form action={action} className="mt-6 space-y-6 rounded-3xl border border-black/5 bg-white p-6 shadow-sm" aria-busy={pending}><input type="hidden" name="ui_language" value={language}/>
   {record.photoUrl&&<>
     {/* Profile photos come from the teacher-public Supabase bucket. */}
     {/* eslint-disable-next-line @next/next/no-img-element */}

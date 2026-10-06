@@ -62,7 +62,6 @@ export default async function TeacherStudentPage({
   params,
 }: Props) {
   const languagePreference = await currentLanguage();
-  const sk = languagePreference === "sk";
   const { user } = await requireRole("teacher");
   const { id } = await params;
 

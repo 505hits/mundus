@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
 function read(path) {
-  return readFileSync(new URL(`../${path}`, import.meta.url), "utf8";
+  return readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 }
 
 const context = read("src/context/LanguageContext.tsx");

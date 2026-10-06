@@ -10,7 +10,7 @@ export default function OnboardingForm({ next }: { next: string | null }) {
   const [state, action, pending] = useActionState(saveOnboarding, {});
   const dayLabels = sk ? [["1","Po"],["2","Ut"],["3","St"],["4","Št"],["5","Pi"],["6","So"],["7","Ne"]] : [["1","Mon"],["2","Tue"],["3","Wed"],["4","Thu"],["5","Fri"],["6","Sat"],["7","Sun"]];
   const input = "mt-2 w-full rounded-xl border border-gray-200 bg-white p-3";
-  return <form action={action} className="space-y-5">
+  return <form action={action} className="space-y-5"><input type="hidden" name="ui_language" value={language}/>
     {next && <input type="hidden" name="next" value={next} />}
     <label className="block text-sm">{sk ? "Aký jazyk sa chcete učiť?" : "Which language do you want to learn?"}<select name="language" defaultValue="" required className={input}><option value="" disabled>{sk ? "Vyberte jazyk" : "Choose a language"}</option>{STUDENT_LANGUAGES.map(language => <option key={language}>{language}</option>)}</select></label>
     <label className="block text-sm">{sk ? "Aká je vaša približná úroveň?" : "What is your approximate level?"}<select name="level" defaultValue="Neviem posúdiť" required className={input}>{STUDENT_LEVELS.map(level => <option key={level}>{level}</option>)}</select></label>

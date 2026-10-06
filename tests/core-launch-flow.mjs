@@ -44,6 +44,7 @@ const { startPackageCheckout } = load("../src/app/(portal)/packages/actions.ts",
   "next/navigation": { redirect },
   "@/lib/auth": { requireRole: async (_role, next) => { capturedReturn = next; redirect("/login"); } },
   "@/lib/supabase/admin": {}, "@/lib/account-config": {},
+  "@/lib/i18n": { formUiLanguage: form => form.get("ui_language") === "en" ? "en" : "sk" },
   "@/lib/payments": { PACKAGE_PRICES: [1,5,10,20,30].map(lessons => ({ lessons })) },
 });
 for (const count of [1,5,10,20,30]) {

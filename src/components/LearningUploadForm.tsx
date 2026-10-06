@@ -41,6 +41,7 @@ export default function LearningUploadForm({ studentId, teacher }: { studentId: 
   }
 
   return <form onSubmit={submit} onChange={() => setState({})} className="mt-5 space-y-3" aria-busy={pending}>
+    <input type="hidden" name="ui_language" value={language}/>
     <input type="hidden" name="student_id" value={studentId} />
     <fieldset disabled={pending} className="space-y-3">
       <label className="block text-sm">{sk ? "Typ súboru" : "File type"}<select name="kind" className="ml-3 rounded-lg border p-2">{teacher ? <><option value="material">{sk ? "Materiál" : "Material"}</option><option value="homework_assignment">{sk ? "Zadanie domácej úlohy" : "Homework assignment"}</option></> : <option value="homework_submission">{sk ? "Vypracovaná domáca úloha" : "Homework submission"}</option>}</select></label>

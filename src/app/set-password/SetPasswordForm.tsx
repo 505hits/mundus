@@ -35,7 +35,7 @@ export default function SetPasswordForm() {
     }
     void prepare();
     return () => { cancelled = true; };
-  }, []);
+  }, [sk]);
   if (linkError) return <p role="alert" className="text-sm leading-6 text-red-700">{linkError}</p>;
   if (!ready) return <p role="status" className="text-sm text-gray-500">{sk ? "Overujem pozvánku…" : "Verifying invitation…"}</p>;
   return <form action={action} className="space-y-5">

@@ -563,9 +563,9 @@ export default async function TeacherDashboardPage() {
                     <p className="font-semibold">{student.name}</p>
 
                     <p className="mt-1 text-sm text-gray-400">
-                      {student.language} · Najbližšia:{" "}
-                      {formatShortDate(student.nextLesson)} ·{" "}
-                      {formatTime(student.nextLesson)}
+                      {student.language} · {sk ? "Najbližšia:" : "Next:"}{" "}
+                      {formatShortDate(student.nextLesson, language)} ·{" "}
+                      {formatTime(student.nextLesson, language)}
                     </p>
                   </div>
 

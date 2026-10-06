@@ -13,3 +13,12 @@ export function localeFor(language: Language) {
 export function pick<T>(language: Language, values: { en: T; sk: T }): T {
   return values[language];
 }
+
+
+export function formUiLanguage(form: FormData): Language {
+  return form.get("ui_language") === "en" ? "en" : "sk";
+}
+
+export function uiText(language: Language, sk: string, en: string) {
+  return language === "en" ? en : sk;
+}

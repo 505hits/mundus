@@ -4,6 +4,7 @@ import { LogOut } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function LogoutButton({
   compact = false,
@@ -11,6 +12,8 @@ export default function LogoutButton({
   compact?: boolean;
 }) {
   const router = useRouter();
+  const { language } = useLanguage();
+  const sk = language === "sk";
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -22,13 +25,13 @@ export default function LogoutButton({
       const supabase = createSupabaseBrowserClient();
       const { error: signOutError } = await supabase.auth.signOut();
       if (signOutError) {
-        setError("Odhlásenie sa nepodarilo. Skúste to znova.");
+        setError(sk ? "Odhlásenie sa nepodarilo. Skúste to znova." : "Sign out failed. Please try again.");
         return;
       }
       router.replace("/login");
       router.refresh();
     } catch {
-      setError("Odhlásenie sa nepodarilo. Skontrolujte pripojenie a skúste to znova.");
+      setError(sk ? "Odhlásenie sa nepodarilo. Skontrolujte pripojenie a skúste to znova." : "Sign out failed. Check your connection and try again.");
     } finally {
       setLoading(false);
     }
@@ -47,7 +50,7 @@ export default function LogoutButton({
       }
     >
       <LogOut size={compact ? 15 : 17} />
-      {loading ? "Odhlasujem..." : "Odhlásiť sa"}
+      {loading ? (sk ? "Odhlasujem..." : "Signing out...") : (sk ? "Odhlásiť sa" : "Sign out")}
     </button>
     {error && <p role="alert" className="mt-2 text-xs text-red-700">{error}</p>}
     </div>

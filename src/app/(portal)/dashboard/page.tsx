@@ -117,6 +117,7 @@ export default async function DashboardPage() {
   const activePackages = packages ?? [];
   const upcomingLessons = lessons ?? [];
   const nextLesson = upcomingLessons[0] ?? null;
+  const nextLessonLink = nextLesson ? safeLessonLink(nextLesson.meet_link) : null;
   const teacherReports: StudentLessonReport[] = Array.isArray(reports) ? reports : [];
   const ratedTeachers = new Set((monthlyFeedback ?? []).map((item) => item.teacher_id));
   const teachersToRate = new Set(
@@ -236,7 +237,7 @@ export default async function DashboardPage() {
         </section>
 
         {hasLoadError && (
-          <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          <div role="alert" aria-live="polite" className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             {sk ? "Niektoré údaje sa nepodarilo načítať. Obnovte stránku alebo to skúste o chvíľu znova." : "Some data could not be loaded. Refresh the page or try again shortly."}
           </div>
         )}
@@ -293,9 +294,9 @@ export default async function DashboardPage() {
 
             {nextLesson && (
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                {safeLessonLink(nextLesson.meet_link) ? (
+                {nextLessonLink ? (
                   <a
-                    href={safeLessonLink(nextLesson.meet_link) ?? undefined}
+                    href={nextLessonLink}
                     target="_blank"
                     rel="noreferrer"
                     className="flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3.5 font-semibold text-[#0a0a0f]"
@@ -347,7 +348,14 @@ export default async function DashboardPage() {
                   </p>
                 </div>
 
-                <div className="mt-6 h-2 overflow-hidden rounded-full bg-[#E0E7FF]">
+                <div
+                  role="progressbar"
+                  aria-label={sk ? "Pokrok v aktuálnom balíčku" : "Current package progress"}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={progress}
+                  className="mt-6 h-2 overflow-hidden rounded-full bg-[#E0E7FF]"
+                >
                   <div
                     className="h-full rounded-full bg-[#2F3AA2]"
                     style={{ width: `${progress}%` }}
@@ -526,7 +534,7 @@ export default async function DashboardPage() {
 
                   {index === 0 ? (
                     <span className="rounded-full bg-[#EEF2FF] px-3 py-1.5 text-xs font-semibold">
-                      Najbližšia
+                      {sk ? "Najbližšia" : "Next"}
                     </span>
                   ) : (
                     <ChevronRight
@@ -539,7 +547,7 @@ export default async function DashboardPage() {
             </div>
           ) : (
             <p className="mt-6 text-sm text-gray-500">
-              Nemáte naplánované ďalšie hodiny.
+              {sk ? "Nemáte naplánované ďalšie hodiny." : "You do not have any upcoming lessons scheduled."}
             </p>
           )}
         </section>

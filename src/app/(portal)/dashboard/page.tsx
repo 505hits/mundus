@@ -336,7 +336,7 @@ export default async function DashboardPage() {
             </p>
             {paymentsAvailable && <Link href="/packages" className="mt-2 inline-block text-sm font-semibold text-[#2F3AA2] underline">{sk ? "Zobraziť balíčky a platby" : "View packages and payments"}</Link>}
 
-            {packagesError ? <p className="mt-4 text-sm text-red-700">Zostatok a stav balíčka sa nepodarilo načítať. sk ? "Obnovte stránku alebo to skúste o chvíľu znova." : "Refresh the page or try again shortly."</p> : activePackages.length > 0 ? (
+            {packagesError ? <p className="mt-4 text-sm text-red-700">{sk ? "Zostatok a stav balíčka sa nepodarilo načítať. Obnovte stránku alebo to skúste o chvíľu znova." : "Your package balance and status could not be loaded. Refresh the page or try again shortly."}</p> : activePackages.length > 0 ? (
               <>
                 <div className="mt-4">
                   <p className="text-5xl font-semibold tracking-tight">

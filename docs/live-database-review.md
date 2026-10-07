@@ -27,3 +27,27 @@ User explicitly approved the reviewed activation. All24 sources applied atomical
 ## Historical approval-review block
 
 The initial production batch was rejected by automatic approval review because it spans authentication, RLS, payments, storage, notifications, assessments and accounting, including policy/trigger replacements, and broad continuation instructions did not clearly authorize that combined production mutation. At that initial attempt nothing was applied, and migration history was empty. The explicitly approved activation above supersedes that initial blocked status. Do not evade the rejection by splitting the same batch or executing it through another interface. Obtain explicit approval for this reviewed production activation before attempting it again.
+
+
+## Final hardening update — 8 October 2026
+
+The production Supabase project has now received the post-activation hardening migrations recorded in source:
+
+- `20261006214706_harden_active_portal_gate.sql`
+- `20261007222255_optimize_rls_session_predicates.sql`
+- `20261007225331_remove_redundant_teacher_report_policies.sql`
+- `20261007225412_consolidate_permissive_rls_policies.sql`
+
+Current verified state:
+
+- All prior `auth_rls_initplan` performance warnings are resolved.
+- All `multiple_permissive_policies` warnings are resolved by logically equivalent per-action OR policies; restrictive session/privacy policies remain in place.
+- Anonymous/Public execution is denied for the reviewed SECURITY DEFINER RPCs. Authenticated execution remains only where required by RLS or portal RPC flows.
+- `notification_outbox` and `portal_email_outbox` intentionally keep RLS enabled with no client policies; client table privileges are revoked and service operations remain server-only.
+- Production integrity checks return zero for broken package counters, duplicate checkout/session/payment-intent rows, malformed schedule/report relationships, invalid assessment rows and stale email leases.
+- Teacher privacy probe: teachers cannot enumerate raw student profiles; assigned student names are exposed only through the safe directory RPC.
+- Student privacy probe: a student sees only their own profile and own authorized portal rows.
+- The remaining performance advisor findings are unused-index INFO notices. These indexes are retained until real production traffic exists because many support foreign keys, launch queries or recent-order/report lookups.
+- The remaining security advisor warnings are intentional authenticated SECURITY DEFINER functions plus the manual Auth setting for leaked-password protection. Do not revoke required RPC execution solely to silence the advisory.
+
+The repository CI currently runs lint, the full safeguard/regression suite and a production Next.js build on every push to `main`. Live deployment/browser verification remains separate from database/code readiness.

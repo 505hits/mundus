@@ -37,7 +37,7 @@ export default async function FeedbackPage() {
       .eq("feedback_month", month.key),
   ]);
 
-  if (lessonsError || ratingsError) throw new Error("Monthly teacher feedback is unavailable");
+  const loadError = Boolean(lessonsError || ratingsError);
 
   const ratingMap = new Map((ratings ?? []).map((item) => [item.teacher_id, item]));
   const teachers = new Map<string, { id: string; name: string; lessons: number }>();
@@ -74,12 +74,18 @@ export default async function FeedbackPage() {
           <p className="mt-2 text-sm font-medium text-[#2F3AA2]">{monthLabel}</p>
         </section>
 
-        {teachers.size === 0 ? (
+        {loadError && (
+          <div role="alert" aria-live="polite" className="mt-8 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+            {sk ? "Hodnotenie lektorov sa momentálne nepodarilo načítať. Obnovte stránku alebo to skúste o chvíľu znova." : "Teacher feedback could not be loaded right now. Refresh the page or try again shortly."}
+          </div>
+        ) : null}
+
+        {!loadError && teachers.size === 0 ? (
           <section className="mt-8 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
             <p className="font-medium">{sk ? "Tento mesiac zatiaľ nemáte dokončenú hodinu." : "You do not have a completed lesson this month yet."}</p>
             <p className="mt-1 text-sm text-gray-500">{sk ? "Hodnotenie sa sprístupní po dokončení hodiny s lektorom." : "Feedback becomes available after you complete a lesson with a teacher."}</p>
           </section>
-        ) : (
+        ) : !loadError ? (
           <div className="mt-8 grid gap-5 lg:grid-cols-2">
             {Array.from(teachers.values()).map((teacher) => {
               const existing = ratingMap.get(teacher.id);

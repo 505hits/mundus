@@ -67,7 +67,7 @@ export default function StudentStatusAction({
       )}
 
       {error && (
-        <p className="mt-2 max-w-xs text-xs text-red-700">{error}</p>
+        <p role="alert" className="mt-2 max-w-xs text-xs text-red-700">{error}</p>
       )}
     </div>
   );

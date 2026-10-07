@@ -89,6 +89,64 @@ begin
  end if;
 end $$;
 
+-- Payment/package integrity: every result should be zero.
+select
+ (select count(*) from public.lesson_packages where used_lessons < 0 or remaining_lessons < 0
+   or used_lessons + remaining_lessons <> total_lessons) as bad_package_counters,
+ (select count(*) from public.lessons l join public.lesson_packages p on p.id=l.package_id
+   where l.student_id<>p.student_id) as cross_student_package_links,
+ (select count(*) from public.payment_orders where status='paid' and lesson_package_id is null) as paid_without_package,
+ (select count(*) from public.payment_orders where status='pending' and stripe_session_id is null
+   and created_at < now()-interval '30 minutes') as stale_unattached_pending,
+ (select count(*) from (select student_id from public.payment_orders where status='pending'
+   group by student_id having count(*)>1) s) as duplicate_pending_students,
+ (select count(*) from (select stripe_session_id from public.payment_orders where stripe_session_id is not null
+   group by stripe_session_id having count(*)>1) s) as duplicate_sessions,
+ (select count(*) from (select stripe_payment_intent_id from public.payment_orders where stripe_payment_intent_id is not null
+   group by stripe_payment_intent_id having count(*)>1) s) as duplicate_payment_intents;
+
+-- Lesson/schedule/report integrity: every result should be zero.
+select
+ (select count(*) from public.schedule_change_requests r join public.lessons l on l.id=r.lesson_id
+   where r.student_id<>l.student_id) as bad_schedule_student_links,
+ (select count(*) from public.schedule_change_requests
+   where status not in ('pending','accepted','declined')) as invalid_schedule_statuses,
+ (select count(*) from public.schedule_change_requests
+   where status='pending' and preferred_at<=now()) as expired_pending_requests,
+ (select count(*) from public.lessons where status='completed' and completed_at is null) as completed_without_timestamp,
+ (select count(*) from public.lessons where status<>'completed' and completed_at is not null) as timestamp_on_noncompleted,
+ (select count(*) from public.lesson_reports r join public.lessons l on l.id=r.lesson_id
+   where r.student_id<>l.student_id or r.teacher_id<>l.teacher_id) as mismatched_reports;
+
+-- Notification queue integrity: every result should be zero.
+select
+ (select count(*) from public.notification_outbox where status='sent' and sent_at is null) as schedule_sent_without_time,
+ (select count(*) from public.notification_outbox where status<>'sent' and sent_at is not null) as schedule_time_without_sent,
+ (select count(*) from public.portal_email_outbox where status='sent' and sent_at is null) as portal_sent_without_time,
+ (select count(*) from public.portal_email_outbox where status<>'sent' and sent_at is not null) as portal_time_without_sent,
+ (select count(*) from public.notification_outbox where status='sending' and lease_until<now()) as expired_schedule_leases,
+ (select count(*) from public.portal_email_outbox where status='sending' and lease_until<now()) as expired_portal_leases,
+ (select count(*) from public.notification_outbox where attempts>5) as schedule_over_attempt_limit,
+ (select count(*) from public.portal_email_outbox where attempts>5) as portal_over_attempt_limit;
+
+-- Assessment result integrity: every result should be zero.
+select
+ (select count(*) from public.placement_results where score<0 or total_questions<=0 or score>total_questions) as bad_assessment_scores,
+ (select count(*) from public.placement_results where assessment_kind not in ('placement','progress')) as bad_assessment_kind,
+ (select count(*) from public.placement_results where language not in
+   ('Angličtina','Nemčina','Španielčina','Taliančina','Francúzština','Portugalčina')) as unexpected_assessment_language,
+ (select count(*) from public.placement_results where skill_scores is null) as missing_assessment_skill_scores;
+
+-- Identity-discount and duplicate-checkout guardrails must stay enabled.
+select t.tgname,t.tgenabled,pg_get_triggerdef(t.oid) as definition
+from pg_trigger t
+where t.tgrelid='public.payment_orders'::regclass and not t.tgisinternal
+and t.tgname in ('guard_discount_identity','queue_paid_student_assignment_email')
+order by t.tgname;
+select indexname,indexdef from pg_indexes where schemaname='public' and tablename='payment_orders'
+and indexname in ('payment_discount_pending_name','payment_discount_pending_email','payment_orders_one_pending_per_student')
+order by indexname;
+
 -- Sensitive service functions should not be executable by clients.
 select p.proname,has_function_privilege('anon',p.oid,'EXECUTE') as anon_execute,
  has_function_privilege('authenticated',p.oid,'EXECUTE') as client_execute

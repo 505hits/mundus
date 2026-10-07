@@ -78,7 +78,7 @@ export default async function FeedbackPage() {
           <div role="alert" aria-live="polite" className="mt-8 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             {sk ? "Hodnotenie lektorov sa momentálne nepodarilo načítať. Obnovte stránku alebo to skúste o chvíľu znova." : "Teacher feedback could not be loaded right now. Refresh the page or try again shortly."}
           </div>
-        ) : null}
+        )}
 
         {!loadError && teachers.size === 0 ? (
           <section className="mt-8 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">

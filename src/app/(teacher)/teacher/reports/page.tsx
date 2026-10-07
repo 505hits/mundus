@@ -33,9 +33,10 @@ function getStudentName(
   profile:
     | { full_name?: string | null; email?: string | null }
     | null
-    | undefined
+    | undefined,
+  sk: boolean
 ) {
-  return profile?.full_name?.trim() || profile?.email || "Student";
+  return profile?.full_name?.trim() || profile?.email || (sk ? "Študent" : "Student");
 }
 
 export default async function TeacherReportsPage() {
@@ -197,7 +198,7 @@ export default async function TeacherReportsPage() {
                       <div>
                         <div className="flex flex-wrap items-center gap-2">
                           <h3 className="font-semibold">
-                            {getStudentName(student)}
+                            {getStudentName(student, sk)}
                           </h3>
 
                           <span

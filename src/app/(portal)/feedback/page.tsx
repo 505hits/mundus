@@ -106,7 +106,7 @@ export default async function FeedbackPage() {
               );
             })}
           </div>
-        )}
+        ) : null}
       </div>
     </main>
   );

@@ -83,9 +83,7 @@ export default async function TeacherReportsPage() {
         .in("lesson_id", lessonIds)
     : { data: [], error: null };
 
-  if (lessonsError || reportsError) {
-    throw new Error("Teacher lesson reports are unavailable");
-  }
+  const loadError = Boolean(lessonsError || reportsError);
 
   const reportMap = new Map(
     (reports ?? []).map((report) => [report.lesson_id, report])
@@ -115,6 +113,12 @@ export default async function TeacherReportsPage() {
             {sk ? "Po každej dokončenej hodine pridajte krátky záznam, aby mal študent aktuálny prehľad o svojom napredovaní." : "After each completed lesson, add a short report so the student has an up-to-date view of their progress."}
           </p>
         </section>
+
+        {loadError && (
+          <div role="alert" aria-live="polite" className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+            {sk ? "Niektoré údaje o záznamoch sa nepodarilo načítať. Obnovte stránku pred úpravou záznamov." : "Some report data could not be loaded. Refresh the page before editing reports."}
+          </div>
+        )}
 
         <section className="mt-8 grid gap-4 sm:grid-cols-3">
           <div className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm">

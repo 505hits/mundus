@@ -65,7 +65,13 @@ assert.match(adminPackages, /aria-valuenow=\{percentage\}/);
 
 const rlsHardening = read("supabase/migrations/20261006214706_harden_active_portal_gate.sql");
 const rlsPerformance = read("supabase/migrations/20261007222255_optimize_rls_session_predicates.sql");
+const rlsConsolidation = read("supabase/migrations/20261007225412_consolidate_permissive_rls_policies.sql");
 assert.match(rlsHardening, /revoke execute on function public\.mundus_active_portal_account\(\) from anon/i);
 assert.match(rlsPerformance, /\(select auth\.uid\(\)\)/i);
+assert.match(rlsConsolidation, /create policy "Package read access"/i);
+assert.match(rlsConsolidation, /create policy "Lesson report read access"/i);
+assert.match(rlsConsolidation, /create policy "Lesson read access"/i);
+assert.match(rlsConsolidation, /create policy "Schedule request read access"/i);
+assert.match(rlsConsolidation, /drop policy if exists "Admins can manage change requests"/i);
 
 console.log("PASS: portal regression safeguards");

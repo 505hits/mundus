@@ -111,7 +111,7 @@ export default async function LessonsPage() {
         </section>
 
         {(lessonsError || requestsError) && (
-          <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          <div role="alert" aria-live="polite" className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             {sk ? "Nepodarilo sa načítať vaše hodiny. Obnovte stránku alebo to skúste o chvíľu znova." : "We could not load your lessons. Refresh the page or try again shortly."}
           </div>
         )}
@@ -191,9 +191,9 @@ export default async function LessonsPage() {
                     </div>
 
                     <div className="flex flex-col gap-2 sm:min-w-[190px]">
-                      {safeLessonLink(lesson.meet_link) ? (
+                      {(() => { const link = safeLessonLink(lesson.meet_link); return link ? (
                         <a
-                          href={safeLessonLink(lesson.meet_link) ?? undefined}
+                          href={link}
                           target="_blank"
                           rel="noreferrer"
                           className={`flex items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold ${
@@ -217,7 +217,7 @@ export default async function LessonsPage() {
                           <Video size={17} />
                           {sk ? "Odkaz na hodinu zatiaľ nie je pridaný" : "Lesson link has not been added yet"}
                         </button>
-                      )}
+                      ); })()}
 
                       {pendingLessonIds.has(lesson.id) ? (() => {
                         const request = pendingRequestMap.get(lesson.id)!;
@@ -303,7 +303,7 @@ export default async function LessonsPage() {
                 >
                   <div>
                     <p className="font-medium">
-                      {formatLanguage(lesson.language, language)} hodina
+                      {formatLanguage(lesson.language, language)} · {sk ? "hodina" : "lesson"}
                     </p>
 
                     <p className="mt-1 text-sm text-gray-400">

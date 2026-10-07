@@ -26,7 +26,7 @@ export default function StudentPortalError({
           {sk?"Niečo sa nepodarilo načítať":"Something could not be loaded"}
         </h1>
         <p className="mt-2 leading-7 text-gray-500">
-          {sk?"Vaše údaje zostali v bezpečí. Skúste stránku načítať znova.":"Your data is safe. Try loading the page again."}
+          {sk?"Skúste stránku načítať znova. Ak problém pretrváva, kontaktujte Mundus Languages.":"Try loading the page again. If the problem continues, contact Mundus Languages."}
         </p>
         <button
           type="button"

@@ -61,7 +61,7 @@ export default async function AdminPackagesPage() {
         </section>
 
         {(error || studentsError) && (
-          <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          <div role="alert" aria-live="polite" className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             {sk?"Nepodarilo sa načítať údaje o balíčkoch. Obnovte stránku a skúste to znova.":"Package data could not be loaded. Refresh the page and try again."}
           </div>
         )}

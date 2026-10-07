@@ -40,3 +40,31 @@ assert.match(notFound, /We couldn’t find this page/);
 assert.match(notFound, /Túto stránku sme nenašli/);
 
 console.log("PASS: portal regression safeguards");
+
+
+const adminError = read("src/app/(admin)/error.tsx");
+const teacherError = read("src/app/(teacher)/error.tsx");
+assert.match(adminError, /role="alert"/);
+assert.match(teacherError, /role="alert"/);
+assert.match(adminError, /Something could not be loaded/);
+assert.doesNotMatch(adminError, /Administration data is safe/);
+assert.doesNotMatch(teacherError, /Your data is safe/);
+
+const adminLoading = read("src/app/(admin)/loading.tsx");
+const teacherLoading = read("src/app/(teacher)/loading.tsx");
+assert.match(adminLoading, /aria-busy="true"/);
+assert.match(teacherLoading, /aria-busy="true"/);
+
+const teacherDashboard = read("src/app/(teacher)/teacher/dashboard/page.tsx");
+assert.doesNotMatch(teacherDashboard, /throw new Error\("Teacher dashboard data is unavailable"\)/);
+assert.match(teacherDashboard, /dashboardDataError/);
+assert.match(teacherDashboard, /const lessonLink = safeLessonLink\(lesson\.meet_link\)/);
+
+const adminPackages = read("src/app/(admin)/admin/packages/page.tsx");
+assert.match(adminPackages, /role="progressbar"/);
+assert.match(adminPackages, /aria-valuenow=\{percentage\}/);
+
+const rlsHardening = read("supabase/migrations/20261006214706_harden_active_portal_gate.sql");
+const rlsPerformance = read("supabase/migrations/20261007222255_optimize_rls_session_predicates.sql");
+assert.match(rlsHardening, /revoke execute on function public\.mundus_active_portal_account\(\) from anon/i);
+assert.match(rlsPerformance, /\(select auth\.uid\(\)\)/i);

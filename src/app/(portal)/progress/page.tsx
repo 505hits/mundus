@@ -135,7 +135,7 @@ export default async function ProgressPage() {
 
         {/* Aktuálne učenie */}
         {(lessonsError || packagesError || reportsError) && (
-          <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          <div role="alert" aria-live="polite" className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             {sk ? "Niektoré údaje o vašom pokroku sa nepodarilo načítať. Obnovte stránku alebo to skúste o chvíľu znova." : "Some progress data could not be loaded. Refresh the page or try again shortly."}
           </div>
         )}
@@ -232,7 +232,14 @@ export default async function ProgressPage() {
               />
             </div>
 
-            <div className="mt-6 h-3 overflow-hidden rounded-full bg-[#E0E7FF]">
+            <div
+              role="progressbar"
+              aria-label={sk ? "Pokrok v aktuálnom balíčku" : "Current package progress"}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={packageProgress}
+              className="mt-6 h-3 overflow-hidden rounded-full bg-[#E0E7FF]"
+            >
               <div
                 className="h-full rounded-full bg-[#2F3AA2]"
                 style={{

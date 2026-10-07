@@ -94,7 +94,7 @@ export default async function AdminStudentsPage({searchParams}:{searchParams:Pro
         </section>
 
         {(profilesError || lessonsError || packagesError) && (
-          <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          <div role="alert" aria-live="polite" className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             {sk?"Niektoré účty, hodiny alebo zostatky sa nepodarilo načítať. Obnovte stránku a skúste to znova.":"Some accounts, lessons or balances could not be loaded. Refresh the page and try again."}
           </div>
         )}

@@ -41,7 +41,6 @@ export default async function LearningPage() {
 
   return (
     <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
-      <div className="mx-auto max-w-6xl px-5"><LearningFiles studentId={user.id} /></div>
       <header className="border-b border-black/5 bg-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
           <Link
@@ -72,10 +71,12 @@ export default async function LearningPage() {
         </section>
 
         {error && (
-          <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          <div role="alert" aria-live="polite" className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             {sk ? "Nepodarilo sa načítať údaje o učení. Obnovte stránku alebo to skúste o chvíľu znova." : "Learning data could not be loaded. Refresh the page or try again shortly."}
           </div>
         )}
+
+        <LearningFiles studentId={user.id} />
 
         <section className="mt-8 rounded-3xl bg-[#2F3AA2] p-6 text-white shadow-sm sm:p-8">
           <div className="flex items-start justify-between gap-5">

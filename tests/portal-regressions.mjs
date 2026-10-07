@@ -39,7 +39,6 @@ const notFound = read("src/app/not-found.tsx");
 assert.match(notFound, /We couldn’t find this page/);
 assert.match(notFound, /Túto stránku sme nenašli/);
 
-console.log("PASS: portal regression safeguards");
 
 
 const adminError = read("src/app/(admin)/error.tsx");
@@ -68,3 +67,5 @@ const rlsHardening = read("supabase/migrations/20261006214706_harden_active_port
 const rlsPerformance = read("supabase/migrations/20261007222255_optimize_rls_session_predicates.sql");
 assert.match(rlsHardening, /revoke execute on function public\.mundus_active_portal_account\(\) from anon/i);
 assert.match(rlsPerformance, /\(select auth\.uid\(\)\)/i);
+
+console.log("PASS: portal regression safeguards");

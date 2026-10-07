@@ -91,6 +91,7 @@ export default function LessonStatusActions({
   return (
     <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
       <select
+        aria-label={sk ? "Stav hodiny" : "Lesson status"}
         value={status}
         onChange={(event) => setStatus(event.target.value)}
         disabled={saving || saved}

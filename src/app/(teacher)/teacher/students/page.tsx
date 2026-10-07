@@ -13,9 +13,10 @@ function getName(
   profile:
     | { full_name?: string | null; email?: string | null }
     | null
-    | undefined
+    | undefined,
+  sk: boolean
 ) {
-  return profile?.full_name?.trim() || profile?.email || "Student";
+  return profile?.full_name?.trim() || profile?.email || (sk ? "Študent" : "Student");
 }
 
 export default async function TeacherStudentsPage() {
@@ -104,7 +105,7 @@ export default async function TeacherStudentsPage() {
     if (!existing) {
       studentMap.set(lesson.student_id, {
         id: lesson.student_id,
-        name: getName(student),
+        name: getName(student, sk),
         language: formatLanguage(lesson.language, language),
         nextLesson: isFuture ? lesson.scheduled_at : null,
         remaining:

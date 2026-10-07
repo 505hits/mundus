@@ -120,7 +120,14 @@ export default async function AdminPackagesPage() {
                       <p className="mt-1 text-sm text-gray-400">
                         {formatPackageType(item.package_type,language)} · {formatDate(item.purchased_at,language)}
                       </p>
-                      <div className="mt-3 h-1.5 max-w-[180px] overflow-hidden rounded-full bg-gray-100">
+                      <div
+                        role="progressbar"
+                        aria-label={sk ? "Využitie balíčka" : "Package usage"}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        aria-valuenow={percentage}
+                        className="mt-3 h-1.5 max-w-[180px] overflow-hidden rounded-full bg-gray-100"
+                      >
                         <div className="h-full rounded-full bg-[#2F3AA2]" style={{ width: `${percentage}%` }} />
                       </div>
                     </div>

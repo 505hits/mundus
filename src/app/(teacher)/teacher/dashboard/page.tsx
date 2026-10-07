@@ -42,9 +42,10 @@ function getName(
   profile:
     | { full_name?: string | null; email?: string | null }
     | null
-    | undefined
+    | undefined,
+  sk: boolean
 ) {
-  return profile?.full_name?.trim() || profile?.email || "Student";
+  return profile?.full_name?.trim() || profile?.email || (sk ? "Študent" : "Student");
 }
 
 function getInitials(name: string) {
@@ -80,8 +81,8 @@ export default async function TeacherDashboardPage() {
     : bratislavaMonth(currentMonth.year, currentMonth.month - 1);
 
   const [
-    { data: performanceLessons },
-    { data: performanceFeedback },
+    { data: performanceLessons, error: performanceLessonsError },
+    { data: performanceFeedback, error: performanceFeedbackError },
   ] = await Promise.all([
     adminDb.from("lessons")
       .select("student_id,scheduled_at,status")
@@ -95,6 +96,7 @@ export default async function TeacherDashboardPage() {
       .in("feedback_month", [previousMonth.key, currentMonth.key]),
   ]);
 
+  const performanceLoadError = Boolean(performanceLessonsError || performanceFeedbackError);
   const currentLessons = (performanceLessons ?? []).filter((lesson) =>
     new Date(lesson.scheduled_at) >= new Date(currentMonth.start) &&
     new Date(lesson.scheduled_at) < new Date(currentMonth.end)
@@ -150,8 +152,6 @@ export default async function TeacherDashboardPage() {
     .lte("scheduled_at", todayWindowEnd)
     .order("scheduled_at", { ascending: true });
 
-  if (todayLessonCandidatesError) throw new Error("Teacher lessons are unavailable");
-
   const todayLessons = (todayLessonCandidates ?? []).filter(
     (lesson) =>
       bratislavaDateFormatter.format(new Date(lesson.scheduled_at)) === todayKey
@@ -198,9 +198,12 @@ export default async function TeacherDashboardPage() {
     .eq("status", "pending")
     .order("requested_at", { ascending: true });
 
-  if (upcomingLessonsError || assignedLessonStudentsError || pendingRequestsError) {
-    throw new Error("Teacher dashboard data is unavailable");
-  }
+  const dashboardDataError = Boolean(
+    todayLessonCandidatesError ||
+    upcomingLessonsError ||
+    assignedLessonStudentsError ||
+    pendingRequestsError
+  );
 
   const myPendingRequests =
     pendingRequests?.filter((request) => {
@@ -231,7 +234,7 @@ export default async function TeacherDashboardPage() {
 
     uniqueStudents.set(lesson.student_id, {
       id: lesson.student_id,
-      name: getName(student),
+      name: getName(student, sk),
       language: formatLanguage(lesson.language, language),
       nextLesson: lesson.scheduled_at,
     });
@@ -302,6 +305,12 @@ export default async function TeacherDashboardPage() {
           </p>
         </section>
 
+        {(dashboardDataError || performanceLoadError) && (
+          <div role="alert" aria-live="polite" className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+            {sk ? "Niektoré údaje na prehľade sa nepodarilo načítať. Rozvrh alebo mesačný súhrn môže byť dočasne neúplný; obnovte stránku pred vykonaním zmien." : "Some dashboard data could not be loaded. The schedule or monthly summary may be temporarily incomplete; refresh the page before making changes."}
+          </div>
+        )}
+
         {!publicProfileComplete && (
           <section className="mt-6 flex flex-col gap-4 rounded-3xl border border-[#2F3AA2]/20 bg-[#EEF2FF] p-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -331,10 +340,10 @@ export default async function TeacherDashboardPage() {
             <TrendingUp size={20} className="text-[#2F3AA2]" />
           </div>
           <div className="mt-5 grid gap-4 sm:grid-cols-4">
-            <div className="rounded-2xl bg-[#FAFAF9] p-4"><p className="text-xs text-gray-400">{sk ? "Dokončené hodiny" : "Completed lessons"}</p><p className="mt-1 text-2xl font-semibold">{currentLessons.length}</p><p className="mt-1 text-xs text-gray-400">{sk ? "minulý mesiac" : "last month"} {previousLessons.length}</p></div>
+            <div className="rounded-2xl bg-[#FAFAF9] p-4"><p className="text-xs text-gray-400">{sk ? "Dokončené hodiny" : "Completed lessons"}</p><p className="mt-1 text-2xl font-semibold">{performanceLoadError ? "—" : currentLessons.length}</p><p className="mt-1 text-xs text-gray-400">{sk ? "minulý mesiac" : "last month"} {performanceLoadError ? "—" : previousLessons.length}</p></div>
             <div className="rounded-2xl bg-[#FAFAF9] p-4"><p className="text-xs text-gray-400">{sk ? "Unikátni študenti" : "Unique students"}</p><p className="mt-1 text-2xl font-semibold">{new Set(currentLessons.map((lesson) => lesson.student_id)).size}</p></div>
             <div className="rounded-2xl bg-[#FAFAF9] p-4"><p className="text-xs text-gray-400">{sk ? "Priemerné hodnotenie" : "Average rating"}</p><p className="mt-1 flex items-center gap-1 text-2xl font-semibold"><Star size={18} fill="currentColor" />{currentAverage === null ? "—" : currentAverage.toFixed(2)}</p><p className="mt-1 text-xs text-gray-400">{sk ? "minulý mesiac" : "last month"} {previousAverage === null ? "—" : previousAverage.toFixed(2)}</p></div>
-            <div className="rounded-2xl bg-[#FAFAF9] p-4"><p className="text-xs text-gray-400">{sk ? "Počet hodnotení" : "Rating count"}</p><p className="mt-1 text-2xl font-semibold">{currentRatings.length}</p><p className="mt-1 text-xs text-gray-400">{sk ? "Spätná väzba je zobrazená iba súhrnne." : "Feedback is shown only in aggregate."}</p></div>
+            <div className="rounded-2xl bg-[#FAFAF9] p-4"><p className="text-xs text-gray-400">{sk ? "Počet hodnotení" : "Rating count"}</p><p className="mt-1 text-2xl font-semibold">{performanceLoadError ? "—" : currentRatings.length}</p><p className="mt-1 text-xs text-gray-400">{sk ? "Spätná väzba je zobrazená iba súhrnne." : "Feedback is shown only in aggregate."}</p></div>
           </div>
         </section>
 
@@ -346,7 +355,7 @@ export default async function TeacherDashboardPage() {
             </div>
 
             <p className="mt-3 text-3xl font-semibold">
-              {todayLessons?.length ?? 0}
+              {dashboardDataError ? "—" : (todayLessons?.length ?? 0)}
             </p>
 
             <p className="mt-1 text-sm text-gray-500">{sk ? "hodín" : "lessons"}</p>
@@ -359,7 +368,7 @@ export default async function TeacherDashboardPage() {
             </div>
 
             <p className="mt-3 text-3xl font-semibold">
-              {assignedStudentCount}
+              {dashboardDataError ? "—" : assignedStudentCount}
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
@@ -376,7 +385,7 @@ export default async function TeacherDashboardPage() {
             </div>
 
             <p className="mt-3 text-3xl font-semibold text-[#92400e]">
-              {myPendingRequests.length}
+              {dashboardDataError ? "—" : myPendingRequests.length}
             </p>
 
             <p className="mt-1 text-sm text-[#92400e]/70">
@@ -413,6 +422,7 @@ export default async function TeacherDashboardPage() {
             <div className="mt-4 space-y-3">
               {todayLessons.map((lesson) => {
                 const student = studentDirectory.get(lesson.student_id);
+                const lessonLink = safeLessonLink(lesson.meet_link);
 
                 return (
                   <article
@@ -438,7 +448,7 @@ export default async function TeacherDashboardPage() {
                         <div>
                           <div className="flex flex-wrap items-center gap-2">
                             <h3 className="font-semibold">
-                              {getName(student)}
+                              {getName(student, sk)}
                             </h3>
 
                             {lesson.id === nextTodayLessonId && (
@@ -461,9 +471,9 @@ export default async function TeacherDashboardPage() {
                         </div>
                       </div>
 
-                      {safeLessonLink(lesson.meet_link) ? (
+                      {lessonLink ? (
                         <a
-                          href={safeLessonLink(lesson.meet_link) ?? undefined}
+                          href={lessonLink}
                           target="_blank"
                           rel="noreferrer"
                           className={`flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold ${

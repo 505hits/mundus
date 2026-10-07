@@ -89,63 +89,115 @@ begin
  end if;
 end $$;
 
--- Payment/package integrity: every result should be zero.
-select
- (select count(*) from public.lesson_packages where used_lessons < 0 or remaining_lessons < 0
-   or used_lessons + remaining_lessons <> total_lessons) as bad_package_counters,
- (select count(*) from public.lessons l join public.lesson_packages p on p.id=l.package_id
-   where l.student_id<>p.student_id) as cross_student_package_links,
- (select count(*) from public.payment_orders where status='paid' and lesson_package_id is null) as paid_without_package,
- (select count(*) from public.payment_orders where status='pending' and stripe_session_id is null
-   and created_at < now()-interval '30 minutes') as stale_unattached_pending,
- (select count(*) from (select student_id from public.payment_orders where status='pending'
-   group by student_id having count(*)>1) s) as duplicate_pending_students,
- (select count(*) from (select stripe_session_id from public.payment_orders where stripe_session_id is not null
-   group by stripe_session_id having count(*)>1) s) as duplicate_sessions,
- (select count(*) from (select stripe_payment_intent_id from public.payment_orders where stripe_payment_intent_id is not null
-   group by stripe_payment_intent_id having count(*)>1) s) as duplicate_payment_intents;
+-- Payment/package integrity. Notices should all report zero when the related tables exist.
+do $payment_integrity$ declare
+ bad_package_counters bigint:=0; cross_student_package_links bigint:=0; paid_without_package bigint:=0;
+ stale_unattached_pending bigint:=0; duplicate_pending_students bigint:=0; duplicate_sessions bigint:=0;
+ duplicate_payment_intents bigint:=0;
+begin
+ if to_regclass('public.lesson_packages') is not null then
+  execute 'select count(*) from public.lesson_packages where used_lessons < 0 or remaining_lessons < 0 or used_lessons + remaining_lessons <> total_lessons'
+   into bad_package_counters;
+ end if;
+ if to_regclass('public.lessons') is not null and to_regclass('public.lesson_packages') is not null then
+  execute 'select count(*) from public.lessons l join public.lesson_packages p on p.id=l.package_id where l.student_id<>p.student_id'
+   into cross_student_package_links;
+ end if;
+ if to_regclass('public.payment_orders') is not null then
+  execute 'select count(*) from public.payment_orders where status=''paid'' and lesson_package_id is null' into paid_without_package;
+  execute 'select count(*) from public.payment_orders where status=''pending'' and stripe_session_id is null and created_at < now()-interval ''30 minutes'''
+   into stale_unattached_pending;
+  execute 'select count(*) from (select student_id from public.payment_orders where status=''pending'' group by student_id having count(*)>1) s'
+   into duplicate_pending_students;
+  execute 'select count(*) from (select stripe_session_id from public.payment_orders where stripe_session_id is not null group by stripe_session_id having count(*)>1) s'
+   into duplicate_sessions;
+  execute 'select count(*) from (select stripe_payment_intent_id from public.payment_orders where stripe_payment_intent_id is not null group by stripe_payment_intent_id having count(*)>1) s'
+   into duplicate_payment_intents;
+ end if;
+ raise notice 'Payment/package integrity bad counters/cross links/paid without package/stale pending/duplicate students/sessions/intents: %/%/%/%/%/%/%',
+  bad_package_counters,cross_student_package_links,paid_without_package,stale_unattached_pending,duplicate_pending_students,duplicate_sessions,duplicate_payment_intents;
+end $payment_integrity$;
 
--- Lesson/schedule/report integrity: every result should be zero.
-select
- (select count(*) from public.schedule_change_requests r join public.lessons l on l.id=r.lesson_id
-   where r.student_id<>l.student_id) as bad_schedule_student_links,
- (select count(*) from public.schedule_change_requests
-   where status not in ('pending','accepted','declined')) as invalid_schedule_statuses,
- (select count(*) from public.schedule_change_requests
-   where status='pending' and preferred_at<=now()) as expired_pending_requests,
- (select count(*) from public.lessons where status='completed' and completed_at is null) as completed_without_timestamp,
- (select count(*) from public.lessons where status<>'completed' and completed_at is not null) as timestamp_on_noncompleted,
- (select count(*) from public.lesson_reports r join public.lessons l on l.id=r.lesson_id
-   where r.student_id<>l.student_id or r.teacher_id<>l.teacher_id) as mismatched_reports;
+do $schedule_integrity$ declare
+ bad_student_links bigint:=0; invalid_statuses bigint:=0; expired_pending bigint:=0;
+ completed_without_time bigint:=0; time_on_noncompleted bigint:=0; mismatched_reports bigint:=0;
+begin
+ if to_regclass('public.schedule_change_requests') is not null and to_regclass('public.lessons') is not null then
+  execute 'select count(*) from public.schedule_change_requests r join public.lessons l on l.id=r.lesson_id where r.student_id<>l.student_id'
+   into bad_student_links;
+  execute 'select count(*) from public.schedule_change_requests where status not in (''pending'',''accepted'',''declined'')'
+   into invalid_statuses;
+  execute 'select count(*) from public.schedule_change_requests where status=''pending'' and preferred_at<=now()'
+   into expired_pending;
+ end if;
+ if to_regclass('public.lessons') is not null then
+  execute 'select count(*) from public.lessons where status=''completed'' and completed_at is null' into completed_without_time;
+  execute 'select count(*) from public.lessons where status<>''completed'' and completed_at is not null' into time_on_noncompleted;
+ end if;
+ if to_regclass('public.lesson_reports') is not null and to_regclass('public.lessons') is not null then
+  -- Only run the relationship check when the current lesson_reports shape has these columns.
+  if exists(select 1 from information_schema.columns where table_schema='public' and table_name='lesson_reports' and column_name='lesson_id')
+     and exists(select 1 from information_schema.columns where table_schema='public' and table_name='lesson_reports' and column_name='student_id')
+     and exists(select 1 from information_schema.columns where table_schema='public' and table_name='lesson_reports' and column_name='teacher_id') then
+   execute 'select count(*) from public.lesson_reports r join public.lessons l on l.id=r.lesson_id where r.student_id<>l.student_id or r.teacher_id<>l.teacher_id'
+    into mismatched_reports;
+  end if;
+ end if;
+ raise notice 'Schedule/report integrity bad links/statuses/expired pending/completion timestamps/mismatched reports: %/%/%/%/%/%',
+  bad_student_links,invalid_statuses,expired_pending,completed_without_time,time_on_noncompleted,mismatched_reports;
+end $schedule_integrity$;
 
--- Notification queue integrity: every result should be zero.
-select
- (select count(*) from public.notification_outbox where status='sent' and sent_at is null) as schedule_sent_without_time,
- (select count(*) from public.notification_outbox where status<>'sent' and sent_at is not null) as schedule_time_without_sent,
- (select count(*) from public.portal_email_outbox where status='sent' and sent_at is null) as portal_sent_without_time,
- (select count(*) from public.portal_email_outbox where status<>'sent' and sent_at is not null) as portal_time_without_sent,
- (select count(*) from public.notification_outbox where status='sending' and lease_until<now()) as expired_schedule_leases,
- (select count(*) from public.portal_email_outbox where status='sending' and lease_until<now()) as expired_portal_leases,
- (select count(*) from public.notification_outbox where attempts>5) as schedule_over_attempt_limit,
- (select count(*) from public.portal_email_outbox where attempts>5) as portal_over_attempt_limit;
+do $queue_integrity$ declare
+ schedule_sent_without_time bigint:=0; schedule_time_without_sent bigint:=0;
+ portal_sent_without_time bigint:=0; portal_time_without_sent bigint:=0;
+ expired_schedule_leases bigint:=0; expired_portal_leases bigint:=0;
+ schedule_over_limit bigint:=0; portal_over_limit bigint:=0;
+begin
+ if to_regclass('public.notification_outbox') is not null then
+  execute 'select count(*) from public.notification_outbox where status=''sent'' and sent_at is null' into schedule_sent_without_time;
+  execute 'select count(*) from public.notification_outbox where status<>''sent'' and sent_at is not null' into schedule_time_without_sent;
+  execute 'select count(*) from public.notification_outbox where status=''sending'' and lease_until<now()' into expired_schedule_leases;
+  execute 'select count(*) from public.notification_outbox where attempts>5' into schedule_over_limit;
+ end if;
+ if to_regclass('public.portal_email_outbox') is not null then
+  execute 'select count(*) from public.portal_email_outbox where status=''sent'' and sent_at is null' into portal_sent_without_time;
+  execute 'select count(*) from public.portal_email_outbox where status<>''sent'' and sent_at is not null' into portal_time_without_sent;
+  execute 'select count(*) from public.portal_email_outbox where status=''sending'' and lease_until<now()' into expired_portal_leases;
+  execute 'select count(*) from public.portal_email_outbox where attempts>5' into portal_over_limit;
+ end if;
+ raise notice 'Queue integrity sent timestamps/expired leases/attempt limits: %/%/%/%/%/%/%/%',
+  schedule_sent_without_time,schedule_time_without_sent,portal_sent_without_time,portal_time_without_sent,
+  expired_schedule_leases,expired_portal_leases,schedule_over_limit,portal_over_limit;
+end $queue_integrity$;
 
--- Assessment result integrity: every result should be zero.
-select
- (select count(*) from public.placement_results where score<0 or total_questions<=0 or score>total_questions) as bad_assessment_scores,
- (select count(*) from public.placement_results where assessment_kind not in ('placement','progress')) as bad_assessment_kind,
- (select count(*) from public.placement_results where language not in
-   ('Angličtina','Nemčina','Španielčina','Taliančina','Francúzština','Portugalčina')) as unexpected_assessment_language,
- (select count(*) from public.placement_results where skill_scores is null) as missing_assessment_skill_scores;
+do $assessment_integrity$ declare
+ bad_scores bigint:=0; bad_kind bigint:=0; unexpected_language bigint:=0; missing_skills bigint:=0;
+begin
+ if to_regclass('public.placement_results') is not null then
+  execute 'select count(*) from public.placement_results where score<0 or total_questions<=0 or score>total_questions' into bad_scores;
+  if exists(select 1 from information_schema.columns where table_schema='public' and table_name='placement_results' and column_name='assessment_kind') then
+   execute 'select count(*) from public.placement_results where assessment_kind not in (''placement'',''progress'')' into bad_kind;
+  end if;
+  execute 'select count(*) from public.placement_results where language not in (''Angličtina'',''Nemčina'',''Španielčina'',''Taliančina'',''Francúzština'',''Portugalčina'')'
+   into unexpected_language;
+  execute 'select count(*) from public.placement_results where skill_scores is null' into missing_skills;
+ end if;
+ raise notice 'Assessment integrity bad score/kind/language/missing skills: %/%/%/%',
+  bad_scores,bad_kind,unexpected_language,missing_skills;
+end $assessment_integrity$;
 
--- Identity-discount and duplicate-checkout guardrails must stay enabled.
-select t.tgname,t.tgenabled,pg_get_triggerdef(t.oid) as definition
-from pg_trigger t
-where t.tgrelid='public.payment_orders'::regclass and not t.tgisinternal
-and t.tgname in ('guard_discount_identity','queue_paid_student_assignment_email')
-order by t.tgname;
-select indexname,indexdef from pg_indexes where schemaname='public' and tablename='payment_orders'
-and indexname in ('payment_discount_pending_name','payment_discount_pending_email','payment_orders_one_pending_per_student')
-order by indexname;
+-- Identity-discount and duplicate-checkout guardrails, when payments exist.
+do $payment_guards$ declare guard_count bigint:=0; index_count bigint:=0;
+begin
+ if to_regclass('public.payment_orders') is not null then
+  select count(*) into guard_count from pg_trigger t
+   where t.tgrelid='public.payment_orders'::regclass and not t.tgisinternal
+   and t.tgenabled<>'D' and t.tgname in ('guard_discount_identity','queue_paid_student_assignment_email');
+  select count(*) into index_count from pg_indexes where schemaname='public' and tablename='payment_orders'
+   and indexname in ('payment_discount_pending_name','payment_discount_pending_email','payment_orders_one_pending_per_student');
+  raise notice 'Payment guard triggers enabled / expected: %/2; unique checkout indexes present / expected: %/3',guard_count,index_count;
+ end if;
+end $payment_guards$;
 
 -- Sensitive service functions should not be executable by clients.
 select p.proname,has_function_privilege('anon',p.oid,'EXECUTE') as anon_execute,

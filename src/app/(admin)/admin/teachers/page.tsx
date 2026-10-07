@@ -121,7 +121,7 @@ export default async function AdminTeachersPage() {
         <InviteTeacherForm enabled={process.env.MUNDUS_INVITATIONS_ENABLED === "true"} />
 
         {(error || lessonsError || preferencesError || publicProfilesError) && (
-          <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          <div role="alert" aria-live="polite" className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             {sk?"Nepodarilo sa načítať účty lektorov. Obnovte stránku a skúste to znova.":"Teacher accounts could not be loaded. Refresh the page and try again."}
           </div>
         )}

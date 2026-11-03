@@ -91,7 +91,7 @@ When an active package drops to two remaining lessons, admins receive a renewal 
 
 The connected project now records the following additional migrations after the original V1 activation and report grants: teacher_language_offer, foreign_key_indexes, student_matching_preferences, teacher_public_profiles, portal_email_notifications, portal_email_indexes, teacher_profile_visibility, suppress_redundant_renewal, and require_teacher_photo. Read-back verification confirms the 13-language constraints, matching preference columns, teacher profile table/RLS, intentional public teacher-photo bucket, service-only portal notification queue, assignment trigger, renewal trigger, and zero retained Turkish teacher preferences.
 
-Supabase performance advisors report no remaining unindexed foreign keys from the new notification queue. Existing RLS init-plan and multiple-permissive-policy advisories predate this feature pass and are not being broadly refactored immediately before V1 launch. The service-only outbox tables intentionally have RLS enabled with no client policies. Leaked-password protection remains an Auth setting to enable separately if desired.
+Supabase performance advisors now report no auth_rls_initplan or multiple_permissive_policies warnings after the reviewed hardening/consolidation migrations. Remaining performance findings are unused-index INFO notices retained until production traffic provides evidence for safe removal. The service-only outbox tables intentionally have RLS enabled with no client policies. Reviewed SECURITY DEFINER helpers deny anonymous/public execution and use hardened search paths where applicable. Leaked-password protection remains an Auth setting to enable separately.
 
 
 ## Monthly teacher quality feedback
@@ -110,3 +110,13 @@ Admin now has:
 Attendance is stored separately from package accounting and is synchronized from the existing lesson closeout status. Completed lessons map to attended; no-show/cancellation outcomes retain their existing lesson statuses and are mirrored into attendance metadata. This does not install a second credit-deduction path.
 
 Teachers see only their own aggregate monthly summary (completed lessons, unique students, average rating, response count and prior-month comparison). Student identities and written feedback are not exposed through the teacher summary.
+
+## Final autonomous launch-hardening evidence — 31 October 2026
+
+Main now includes post-activation RLS/session hardening, session-predicate optimization, removal of redundant teacher-report policies, consolidation of overlapping permissive policies, and SECURITY DEFINER search-path hardening. Live role probes after consolidation verified that the teacher still sees zero raw student profiles and only assigned portal data, the student sees only their own authorized rows, and admin management access remains intact.
+
+GitHub CI now verifies five layers on every final push: lint, the full safeguard/regression test suite, the launch configuration contract, a production Next.js build, and a real production-server route smoke test using next start. The production smoke covers the main public/auth routes and therefore catches runtime startup/rendering regressions that a compile-only check would miss.
+
+Vercel remains the external blocker. Requests scoped to the known 505hits-projects team return HTTP 403 requiring team authorization; the connector's own authorization-recovery endpoint currently returns 404 for that same team identifier. Do not create a duplicate Vercel project as a workaround. Retry access against the existing team/project once the connector grant works.
+
+The remaining unverified items are genuinely environment/external: real Auth email delivery and browser sessions, real Stripe webhook delivery/checkout/refund scenarios, real SMTP delivery/retries, real storage upload/download through deployed browser sessions, mobile/browser audio QA, leaked-password protection in Supabase Auth, final domain/promotion and production release.

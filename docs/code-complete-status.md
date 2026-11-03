@@ -1,4 +1,4 @@
-# Mundus V1 code-complete status — 5 October 2026
+# Mundus V1 code-complete status — 31 October 2026
 
 This file separates work that is complete in the repository from release work that requires external configuration or live integration testing.
 
@@ -17,6 +17,8 @@ This file separates work that is complete in the repository from release work th
 - Accessibility/error-state hardening for account flows.
 - Current language catalog shared by lesson creation, teacher preferences and server validation.
 - Launch preflight, migration ordering and regression tests.
+- CI production-runtime smoke testing for public/auth routes after a real Next.js production build and server start.
+- CI validation of the launch environment contract for Supabase, Stripe test-mode shape, SMTP settings and worker-secret requirements.
 - Database hardening for the current language constraints, teacher public profiles, notification queues and covering foreign-key indexes is applied and verified in the connected Supabase project.
 
 ## Verified in the connected Supabase project
@@ -35,13 +37,13 @@ Read-only checks against the connected Mundus Supabase project confirmed:
 - Paid-order assignment and low-credit renewal triggers are installed.
 - Notification queue foreign keys and pending-work lookup are indexed.
 
-The live teacher-preference and student-onboarding constraints now match the current 13-language offer. `mundus_active_portal_account()` intentionally remains executable by `anon` because the restrictive RLS policy applies to `public` and needs to evaluate the helper for anonymous requests. With no authenticated `auth.uid()`, the helper returns `false`; regression coverage verifies anonymous table access remains blocked.
+The live teacher-preference and student-onboarding constraints now match the current 13-language offer. Anonymous/public execution of the reviewed SECURITY DEFINER helpers has been revoked; portal policies are scoped to authenticated users where appropriate, and anonymous table access remains blocked.
 
 ## External/integration work still required
 
 These cannot be completed or honestly verified from repository work alone:
 
-1. Enable leaked-password protection in Supabase Auth if desired for launch.
+1. Enable leaked-password protection in Supabase Auth before launch.
 2. Verify real student signup, confirmation email, login, logout and password recovery.
 3. Verify a real teacher invitation, profile completion/photo upload and password setup.
 4. Configure the Stripe test webhook against the final deployed callback URL and run purchase, retry, repurchase, discount, delayed-payment and refund scenarios.

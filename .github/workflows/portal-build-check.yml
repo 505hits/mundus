@@ -37,6 +37,27 @@ jobs:
       - name: Test portal safeguards and assessment drafts
         run: npm test
 
+      - name: Validate launch configuration contract
+        run: npm run launch:check
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: test-build-key
+          SUPABASE_SERVICE_ROLE_KEY: test-service-key
+          MUNDUS_SITE_URL: https://mundus.example
+          MUNDUS_SELF_SIGNUP_ENABLED: "true"
+          MUNDUS_INVITATIONS_ENABLED: "true"
+          MUNDUS_PAYMENTS_ENABLED: "true"
+          MUNDUS_PAYMENTS_LIVE_ENABLED: "false"
+          STRIPE_RESTRICTED_KEY: rk_test_ci_only
+          STRIPE_WEBHOOK_SECRET: whsec_ci_only
+          MUNDUS_EMAIL_NOTIFICATIONS_ENABLED: "true"
+          MUNDUS_SMTP_HOST: smtp.example.com
+          MUNDUS_SMTP_PORT: "587"
+          MUNDUS_SMTP_USER: ci-user
+          MUNDUS_SMTP_PASSWORD: ci-password
+          MUNDUS_EMAIL_FROM: noreply@mundus.example
+          MUNDUS_NOTIFICATION_SECRET: 0123456789abcdef0123456789abcdef
+
       - name: Build portal
         run: npm run build
         env:

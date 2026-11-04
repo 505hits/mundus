@@ -364,7 +364,7 @@ export const translations = {
             label: "Cenník",
             titleStart: "Osobné hodiny,",
             titleEnd: "jasný cenník",
-            subtitle: "Individuálne online hodiny s jasnými cenami balíčkov. Na prvý oprávnený balíček máte zľavu 10 %, potom pokračujete za bežnú cenu balíčka.",
+            subtitle: "Individuálne online hodiny s jasnými cenami balíčkov. Pri prvom balíčku môžete získať zľavu 10 %, potom pokračujete za bežnú cenu.",
             individual: {
                 title: "INDIVIDUÁLNE (1-ON-1) LEKCIE",
                 headers: {

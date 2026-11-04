@@ -19,6 +19,8 @@ assert.equal(purchase.includes("line-through"), false, "regular package prices m
 assert.ok(purchase.includes("packages do not renew automatically") || purchase.includes("Packages do not renew automatically"));
 assert.ok(purchase.includes("Bez predplatného"), "Slovak pricing must explain there is no subscription");
 assert.ok(purchase.includes("No subscription"), "English pricing must explain there is no subscription");
+assert.ok(purchase.includes("company invoice"), "public pricing must offer a company-invoice contact path");
+assert.ok(purchase.includes("faktúru na firmu"), "Slovak pricing must offer a company-invoice contact path");
 assert.ok(purchase.includes("lessons === 10"), "10-lesson package remains the neutral recommended package");
 assert.ok(pricingSection.includes('bg-[#FAFAF9]'), "public pricing should use the same warm portal background");
 assert.ok(nav.includes('href: "/#pricing"'), "navigation should have one clear pricing destination");

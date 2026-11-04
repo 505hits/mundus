@@ -2,22 +2,22 @@
 export const translations = {
     en: {
         nav: {
-            courses: "Courses",
+            courses: "Languages",
             howItWorks: "How it works",
             teachers: "Teachers",
             prices: "Prices",
             features: "Features",
             contact: "Contact",
-            book: "View lesson packages",
+            book: "Choose a package",
             needHelp: "Need help?",
             contactUs: "Contact us",
         },
         hero: {
-            badge: "Personal online language lessons",
+            badge: "Personal 1:1 online language lessons",
             titleBefore: "Learn languages with",
             nativeSpeakers: "experienced teachers",
-            subtitle: "Individual online lessons tailored to your level, goals and schedule.",
-            ctaPrimary: "Explore lesson packages",
+            subtitle: "Learn with a teacher who fits your goals, arrange lessons around your schedule, and keep everything in one simple portal.",
+            ctaPrimary: "Choose your lesson package",
             ctaSecondary: "See how it works",
             interactive: "Interactive Logic",
             students: "60-minute lessons",
@@ -25,16 +25,16 @@ export const translations = {
         },
         languageSelector: {
             badge: "Choose your language",
-            title: "Choose the right course",
+            title: "Choose the language you want to learn",
             titleBreak: "for your",
             goals: "goals",
-            subtitle: "Choose your language. We will help you arrange lessons for your goals and level.",
+            subtitle: "Choose your language and tell us your goal. We will help match you with a suitable teacher and learning plan.",
         },
         howItWorks: {
             label: "Simple process",
             titleStart: "How it",
             titleEnd: "works",
-            subtitle: "Get started in minutes — choose your path, learn at your pace, and see real progress.",
+            subtitle: "From account creation to your first lesson, the process stays simple and personal.",
             steps: [
                 {
                     number: "01",
@@ -62,7 +62,7 @@ export const translations = {
             label: "Why Mundus",
             titleStart: "Everything you need to",
             titleEnd: "succeed",
-            subtitle: "Not just another course — Mundus blends smart tools with real conversation.",
+            subtitle: "Personal teaching, flexible scheduling and one simple portal for your lessons, materials and progress.",
             items: [
                 {
                     title: "Personal teaching",
@@ -94,7 +94,7 @@ export const translations = {
             label: "Our teachers",
             titleStart: "Meet your",
             titleEnd: "experts",
-            subtitle: "Join live sessions with native teachers — carefully selected for their expertise and passion.",
+            subtitle: "Learn with carefully selected teachers matched to your language, goals, level and availability.",
             list: [
                 {
                     name: "Lenka",
@@ -135,9 +135,9 @@ export const translations = {
         },
         pricing: {
             label: "Pricing",
-            titleStart: "Simple, transparent",
-            titleEnd: "pricing",
-            subtitle: "Choose the package that suits your learning style.",
+            titleStart: "Personal lessons,",
+            titleEnd: "clear pricing",
+            subtitle: "One-to-one online lessons with clear package prices. Your first eligible package is 10% off, then you continue at the regular package price.",
             individual: {
                 title: "INDIVIDUAL (1-ON-1) LESSONS",
                 headers: {
@@ -176,9 +176,9 @@ export const translations = {
                 note: "First-package offer applies to eligible student accounts.",
                 buyLabel: "Choose package",
                 contactLabel: "Contact us",
-                paymentNote: "Sign in or create a student account to confirm your price and pay securely.",
-                existingAccountNote: "Existing students can sign in to pay online. New students can contact us to create an account.",
-                offlineNote: "Online payment is coming soon. Contact us to arrange lessons."
+                paymentNote: "Create or sign in to your student account to confirm your final price and continue to secure payment.",
+                existingAccountNote: "Sign in to your student account to confirm your price and continue to payment. New students can contact us if account creation is not currently open.",
+                offlineNote: "Contact us to choose a package and arrange your first lesson."
             },
         },
         booking: {
@@ -229,22 +229,22 @@ export const translations = {
     },
     sk: {
         nav: {
-            courses: "Kurzy",
+            courses: "Jazyky",
             howItWorks: "Ako to funguje",
             teachers: "Lektori",
             prices: "Cenník",
             features: "Výhody",
             contact: "Kontakt",
-            book: "Pozrieť balíčky",
+            book: "Vybrať balíček",
             needHelp: "Potrebujete pomoc?",
             contactUs: "Kontaktujte nás",
         },
         hero: {
-            badge: "Individuálna online výučba jazykov",
+            badge: "Individuálna 1:1 online výučba jazykov",
             titleBefore: "Učte sa jazyky s",
             nativeSpeakers: "skúsenými lektormi",
-            subtitle: "Individuálne online hodiny prispôsobené vašej úrovni, cieľom a časovým možnostiam.",
-            ctaPrimary: "Vybrať balíček hodín",
+            subtitle: "Učte sa s lektorom podľa vašich cieľov, dohodnite si termíny flexibilne a majte hodiny, materiály aj pokrok v jednom jednoduchom portáli.",
+            ctaPrimary: "Vybrať balíček",
             ctaSecondary: "Ako to funguje",
             interactive: "Interaktívna výučba",
             students: "60-minútové hodiny",
@@ -252,16 +252,16 @@ export const translations = {
         },
         languageSelector: {
             badge: "Vyberte si jazyk",
-            title: "Vyberte si správny kurz",
+            title: "Vyberte si jazyk, ktorý sa chcete učiť",
             titleBreak: "pre vaše",
             goals: "ciele",
-            subtitle: "Vyberte si jazyk. Pomôžeme vám dohodnúť výučbu podľa vašich cieľov a úrovne.",
+            subtitle: "Vyberte si jazyk a povedzte nám svoj cieľ. Pomôžeme vám nájsť vhodného lektora a nastaviť výučbu podľa vás.",
         },
         howItWorks: {
             label: "Jednoduchý proces",
             titleStart: "Ako to",
             titleEnd: "funguje",
-            subtitle: "Začnite v priebehu pár minút — vyberte si cestu, učte sa vlastným tempom a vidíte skutočný pokrok.",
+            subtitle: "Od vytvorenia účtu po prvú hodinu zostáva celý proces jednoduchý a osobný.",
             steps: [
                 {
                     number: "01",
@@ -289,7 +289,7 @@ export const translations = {
             label: "Prečo Mundus",
             titleStart: "Všetko čo potrebujete na",
             titleEnd: "úspech",
-            subtitle: "Nie len ďalší kurz — Mundus spája smart nástroje so skutočnou konverzáciou.",
+            subtitle: "Osobná výučba, flexibilné termíny a jeden jednoduchý portál pre vaše hodiny, materiály a pokrok.",
             items: [
                 {
                     title: "Osobná výučba",
@@ -321,7 +321,7 @@ export const translations = {
             label: "Naši lektori",
             titleStart: "Spoznajte vašich",
             titleEnd: "expertov",
-            subtitle: "Pripojte sa k živým lekciám s rodenými hovorcami — starostlivo vybranými pre ich odbornosť a vášeň.",
+            subtitle: "Učte sa so starostlivo vybranými lektormi podľa jazyka, cieľov, úrovne a časových možností.",
             list: [
                 {
                     name: "Lenka",
@@ -362,9 +362,9 @@ export const translations = {
         },
         pricing: {
             label: "Cenník",
-            titleStart: "Jednoduchý, transparentný",
-            titleEnd: "cenník",
-            subtitle: "Vyberte si balíček, ktorý vyhovuje vášmu štýlu učenia.",
+            titleStart: "Osobné hodiny,",
+            titleEnd: "jasný cenník",
+            subtitle: "Individuálne online hodiny s jasnými cenami balíčkov. Na prvý oprávnený balíček máte zľavu 10 %, potom pokračujete za bežnú cenu balíčka.",
             individual: {
                 title: "INDIVIDUÁLNE (1-ON-1) LEKCIE",
                 headers: {
@@ -403,9 +403,9 @@ export const translations = {
                 note: "Zľava na prvý balíček platí pre oprávnené študentské účty.",
                 buyLabel: "Vybrať balíček",
                 contactLabel: "Kontaktovať nás",
-                paymentNote: "Po prihlásení alebo vytvorení študentského účtu uvidíte konečnú cenu a môžete zaplatiť online.",
-                existingAccountNote: "Existujúci študenti sa môžu prihlásiť a zaplatiť online. Novým študentom pomôžeme vytvoriť účet po kontakte s nami.",
-                offlineNote: "Online platby pripravujeme. Ak máte záujem o hodiny, kontaktujte nás."
+                paymentNote: "Vytvorte si alebo otvorte študentský účet, kde sa overí konečná cena a môžete pokračovať k bezpečnej platbe.",
+                existingAccountNote: "Prihláste sa do študentského účtu, kde sa overí cena a môžete pokračovať k platbe. Ak registrácia nových účtov práve nie je otvorená, kontaktujte nás.",
+                offlineNote: "Kontaktujte nás, vyberieme spolu balíček a dohodneme vašu prvú hodinu."
             },
         },
         booking: {

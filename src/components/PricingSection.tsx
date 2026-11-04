@@ -49,8 +49,8 @@ export default function PricingSection({
 
           <p className="mt-4 text-sm font-medium text-[#2F3AA2]">
             {sk
-              ? "Žiadne viazanosti ani automatické predplatné — vyberiete si len počet hodín, ktorý vám vyhovuje."
-              : "No contracts or automatic subscription — simply choose the number of lessons that suits you."}
+              ? "Bez automatického predplatného — vyberiete si len počet hodín, ktorý vám vyhovuje."
+              : "No automatic renewal or recurring subscription — simply choose the number of lessons that suits you."}
           </p>
         </motion.div>
 

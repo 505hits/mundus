@@ -34,8 +34,15 @@ try {
     if (response.status !== 200) throw new Error(`${route} returned HTTP ${response.status}\n${logs}`);
     const html = await response.text();
     if (!html.toLowerCase().includes("mundus")) throw new Error(`${route} did not render expected Mundus content`);
+    if (response.headers.get("x-content-type-options") !== "nosniff") throw new Error(`${route} missing nosniff header`);
+    if (response.headers.get("x-frame-options") !== "SAMEORIGIN") throw new Error(`${route} missing SAMEORIGIN frame policy`);
+    if (response.headers.get("referrer-policy") !== "strict-origin-when-cross-origin") throw new Error(`${route} missing referrer policy`);
+    const permissions = response.headers.get("permissions-policy") || "";
+    for (const directive of ["camera=()", "microphone=()", "geolocation=()"]) {
+      if (!permissions.includes(directive)) throw new Error(`${route} missing Permissions-Policy directive ${directive}`);
+    }
   }
-  console.log(`PASS: production server rendered ${routes.length} public/auth routes`);
+  console.log(`PASS: production server rendered ${routes.length} public/auth routes with baseline security headers`);
 } finally {
   child.kill("SIGTERM");
 }

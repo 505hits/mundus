@@ -146,10 +146,15 @@ export default function PurchasePackages({ paymentsAvailable, signupAvailable }:
             ? "Balíčky sa automaticky neobnovujú."
             : "Packages do not renew automatically."}
         </p>
-        <span className="inline-flex shrink-0 items-center gap-2 font-medium text-[#2F3AA2]">
-          <CreditCard size={17} />
-          {sk ? "Jednorazová platba v EUR" : "One-time payment in EUR"}
-        </span>
+        <div className="flex shrink-0 flex-col gap-2 md:items-end">
+          <span className="inline-flex items-center gap-2 font-medium text-[#2F3AA2]">
+            <CreditCard size={17} />
+            {sk ? "Jednorazová platba v EUR" : "One-time payment in EUR"}
+          </span>
+          <Link href="/contact" className="text-xs font-medium text-gray-500 underline underline-offset-2 hover:text-[#2F3AA2]">
+            {sk ? "Potrebujete faktúru na firmu? Kontaktujte nás." : "Need a company invoice? Contact us."}
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -29,10 +29,12 @@ assert.ok(recoveryPage.includes('window.history.replaceState(null, "", "/reset-p
 assert.ok(recoveryPage.includes('autoComplete="new-password"'));
 
 const forgot = read("src/app/forgot-password/page.tsx");
-const recoveryAction = read("src/app/auth-support-actions.ts");
+const authSupport = read("src/app/auth-support-actions.ts");
 assert.ok(forgot.includes("requestPasswordRecovery"));
-assert.ok(recoveryAction.includes('redirectTo: `${accountOrigin()}/reset-password`'));
-assert.ok(recoveryAction.includes("If this email belongs to a Mundus account"));
+assert.equal(forgot.includes("createSupabaseBrowserClient"), false);
+assert.ok(authSupport.includes("resetPasswordForEmail(email"));
+assert.ok(authSupport.includes('redirectTo: `${accountOrigin()}/reset-password`'));
+assert.ok(authSupport.includes("If this email belongs to a Mundus account"));
 
 const invite = read("src/app/set-password/actions.ts");
 assert.ok(invite.includes('MUNDUS_INVITATIONS_ENABLED !== "true"'));

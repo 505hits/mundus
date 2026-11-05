@@ -35,6 +35,14 @@ export default function Footer() {
         { href: "/#languages", label: sk ? "A ďalšie jazyky" : "And more languages" },
       ],
     },
+    {
+      title: sk ? "Právne" : "Legal",
+      links: [
+        { href: "/privacy", label: sk ? "Ochrana súkromia" : "Privacy" },
+        { href: "/terms", label: sk ? "Podmienky" : "Terms" },
+        { href: "/cookies", label: "Cookies" },
+      ],
+    },
   ];
 
   return <footer className="footer bg-white">
@@ -46,7 +54,7 @@ export default function Footer() {
             {sk ? "Individuálna online výučba jazykov 1:1 s flexibilnými termínmi a vlastným študentským portálom." : "Individual 1:1 online language lessons with flexible scheduling and your own student portal."}
           </p>
         </div>
-        <div className="grid gap-8 sm:grid-cols-3">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {groups.map(group => <nav key={group.title} aria-label={group.title}>
             <p className="footer-title">{group.title}</p>
             <ul className="footer-links">

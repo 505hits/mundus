@@ -37,8 +37,9 @@ function formatTime(value: string, language: Language) {
   }).format(new Date(value));
 }
 
-export default async function DashboardPage() {
+export default async function DashboardPage({ searchParams }: { searchParams?: Promise<{ payment?: string }> }) {
   const language = await currentLanguage();
+  const paymentSuccess = (await searchParams)?.payment === "success";
   const sk = language === "sk";
   const { user } = await requireRole("student");
   const paymentsAvailable = paymentEnabled();
@@ -210,6 +211,10 @@ export default async function DashboardPage() {
       </header>
 
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
+        {paymentSuccess && <section role="status" className="mb-6 rounded-3xl border border-emerald-200 bg-emerald-50 p-5">
+          <p className="font-semibold text-emerald-900">{sk ? "Platba bola potvrdená" : "Payment confirmed"}</p>
+          <p className="mt-1 text-sm leading-6 text-emerald-900/75">{sk ? "Balíček je vo vašom účte. Mundus teraz použije vaše preferencie na odporúčanie vhodného lektora a pripraví prvú hodinu." : "Your package is in your account. Mundus will now use your preferences to recommend a suitable teacher and prepare your first lesson."}</p>
+        </section>}
         {teachersToRate.size > 0 && <section className="mb-6 flex flex-col gap-4 rounded-3xl border border-amber-200 bg-amber-50 p-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="font-semibold text-amber-900">{sk ? "Ako sa vám tento mesiac učilo?" : "How was learning this month?"}</p>

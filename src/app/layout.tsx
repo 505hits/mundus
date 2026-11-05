@@ -8,7 +8,7 @@ import { currentLanguage } from "@/lib/i18n";
 export const metadata: Metadata = {
   title: "Mundus Languages | Online jazykové hodiny",
   description: "Individuálne online jazykové hodiny. Vyberte si jazyk a balíček 60-minútových hodín, učte sa s lektorom a sledujte svoj pokrok.",
-  keywords: ["online jazykové hodiny", "angličtina", "nemčina", "španielčina", "taliančina", "francúzština", "portugalčina", "ruština", "turečtina"],
+  keywords: ["online jazykové hodiny", "angličtina", "nemčina", "španielčina", "taliančina", "francúzština", "portugalčina", "ruština", "slovenčina", "ukrajinčina"],
   openGraph: {
     title: "Mundus Languages | Online jazykové hodiny",
     description: "Individuálne online jazykové hodiny s lektorom a prehľadom o vašom pokroku.",

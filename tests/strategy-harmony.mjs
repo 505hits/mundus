@@ -15,6 +15,8 @@ const footer=read("src/components/Footer.tsx");
 const layout=read("src/app/layout.tsx");
 const faq=read("src/components/FAQSection.tsx");
 const preview=read("src/components/PortalPreviewSection.tsx");
+const dashboardSetup=read("src/app/(portal)/dashboard/setup/page.tsx");
+const legacyOnboarding=read("src/app/onboarding/page.tsx");
 
 for(const component of ["PortalPreviewSection","TrustSection","FAQSection"]) {
   assert.ok(home.includes(component), `homepage must include ${component}`);
@@ -22,7 +24,12 @@ for(const component of ["PortalPreviewSection","TrustSection","FAQSection"]) {
 assert.ok(onboarding.includes('name="lessons_per_week"'));
 assert.ok(onboardingAction.includes("lessons_per_week: lessonsPerWeek"));
 assert.ok(onboardingAction.includes("lessonsPerWeek < 1 || lessonsPerWeek > 5"));
-assert.ok(paymentReturn.includes('redirect("/onboarding?next=%2Fdashboard%3Fpayment%3Dsuccess")'));
+assert.ok(onboardingAction.includes("Onboarding is available only after a package payment is confirmed."));
+assert.ok(dashboardSetup.includes("Payment confirmed"));
+assert.ok(dashboardSetup.includes('OnboardingForm next="/dashboard?payment=success"'));
+assert.ok(legacyOnboarding.includes('redirect("/packages")'));
+assert.ok(legacyOnboarding.includes('redirect("/dashboard/setup")'));
+assert.ok(paymentReturn.includes('redirect("/dashboard/setup?payment=success")'));
 assert.ok(paymentReturn.includes('redirect("/dashboard?payment=success")'));
 assert.ok(matching.includes("lessons_per_week"));
 assert.ok(matching.includes("Approve this match"));
@@ -31,13 +38,20 @@ assert.ok(lessonForm.includes("initialStudentId"));
 assert.ok(lessonForm.includes("initialTeacherId"));
 
 assert.ok(translations.includes('number: "05"'), "How It Works must show five real customer steps");
+assert.ok(translations.includes("Create your account & pay securely"));
 assert.ok(translations.includes("Complete your learning preferences"));
 assert.ok(translations.includes("Doplňte svoje preferencie"));
 assert.ok(faq.includes("Čo sa stane po platbe?"));
 assert.ok(preview.includes("Portal preview"));
 assert.ok(footer.includes('href: "/#faq"'));
+assert.ok(footer.includes('href: "/privacy"'));
+assert.ok(footer.includes('href: "/terms"'));
+assert.ok(footer.includes('href: "/cookies"'));
+assert.ok(footer.includes('href: "/dashboard"'));
 
 assert.equal(hero.includes("images.unsplash.com/photo-1507003211169"), false, "hero must not use stock faces as student proof");
+assert.equal(hero.includes("Gemini_Generated_Image"), false, "hero must not use generated learner imagery");
+assert.ok(hero.includes("Payment comes first") || hero.includes("Najprv platba"));
 assert.equal(translations.includes("200+ students"), false);
 assert.equal(translations.includes("200+ študentov"), false);
 assert.equal(translations.includes("4.9/5"), false);

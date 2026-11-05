@@ -1,7 +1,7 @@
 export function portalEmail(kind:string,studentName:string,portalUrl:string){
   if(kind==="admin_assignment") return {
-    subject:"Mundus: nový platený študent čaká na lektora",
-    text:"Nový študent "+studentName+" má zaplatený balíček a čaká na priradenie lektora.\n\nSmart matching: "+portalUrl+"\n\nMundus Languages"
+    subject:"Mundus: nová online platba – študent čaká na lektora",
+    text:"Online platba bola potvrdená. Študent "+studentName+" má zaplatený balíček a čaká na priradenie lektora.\n\nSmart matching: "+portalUrl+"\n\nMundus Languages"
   };
   if(kind==="admin_renewal") return {
     subject:"Mundus: študentovi zostávajú posledné hodiny",

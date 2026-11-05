@@ -1,263 +1,90 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, CalendarClock, LayoutDashboard, Star, UserRound } from "lucide-react";
-import Image from "next/image";
-
-const fadeInUp = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0 },
-};
-
-const stagger = {
-    visible: { transition: { staggerChildren: 0.15 } },
-};
-
-const imageReveal = {
-    hidden: { opacity: 0, y: 40, scale: 0.95 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        transition: { duration: 0.7, ease: "easeOut" as const }
-    },
-};
-
-const titleAnimation = {
-    hidden: { opacity: 0, y: 50 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: { duration: 0.6, ease: "easeOut" as const }
-    },
-};
-
+import { ArrowRight, CalendarClock, CheckCircle2, LayoutDashboard, ShieldCheck, UserRound } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
+const fadeInUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0 },
+};
+
 export default function Hero() {
-    const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const sk = language === "sk";
 
-    return (
-        <section className="relative flex min-h-[88vh] items-center overflow-hidden bg-[#171A2B] pt-32 pb-20 lg:pt-40 lg:pb-28">
-            {/* Animated blue gradient blobs */}
-            <div className="absolute inset-0 z-0 overflow-hidden">
-                <div
-                    className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[900px] h-[900px] rounded-full opacity-45 blur-[130px]"
-                    style={{
-                        background: 'radial-gradient(circle, rgba(72,82,190,0.72) 0%, rgba(47,58,162,0.3) 42%, transparent 72%)',
-                        animation: 'heroGradientMove 8s ease-in-out infinite',
-                    }}
-                />
-                <div
-                    className="absolute top-[-10%] left-[30%] w-[600px] h-[600px] rounded-full opacity-40 blur-[100px]"
-                    style={{
-                        background: 'radial-gradient(circle, rgba(80,100,220,0.7) 0%, rgba(47,58,162,0.3) 50%, transparent 70%)',
-                        animation: 'heroGradientMove2 10s ease-in-out infinite',
-                    }}
-                />
-                <div
-                    className="absolute top-[5%] right-[20%] w-[500px] h-[500px] rounded-full opacity-30 blur-[100px]"
-                    style={{
-                        background: 'radial-gradient(circle, rgba(100,120,255,0.6) 0%, transparent 60%)',
-                        animation: 'heroGradientMove3 12s ease-in-out infinite',
-                    }}
-                />
+  return (
+    <section className="relative overflow-hidden bg-[#171A2B] pb-20 pt-32 lg:pb-28 lg:pt-40">
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute left-1/2 top-[-35%] h-[900px] w-[900px] -translate-x-1/2 rounded-full bg-[#4652C2]/35 blur-[150px]" />
+        <div className="absolute right-[-10%] top-[10%] h-[520px] w-[520px] rounded-full bg-[#7382FF]/20 blur-[120px]" />
+      </div>
+
+      <div className="container relative z-10 grid gap-12 lg:grid-cols-[1fr_0.95fr] lg:items-center">
+        <motion.div initial="hidden" animate="visible" transition={{ staggerChildren: 0.12 }}>
+          <motion.span variants={fadeInUp} className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-semibold text-white">
+            <ShieldCheck size={16} className="text-[#C7D2FE]" />
+            {t.hero.badge}
+          </motion.span>
+
+          <motion.h1 variants={fadeInUp} className="mt-7 max-w-3xl text-4xl font-semibold leading-[1.05] !text-white sm:text-5xl lg:text-7xl">
+            {t.hero.titleBefore}{" "}
+            <span className="text-[#C7D2FE]">{t.hero.nativeSpeakers}</span>
+          </motion.h1>
+
+          <motion.p variants={fadeInUp} className="mt-6 max-w-2xl text-base leading-8 text-[#D8DBE8] sm:text-lg">
+            {t.hero.subtitle}
+          </motion.p>
+
+          <motion.div variants={fadeInUp} className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <a href="#buy-packages" className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#4652C2] px-6 py-4 font-semibold text-white shadow-lg shadow-black/20 transition hover:bg-[#5361D4]">
+              {sk ? "Vybrať balíček a zaplatiť online" : "Choose a package & pay online"}
+              <ArrowRight size={18} />
+            </a>
+            <a href="/contact" className="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-6 py-4 font-semibold text-white transition hover:bg-white/10">
+              {sk ? "Najprv sa opýtať" : "Ask us first"}
+            </a>
+          </motion.div>
+
+          <motion.div variants={fadeInUp} className="mt-8 flex flex-wrap gap-3 text-sm text-[#D8DBE8]">
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.06] px-4 py-2"><UserRound size={16} className="text-[#C7D2FE]" />{t.hero.students}</span>
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.06] px-4 py-2"><CalendarClock size={16} className="text-[#C7D2FE]" />{t.hero.rating}</span>
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.06] px-4 py-2"><LayoutDashboard size={16} className="text-[#C7D2FE]" />{t.hero.interactive}</span>
+          </motion.div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 24, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.65, delay: 0.2 }}
+          className="rounded-[30px] border border-white/10 bg-[#F8F8FF] p-4 text-[#171A2B] shadow-2xl shadow-black/30 sm:p-6"
+        >
+          <div className="flex items-center justify-between border-b border-[#E5E7F0] pb-4">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#2F3AA2]">Mundus</p>
+              <p className="mt-1 font-semibold">{sk ? "Ako začnete" : "How you start"}</p>
             </div>
+            <span className="rounded-full bg-[#EEF2FF] px-3 py-1 text-xs font-semibold text-[#2F3AA2]">{sk ? "Jednoduchý proces" : "Simple process"}</span>
+          </div>
 
-            {/* Gradient Fade to Gray-50 (Next Section Blend) */}
-            <div className="absolute -bottom-1 left-0 w-full h-48 bg-gradient-to-b from-transparent via-[#0a0a0f]/80 to-gray-50 pointer-events-none z-10" />
-
-            <motion.div
-                variants={stagger}
-                initial="hidden"
-                animate="visible"
-                className="container relative z-[5]"
-            >
-                {/* Badge */}
-                <motion.div
-                    variants={fadeInUp}
-                    transition={{ duration: 0.5 }}
-                    className="flex justify-center"
-                >
-                    <span className="hero-badge text-xs md:text-sm px-3 py-1.5 md:px-4 md:py-2" style={{ background: 'rgba(47,58,162,0.6)', backdropFilter: 'blur(8px)', border: '1px solid rgba(100,120,255,0.3)' }}>
-                        <Star size={12} className="md:w-[14px] md:h-[14px]" />
-                        {t.hero.badge}
-                    </span>
-                </motion.div>
-
-                {/* Animated Title */}
-                <motion.h1
-                    variants={titleAnimation}
-                    className="hero-title mt-6 text-center text-4xl font-semibold leading-[1.06] !text-white md:text-6xl lg:text-[4.4rem]"
-                >
-                    {t.hero.titleBefore}{" "}
-                    <span className="relative inline-block text-[#C7D2FE]" style={{ fontStyle: 'italic' }}>
-                        {t.hero.nativeSpeakers}
-                        <svg className="absolute w-full h-3 -bottom-1 left-0 text-blue-400 opacity-80 -z-10" viewBox="0 0 100 10" preserveAspectRatio="none">
-                            <motion.path
-                                d="M0 5 Q 50 10 100 5"
-                                stroke="currentColor"
-                                strokeWidth="8"
-                                fill="none"
-                                initial={{ pathLength: 0 }}
-                                animate={{ pathLength: 1 }}
-                                transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
-                            />
-                        </svg>
-                    </span>
-                </motion.h1>
-
-                {/* Subtitle */}
-                <motion.p
-                    variants={fadeInUp}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                    className="hero-subtitle mx-auto mt-6 max-w-2xl text-center text-base !text-[#D8DBE8] md:text-xl"
-                >
-                    {t.hero.subtitle}
-                </motion.p>
-
-                {/* CTAs */}
-                <motion.div
-                    variants={fadeInUp}
-                    transition={{ duration: 0.5, delay: 0.3 }}
-                    className="hero-cta mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 relative z-20"
-                >
-                    <motion.a
-                        href="#pricing"
-                        whileHover={{ scale: 1.02, y: -2 }}
-                        whileTap={{ scale: 0.98 }}
-                        className="btn w-full sm:w-auto justify-center text-white font-semibold"
-                        style={{ background: 'linear-gradient(135deg, #4652C2, #2F3AA2)', boxShadow: '0 14px 34px rgba(12,18,72,0.34)' }}
-                    >
-                        {t.hero.ctaPrimary}
-                        <ArrowRight size={18} />
-                    </motion.a>
-                    <motion.a
-                        href="#how-it-works"
-                        whileHover={{ scale: 1.02, y: -2 }}
-                        whileTap={{ scale: 0.98 }}
-                        className="btn w-full sm:w-auto justify-center hidden sm:flex cursor-pointer relative z-20 text-white"
-                        style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)' }}
-                    >
-                        {t.hero.ctaSecondary}
-                    </motion.a>
-                </motion.div>
-
-                {/* Image Grid - Mobile Scroller / Desktop Grid */}
-                <motion.div
-                    variants={stagger}
-                    className="mt-12 md:mt-14"
-                >
-                    {/* Mobile Stacked Images */}
-                    <div className="md:hidden relative h-[450px] w-full mt-10 flex justify-center items-center">
-                        {/* Card 3 - Back */}
-                        <motion.div
-                            initial={{ rotate: -10, y: 20, scale: 0.9 }}
-                            animate={{ rotate: -6, y: 10, scale: 0.95 }}
-                            transition={{ duration: 0.8, delay: 0.2 }}
-                            className="absolute w-[75%] aspect-[3/4] rounded-2xl overflow-hidden shadow-lg border-4 border-white/20 transform -translate-x-4 bg-gray-800 z-10"
-                        >
-                            <Image
-                                src="/Gemini_Generated_Image_r3ay2xr3ay2xr3ay.png"
-                                alt="Mundus learner"
-                                fill
-                                className="object-cover opacity-60"
-                            />
-                        </motion.div>
-
-                        {/* Card 2 - Middle */}
-                        <motion.div
-                            initial={{ rotate: 10, y: 20, scale: 0.9 }}
-                            animate={{ rotate: 6, y: 10, scale: 0.95 }}
-                            transition={{ duration: 0.8, delay: 0.4 }}
-                            className="absolute w-[75%] aspect-[3/4] rounded-2xl overflow-hidden shadow-xl border-4 border-white/20 transform translate-x-4 bg-gray-800 z-20"
-                        >
-                            <Image
-                                src="/Gemini_Generated_Image_841mwh841mwh841m.png"
-                                alt="Mundus learner"
-                                fill
-                                className="object-cover opacity-80"
-                            />
-                        </motion.div>
-
-                        {/* Card 1 - Front (Main) */}
-                        <motion.div
-                            initial={{ rotate: 0, y: 40, scale: 0.9 }}
-                            animate={{ rotate: 0, y: 0, scale: 1 }}
-                            transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
-                            className="absolute w-[75%] aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl border-4 border-white/20 z-30"
-                        >
-                            <Image
-                                src="/Gemini_Generated_Image_4omac74omac74oma.png"
-                                alt="Mundus learner"
-                                fill
-                                className="object-cover"
-                            />
-                            <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/60 to-transparent text-white text-center">
-                                <p className="font-bold text-sm">{t.hero.interactive}</p>
-                            </div>
-                        </motion.div>
-                    </div>
-
-                    <div className="hidden md:grid image-grid grid-cols-12 gap-6 h-[500px]">
-                        <motion.div
-                            variants={imageReveal}
-                            className="col-span-12 md:col-span-6 lg:col-span-5 relative rounded-3xl overflow-hidden shadow-2xl h-full"
-                        >
-                            <Image
-                                src="/Gemini_Generated_Image_4omac74omac74oma.png"
-                                alt="Mundus learning experience"
-                                fill
-                                className="object-cover"
-                            />
-                        </motion.div>
-                        <motion.div
-                            variants={imageReveal}
-                            className="col-span-12 md:col-span-6 lg:col-span-4 flex flex-col gap-6 h-full"
-                        >
-                            <div className="relative flex-1 rounded-3xl overflow-hidden shadow-xl">
-                                <Image
-                                    src="/Gemini_Generated_Image_841mwh841mwh841m.png"
-                                    alt="Student learning"
-                                    fill
-                                    className="object-cover"
-                                />
-                            </div>
-                        </motion.div>
-                        <motion.div
-                            variants={imageReveal}
-                            className="col-span-12 lg:col-span-3 relative rounded-3xl overflow-hidden shadow-xl hidden lg:block h-full"
-                        >
-                            <Image
-                                src="/Gemini_Generated_Image_r3ay2xr3ay2xr3ay.png"
-                                alt="Student studying"
-                                fill
-                                className="object-cover"
-                            />
-                        </motion.div>
-                    </div>
-                </motion.div>
-
-                {/* Factual trust indicators */}
-                <motion.div
-                    variants={fadeInUp}
-                    transition={{ duration: 0.5, delay: 0.8 }}
-                    className="mt-8 flex flex-wrap items-center justify-center gap-3 text-sm text-[#D8DBE8] md:mt-10 md:gap-4"
-                >
-                    <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.07] px-4 py-2 backdrop-blur-sm">
-                        <UserRound size={16} className="text-[#C7D2FE]" />
-                        <span className="font-medium text-white">{t.hero.students}</span>
-                    </div>
-                    <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.07] px-4 py-2 backdrop-blur-sm">
-                        <CalendarClock size={16} className="text-[#C7D2FE]" />
-                        <span className="font-medium text-white">{t.hero.rating}</span>
-                    </div>
-                    <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.07] px-4 py-2 backdrop-blur-sm">
-                        <LayoutDashboard size={16} className="text-[#C7D2FE]" />
-                        <span className="font-medium text-white">{t.hero.interactive}</span>
-                    </div>
-                </motion.div>
-            </motion.div>
-        </section>
-    );
+          <div className="mt-5 space-y-3">
+            {[
+              [sk ? "1. Vyberiete si balíček" : "1. Choose a package", sk ? "Jasná cena a 60-minútové individuálne hodiny." : "Clear pricing and 60-minute individual lessons."],
+              [sk ? "2. Zaplatíte online" : "2. Pay online", sk ? "Najprv platba. Až potom vypĺňate detailné preferencie." : "Payment comes first. Detailed preferences come afterwards."],
+              [sk ? "3. Doplníte preferencie" : "3. Add your preferences", sk ? "Jazyk, úroveň, frekvencia, dni, časy a cieľ." : "Language, level, frequency, days, times and goal."],
+              [sk ? "4. Mundus odporučí lektora" : "4. Mundus recommends a teacher", sk ? "Vyhodnotíme vhodné zhody a finálne priradenie schválime." : "We rank suitable matches and approve the final assignment."],
+            ].map(([title,desc]) => (
+              <div key={title} className="flex gap-3 rounded-2xl bg-white p-4 shadow-sm">
+                <CheckCircle2 size={20} className="mt-0.5 shrink-0 text-[#2F3AA2]" />
+                <div>
+                  <p className="font-semibold">{title}</p>
+                  <p className="mt-1 text-sm leading-6 text-gray-600">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
 }

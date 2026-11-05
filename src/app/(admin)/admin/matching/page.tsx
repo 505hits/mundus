@@ -17,6 +17,7 @@ export default async function MatchingPage({ searchParams }: { searchParams?: Pr
   const selectedTeacherId = selected?.teacher ?? "";
   const sk=language==="sk";
   const days=sk?["","Po","Ut","St","Št","Pi","So","Ne"]:["","Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+  const reasonLabel=(reason:string)=>({language:sk?"jazyk":"language",level:sk?"úroveň":"level",flexible_level:sk?"flexibilná úroveň":"flexible level",day:sk?"deň":"day",time:sk?"čas":"time"}[reason]??reason);
   await requireRole("admin");
   const db=await createSupabaseServerClient();
   const now=new Date().toISOString();
@@ -105,7 +106,7 @@ export default async function MatchingPage({ searchParams }: { searchParams?: Pr
                       <span className="text-xs font-bold text-[#2F3AA2]">{score} {sk?"bodov":"points"}</span>
                     </div>
                     <p className="mt-2 text-sm text-gray-600">{pref.languages.map((value:string)=>formatLanguage(value,language)).join(", ")} · {pref.levels.join(", ")}</p>
-                    <p className="mt-2 text-xs text-gray-500">{sk?"Zhoda":"Match"}: {reasons.join(", ")} · {sk?"voľná kapacita":"free capacity"} {freeCapacity}</p>
+                    <p className="mt-2 text-xs text-gray-500">{sk?"Zhoda":"Match"}: {reasons.map(reasonLabel).join(", ")} · {sk?"voľná kapacita":"free capacity"} {freeCapacity}</p>
                     <Link
                       href={`/admin/matching?student=${encodeURIComponent(student.id)}&teacher=${encodeURIComponent(teacher.id)}#confirm-match`}
                       className="mt-3 inline-flex rounded-xl bg-[#2F3AA2] px-3 py-2 text-xs font-semibold text-white"

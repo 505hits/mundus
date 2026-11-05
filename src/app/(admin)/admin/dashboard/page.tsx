@@ -177,6 +177,8 @@ export default async function AdminDashboardPage() {
 
   const onboardingStudentIds = new Set((onboardingRows ?? []).map((row) => row.student_id));
   const studentsMissingOnboarding = (students ?? []).filter((student) => !onboardingStudentIds.has(student.id));
+  const paidWaitingForOnboarding = newPaidUnassigned.filter(student => !onboardingStudentIds.has(student.id));
+  const readyForMatching = newPaidUnassigned.filter(student => onboardingStudentIds.has(student.id));
 
   const preferencesByTeacher = new Map((teacherPreferences ?? []).map((row) => [row.teacher_id, row]));
   const publicProfileByTeacher = new Map((teacherPublicProfiles ?? []).map((row) => [row.teacher_id, row]));
@@ -256,12 +258,19 @@ export default async function AdminDashboardPage() {
           </ul>
         </section>}
 
-        {newPaidUnassigned.length > 0 && <section className="mt-6 rounded-3xl border border-amber-200 bg-amber-50 p-5">
+        {readyForMatching.length > 0 && <section className="mt-6 rounded-3xl border border-emerald-200 bg-emerald-50 p-5">
           <div className="flex flex-wrap items-start justify-between gap-4">
-            <div><p className="text-sm font-semibold uppercase tracking-[0.14em] text-amber-800">{sk ? "Nový nákup" : "New purchase"}</p><h2 className="mt-1 text-xl font-semibold text-amber-950">{sk ? "Priraďte lektora" : "Assign a teacher"}</h2><p className="mt-2 text-sm text-amber-900/75">{sk ? "Títo študenti majú zaplatený balíček a zatiaľ nemajú vytvorenú žiadnu hodinu." : "These students have a paid package but no lesson has been created yet."}</p></div>
+            <div><p className="text-sm font-semibold uppercase tracking-[0.14em] text-emerald-800">{sk ? "Pripravené na matching" : "Ready for matching"}</p><h2 className="mt-1 text-xl font-semibold text-emerald-950">{sk ? "Skontrolujte odporúčané zhody" : "Review recommended matches"}</h2><p className="mt-2 text-sm text-emerald-900/75">{sk ? "Títo študenti majú zaplatený balíček, dokončený onboarding a systém už má údaje na odporúčanie lektora." : "These students have a paid package, completed onboarding, and enough data for teacher recommendations."}</p></div>
             <Link href="/admin/matching" className="rounded-xl bg-[#2F3AA2] px-4 py-2.5 text-sm font-semibold text-white">{sk ? "Zobraziť odporúčania" : "View recommendations"}</Link>
           </div>
-          <ul className="mt-4 divide-y divide-amber-200">{newPaidUnassigned.map(student=><li key={student.id} className="flex flex-wrap items-center justify-between gap-3 py-3"><div><p className="font-semibold text-amber-950">{getName(student,"Študent")}</p><p className="text-sm text-amber-900/70">{student.email}</p></div><span className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-amber-900">{sk ? "Čaká na priradenie" : "Waiting for assignment"}</span></li>)}</ul>
+          <ul className="mt-4 divide-y divide-emerald-200">{readyForMatching.map(student=><li key={student.id} className="flex flex-wrap items-center justify-between gap-3 py-3"><div><p className="font-semibold text-emerald-950">{getName(student,"Študent")}</p><p className="text-sm text-emerald-900/70">{student.email}</p></div><span className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-emerald-900">{sk ? "Pripravené" : "Ready"}</span></li>)}</ul>
+        </section>}
+
+        {paidWaitingForOnboarding.length > 0 && <section className="mt-6 rounded-3xl border border-amber-200 bg-amber-50 p-5">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div><p className="text-sm font-semibold uppercase tracking-[0.14em] text-amber-800">{sk ? "Platba prijatá" : "Payment received"}</p><h2 className="mt-1 text-xl font-semibold text-amber-950">{sk ? "Čakáme na onboarding" : "Waiting for onboarding"}</h2><p className="mt-2 text-sm text-amber-900/75">{sk ? "Študent už zaplatil, ale ešte nedoplnil jazyk, úroveň, frekvenciu a preferované termíny." : "The student has paid but has not yet completed language, level, frequency and availability preferences."}</p></div>
+          </div>
+          <ul className="mt-4 divide-y divide-amber-200">{paidWaitingForOnboarding.map(student=><li key={student.id} className="flex flex-wrap items-center justify-between gap-3 py-3"><div><p className="font-semibold text-amber-950">{getName(student,"Študent")}</p><p className="text-sm text-amber-900/70">{student.email}</p></div><span className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-amber-900">{sk ? "Čaká na údaje" : "Waiting for details"}</span></li>)}</ul>
         </section>}
 
         {hasLoadError && (
@@ -305,7 +314,7 @@ export default async function AdminDashboardPage() {
 
             <div className="mt-5 space-y-3">
               <div className="rounded-2xl bg-amber-50 p-4">
-                <p className="font-medium">{paidOrdersError || lessonsError ? (sk ? "Nové nákupy sa nepodarilo overiť" : "New purchases could not be verified") : sk ? (newPaidUnassigned.length === 1 ? "1 nový platený študent čaká na lektora" : newPaidUnassigned.length + " nových platených študentov čaká na lektora") : `${newPaidUnassigned.length} paid student${newPaidUnassigned.length === 1 ? "" : "s"} waiting for a teacher`}</p>
+                <p className="font-medium">{paidOrdersError || lessonsError ? (sk ? "Nové nákupy sa nepodarilo overiť" : "New purchases could not be verified") : sk ? readyForMatching.length + " pripravených na matching · " + paidWaitingForOnboarding.length + " čaká na onboarding" : readyForMatching.length + " ready for matching · " + paidWaitingForOnboarding.length + " waiting for onboarding"}</p>
                 <p className="mt-1 text-sm text-gray-500">{sk ? "Po nákupe skontrolujte smart matching a vytvorte prvú hodinu." : "After purchase, check smart matching and create the first lesson."}</p>
               </div>
               <div className="rounded-2xl bg-[#EEF2FF] p-4">

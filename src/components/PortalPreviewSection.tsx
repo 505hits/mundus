@@ -13,7 +13,7 @@ export default function PortalPreviewSection() {
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C7D2FE]">{sk ? "Váš Mundus portál" : "Your Mundus portal"}</p>
           <h2 className="mt-4 text-4xl font-semibold tracking-tight !text-white">{sk ? "Po zaplatení máte všetko na jednom mieste" : "After payment, everything stays in one place"}</h2>
-          <p className="mt-5 max-w-xl leading-8 text-[#D8DBE8]">{sk ? "Po platbe a krátkom nastavení vidíte rovnaké typy údajov ako v skutočnom študentskom dashboarde: balíček, rozvrh, materiály, domácu úlohu, spätnú väzbu a pokrok." : "After payment and a short setup, you see the same types of information as in the real student dashboard: package balance, schedule, materials, homework, feedback and progress."}</p>
+          <p className="mt-5 max-w-xl leading-8 text-[#D8DBE8]">{sk ? "Táto ukážka používa rovnakú štruktúru a typy údajov ako študentský dashboard: balíček, rozvrh, materiály, domácu úlohu, spätnú väzbu a pokrok." : "This preview uses the same structure and information types as the student dashboard: package balance, schedule, materials, homework, feedback and progress."}</p>
           <a href="#buy-packages" className="mt-7 inline-flex rounded-xl bg-white px-5 py-3 font-semibold text-[#2F3AA2]">{sk ? "Vybrať balíček" : "Choose a package"}</a>
         </div>
 
@@ -23,7 +23,7 @@ export default function PortalPreviewSection() {
               <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#2F3AA2]">Mundus</p>
               <p className="mt-1 font-semibold">{sk ? "Prehľad študenta" : "Student overview"}</p>
             </div>
-            <span className="rounded-full bg-[#EEF2FF] px-3 py-1 text-xs font-semibold text-[#2F3AA2]">{sk ? "Ukážka reálneho portálu" : "Real portal preview"}</span>
+            <span className="rounded-full bg-[#EEF2FF] px-3 py-1 text-xs font-semibold text-[#2F3AA2]">{sk ? "Ukážka podľa reálneho dashboardu" : "Preview based on the real dashboard"}</span>
           </div>
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
             <div className="rounded-2xl bg-white p-4 shadow-sm">

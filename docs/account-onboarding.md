@@ -53,3 +53,18 @@ Browser visual QA could not be completed in this execution environment because t
 - For cross-device email recovery, use `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery` in the reset-password email template. The confirmation route verifies the recovery token and redirects only to `/reset-password`.
 - Older recovery token fragments are accepted and removed from browser history. Failed/expired links never fall back to another signed-in account.
 - Password length is consistently 10–128 characters. Test received email, expired link, different browser and successful login after reset before launch.
+
+
+## Auth email template hardening
+
+For production, do not rely on the default `{{ .ConfirmationURL }}` link for signup/recovery emails. Some mail security scanners prefetch that URL and can consume the one-time token before the customer clicks it.
+
+Use these links in Supabase Auth email templates:
+
+- Signup confirmation: `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=signup`
+- Password recovery: `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery`
+- Teacher invitation: `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=invite`
+
+Keep the deployed Mundus origin as the Supabase Site URL and allow `/auth/confirm`, `/auth/callback`, `/reset-password` and `/set-password` in redirect URLs. Disable email link tracking/rewrite in any external mail provider.
+
+The app now also provides `/resend-confirmation` for expired signup links. Password-reset email requests are sent server-side using the canonical `MUNDUS_SITE_URL`, so recovery no longer depends on browser-side environment configuration or `window.location.origin`.

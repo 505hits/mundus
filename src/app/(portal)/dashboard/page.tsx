@@ -1,5 +1,6 @@
 import { safeLessonLink } from "@/lib/lesson-link";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import BrandLogo from "@/components/BrandLogo";
 import {
   BookOpen,
@@ -12,6 +13,7 @@ import {
 } from "lucide-react";
 import type { StudentLessonReport } from "@/lib/student-report";
 import { requireRole } from "@/lib/auth";
+import { hasCompletedOnboarding } from "@/lib/account-policy";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatLanguage, formatLessonCount, formatLessonType } from "@/lib/portalLabels";
 import { paymentEnabled } from "@/lib/payments";
@@ -53,6 +55,7 @@ export default async function DashboardPage({ searchParams }: { searchParams?: P
     { data: pendingRequests, error: requestsError },
     { data: completedThisMonth, error: completedThisMonthError },
     { data: monthlyFeedback, error: monthlyFeedbackError },
+    { data: onboarding, error: onboardingError },
   ] = await Promise.all([
     supabase
       .from("profiles")
@@ -109,13 +112,23 @@ export default async function DashboardPage({ searchParams }: { searchParams?: P
         .eq("student_id", user.id)
         .eq("feedback_month", month.key);
     })(),
+
+    supabase
+      .from("student_onboarding")
+      .select("completed_at")
+      .eq("student_id", user.id)
+      .maybeSingle(),
   ]);
 
   const hasLoadError = Boolean(
-    profileError || packagesError || lessonsError || reportsError || requestsError || completedThisMonthError || monthlyFeedbackError
+    profileError || packagesError || lessonsError || reportsError || requestsError || completedThisMonthError || monthlyFeedbackError || onboardingError
   );
 
   const activePackages = packages ?? [];
+  const hasPaidLearningAccess = activePackages.some(pkg => (pkg.total_lessons ?? 0) > 0);
+  if (!onboardingError && hasPaidLearningAccess && !hasCompletedOnboarding(onboarding)) {
+    redirect("/onboarding?next=%2Fdashboard");
+  }
   const upcomingLessons = lessons ?? [];
   const nextLesson = upcomingLessons[0] ?? null;
   const nextLessonLink = nextLesson ? safeLessonLink(nextLesson.meet_link) : null;

@@ -40,6 +40,9 @@ jobs:
       - name: Test request authorization and build configuration
         run: npm run test:admin-requests
 
+      - name: Test installation on an empty database
+        run: npm run test:empty-database
+
       - name: Validate launch configuration contract
         run: npm run launch:check
         env:

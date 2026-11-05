@@ -51,11 +51,11 @@ export default function FloatingCTA() {
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: 100, opacity: 0 }}
                     transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                    className="fixed bottom-8 right-8 z-40"
+                    className="fixed bottom-4 left-4 right-4 z-40 sm:bottom-8 sm:left-auto sm:right-8"
                 >
                     <Link
-                        href="/prices"
-                        className="flex items-center gap-2 bg-[#2F3AA2] text-white px-6 py-4 rounded-full font-semibold shadow-lg shadow-blue-900/20 hover:shadow-xl hover:bg-[#252E82] hover:scale-105 transition-all transform"
+                        href="/#buy-packages"
+                        className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#2F3AA2] px-6 py-4 font-semibold text-white shadow-lg shadow-blue-900/20 transition-all hover:bg-[#252E82] hover:shadow-xl sm:w-auto sm:rounded-full sm:hover:scale-105"
                     >
                         <span>{t.nav.book}</span>
                         <ArrowRight size={20} />

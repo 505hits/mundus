@@ -25,7 +25,7 @@ export default async function PaymentReturnPage({ searchParams }: PageProps) {
 
   if (!error && !onboardingError && order?.status === "paid") {
     if (!hasCompletedOnboarding(onboarding)) {
-      redirect("/onboarding?next=%2Fdashboard%3Fpayment%3Dsuccess");
+      redirect("/dashboard/setup?payment=success");
     }
     redirect("/dashboard?payment=success");
   }

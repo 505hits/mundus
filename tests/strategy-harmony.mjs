@@ -41,7 +41,9 @@ assert.ok(translations.includes('number: "05"'), "How It Works must show five re
 assert.ok(translations.includes("Create your account & pay securely"));
 assert.ok(translations.includes("Complete your learning preferences"));
 assert.ok(translations.includes("Doplňte svoje preferencie"));
-assert.ok(faq.includes("Čo sa stane po platbe?"));
+assert.ok(faq.includes("Čo sa stane po nákupe?"));
+assert.ok(faq.includes("Až potom doplníte jazyk"));
+assert.ok(faq.includes("Only then do you enter language"));
 assert.ok(preview.includes("Portal preview"));
 assert.ok(footer.includes('href: "/#faq"'));
 assert.ok(footer.includes('href: "/privacy"'));

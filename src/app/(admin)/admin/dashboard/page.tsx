@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { formatLanguage, formatLessonStatus } from "@/lib/portalLabels";
 import { currentLanguage, localeFor } from "@/lib/i18n";
 import type { Language } from "@/context/LanguageContext";
@@ -56,6 +57,7 @@ export default async function AdminDashboardPage() {
   const sk = language === "sk";
   const { profile } = await requireRole("admin");
   const supabase = await createSupabaseServerClient();
+  const adminClient = createSupabaseAdminClient();
 
   const [
     { data: students, error: studentsError },
@@ -67,6 +69,7 @@ export default async function AdminDashboardPage() {
     { data: onboardingRows, error: onboardingError },
     { data: teacherPreferences, error: teacherPreferencesError },
     { data: teacherPublicProfiles, error: teacherPublicProfilesError },
+    { data: contactRequests, error: contactRequestsError },
   ] = await Promise.all([
     supabase.from("profiles").select("id,full_name,email").eq("role", "student").eq("status", "active"),
     supabase.from("profiles").select("id,full_name,email").eq("role", "teacher").eq("status", "active"),
@@ -100,6 +103,12 @@ export default async function AdminDashboardPage() {
     supabase
       .from("teacher_public_profiles")
       .select("teacher_id,headline,bio,languages,photo_path"),
+    adminClient
+      .from("contact_requests")
+      .select("id,full_name,email,language,package_lessons,message,status,created_at")
+      .eq("status", "new")
+      .order("created_at", { ascending: false })
+      .limit(20),
   ]);
 
   const hasLoadError = Boolean(
@@ -111,7 +120,8 @@ export default async function AdminDashboardPage() {
       paidOrdersError ||
       onboardingError ||
       teacherPreferencesError ||
-      teacherPublicProfilesError
+      teacherPublicProfilesError ||
+      contactRequestsError
   );
 
   const { data: followups, error: followupError } = await supabase.from("renewal_followups").select("student_id,status,last_contact,next_followup,note,updated_at");
@@ -218,6 +228,29 @@ export default async function AdminDashboardPage() {
         </section>
 
         <div className="mt-5 flex flex-wrap gap-3"><Link href="/admin/matching" className="inline-block rounded-xl bg-[#2F3AA2] px-5 py-3 font-semibold text-white">{sk ? "Priradiť študenta k lektorovi" : "Match student with teacher"}</Link><Link href="/admin/calendar" className="inline-block rounded-xl border border-[#2F3AA2]/20 bg-white px-5 py-3 font-semibold text-[#2F3AA2]">{sk ? "Otvoriť kalendár" : "Open calendar"}</Link></div>
+
+        {(contactRequests?.length ?? 0) > 0 && <section className="mt-6 rounded-3xl border border-indigo-200 bg-indigo-50 p-5">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[#2F3AA2]">{sk ? "Nová žiadosť z webu" : "New website request"}</p>
+              <h2 className="mt-1 text-xl font-semibold text-indigo-950">{sk ? "Ozvite sa novému záujemcovi" : "Contact the new lead"}</h2>
+              <p className="mt-2 text-sm text-indigo-900/75">{sk ? "Tieto žiadosti prišli cez verejnú stránku Mundus a ešte nie sú označené ako vybavené." : "These requests came through the public Mundus website and are not marked as handled yet."}</p>
+            </div>
+            <Link href="/contact" className="rounded-xl border border-[#2F3AA2]/20 bg-white px-4 py-2.5 text-sm font-semibold text-[#2F3AA2]">{sk ? "Pozrieť verejný formulár" : "View public form"}</Link>
+          </div>
+          <ul className="mt-4 divide-y divide-indigo-200">
+            {(contactRequests ?? []).map(request => <li key={request.id} className="py-3">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="font-semibold text-indigo-950">{request.full_name}</p>
+                  <p className="text-sm text-indigo-900/70">{request.email} · {request.language}{request.package_lessons ? ` · ${request.package_lessons} × 60 min` : ""}</p>
+                  {request.message && <p className="mt-1 max-w-3xl text-sm text-indigo-900/75">{request.message}</p>}
+                </div>
+                <span className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-[#2F3AA2]">{sk ? "Nové" : "New"}</span>
+              </div>
+            </li>)}
+          </ul>
+        </section>}
 
         {newPaidUnassigned.length > 0 && <section className="mt-6 rounded-3xl border border-amber-200 bg-amber-50 p-5">
           <div className="flex flex-wrap items-start justify-between gap-4">

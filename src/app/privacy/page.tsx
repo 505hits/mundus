@@ -1,0 +1,18 @@
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { currentLanguage } from "@/lib/i18n";
+
+export default async function PrivacyPage() {
+  const sk=(await currentLanguage())==="sk";
+  return <main className="min-h-screen bg-[#FAFAF9]"><Navbar/><section className="mx-auto max-w-3xl px-6 pb-20 pt-32">
+    <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[#2F3AA2]">Mundus Languages</p>
+    <h1 className="mt-3 text-4xl font-semibold">{sk?"Ochrana súkromia":"Privacy"}</h1>
+    <p className="mt-3 text-sm text-gray-500">{sk?"Aktualizované: 6. novembra 2026":"Updated: November 6, 2026"}</p>
+    <div className="mt-8 space-y-7 leading-7 text-gray-700">
+      <section><h2 className="text-xl font-semibold">{sk?"Aké údaje spracúvame":"What data we process"}</h2><p className="mt-2">{sk?"Pri vytvorení účtu, nákupe a výučbe môžeme spracúvať meno, e-mail, fakturačné údaje, zakúpený balíček, platobný stav, jazyk, úroveň, ciele, preferované termíny, materiály, domácu úlohu, spätnú väzbu a údaje potrebné na správu hodín.":"When you create an account, purchase lessons and study with Mundus, we may process your name, email, billing details, purchased package, payment status, language, level, goals, scheduling preferences, materials, homework, feedback and data needed to manage lessons."}</p></section>
+      <section><h2 className="text-xl font-semibold">{sk?"Na čo údaje používame":"How we use data"}</h2><p className="mt-2">{sk?"Údaje používame na vytvorenie a zabezpečenie účtu, spracovanie platieb, priradenie vhodného lektora, plánovanie a evidenciu hodín, komunikáciu, fakturáciu, podporu a zlepšovanie kvality služby.":"We use data to create and secure your account, process payments, recommend and assign a suitable teacher, schedule and record lessons, communicate with you, invoice, provide support and improve service quality."}</p></section>
+      <section><h2 className="text-xl font-semibold">{sk?"Poskytovatelia služieb":"Service providers"}</h2><p className="mt-2">{sk?"Na prevádzku používame externých poskytovateľov infraštruktúry a platieb, napríklad Supabase pre databázu/autentifikáciu a Stripe pre online platby. Títo poskytovatelia spracúvajú údaje podľa vlastných podmienok a bezpečnostných pravidiel.":"We use external infrastructure and payment providers, including Supabase for database/authentication and Stripe for online payments. These providers process data under their own terms and security practices."}</p></section>
+      <section><h2 className="text-xl font-semibold">{sk?"Vaše práva a kontakt":"Your rights and contact"}</h2><p className="mt-2">{sk?"Ak chcete požiadať o prístup, opravu alebo inú požiadavku týkajúcu sa osobných údajov, kontaktujte Mundus cez kontaktnú stránku. Údaje uchovávame len počas obdobia potrebného na poskytovanie služby, plnenie zákonných povinností a riešenie oprávnených prevádzkových potrieb.":"To request access, correction or another privacy-related action, contact Mundus through the contact page. We retain data only for as long as needed to provide the service, meet legal obligations and handle legitimate operational needs."}</p></section>
+    </div>
+  </section><Footer/></main>;
+}

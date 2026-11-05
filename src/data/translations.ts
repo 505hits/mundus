@@ -20,8 +20,8 @@ export const translations = {
             ctaPrimary: "Choose your lesson package",
             ctaSecondary: "See how it works",
             interactive: "Your Mundus learning portal",
-            students: "60-minute lessons",
-            rating: "Personal approach",
+            students: "1:1 · 60-minute lessons",
+            rating: "Flexible scheduling",
         },
         languageSelector: {
             badge: "Choose your language",
@@ -252,8 +252,8 @@ export const translations = {
             ctaPrimary: "Vybrať balíček",
             ctaSecondary: "Ako to funguje",
             interactive: "Váš študijný portál Mundus",
-            students: "60-minútové hodiny",
-            rating: "Osobný prístup",
+            students: "1:1 · 60-minútové hodiny",
+            rating: "Flexibilné termíny",
         },
         languageSelector: {
             badge: "Vyberte si jazyk",

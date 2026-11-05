@@ -11,7 +11,8 @@ export async function saveOnboarding(_previous: AccountFormState, form: FormData
   const { user } = await requireRole("student");
   const language = String(form.get("language") || "");
   const level = String(form.get("level") || "");
-  const goal = String(form.get("goal") || "").trim();\n  const lessonsPerWeek = Number(form.get("lessons_per_week") || 0);
+  const goal = String(form.get("goal") || "").trim();
+  const lessonsPerWeek = Number(form.get("lessons_per_week") || 0);
   const preferredDays = form.getAll("preferred_days").map(String).filter(day => ["1","2","3","4","5","6","7"].includes(day));
   const preferredTimeFrom = String(form.get("preferred_time_from") || "") || null;
   const preferredTimeTo = String(form.get("preferred_time_to") || "") || null;

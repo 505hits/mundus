@@ -56,7 +56,7 @@ export async function GET(request:NextRequest) {
       const {data:auth}=await admin.auth.admin.getUserById(job.recipient_id);
       if(recipient?.status!=="active" || recipient.email!==job.recipient_email || !auth.user?.email_confirmed_at || auth.user.email?.toLowerCase()!==job.recipient_email.toLowerCase()) throw new Error("Recipient unavailable");
       const studentName=student?.full_name?.trim()||student?.email||"študent";
-      const href=job.kind==="admin_assignment"?"/admin/matching":job.kind==="admin_renewal"?"/admin/dashboard":"/packages";
+      const href=(job.kind==="admin_assignment"||job.kind==="admin_matching_ready")?"/admin/matching":job.kind==="admin_renewal"?"/admin/dashboard":"/packages";
       const content=portalEmail(job.kind,studentName,origin+href);
       const result=await transport.sendMail({from:process.env.MUNDUS_EMAIL_FROM,to:job.recipient_email,...content,messageId:"<mundus-"+job.id+"@"+new URL(origin).hostname+">"});
       if(!result.accepted.length) throw new Error("SMTP rejected");

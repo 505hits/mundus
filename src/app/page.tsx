@@ -28,6 +28,7 @@ export default async function Home() {
       <FeaturesBento />
       <PortalPreviewSection />
       <TrustSection />
+      <TestimonialsSection />
       <PricingSection paymentsAvailable={paymentEnabled()} signupAvailable={process.env.MUNDUS_SELF_SIGNUP_ENABLED === "true"} />
       <FAQSection />
       <CalendlyWidget />

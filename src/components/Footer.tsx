@@ -4,34 +4,65 @@ import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function Footer() {
-    const { t, language } = useLanguage();
-    const sk = language === "sk";
-    const links = [
-        { href: "/#languages", label: sk ? "Jazyky" : "Languages" },
-        { href: "/#teachers", label: sk ? "Naši lektori" : "Our teachers" },
-        { href: "/prices", label: sk ? "Balíčky a ceny" : "Packages and prices" },
-        { href: "/contact", label: sk ? "Kontakt a pomoc" : "Contact and support" },
+  const { language } = useLanguage();
+  const sk = language === "sk";
+
+  const groups = [
+    {
+      title: sk ? "Mundus" : "Mundus",
+      links: [
+        { href: "/#how-it-works", label: sk ? "Ako to funguje" : "How it works" },
+        { href: "/#teachers", label: sk ? "Lektori" : "Teachers" },
+        { href: "/#pricing", label: sk ? "Cenník" : "Pricing" },
+        { href: "/#faq", label: "FAQ" },
+      ],
+    },
+    {
+      title: sk ? "Študenti" : "Students",
+      links: [
         { href: "/login", label: sk ? "Prihlásenie" : "Sign in" },
-    ];
-    return (
-        <footer className="footer">
-            <div className="container">
-                <div className="grid gap-8 sm:grid-cols-2">
-                    <div>
-                        <Link href="/" className="footer-brand">Mundus Languages</Link>
-                        <p className="footer-desc">{t.footer.brandDesc}</p>
-                    </div>
-                    <nav aria-label={sk ? "Navigácia v päte" : "Footer navigation"}>
-                        <ul className="footer-links grid gap-3 sm:grid-cols-2">
-                            {links.map(link => <li key={link.href}><Link href={link.href}>{link.label}</Link></li>)}
-                        </ul>
-                    </nav>
-                </div>
-                <div className="footer-bottom">
-                    <span>© {new Date().getFullYear()} Mundus Languages. {sk ? "Všetky práva vyhradené." : "All rights reserved."}</span>
-                    <a href="https://www.instagram.com/mundus.languages/" target="_blank" rel="noopener noreferrer" className="hover:text-[#181818] transition-colors">Instagram @mundus.languages</a>
-                </div>
-            </div>
-        </footer>
-    );
+        { href: "/forgot-password", label: sk ? "Obnova hesla" : "Reset password" },
+        { href: "/contact", label: sk ? "Kontakt a pomoc" : "Contact & help" },
+        { href: "https://www.instagram.com/mundus.languages/", label: "Instagram", external: true },
+      ],
+    },
+    {
+      title: sk ? "Jazyky" : "Languages",
+      links: [
+        { href: "/#languages", label: sk ? "Angličtina · Nemčina" : "English · German" },
+        { href: "/#languages", label: sk ? "Španielčina · Taliančina" : "Spanish · Italian" },
+        { href: "/#languages", label: sk ? "Francúzština · Portugalčina" : "French · Portuguese" },
+        { href: "/#languages", label: sk ? "A ďalšie jazyky" : "And more languages" },
+      ],
+    },
+  ];
+
+  return <footer className="footer bg-white">
+    <div className="container">
+      <div className="grid gap-10 lg:grid-cols-[1.2fr_2fr]">
+        <div>
+          <Link href="/" className="footer-brand">Mundus Languages</Link>
+          <p className="footer-desc max-w-sm">
+            {sk ? "Individuálna online výučba jazykov 1:1 s flexibilnými termínmi a vlastným študentským portálom." : "Individual 1:1 online language lessons with flexible scheduling and your own student portal."}
+          </p>
+        </div>
+        <div className="grid gap-8 sm:grid-cols-3">
+          {groups.map(group => <nav key={group.title} aria-label={group.title}>
+            <p className="footer-title">{group.title}</p>
+            <ul className="footer-links">
+              {group.links.map(link => <li key={link.label}>
+                {"external" in link && link.external
+                  ? <a href={link.href} target="_blank" rel="noopener noreferrer">{link.label}</a>
+                  : <Link href={link.href}>{link.label}</Link>}
+              </li>)}
+            </ul>
+          </nav>)}
+        </div>
+      </div>
+      <div className="footer-bottom">
+        <span>© {new Date().getFullYear()} Mundus Languages. {sk ? "Všetky práva vyhradené." : "All rights reserved."}</span>
+        <span>{sk ? "Online výučba · Slovensko / EÚ" : "Online lessons · Slovakia / EU"}</span>
+      </div>
+    </div>
+  </footer>;
 }

@@ -199,10 +199,34 @@ begin
  end if;
 end $payment_guards$;
 
+
+-- Website request + paid matching readiness checks.
+do $lead_matching$ declare
+ contact_table boolean:=false; contact_outbox boolean:=false; frequency_column boolean:=false;
+ matching_trigger boolean:=false; contact_trigger boolean:=false;
+begin
+ contact_table := to_regclass('public.contact_requests') is not null;
+ contact_outbox := to_regclass('public.contact_request_email_outbox') is not null;
+ frequency_column := exists(
+   select 1 from information_schema.columns
+   where table_schema='public' and table_name='student_onboarding' and column_name='lessons_per_week'
+ );
+ matching_trigger := exists(
+   select 1 from pg_trigger
+   where tgname='queue_matching_ready_email' and not tgisinternal and tgenabled<>'D'
+ );
+ contact_trigger := exists(
+   select 1 from pg_trigger
+   where tgname='queue_contact_request_admin_emails' and not tgisinternal and tgenabled<>'D'
+ );
+ raise notice 'Website requests table/outbox/contact trigger + onboarding frequency/matching-ready trigger: %/%/%/%/%',
+   contact_table,contact_outbox,contact_trigger,frequency_column,matching_trigger;
+end $lead_matching$;
+
 -- Sensitive service functions should not be executable by clients.
 select p.proname,has_function_privilege('anon',p.oid,'EXECUTE') as anon_execute,
  has_function_privilege('authenticated',p.oid,'EXECUTE') as client_execute
 from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public'
 and p.proname in ('mundus_reserve_payment_order','mundus_fulfill_payment_order','mundus_attach_checkout_session',
- 'claim_schedule_emails','retry_schedule_email','claim_portal_emails','mundus_german_assessments_ready','mundus_spanish_assessments_ready','mundus_italian_assessments_ready','mundus_french_assessments_ready','mundus_portuguese_assessments_ready','mundus_complete_lesson','student_lesson_reports','mundus_active_portal_account');
+ 'claim_schedule_emails','retry_schedule_email','claim_portal_emails','claim_contact_request_emails','mundus_german_assessments_ready','mundus_spanish_assessments_ready','mundus_italian_assessments_ready','mundus_french_assessments_ready','mundus_portuguese_assessments_ready','mundus_complete_lesson','student_lesson_reports','mundus_active_portal_account');
 commit;

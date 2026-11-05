@@ -43,6 +43,9 @@ Code is merged to main. The reviewed database activation is applied. The current
    - 202610050013_operations_quality_layer.sql
    - 202610050014_sync_lesson_attendance.sql
    - 202610050015_feedback_read_policy_cleanup.sql
+   - 202611050001_contact_requests.sql
+   - 202611060001_student_frequency_preference.sql
+   - 202611060002_matching_ready_notification.sql
    `202610050001_teacher_language_offer.sql` removes the retired Turkish preference value from existing teacher preference rows and expands the allowed teacher-language list to the current 13-language offer. These augment an existing base schema, not an empty database. Check profile creation trigger compatibility and discounted pending-order identity duplicates before applying. Run preflight again afterward.
 3. Run npm run launch:check in an environment with deployment variables, or npm run launch:check -- --env-file <local-env-file>. Never commit that file or paste secret values into chat. The command outputs only status, checks presence/shape, and does not validate credentials or prove launch readiness. Disabled optional features are reported as disabled, not missing. Public Supabase values must be supplied at build time and require a fresh deployment build.
 4. Use docs/account-onboarding.md for Auth redirects, confirmed email and signup/invite checks; docs/payments.md for Stripe test mode; docs/placement-tests.md for language/audio tests; docs/learning-and-notifications.md for private files/SMTP/scheduler. Enable each feature only after its preview checks. SMTP and scheduling remain off until configured; no production cron is created by this work.
@@ -120,3 +123,21 @@ GitHub CI now verifies five layers on every final push: lint, the full safeguard
 Vercel remains the external blocker. Requests scoped to the known 505hits-projects team return HTTP 403 requiring team authorization; the connector's own authorization-recovery endpoint currently returns 404 for that same team identifier. Do not create a duplicate Vercel project as a workaround. Retry access against the existing team/project once the connector grant works.
 
 The remaining unverified items are genuinely environment/external: real Auth email delivery and browser sessions, real Stripe webhook delivery/checkout/refund scenarios, real SMTP delivery/retries, real storage upload/download through deployed browser sessions, mobile/browser audio QA, leaked-password protection in Supabase Auth, final domain/promotion and production release.
+
+
+## Paid student matching flow
+
+The intended V1 customer journey is now:
+
+1. Visitor chooses a package or contacts Mundus/Instagram.
+2. New customer creates a student account and confirms email.
+3. Customer completes Stripe Checkout.
+4. After a confirmed paid order, an incomplete student profile is redirected to onboarding before normal dashboard use.
+5. Onboarding records language, approximate level, desired lessons per week, learning goal, preferred weekdays and optional preferred time window.
+6. Admin matching ranks accepting teachers using language, level, weekday/time overlap and capacity. Desired weekly frequency is displayed to the admin as a planning input.
+7. The admin reviews the top recommendations and explicitly approves a match by preselecting the recommended student/teacher and scheduling the first lesson.
+8. The student dashboard then becomes the ongoing place for schedule, lesson balance, materials, homework, feedback and progress.
+
+A paid student who has not completed onboarding is shown separately from a paid student whose matching data is ready. Completing onboarding after payment queues an idempotent admin “ready for matching” email in addition to the original payment notification.
+
+The public website must not use fabricated testimonials, student-count/rating claims or old group-course pricing. The testimonial section renders only entries deliberately added to the verified public testimonial source.

@@ -21,6 +21,7 @@ export default function Footer() {
       title: sk ? "Študenti" : "Students",
       links: [
         { href: "/login", label: sk ? "Prihlásenie" : "Sign in" },
+        { href: "/dashboard", label: sk ? "Študentský portál" : "Student portal" },
         { href: "/forgot-password", label: sk ? "Obnova hesla" : "Reset password" },
         { href: "/contact", label: sk ? "Kontakt a pomoc" : "Contact & help" },
         { href: "https://www.instagram.com/mundus.languages/", label: "Instagram", external: true },

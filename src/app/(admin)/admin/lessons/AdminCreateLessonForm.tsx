@@ -29,6 +29,8 @@ type Props = {
   students: PersonOption[];
   teachers: PersonOption[];
   packages: PackageOption[];
+  initialStudentId?: string;
+  initialTeacherId?: string;
 };
 
 function personName(person: PersonOption) {
@@ -39,12 +41,14 @@ export default function AdminCreateLessonForm({
   students,
   teachers,
   packages,
+  initialStudentId,
+  initialTeacherId,
 }: Props) {
   const router = useRouter();
   const {language:uiLanguage}=useLanguage(); const sk=uiLanguage==="sk";
 
-  const [studentId, setStudentId] = useState(students[0]?.id ?? "");
-  const [teacherId, setTeacherId] = useState(teachers[0]?.id ?? "");
+  const [studentId, setStudentId] = useState(initialStudentId && students.some(item => item.id === initialStudentId) ? initialStudentId : students[0]?.id ?? "");
+  const [teacherId, setTeacherId] = useState(initialTeacherId && teachers.some(item => item.id === initialTeacherId) ? initialTeacherId : teachers[0]?.id ?? "");
   const [dateTime, setDateTime] = useState("");
   const [duration, setDuration] = useState("60");
   const [language, setLanguage] = useState("English");
@@ -190,7 +194,7 @@ export default function AdminCreateLessonForm({
   }
 
   return (
-    <details className="mt-6 rounded-3xl border border-black/5 bg-white p-5 shadow-sm sm:p-6">
+    <details open={Boolean(initialStudentId && initialTeacherId)} className="mt-6 rounded-3xl border border-black/5 bg-white p-5 shadow-sm sm:p-6">
       <summary className="flex cursor-pointer list-none items-center gap-2 font-semibold">
         <CalendarPlus size={19} />
         {sk?"Naplánovať novú hodinu":"Schedule a new lesson"}

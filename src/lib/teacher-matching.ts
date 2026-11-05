@@ -6,6 +6,7 @@ export type StudentMatchInput = {
   preferred_days?: string[] | null;
   preferred_time_from?: string | null;
   preferred_time_to?: string | null;
+  lessons_per_week?: number | null;
 };
 
 export type TeacherMatchInput = {
@@ -42,18 +43,18 @@ export function teacherMatchScore(student: StudentMatchInput, teacher: TeacherMa
   if (!teacher.languages.includes(language)) return null;
 
   let score=60;
-  const reasons=["jazyk"];
+  const reasons=["language"];
   const desiredLevel=levelMap[student.level] ?? null;
   if (desiredLevel && teacher.levels.length && !teacher.levels.includes(desiredLevel)) return null;
   score+=20;
-  reasons.push(desiredLevel ? "úroveň" : "flexibilná úroveň");
+  reasons.push(desiredLevel ? "level" : "flexible_level");
 
   const wantedDays=student.preferred_days ?? [];
   if (!wantedDays.length) {
     score+=5;
   } else if (teacher.days.some(day=>wantedDays.includes(day))) {
     score+=10;
-    reasons.push("deň");
+    reasons.push("day");
   }
 
   const studentFrom=minutes(student.preferred_time_from), studentTo=minutes(student.preferred_time_to);
@@ -62,7 +63,7 @@ export function teacherMatchScore(student: StudentMatchInput, teacher: TeacherMa
     score+=5;
   } else if (teacherFrom!=null && teacherTo!=null && Math.max(studentFrom,teacherFrom)<Math.min(studentTo,teacherTo)) {
     score+=10;
-    reasons.push("čas");
+    reasons.push("time");
   }
 
   const free=Math.max(0,teacher.max_new_students-assignedStudents);

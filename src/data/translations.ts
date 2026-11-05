@@ -38,23 +38,28 @@ export const translations = {
             steps: [
                 {
                     number: "01",
-                    title: "Tell us your goal",
-                    description: "Tell us your language, approximate level and goal. Your teacher will help confirm your level.",
+                    title: "Choose your language and goal",
+                    description: "Tell us what you want to learn and what you want to achieve. If you are unsure about your level, that is fine.",
                 },
                 {
                     number: "02",
-                    title: "Create your account & choose a package",
-                    description: "Create a student account, confirm your email and choose the lesson package you want to purchase.",
+                    title: "Choose a package or contact us",
+                    description: "Pay online when you are ready, or message us on Instagram / through the website if you want help first.",
                 },
                 {
                     number: "03",
-                    title: "We match you with a teacher",
-                    description: "We use your language, level, goals and availability to recommend a suitable teacher and arrange your first lesson.",
+                    title: "Complete your learning preferences",
+                    description: "After payment, add your level, preferred weekly frequency, days, times and learning goal.",
                 },
                 {
                     number: "04",
-                    title: "Track lessons and continue",
-                    description: "See your schedule, feedback, homework and remaining lessons in your portal, and buy another package when needed.",
+                    title: "Mundus recommends your teacher",
+                    description: "We compare your preferences with teacher language, level, availability and capacity. Mundus approves the final match.",
+                },
+                {
+                    number: "05",
+                    title: "Start lessons and use your portal",
+                    description: "See your schedule, feedback, homework, materials, progress and remaining lessons in one place.",
                 },
             ]
         },
@@ -265,23 +270,28 @@ export const translations = {
             steps: [
                 {
                     number: "01",
-                    title: "Povedzte nám svoj cieľ",
-                    description: "Napíšte nám jazyk, približnú úroveň a cieľ. Vhodnú úroveň vám pomôže overiť lektor.",
+                    title: "Vyberte si jazyk a cieľ",
+                    description: "Povedzte nám, čo sa chcete učiť a čo chcete dosiahnuť. Ak svoju úroveň neviete posúdiť, vôbec to nevadí.",
                 },
                 {
                     number: "02",
-                    title: "Vytvorte si účet a vyberte balíček",
-                    description: "Vytvorte si študentský účet, potvrďte e-mail a vyberte balíček hodín, ktorý chcete kúpiť.",
+                    title: "Vyberte balíček alebo nás kontaktujte",
+                    description: "Ak ste pripravení, zaplaťte online. Ak sa chcete najprv poradiť, napíšte nám na Instagram alebo cez web.",
                 },
                 {
                     number: "03",
-                    title: "Odporučíme vám lektora",
-                    description: "Podľa jazyka, úrovne, cieľa a dostupnosti vám odporučíme vhodného lektora a dohodneme prvú hodinu.",
+                    title: "Doplňte svoje preferencie",
+                    description: "Po platbe zadáte úroveň, požadovanú frekvenciu, preferované dni, časy a cieľ výučby.",
                 },
                 {
                     number: "04",
-                    title: "Sledujte hodiny a pokračujte",
-                    description: "V portáli vidíte rozvrh, spätnú väzbu, úlohy aj zostávajúce hodiny a včas si môžete kúpiť ďalší balíček.",
+                    title: "Mundus odporučí vhodného lektora",
+                    description: "Porovnáme vaše preferencie s jazykom, úrovňou, dostupnosťou a kapacitou lektorov. Finálnu zhodu schvaľuje Mundus.",
+                },
+                {
+                    number: "05",
+                    title: "Začnite hodiny a používajte portál",
+                    description: "Na jednom mieste vidíte rozvrh, spätnú väzbu, úlohy, materiály, pokrok aj zostávajúce hodiny.",
                 },
             ]
         },

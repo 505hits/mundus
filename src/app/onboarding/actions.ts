@@ -24,6 +24,17 @@ export async function saveOnboarding(_previous: AccountFormState, form: FormData
   }
   try {
     const supabase = await createSupabaseServerClient();
+    const { data: paidPackage, error: packageError } = await supabase
+      .from("lesson_packages")
+      .select("id")
+      .eq("student_id", user.id)
+      .eq("status", "active")
+      .gt("remaining_lessons", 0)
+      .limit(1)
+      .maybeSingle();
+    if (packageError || !paidPackage) {
+      return { error: t("Onboarding je dostupný až po potvrdenej platbe za balíček.","Onboarding is available only after a package payment is confirmed.") };
+    }
     const { error } = await supabase.from("student_onboarding").upsert({ student_id: user.id, language, level, goal, lessons_per_week: lessonsPerWeek, preferred_days: preferredDays, preferred_time_from: preferredTimeFrom, preferred_time_to: preferredTimeTo, completed_at: new Date().toISOString() });
     if (error) return { error: t("Údaje sa nepodarilo uložiť. Skúste to znova.","The information could not be saved. Try again.") };
   } catch { return { error: t("Údaje sa nepodarilo uložiť. Skúste to znova.","The information could not be saved. Try again.") }; }

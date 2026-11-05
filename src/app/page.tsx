@@ -4,6 +4,9 @@ import LanguageSelector from "@/components/LanguageSelector";
 import HowItWorks from "@/components/HowItWorks";
 import TeacherSection from "@/components/TeacherSection";
 import FeaturesBento from "@/components/FeaturesBento";
+import PortalPreviewSection from "@/components/PortalPreviewSection";
+import TrustSection from "@/components/TrustSection";
+import FAQSection from "@/components/FAQSection";
 import CalendlyWidget from "@/components/CalendlyWidget";
 import Footer from "@/components/Footer";
 import PricingSection from "@/components/PricingSection";
@@ -22,7 +25,10 @@ export default async function Home() {
       <HowItWorks />
       <TeacherSection teachers={teachers} />
       <FeaturesBento />
+      <PortalPreviewSection />
+      <TrustSection />
       <PricingSection paymentsAvailable={paymentEnabled()} signupAvailable={process.env.MUNDUS_SELF_SIGNUP_ENABLED === "true"} />
+      <FAQSection />
       <CalendlyWidget />
       <Footer />
     </main>

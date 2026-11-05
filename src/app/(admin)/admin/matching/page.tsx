@@ -10,8 +10,11 @@ function personName(person:{full_name?:string|null;email?:string|null}) {
   return person.full_name?.trim() || person.email || "Bez mena";
 }
 
-export default async function MatchingPage(){
+export default async function MatchingPage({ searchParams }: { searchParams?: Promise<{ student?: string; teacher?: string }> }){
   const language=await currentLanguage();
+  const selected = await searchParams;
+  const selectedStudentId = selected?.student ?? "";
+  const selectedTeacherId = selected?.teacher ?? "";
   const sk=language==="sk";
   const days=sk?["","Po","Ut","St","Št","Pi","So","Ne"]:["","Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
   await requireRole("admin");
@@ -103,6 +106,12 @@ export default async function MatchingPage(){
                     </div>
                     <p className="mt-2 text-sm text-gray-600">{pref.languages.map((value:string)=>formatLanguage(value,language)).join(", ")} · {pref.levels.join(", ")}</p>
                     <p className="mt-2 text-xs text-gray-500">{sk?"Zhoda":"Match"}: {reasons.join(", ")} · {sk?"voľná kapacita":"free capacity"} {freeCapacity}</p>
+                    <Link
+                      href={`/admin/matching?student=${encodeURIComponent(student.id)}&teacher=${encodeURIComponent(teacher.id)}#confirm-match`}
+                      className="mt-3 inline-flex rounded-xl bg-[#2F3AA2] px-3 py-2 text-xs font-semibold text-white"
+                    >
+                      {sk ? "Schváliť túto zhodu" : "Approve this match"}
+                    </Link>
                   </div>
                 ):<p className="text-sm text-gray-500">{sk?"Momentálne nie je dostupný lektor s povinnou jazykovou zhodou a voľnou kapacitou.":"No teacher currently has the required language match and free capacity."}</p>}
               </div>
@@ -111,10 +120,16 @@ export default async function MatchingPage(){
         }
       </section>
 
-      <section className="mt-10 rounded-3xl border border-[#2F3AA2]/10 bg-[#F8F8FF] p-6">
+      <section id="confirm-match" className="mt-10 rounded-3xl border border-[#2F3AA2]/10 bg-[#F8F8FF] p-6">
         <h2 className="text-xl font-semibold">{sk?"Potvrdiť priradenie vytvorením prvej hodiny":"Confirm matching by creating the first lesson"}</h2>
         <p className="mt-2 text-sm text-gray-600">{sk?"Vyberte študenta a odporúčaného lektora. Prvá hodina vytvorí reálny vzťah v portáli.":"Choose the student and recommended teacher. The first lesson creates the actual relationship in the portal."}</p>
-        <AdminCreateLessonForm students={students} teachers={availableTeachers} packages={packages.data??[]}/>
+        <AdminCreateLessonForm
+          students={students}
+          teachers={availableTeachers}
+          packages={packages.data??[]}
+          initialStudentId={selectedStudentId}
+          initialTeacherId={selectedTeacherId}
+        />
       </section>
     </>}
 

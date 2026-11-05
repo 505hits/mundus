@@ -6,6 +6,7 @@ import TeacherSection from "@/components/TeacherSection";
 import FeaturesBento from "@/components/FeaturesBento";
 import PortalPreviewSection from "@/components/PortalPreviewSection";
 import TrustSection from "@/components/TrustSection";
+import TestimonialsSection from "@/components/TestimonialsSection";
 import FAQSection from "@/components/FAQSection";
 import CalendlyWidget from "@/components/CalendlyWidget";
 import Footer from "@/components/Footer";

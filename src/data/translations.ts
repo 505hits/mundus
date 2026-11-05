@@ -28,28 +28,28 @@ export const translations = {
             title: "Choose the language you want to learn",
             titleBreak: "for your",
             goals: "goals",
-            subtitle: "Choose your language and tell us your goal. We will help match you with a suitable teacher and learning plan.",
+            subtitle: "See which languages are available. Detailed level, frequency and scheduling preferences are collected only after payment.",
         },
         howItWorks: {
             label: "Simple process",
             titleStart: "How it",
             titleEnd: "works",
-            subtitle: "From account creation to your first lesson, the process stays simple and personal.",
+            subtitle: "Payment comes before detailed onboarding, so you can secure your package first and set learning preferences afterwards.",
             steps: [
                 {
                     number: "01",
-                    title: "Choose your language and goal",
-                    description: "Tell us what you want to learn and what you want to achieve. If you are unsure about your level, that is fine.",
+                    title: "Choose your lesson package",
+                    description: "Pick the number of 60-minute 1:1 lessons that suits you. If you want help first, you can still contact Mundus.",
                 },
                 {
                     number: "02",
-                    title: "Choose a package or contact us",
-                    description: "Pay online when you are ready, or message us on Instagram / through the website if you want help first.",
+                    title: "Create your account & pay securely",
+                    description: "Confirm your student account and complete secure online payment. Your package is activated only after payment is confirmed.",
                 },
                 {
                     number: "03",
                     title: "Complete your learning preferences",
-                    description: "After payment, add your level, preferred weekly frequency, days, times and learning goal.",
+                    description: "After payment, add your language, approximate level, weekly frequency, preferred days, times and learning goal.",
                 },
                 {
                     number: "04",
@@ -215,22 +215,6 @@ export const translations = {
                 message: "Tell us how we can help..."
             }
         },
-        footer: {
-            brandDesc: "Personal online language lessons for conversation, work and travel.",
-            headings: {
-                Languages: "Languages",
-                Company: "Company",
-                Support: "Support",
-                Legal: "Legal",
-            },
-            links: {
-                Languages: ["English", "Spanish", "Italian", "Portuguese"],
-                Company: ["About us", "Careers", "Blog", "Press"],
-                Support: ["Help center", "Contact", "FAQs", "Community"],
-                Legal: ["Privacy", "Terms", "Cookies", "Licenses"],
-            },
-            copyright: "© 2024 Mundus. All rights reserved."
-        }
     },
     sk: {
         nav: {
@@ -260,28 +244,28 @@ export const translations = {
             title: "Vyberte si jazyk, ktorý sa chcete učiť",
             titleBreak: "pre vaše",
             goals: "ciele",
-            subtitle: "Vyberte si jazyk a povedzte nám svoj cieľ. Pomôžeme vám nájsť vhodného lektora a nastaviť výučbu podľa vás.",
+            subtitle: "Pozrite si dostupné jazyky. Detailnú úroveň, frekvenciu a časové preferencie vypĺňate až po platbe.",
         },
         howItWorks: {
             label: "Jednoduchý proces",
             titleStart: "Ako to",
             titleEnd: "funguje",
-            subtitle: "Od vytvorenia účtu po prvú hodinu zostáva celý proces jednoduchý a osobný.",
+            subtitle: "Najprv si zabezpečíte balíček platbou. Detailný onboarding vypĺňate až potom.",
             steps: [
                 {
                     number: "01",
-                    title: "Vyberte si jazyk a cieľ",
-                    description: "Povedzte nám, čo sa chcete učiť a čo chcete dosiahnuť. Ak svoju úroveň neviete posúdiť, vôbec to nevadí.",
+                    title: "Vyberte si balíček hodín",
+                    description: "Zvoľte počet individuálnych 60-minútových hodín. Ak sa chcete najprv poradiť, stále nás môžete kontaktovať.",
                 },
                 {
                     number: "02",
-                    title: "Vyberte balíček alebo nás kontaktujte",
-                    description: "Ak ste pripravení, zaplaťte online. Ak sa chcete najprv poradiť, napíšte nám na Instagram alebo cez web.",
+                    title: "Vytvorte účet a bezpečne zaplaťte",
+                    description: "Potvrďte študentský účet a dokončite online platbu. Balíček aktivujeme až po potvrdení platby.",
                 },
                 {
                     number: "03",
                     title: "Doplňte svoje preferencie",
-                    description: "Po platbe zadáte úroveň, požadovanú frekvenciu, preferované dni, časy a cieľ výučby.",
+                    description: "Až po platbe zadáte jazyk, približnú úroveň, frekvenciu, preferované dni, časy a cieľ výučby.",
                 },
                 {
                     number: "04",
@@ -447,21 +431,5 @@ export const translations = {
                 message: "Napíšte nám ako vám môžeme pomôcť..."
             }
         },
-        footer: {
-            brandDesc: "Individuálna online výučba jazykov pre konverzáciu, prácu a cestovanie.",
-            headings: {
-                Languages: "Jazyky",
-                Company: "Spoločnosť",
-                Support: "Podpora",
-                Legal: "Právne",
-            },
-            links: {
-                Languages: ["Angličtina", "Španielčina", "Taliančina", "Portugalčina"],
-                Company: ["O nás", "Kariéra", "Blog", "Tlač"],
-                Support: ["Centrum pomoci", "Kontakt", "FAQ", "Komunita"],
-                Legal: ["Súkromie", "Podmienky", "Cookies", "Licencie"],
-            },
-            copyright: "© 2024 Mundus. Všetky práva vyhradené."
-        }
     }
 };

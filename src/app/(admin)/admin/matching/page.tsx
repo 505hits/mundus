@@ -21,7 +21,7 @@ export default async function MatchingPage(){
     db.from("profiles").select("id,full_name,email,role").eq("status","active").in("role",["teacher","student"]),
     db.from("teacher_preferences").select("*"),
     db.from("lesson_packages").select("id,student_id,total_lessons,remaining_lessons").eq("status","active").gt("remaining_lessons",0),
-    db.from("student_onboarding").select("student_id,language,level,goal,preferred_days,preferred_time_from,preferred_time_to"),
+    db.from("student_onboarding").select("student_id,language,level,goal,lessons_per_week,preferred_days,preferred_time_from,preferred_time_to"),
     db.from("lessons").select("student_id,teacher_id,status,scheduled_at").in("status",["scheduled","rescheduled"]).gte("scheduled_at",now),
   ]);
 
@@ -62,7 +62,7 @@ export default async function MatchingPage(){
   return <main className="mx-auto max-w-7xl px-5 py-10 sm:px-8">
     <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">Smart matching</p>
     <h1 className="mt-2 text-3xl font-semibold">{sk?"Priradenie študenta k lektorovi":"Match student with teacher"}</h1>
-    <p className="mt-3 max-w-3xl text-gray-600">{sk?"Odporúčania zohľadňujú jazyk, približnú úroveň, preferované dni a čas, kapacitu lektora a to, či prijíma nových študentov. Finálne rozhodnutie zostáva na administrátorovi.":"Recommendations consider language, approximate level, preferred days and time, teacher capacity and whether the teacher accepts new students. The final decision remains with the administrator."}</p>
+    <p className="mt-3 max-w-3xl text-gray-600">{sk?"Smart odporúčania zohľadňujú jazyk, približnú úroveň, preferovanú frekvenciu, dni a čas, kapacitu lektora a to, či prijíma nových študentov. Finálne rozhodnutie vždy zostáva na administrátorovi.":"Smart recommendations consider language, approximate level, preferred frequency, days and time, teacher capacity and whether the teacher accepts new students. The final decision always remains with the administrator."}</p>
 
     {unavailable?<p role="alert" className="mt-6 rounded-2xl bg-red-50 p-4 text-red-700">{sk?"Matching údaje sa nepodarilo načítať. Overte databázové migrácie.":"Matching data could not be loaded. Check the database migrations."}</p>:<>
       <section className="mt-8">
@@ -83,7 +83,7 @@ export default async function MatchingPage(){
                 <div>
                   <h3 className="text-lg font-semibold">{personName(student)}</h3>
                   <p className="mt-1 text-sm text-gray-500">{request.language} · {request.level}</p>
-                  <p className="mt-2 max-w-2xl text-sm text-gray-600">{request.goal}</p>
+                  <p className="mt-2 max-w-2xl text-sm text-gray-600">{request.goal}</p>\n                  <p className="mt-2 text-sm font-medium text-[#2F3AA2]">{sk ? "Frekvencia: " : "Frequency: "}{request.lessons_per_week ?? 1}× {sk ? "týždenne" : "per week"}</p>
                   {(request.preferred_days?.length||request.preferred_time_from)&&
                     <p className="mt-2 text-sm text-gray-500">
                       {sk?"Preferencie: ":"Preferences: "}{(request.preferred_days??[]).map((d:string)=>days[Number(d)]).join(", ")||(sk?"ľubovoľný deň":"any day")}

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Star } from "lucide-react";
+import { ArrowRight, CalendarClock, LayoutDashboard, Star, UserRound } from "lucide-react";
 import Image from "next/image";
 
 const fadeInUp = {

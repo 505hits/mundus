@@ -238,38 +238,23 @@ export default function Hero() {
                     </div>
                 </motion.div>
 
-                {/* Trust indicators */}
+                {/* Factual trust indicators */}
                 <motion.div
                     variants={fadeInUp}
                     transition={{ duration: 0.5, delay: 0.8 }}
                     className="mt-8 flex flex-wrap items-center justify-center gap-3 text-sm text-[#D8DBE8] md:mt-10 md:gap-4"
                 >
                     <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.07] px-4 py-2 backdrop-blur-sm">
-                        <div className="flex -space-x-2">
-                            {[
-                                "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
-                                "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face",
-                                "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop&crop=face",
-                                "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face",
-                            ].map((src, i) => (
-                                <Image
-                                    key={i}
-                                    src={src}
-                                    alt="Student"
-                                    width={32}
-                                    height={32}
-                                    className="w-8 h-8 rounded-full border-2 border-white/30 object-cover"
-                                />
-                            ))}
-                        </div>
+                        <UserRound size={16} className="text-[#C7D2FE]" />
                         <span className="font-medium text-white">{t.hero.students}</span>
                     </div>
-
-                    <div className="flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.07] px-4 py-2 backdrop-blur-sm">
-                        {[1, 2, 3, 4, 5].map((i) => (
-                            <Star key={i} size={16} className="fill-yellow-400 text-yellow-400" />
-                        ))}
-                        <span className="ml-1 font-medium text-white">{t.hero.rating}</span>
+                    <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.07] px-4 py-2 backdrop-blur-sm">
+                        <CalendarClock size={16} className="text-[#C7D2FE]" />
+                        <span className="font-medium text-white">{t.hero.rating}</span>
+                    </div>
+                    <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.07] px-4 py-2 backdrop-blur-sm">
+                        <LayoutDashboard size={16} className="text-[#C7D2FE]" />
+                        <span className="font-medium text-white">{t.hero.interactive}</span>
                     </div>
                 </motion.div>
             </motion.div>

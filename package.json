@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/check-portal-build-config.mjs",
+    "test:admin-requests": "node tests/admin-request-actions.mjs && node tests/admin-dashboard-config.mjs && node tests/portal-build-config.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

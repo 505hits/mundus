@@ -58,7 +58,6 @@ export default async function AdminDashboardPage() {
   const sk = language === "sk";
   const { profile } = await requireRole("admin");
   const supabase = await createSupabaseServerClient();
-  const adminClient = createSupabaseAdminClient();
 
   const [
     { data: students, error: studentsError },
@@ -104,12 +103,18 @@ export default async function AdminDashboardPage() {
     supabase
       .from("teacher_public_profiles")
       .select("teacher_id,headline,bio,languages,photo_path"),
-    adminClient
-      .from("contact_requests")
-      .select("id,full_name,email,language,package_lessons,message,status,created_at")
-      .eq("status", "new")
-      .order("created_at", { ascending: false })
-      .limit(20),
+    (async () => {
+      try {
+        return await createSupabaseAdminClient()
+          .from("contact_requests")
+          .select("id,full_name,email,language,package_lessons,message,status,created_at")
+          .eq("status", "new")
+          .order("created_at", { ascending: false })
+          .limit(20);
+      } catch {
+        return { data: null, error: { code: "CONTACT_REQUESTS_NOT_CONFIGURED" } };
+      }
+    })(),
   ]);
 
   const hasLoadError = Boolean(
@@ -124,6 +129,15 @@ export default async function AdminDashboardPage() {
       teacherPublicProfilesError ||
       contactRequestsError
   );
+
+  for (const [source, error] of Object.entries({
+    students: studentsError, teachers: teachersError, lessons: lessonsError,
+    packages: packagesError, requests: requestsError, payments: paidOrdersError,
+    onboarding: onboardingError, teacherPreferences: teacherPreferencesError,
+    teacherProfiles: teacherPublicProfilesError, contactRequests: contactRequestsError,
+  })) {
+    if (error) console.error("[mundus:admin-dashboard]", { source, code: error.code });
+  }
 
   const { data: followups, error: followupError } = await supabase.from("renewal_followups").select("student_id,status,last_contact,next_followup,note,updated_at");
   const followupRows: Followup[] = followups ?? [];
@@ -265,7 +279,7 @@ export default async function AdminDashboardPage() {
         </section>}
 
         {hasLoadError && (
-          <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          <div role="alert" className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             {sk ? "Niektoré údaje sa nepodarilo načítať. Obnovte stránku a skúste to znova." : "Some data could not be loaded. Refresh the page and try again."}
           </div>
         )}

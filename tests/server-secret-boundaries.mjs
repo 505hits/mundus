@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const root = new URL("../src/", import.meta.url);
-const rootPath = root.pathname;
+const rootPath = fileURLToPath(root);
 const files = [];
 
 function walk(dir) {

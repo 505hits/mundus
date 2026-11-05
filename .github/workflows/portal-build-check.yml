@@ -37,6 +37,9 @@ jobs:
       - name: Test portal safeguards and assessment drafts
         run: npm test
 
+      - name: Test request authorization and build configuration
+        run: npm run test:admin-requests
+
       - name: Validate launch configuration contract
         run: npm run launch:check
         env:

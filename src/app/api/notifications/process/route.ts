@@ -70,7 +70,8 @@ export async function GET(request:NextRequest) {
     }
   }
   const {data:contactJobs,error:contactError}=await admin.rpc("claim_contact_request_emails",{batch_size:5});
-  if(contactError) throw contactError;
+  const contactQueueUnavailable = !!contactError && /claim_contact_request_emails|could not find|does not exist/i.test(contactError.message || "");
+  if(contactError && !contactQueueUnavailable) throw contactError;
   for(const job of contactJobs||[]) {
     try {
       const {data:requestRow,error:requestError}=await admin.from("contact_requests").select("full_name,email,language,package_lessons,message,status").eq("id",job.request_id).single();

@@ -16,6 +16,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { formatLanguage, formatLessonStatus } from "@/lib/portalLabels";
 import { currentLanguage, localeFor } from "@/lib/i18n";
+import { markContactRequestContacted } from "./contact-request-actions";
 import type { Language } from "@/context/LanguageContext";
 
 function formatTime(value: string, language: Language) {
@@ -246,7 +247,10 @@ export default async function AdminDashboardPage() {
                   <p className="text-sm text-indigo-900/70">{request.email} · {request.language}{request.package_lessons ? ` · ${request.package_lessons} × 60 min` : ""}</p>
                   {request.message && <p className="mt-1 max-w-3xl text-sm text-indigo-900/75">{request.message}</p>}
                 </div>
-                <span className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-[#2F3AA2]">{sk ? "Nové" : "New"}</span>
+                <form action={markContactRequestContacted}>
+                  <input type="hidden" name="request_id" value={request.id} />
+                  <button className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-[#2F3AA2] hover:bg-indigo-100">{sk ? "Označiť ako kontaktované" : "Mark contacted"}</button>
+                </form>
               </div>
             </li>)}
           </ul>

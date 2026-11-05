@@ -1,6 +1,5 @@
 import AdminNav from "@/components/AdminNav";
 import { requireRole } from "@/lib/auth";
-import { paymentEnabled } from "@/lib/payments";
 
 export default async function AdminLayout({
   children,
@@ -11,7 +10,7 @@ export default async function AdminLayout({
 
   return (
     <div className="portal-surface min-h-screen lg:flex">
-      <AdminNav paymentsEnabled={paymentEnabled()} />
+      <AdminNav />
 
       <div className="min-w-0 flex-1 pb-24 lg:pb-0">
         {children}

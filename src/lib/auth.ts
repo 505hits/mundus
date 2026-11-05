@@ -27,6 +27,10 @@ export async function requireRole(requiredRole: MundusRole, returnTo?: string) {
     .single();
 
   if (profileError || !profile) {
+    console.error("[mundus:account-profile]", {
+      code: profileError?.code ?? "PROFILE_NOT_VISIBLE",
+      requiredRole,
+    });
     throw new Error("Mundus account profile is unavailable");
   }
 

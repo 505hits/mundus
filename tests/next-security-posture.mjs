@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const lock = JSON.parse(readFileSync(new URL("../package-lock.json", import.meta.url), "utf8"));
 const sharpVersion = lock.packages?.["node_modules/sharp"]?.version || "";
@@ -12,7 +13,7 @@ const sharpSafe = sharpParts.length === 3 && (
 );
 assert.equal(sharpSafe, true, `sharp must remain >= 0.35.5; found ${sharpVersion || "missing"}`);
 
-const srcRoot = new URL("../src/", import.meta.url).pathname;
+const srcRoot = fileURLToPath(new URL("../src/", import.meta.url));
 const files = [];
 function walk(dir) {
   for (const name of readdirSync(dir)) {

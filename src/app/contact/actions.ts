@@ -29,7 +29,9 @@ export async function submitContactRequest(form: FormData) {
     redirect("/contact?problem=invalid");
   }
 
-  const admin = createSupabaseAdminClient();
+  let admin;
+  try { admin = createSupabaseAdminClient(); }
+  catch { redirect("/contact?problem=unavailable"); }
   const cutoff = new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString();
   const { count, error: countError } = await admin
     .from("contact_requests")

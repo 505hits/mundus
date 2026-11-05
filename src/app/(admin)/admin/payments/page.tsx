@@ -13,7 +13,7 @@ export default async function AdminPaymentsPage({ searchParams }: { searchParams
   const language=await currentLanguage(); const sk=language==="sk";
   await requireRole("admin");
   const { problem } = await searchParams;
-  if (!paymentEnabled()) return <main className="p-8">{sk?"Online platby zatiaľ nie sú zapnuté.":"Online payments are not enabled yet."}</main>;
+  const paymentsAvailable = paymentEnabled();
   const supabase = await createSupabaseServerClient();
   const { data: orders, error } = await supabase.from("payment_orders")
     .select("id,student_id,package_lessons,amount_cents,status,created_at,paid_at,lesson_package_id")
@@ -40,6 +40,7 @@ export default async function AdminPaymentsPage({ searchParams }: { searchParams
   return <main className="mx-auto max-w-6xl px-5 py-8 text-[#0a0a0f] sm:px-8 lg:py-10">
     <p className="text-sm font-semibold uppercase tracking-[0.15em] text-[#2F3AA2]">{sk?"Admin portál":"Admin portal"}</p>
     <h1 className="mt-2 text-3xl font-semibold">{sk?"Platby":"Payments"}</h1>
+    {!paymentsAvailable && <p role="status" className="mt-4 rounded-xl bg-amber-50 p-4 text-amber-900">{sk ? "Online platby nie sú zapnuté. Históriu platieb môžete prezerať." : "Online payments are disabled. Payment history remains available."}</p>}
     <p className="mt-3 text-gray-600">{sk?"Posledných 100 objednávok. Hodiny sa pripisujú po potvrdení platby od poskytovateľa.":"The latest 100 orders. Lessons are added after payment confirmation from the provider."}</p>
     {problem && <p role="alert" className="mt-6 rounded-2xl bg-red-50 p-4 text-sm text-red-700">{sk?"Zľavu sa nepodarilo zmeniť. Pri otvorenej alebo už zaplatenej objednávke ju nemožno meniť. Obnovte údaje a skontrolujte stav študenta.":"The discount could not be changed. It cannot be changed for an open or already-paid order. Refresh the data and check the student status."}</p>}
     {refundError && <p role="alert" className="mt-6 text-red-700">{sk?"Prehľad vrátených platieb sa nepodarilo načítať.":"Refund review could not be loaded."}</p>}
@@ -77,7 +78,7 @@ export default async function AdminPaymentsPage({ searchParams }: { searchParams
         const choice = state?.allowed;
         const used = state?.has_paid ?? false;
         const pending = state?.has_pending ?? false;
-        const unavailable = !!stateError || !state;
+        const unavailable = !paymentsAvailable || !!stateError || !state;
         const eligible = !unavailable && !used && (choice ?? !state?.has_package);
         return <div key={student.id} className="flex flex-wrap items-center justify-between gap-3 py-4 text-sm">
           <div><p className="font-semibold">{student.full_name || student.email}</p><p className="text-gray-500">{unavailable ? (sk?"Stav zľavy sa nepodarilo overiť":"Discount status could not be verified") : used ? (sk?"Prvý nákup už bol zaplatený":"First purchase already paid") : pending ? (sk?"Prebieha platba":"Payment in progress") : eligible ? (sk?"Zľava povolená":"Discount allowed") : (sk?"Bez zľavy":"No discount")}{choice != null && !used ? (sk?" · nastavené správcom":" · set by administrator") : ""}</p></div>

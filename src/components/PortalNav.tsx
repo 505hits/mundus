@@ -23,12 +23,13 @@ const navItems = [
   { sk: "Hodnotenie", en: "Feedback", href: "/feedback", icon: Star },
   { sk: "Vstupný test", en: "Level test", href: "/level-test", icon: BookOpen },
   { sk: "Kontrolný test", en: "Progress test", href: "/progress-test", icon: ChartNoAxesColumnIncreasing },
+  { sk: "Balíčky", en: "Packages", href: "/packages", icon: Package },
 ];
 
-export default function PortalNav({ paymentsEnabled }: { paymentsEnabled: boolean }) {
+export default function PortalNav() {
   const pathname = usePathname();
   const { language } = useLanguage();
-  const items = paymentsEnabled ? [...navItems, { sk: "Balíčky", en: "Packages", href: "/packages", icon: Package }] : navItems;
+  const items = navItems;
   const mobileItems = items.filter((item) => !["/level-test", "/progress-test"].includes(item.href));
 
   return (

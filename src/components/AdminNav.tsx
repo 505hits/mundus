@@ -18,6 +18,7 @@ import {
   HeartPulse,
   WalletCards,
   NotebookPen,
+  Inbox,
 } from "lucide-react";
 
 const navItems = [
@@ -32,12 +33,14 @@ const navItems = [
   { sk: "Balíčky", en: "Packages", href: "/admin/packages", icon: Package },
   { sk: "Výplaty", en: "Payouts", href: "/admin/payouts", icon: WalletCards },
   { sk: "Poznámky", en: "Notes", href: "/admin/notes", icon: NotebookPen },
+  { sk: "Žiadosti", en: "Requests", href: "/admin/requests", icon: Inbox },
+  { sk: "Platby", en: "Payments", href: "/admin/payments", icon: CreditCard },
 ];
 
-export default function AdminNav({ paymentsEnabled = false }: { paymentsEnabled?: boolean }) {
+export default function AdminNav() {
   const pathname = usePathname();
   const { language } = useLanguage();
-  const items = paymentsEnabled ? [...navItems, { sk: "Platby", en: "Payments", href: "/admin/payments", icon: CreditCard }] : navItems;
+  const items = navItems;
 
   return (
     <>

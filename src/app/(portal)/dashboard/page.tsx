@@ -114,6 +114,14 @@ export default async function DashboardPage() {
     profileError || packagesError || lessonsError || reportsError || requestsError || completedThisMonthError || monthlyFeedbackError
   );
 
+  for (const [source, error] of Object.entries({
+    profile: profileError, packages: packagesError, lessons: lessonsError,
+    reports: reportsError, requests: requestsError,
+    completedLessons: completedThisMonthError, monthlyFeedback: monthlyFeedbackError,
+  })) {
+    if (error) console.error("[mundus:student-dashboard]", { source, code: error.code });
+  }
+
   const activePackages = packages ?? [];
   const upcomingLessons = lessons ?? [];
   const nextLesson = upcomingLessons[0] ?? null;

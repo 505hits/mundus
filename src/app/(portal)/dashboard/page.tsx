@@ -127,7 +127,7 @@ export default async function DashboardPage({ searchParams }: { searchParams?: P
   const activePackages = packages ?? [];
   const hasPaidLearningAccess = activePackages.some(pkg => (pkg.total_lessons ?? 0) > 0);
   if (!onboardingError && hasPaidLearningAccess && !hasCompletedOnboarding(onboarding)) {
-    redirect("/onboarding?next=%2Fdashboard");
+    redirect("/dashboard/setup");
   }
   const upcomingLessons = lessons ?? [];
   const nextLesson = upcomingLessons[0] ?? null;

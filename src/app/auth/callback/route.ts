@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
       const { error } = await supabase.auth.exchangeCodeForSession(code);
       if (!error) {
         const next = purchaseReturnPath(request.nextUrl.searchParams.get("next"));
-        return NextResponse.redirect(new URL(next ? `/onboarding?next=${encodeURIComponent(next)}` : "/onboarding", accountOrigin()));
+        return NextResponse.redirect(new URL(next ?? "/packages", accountOrigin()));
       }
     } catch {
       // Configuration or network failure must not turn an email link into a server error.

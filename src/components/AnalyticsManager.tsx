@@ -1,7 +1,7 @@
 "use client";
 
 import Script from "next/script";
-import { useEffect, useSyncExternalStore } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
 
 declare global {
@@ -49,9 +49,11 @@ export default function AnalyticsManager(){
   const consent=useAnalyticsConsent();
   const gaId=process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
   const clarityId=process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID;
+  const initialPageViewHandled=useRef(false);
   useEffect(()=>{
-    if(consent!=="granted"||!gaId||!window.gtag) return;
-    window.gtag("event","page_view",{page_path:pathname});
+    if(consent!=="granted"||!gaId) return;
+    if(!initialPageViewHandled.current){initialPageViewHandled.current=true;return;}
+    window.gtag?.("event","page_view",{page_path:pathname});
   },[consent,gaId,pathname]);
   if(consent!=="granted") return null;
   return <>

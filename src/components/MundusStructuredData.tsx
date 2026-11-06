@@ -30,7 +30,7 @@ export default async function MundusStructuredData(){
     name:sk?"Individuálne online jazykové hodiny 1:1":"Individual 1:1 online language lessons",
     provider:{"@id":"https://munduslanguages.com/#organization"},
     serviceType:sk?"Online jazykové hodiny":"Online language lessons",
-    url:"https://munduslanguages.com/#pricing",
+    url:"https://munduslanguages.com/pricing",
     description:sk?"Individuálne online jazykové hodiny v dĺžke 45 alebo 60 minút.":"Individual online language lessons in 45- or 60-minute formats.",
     offers:{
       "@type":"OfferCatalog",

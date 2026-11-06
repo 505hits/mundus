@@ -11,6 +11,7 @@ import { requireRole } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { formatLanguage, formatLessonStatus } from "@/lib/portalLabels";
 import AdminCreateLessonForm from "./AdminCreateLessonForm";
+import AdminCreateGroupLessonForm from "./AdminCreateGroupLessonForm";
 import AdminLessonActions from "./AdminLessonActions";
 import { currentLanguage, localeFor } from "@/lib/i18n";
 import type { Language } from "@/context/LanguageContext";
@@ -110,6 +111,7 @@ export default async function AdminLessonsPage() {
           teachers={teachers ?? []}
           packages={packages ?? []}
         />
+        <AdminCreateGroupLessonForm students={students ?? []} teachers={teachers ?? []} />
 
         <section className="mt-8 grid gap-4 sm:grid-cols-3">
           <div className="rounded-3xl border border-[#E5E7F0] bg-white p-5 shadow-sm">

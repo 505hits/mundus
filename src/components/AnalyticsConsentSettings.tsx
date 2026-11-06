@@ -1,11 +1,9 @@
 "use client";
-import { useEffect, useState } from "react";
-import { getAnalyticsConsent, setAnalyticsConsent, type AnalyticsConsent } from "@/components/AnalyticsManager";
+import { setAnalyticsConsent, useAnalyticsConsent } from "@/components/AnalyticsManager";
 
 export default function AnalyticsConsentSettings({sk}:{sk:boolean}){
-  const [value,setValue]=useState<AnalyticsConsent>(null);
-  useEffect(()=>setValue(getAnalyticsConsent()),[]);
-  const update=(next:"granted"|"denied")=>{setAnalyticsConsent(next);setValue(next);};
+  const value=useAnalyticsConsent();
+  const update=(next:"granted"|"denied")=>setAnalyticsConsent(next);
   const status = value==="granted" ? (sk?"povolená":"allowed") : value==="denied" ? (sk?"zakázaná":"disabled") : (sk?"nezvolená":"not chosen");
   return <div className="rounded-2xl border border-[#DDE2FB] bg-[#F5F6FF] p-5">
     <p className="font-semibold text-[#171A2B]">{sk?"Nastavenie analytiky":"Analytics preference"}</p>

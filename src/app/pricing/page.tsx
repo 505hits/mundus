@@ -6,6 +6,8 @@ import PurchaseJourney from "@/components/PurchaseJourney";
 import { paymentEnabled } from "@/lib/payments";
 import { currentLanguage } from "@/lib/i18n";
 
+export const dynamic="force-dynamic";
+
 export async function generateMetadata():Promise<Metadata>{
  const sk=(await currentLanguage())==="sk";
  return {

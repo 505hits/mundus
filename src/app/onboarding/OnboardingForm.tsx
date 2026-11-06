@@ -16,7 +16,7 @@ export default function OnboardingForm({ next }: { next: string | null }) {
   const goNext = () => {
     const currentSection = formRef.current?.querySelector<HTMLElement>(`[data-step="${step}"]`);
     const requiredFields = currentSection?.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>("[required]");
-    for (const field of requiredFields ?? []) {
+    for (const field of Array.from(requiredFields ?? [])) {
       if (!field.checkValidity()) {
         field.reportValidity();
         return;

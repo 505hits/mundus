@@ -18,7 +18,7 @@ assert.ok(migration.includes("newsletter_email_outbox"));
 assert.ok(migration.includes("revoke all on public.newsletter_subscribers from anon, authenticated"));
 assert.ok(migration.includes("claim_newsletter_emails"));
 assert.ok(popup.includes('PUBLIC_PATHS=["/","/contact","/companies","/group-lessons"]'));
-assert.ok(popup.includes("normalizedPath") && popup.includes('/^\\\\/(sk|en)'),"localized /sk and /en public routes must qualify for the popup");
+assert.ok(popup.includes("normalizedPath") && popup.includes('/^\\/(sk|en)'),"localized /sk and /en public routes must qualify for the popup");
 assert.ok(popup.includes("30000"),"popup should not appear immediately");
 assert.ok(popup.includes("0.45"),"popup should also react to engaged scrolling");
 assert.ok(popup.includes("14"),"dismissal should suppress the popup for a meaningful period");

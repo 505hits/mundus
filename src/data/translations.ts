@@ -343,7 +343,7 @@ export const translations = {
             label: "Cenník",
             titleStart: "Osobné hodiny,",
             titleEnd: "jasný cenník",
-            subtitle: "Vyberte si 45- alebo 60-minútové individuálne hodiny s jasnými cenami. Prvý oprávnený balíček má automaticky zľavu 10 % iba raz, potom pokračujete za bežnú cenu."
+            subtitle: "Vyberte si 45- alebo 60-minútové individuálne hodiny s jasnými cenami. Prvý oprávnený balíček má automaticky zľavu 10 % iba raz, potom pokračujete za bežnú cenu.",
             individual: {
                 title: "INDIVIDUÁLNE (1-ON-1) LEKCIE",
                 headers: {

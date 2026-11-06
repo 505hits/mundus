@@ -24,6 +24,7 @@ export default function AddPackageForm({ students }: Props) {
 
   const [studentId, setStudentId] = useState(students[0]?.id ?? "");
   const [totalLessons, setTotalLessons] = useState("10");
+  const [durationMinutes, setDurationMinutes] = useState("60");
   const [notes, setNotes] = useState("");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -41,9 +42,14 @@ export default function AddPackageForm({ students }: Props) {
     }
 
     const total = Number(totalLessons);
+    const duration = Number(durationMinutes);
 
     if (!packageSizes.includes(total)) {
       setError(sk?"Vyberte balíček s 1, 5, 10, 20 alebo 30 hodinami.":"Choose a package with 1, 5, 10, 20 or 30 lessons.");
+      return;
+    }
+    if (![45,60].includes(duration)) {
+      setError(sk?"Vyberte dĺžku 45 alebo 60 minút.":"Choose a 45- or 60-minute duration.");
       return;
     }
 
@@ -56,7 +62,8 @@ export default function AddPackageForm({ students }: Props) {
         .from("lesson_packages")
         .insert({
           student_id: studentId,
-          package_type: `${total}_lessons`,
+          package_type: `${total}_lessons_${duration}_min`,
+          duration_minutes: duration,
           total_lessons: total,
           used_lessons: 0,
           remaining_lessons: total,
@@ -97,7 +104,7 @@ export default function AddPackageForm({ students }: Props) {
         {sk?"Pridať balíček":"Add package"}
       </summary>
 
-      <div className="mt-5 grid gap-4 md:grid-cols-2">
+      <div className="mt-5 grid gap-4 md:grid-cols-3">
         <label className="text-sm font-medium">
           {sk?"Študent":"Student"}
           <select
@@ -111,6 +118,19 @@ export default function AddPackageForm({ students }: Props) {
                 {student.full_name?.trim() || student.email || (sk?"Študent":"Student")}
               </option>
             ))}
+          </select>
+        </label>
+
+        <label className="text-sm font-medium">
+          {sk?"Dĺžka hodiny":"Lesson duration"}
+          <select
+            disabled={saving}
+            value={durationMinutes}
+            onChange={(event) => { setDurationMinutes(event.target.value); setSaved(false); }}
+            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#2F3AA2]"
+          >
+            <option value="45">45 {sk?"minút":"minutes"}</option>
+            <option value="60">60 {sk?"minút":"minutes"}</option>
           </select>
         </label>
 
@@ -130,7 +150,7 @@ export default function AddPackageForm({ students }: Props) {
           </select>
         </label>
 
-        <label className="text-sm font-medium md:col-span-2">
+        <label className="text-sm font-medium md:col-span-3">
           {sk?"Interná poznámka":"Internal note"}
           <textarea
             disabled={saving}

@@ -34,7 +34,7 @@ export default function LanguageSelector(){
    <motion.div variants={fadeInUp} className="text-center">
     <span className="inline-flex items-center gap-2 rounded-full border border-[#DDE2F4] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[.14em] text-[#2F3AA2] shadow-sm"><Languages size={15}/>{t.languageSelector.badge}</span>
     <h2 className="mt-5 text-4xl font-semibold tracking-[-.035em] text-[#171A2B] md:text-5xl">{sk?"1. Vyberte jazyk":"1. Choose your language"}</h2>
-    <p className="mx-auto mt-5 max-w-3xl text-base leading-7 text-gray-600 md:text-lg">{sk?"Po výbere jazyka pokračujete priamo k balíčkom a online platbe. Detailnú úroveň a termíny zadáte až po zaplatení.":"After choosing a language, continue directly to packages and online payment. You’ll add your level and availability only after payment."}</p>
+    <p className="mx-auto mt-5 max-w-3xl text-base leading-7 text-gray-600 md:text-lg">{sk?"Po výbere jazyka pokračujete priamo k balíčkom. Detailnú úroveň a termíny zadáte až po potvrdení platby.":"After choosing a language, continue directly to packages. You’ll add your level and availability only after payment is confirmed."}</p>
    </motion.div>
 
    <motion.div variants={stagger} className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

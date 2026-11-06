@@ -11,7 +11,6 @@ import TestimonialsSection from "@/components/TestimonialsSection";
 import FAQSection from "@/components/FAQSection";
 import CalendlyWidget from "@/components/CalendlyWidget";
 import Footer from "@/components/Footer";
-import FloatingCTA from "@/components/FloatingCTA";
 import { paymentEnabled } from "@/lib/payments";
 import { publicTeachers } from "@/lib/public-teachers";
 
@@ -40,7 +39,6 @@ export default async function Home() {
       <FAQSection />
       <CalendlyWidget />
       <Footer />
-      <FloatingCTA />
     </main>
   );
 }

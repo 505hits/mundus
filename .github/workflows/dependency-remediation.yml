@@ -1,0 +1,34 @@
+name: Dependency remediation generator
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout triggering commit
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Generate safe dependency lock update
+        run: |
+          npm install next@16.4.5 nodemailer@10.1.4 --save-exact --package-lock-only --ignore-scripts
+          npm audit fix --package-lock-only --ignore-scripts || true
+          echo "PACKAGE_JSON_BEGIN"
+          base64 -w0 package.json
+          echo
+          echo "PACKAGE_JSON_END"
+          echo "PACKAGE_LOCK_BEGIN"
+          base64 -w0 package-lock.json
+          echo
+          echo "PACKAGE_LOCK_END"
+          echo "AUDIT_BEGIN"
+          npm audit --json || true
+          echo "AUDIT_END"

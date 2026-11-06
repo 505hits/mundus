@@ -37,7 +37,6 @@ export function LanguageProvider({ children, initialLanguage = "sk" }: { childre
         if (pathLocale) {
             try { window.localStorage.setItem("mundus-language", pathLocale); } catch {}
             document.cookie = `mundus_language=${pathLocale}; Path=/; Max-Age=31536000; SameSite=Lax`;
-            if (pathLocale !== language) setLanguageState(pathLocale);
             return;
         }
         try {

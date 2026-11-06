@@ -69,7 +69,7 @@ export default function Hero() {
 
           <div className="mt-5 space-y-3">
             {[
-              [sk ? "1. Vyberiete si balíček" : "1. Choose a package", sk ? "Jasná cena a 60-minútové individuálne hodiny." : "Clear pricing and 60-minute individual lessons."],
+              [sk ? "1. Vyberiete si balíček" : "1. Choose a package", sk ? "Jasná cena a 45- alebo 60-minútové individuálne hodiny." : "Clear pricing and 45- or 60-minute individual lessons."],
               [sk ? "2. Zaplatíte online" : "2. Pay online", sk ? "Najprv platba. Až potom vypĺňate detailné preferencie." : "Payment comes first. Detailed preferences come afterwards."],
               [sk ? "3. Doplníte preferencie" : "3. Add your preferences", sk ? "Jazyk, úroveň, frekvencia, dni, časy a cieľ." : "Language, level, frequency, days, times and goal."],
               [sk ? "4. Mundus odporučí lektora" : "4. Mundus recommends a teacher", sk ? "Vyhodnotíme vhodné zhody a finálne priradenie schválime." : "We rank suitable matches and approve the final assignment."],

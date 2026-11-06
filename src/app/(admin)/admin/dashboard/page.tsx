@@ -106,7 +106,7 @@ export default async function AdminDashboardPage() {
       .select("teacher_id,headline,bio,languages,photo_path"),
     adminClient
       .from("contact_requests")
-      .select("id,full_name,email,language,package_lessons,message,status,created_at")
+      .select("id,full_name,email,language,package_lessons,request_type,group_size,message,status,created_at")
       .eq("status", "new")
       .order("created_at", { ascending: false })
       .limit(20),
@@ -246,7 +246,7 @@ export default async function AdminDashboardPage() {
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <p className="font-semibold text-indigo-950">{request.full_name}</p>
-                  <p className="text-sm text-indigo-900/70">{request.email} · {request.language}{request.package_lessons ? ` · ${request.package_lessons} ${sk ? (request.package_lessons === 1 ? "hodina" : "hodín") : (request.package_lessons === 1 ? "lesson" : "lessons")}` : ""}</p>
+                  <p className="text-sm text-indigo-900/70">{request.email} · {request.language} · {request.request_type === "group" ? (sk ? `skupina ${request.group_size ?? "?"} osôb` : `group of ${request.group_size ?? "?"}`) : (sk ? "individuálne" : "individual")}{request.package_lessons ? ` · ${request.package_lessons} ${sk ? (request.package_lessons === 1 ? "hodina" : "hodín") : (request.package_lessons === 1 ? "lesson" : "lessons")}` : ""}</p>
                   {request.message && <p className="mt-1 max-w-3xl text-sm text-indigo-900/75">{request.message}</p>}
                 </div>
                 <form action={markContactRequestContacted}>

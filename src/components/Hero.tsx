@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { ArrowRight, CalendarClock, CheckCircle2, FileText, LayoutDashboard, ShieldCheck, UserRound, WalletCards } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -26,9 +27,9 @@ export default function Hero(){
     <motion.p variants={fadeInUp} className="mt-6 max-w-2xl text-base leading-8 text-[#D8DBE8] sm:text-lg">{t.hero.subtitle}</motion.p>
 
     <motion.div variants={fadeInUp} className="mt-8 flex flex-col gap-3 sm:flex-row">
-      <a href="/languages" className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-[#5361D4] px-6 py-4 font-semibold text-white shadow-[0_16px_42px_rgba(70,82,194,.35)] transition hover:-translate-y-0.5 hover:bg-[#6572DF]">
+      <Link href="/languages" className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-[#5361D4] px-6 py-4 font-semibold text-white shadow-[0_16px_42px_rgba(70,82,194,.35)] transition hover:-translate-y-0.5 hover:bg-[#6572DF]">
         {sk?"Vybrať jazyk a balíček":"Choose language & package"}<ArrowRight size={18}/>
-      </a>
+      </Link>
       <a href="#learning-formats" className="inline-flex min-h-14 items-center justify-center rounded-2xl border border-white/20 bg-white/[0.06] px-6 py-4 font-semibold text-white backdrop-blur transition hover:bg-white/[0.1]">
         {sk?"Pozrieť možnosti výučby":"Explore lesson formats"}
       </a>

@@ -1,0 +1,22 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+
+const read=(p)=>readFileSync(new URL("../"+p,import.meta.url),"utf8");
+
+const home=read("src/app/page.tsx");
+const nav=read("src/components/Navbar.tsx");
+const languages=read("src/components/LanguageSelector.tsx");
+const portalNav=read("src/components/PortalNav.tsx");
+const dashboard=read("src/app/(portal)/dashboard/page.tsx");
+const layout=read("src/app/layout.tsx");
+
+assert.equal(languages.includes("flagcdn.com"),false,"language section must not restore decorative remote flags");
+assert.equal(nav.includes("tel:+421904082794"),false,"primary navbar must stay focused on navigation and purchase");
+assert.ok(home.indexOf("<PricingSection") < home.indexOf("<PortalPreviewSection"),"pricing should appear before deeper product proof");
+assert.ok(portalNav.includes('!["/feedback", "/level-test", "/progress-test"].includes(item.href)'),"mobile nav must stay focused on five core destinations");
+assert.ok(portalNav.includes("fixed left-0 right-0 top-0"),"mobile portal needs a consistent top bar");
+assert.ok(dashboard.includes("Quick navigation"),"dashboard must expose obvious task shortcuts");
+assert.ok(layout.includes("45 alebo 60 minút"),"SEO description must reflect both lesson durations");
+assert.equal(home.match(/<FloatingCTA/g)?.length ?? 0,0,"floating CTA is global and must not be duplicated on homepage");
+
+console.log("PASS: public site and student dashboard preserve the streamlined Mundus UX");

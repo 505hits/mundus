@@ -1,7 +1,14 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { currentLanguage } from "@/lib/i18n";
+import { localizedAlternates } from "@/lib/seo-locales";
 
+
+export async function generateMetadata():Promise<Metadata>{
+ const language=await currentLanguage(); const sk=language==="sk";
+ return {title:sk?"Podmienky | Mundus Languages":"Terms | Mundus Languages",description:sk?"Podmienky používania, nákupu a online jazykovej výučby Mundus Languages.":"Terms for using, purchasing and taking online lessons with Mundus Languages.",alternates:localizedAlternates("/terms",language)};
+}
 export default async function TermsPage() {
   const sk=(await currentLanguage())==="sk";
   return <main className="min-h-screen bg-[#FAFAF9]"><Navbar/><section className="mx-auto max-w-3xl px-6 pb-20 pt-32">

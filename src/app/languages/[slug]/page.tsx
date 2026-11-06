@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { currentLanguage } from "@/lib/i18n";
 import { LANGUAGE_SEO_PAGES, languageSeoPage } from "@/data/language-seo-pages";
+import { localizedAlternates, localizedPath } from "@/lib/seo-locales";
 
 export const dynamic="force-dynamic";
 
@@ -20,15 +21,15 @@ export async function generateMetadata({params}:{params:Promise<{slug:string}>})
  return {
   title:copy.seoTitle,
   description:copy.description,
-  alternates:{canonical},
-  openGraph:{title:copy.seoTitle,description:copy.description,url:"https://munduslanguages.com"+canonical,type:"website",images:[{url:"/logo-removebg-preview.png",width:1200,height:630,alt:"Mundus Languages"}]},
+  alternates:localizedAlternates(canonical,language),
+  openGraph:{title:copy.seoTitle,description:copy.description,url:`https://munduslanguages.com${localizedPath(canonical,language)}`,type:"website",images:[{url:"/logo-removebg-preview.png",width:1200,height:630,alt:"Mundus Languages"}]},
   twitter:{card:"summary_large_image",title:copy.seoTitle,description:copy.description,images:["/logo-removebg-preview.png"]},
  };
 }
 
 export default async function LanguageLandingPage({params}:{params:Promise<{slug:string}>}){
  const {slug}=await params;const config=languageSeoPage(slug);if(!config)notFound();
- const language=await currentLanguage();const sk=language==="sk";const copy=sk?config.sk:config.en;
+ const language=await currentLanguage();const sk=language==="sk";const copy=sk?config.sk:config.en;const prefix=`/${language}`;
  const structured={
   "@context":"https://schema.org",
   "@graph":[
@@ -37,7 +38,7 @@ export default async function LanguageLandingPage({params}:{params:Promise<{slug
     name:copy.name,
     serviceType:sk?`Individuálne online hodiny – ${copy.name}`:`Private online lessons – ${copy.name}`,
     provider:{"@type":"EducationalOrganization","@id":"https://munduslanguages.com/#organization","name":"Mundus Languages","url":"https://munduslanguages.com"},
-    url:`https://munduslanguages.com/languages/${config.slug}`,
+    url:`https://munduslanguages.com${localizedPath(`/languages/${config.slug}`,language)}`,
     description:copy.description,
     areaServed:[{"@type":"Country","name":"Slovakia"},{"@type":"Country","name":"Czechia"}],
     availableChannel:{"@type":"ServiceChannel","serviceUrl":"https://munduslanguages.com","serviceLocation":{"@type":"VirtualLocation","url":"https://munduslanguages.com"}}
@@ -46,8 +47,8 @@ export default async function LanguageLandingPage({params}:{params:Promise<{slug
     "@type":"BreadcrumbList",
     itemListElement:[
       {"@type":"ListItem",position:1,name:"Mundus Languages",item:"https://munduslanguages.com"},
-      {"@type":"ListItem",position:2,name:sk?"Jazyky":"Languages",item:"https://munduslanguages.com/languages"},
-      {"@type":"ListItem",position:3,name:copy.name,item:`https://munduslanguages.com/languages/${config.slug}`}
+      {"@type":"ListItem",position:2,name:sk?"Jazyky":"Languages",item:`https://munduslanguages.com${localizedPath("/languages",language)}`},
+      {"@type":"ListItem",position:3,name:copy.name,item:`https://munduslanguages.com${localizedPath(`/languages/${config.slug}`,language)}`}
     ]
    }
   ]
@@ -60,13 +61,13 @@ export default async function LanguageLandingPage({params}:{params:Promise<{slug
    <div className="pointer-events-none absolute left-1/2 top-[-55%] h-[760px] w-[760px] -translate-x-1/2 rounded-full bg-[#5361D4]/35 blur-[135px]"/>
    <div className="relative mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_.72fr] lg:items-end">
     <div>
-     <nav aria-label={sk?"Navigácia":"Breadcrumb"} className="text-sm text-[#BFC5E7]"><Link href="/" className="hover:text-white">Mundus</Link><span className="mx-2">/</span><Link href="/#languages" className="hover:text-white">{sk?"Jazyky":"Languages"}</Link><span className="mx-2">/</span><span>{copy.name}</span></nav>
+     <nav aria-label={sk?"Navigácia":"Breadcrumb"} className="text-sm text-[#BFC5E7]"><Link href={prefix} className="hover:text-white">Mundus</Link><span className="mx-2">/</span><Link href={`${prefix}/languages`} className="hover:text-white">{sk?"Jazyky":"Languages"}</Link><span className="mx-2">/</span><span>{copy.name}</span></nav>
      <p className="mt-7 text-sm font-semibold uppercase tracking-[.16em] text-[#C7D2FE]">{sk?"Individuálne online hodiny":"Private online lessons"}</p>
      <h1 className="mt-4 max-w-4xl text-[clamp(2.6rem,6vw,4.9rem)] font-semibold leading-[1.01] tracking-[-.045em] !text-white">{copy.hero}</h1>
      <p className="mt-6 max-w-3xl text-lg leading-8 text-[#D8DBE8]">{copy.intro}</p>
      <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-      <Link href={`/pricing?language=${encodeURIComponent(config.value)}`} className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-[#5361D4] px-6 py-4 font-semibold text-white shadow-[0_14px_35px_rgba(70,82,194,.35)] transition hover:-translate-y-0.5 hover:bg-[#6572DF]">{sk?"Vybrať balíček":"Choose a package"}<ArrowRight size={18}/></Link>
-      <Link href="/contact" className="inline-flex min-h-14 items-center justify-center rounded-2xl border border-white/20 bg-white/[.06] px-6 py-4 font-semibold text-white transition hover:bg-white/[.1]">{sk?"Najprv sa opýtať":"Ask us first"}</Link>
+      <Link href={`${prefix}/pricing?language=${encodeURIComponent(config.value)}`} className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-[#5361D4] px-6 py-4 font-semibold text-white shadow-[0_14px_35px_rgba(70,82,194,.35)] transition hover:-translate-y-0.5 hover:bg-[#6572DF]">{sk?"Vybrať balíček":"Choose a package"}<ArrowRight size={18}/></Link>
+      <Link href={`${prefix}/contact`} className="inline-flex min-h-14 items-center justify-center rounded-2xl border border-white/20 bg-white/[.06] px-6 py-4 font-semibold text-white transition hover:bg-white/[.1]">{sk?"Najprv sa opýtať":"Ask us first"}</Link>
      </div>
     </div>
     <div className="rounded-[1.75rem] border border-white/10 bg-white/[.07] p-5 backdrop-blur sm:p-6">

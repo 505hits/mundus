@@ -17,6 +17,9 @@ const faq=read("src/components/FAQSection.tsx");
 const preview=read("src/components/PortalPreviewSection.tsx");
 const dashboardSetup=read("src/app/(portal)/dashboard/setup/page.tsx");
 const legacyOnboarding=read("src/app/onboarding/page.tsx");
+const login=read("src/app/login/page.tsx");
+const contact=read("src/app/contact/page.tsx");
+const notificationWorker=read("src/app/api/notifications/process/route.ts");
 
 for(const component of ["PortalPreviewSection","TrustSection","FAQSection"]) {
   assert.ok(home.includes(component), `homepage must include ${component}`);
@@ -31,6 +34,8 @@ assert.ok(legacyOnboarding.includes('redirect("/packages")'));
 assert.ok(legacyOnboarding.includes('redirect("/dashboard/setup")'));
 assert.ok(paymentReturn.includes('redirect("/dashboard/setup?payment=success")'));
 assert.ok(paymentReturn.includes('redirect("/dashboard?payment=success")'));
+assert.ok(login.includes('profile.role === "student" && desired'), "login must preserve an explicit package/payment destination before onboarding");
+assert.ok(login.indexOf('profile.role === "student" && desired') < login.indexOf('needsOnboarding'), "payment intent must take precedence over onboarding");
 assert.ok(matching.includes("lessons_per_week"));
 assert.ok(matching.includes("Approve this match"));
 assert.ok(matching.includes("Schváliť túto zhodu"));
@@ -60,5 +65,8 @@ assert.equal(translations.includes("200+ študentov"), false);
 assert.equal(translations.includes("4.9/5"), false);
 assert.equal(layout.toLowerCase().includes("turečtina"), false);
 assert.equal(translations.includes("SKUPINOVÉ KURZY"), false, "new strategy must not restore old group-course pricing");
+assert.equal(home.includes("CalendlyWidget"), false, "homepage must stay focused on direct purchase instead of consultation booking");
+assert.equal(contact.includes("× 60 min</option>"), false, "contact form must not imply every enquiry is for 60-minute lessons");
+assert.equal(notificationWorker.includes('requestRow.package_lessons+" × 60 min"'), false, "contact notification must not invent a 60-minute duration");
 
 console.log("PASS: public site, paid onboarding, dashboard and teacher matching follow the Mundus strategy");

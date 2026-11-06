@@ -20,7 +20,7 @@ export const translations = {
             ctaPrimary: "Choose your lesson package",
             ctaSecondary: "See how it works",
             interactive: "Your Mundus learning portal",
-            students: "100+ students",
+            students: "13+ languages",
             rating: "Native & experienced teachers",
         },
         languageSelector: {
@@ -221,7 +221,7 @@ export const translations = {
             ctaPrimary: "Vybrať balíček",
             ctaSecondary: "Ako to funguje",
             interactive: "Váš študijný portál Mundus",
-            students: "100+ študentov",
+            students: "13+ jazykov",
             rating: "Native aj skúsení lektori",
         },
         languageSelector: {

@@ -7,17 +7,18 @@ import NewsletterSignup from "@/components/NewsletterSignup";
 export default function Footer() {
   const { language } = useLanguage();
   const sk = language === "sk";
+  const prefix = `/${language}`;
 
   const groups = [
     {
       title: sk ? "Mundus" : "Mundus",
       links: [
-        { href: "/#how-it-works", label: sk ? "Ako to funguje" : "How it works" },
-        { href: "/#teachers", label: sk ? "Lektori" : "Teachers" },
-        { href: "/pricing", label: sk ? "Cenník a platba" : "Pricing & payment" },
-        { href: "/group-lessons", label: sk ? "Skupinové hodiny" : "Group lessons" },
-        { href: "/companies", label: sk ? "Pre firmy" : "For companies" },
-        { href: "/#faq", label: "FAQ" },
+        { href: `${prefix}/#how-it-works`, label: sk ? "Ako to funguje" : "How it works" },
+        { href: `${prefix}/#teachers`, label: sk ? "Lektori" : "Teachers" },
+        { href: `${prefix}/pricing`, label: sk ? "Cenník a platba" : "Pricing & payment" },
+        { href: `${prefix}/group-lessons`, label: sk ? "Skupinové hodiny" : "Group lessons" },
+        { href: `${prefix}/companies`, label: sk ? "Pre firmy" : "For companies" },
+        { href: `${prefix}/#faq`, label: "FAQ" },
       ],
     },
     {
@@ -26,25 +27,25 @@ export default function Footer() {
         { href: "/login", label: sk ? "Prihlásenie" : "Sign in" },
         { href: "/dashboard", label: sk ? "Študentský portál" : "Student portal" },
         { href: "/forgot-password", label: sk ? "Obnova hesla" : "Reset password" },
-        { href: "/contact", label: sk ? "Kontakt a pomoc" : "Contact & help" },
+        { href: `${prefix}/contact`, label: sk ? "Kontakt a pomoc" : "Contact & help" },
         { href: "https://www.instagram.com/mundus.languages/", label: "Instagram", external: true },
       ],
     },
     {
       title: sk ? "Jazyky" : "Languages",
       links: [
-        { href: "/languages", label: sk ? "Všetky jazyky" : "All languages" },
-        { href: "/languages/english", label: sk ? "Angličtina online" : "English online" },
-        { href: "/languages/german", label: sk ? "Nemčina online" : "German online" },
-        { href: "/languages/slovak-for-foreigners", label: sk ? "Slovenčina pre cudzincov" : "Slovak for foreigners" },
+        { href: `${prefix}/languages`, label: sk ? "Všetky jazyky" : "All languages" },
+        { href: `${prefix}/languages/english`, label: sk ? "Angličtina online" : "English online" },
+        { href: `${prefix}/languages/german`, label: sk ? "Nemčina online" : "German online" },
+        { href: `${prefix}/languages/slovak-for-foreigners`, label: sk ? "Slovenčina pre cudzincov" : "Slovak for foreigners" },
       ],
     },
     {
       title: sk ? "Právne" : "Legal",
       links: [
-        { href: "/privacy", label: sk ? "Ochrana súkromia" : "Privacy" },
-        { href: "/terms", label: sk ? "Podmienky" : "Terms" },
-        { href: "/cookies", label: "Cookies" },
+        { href: `${prefix}/privacy`, label: sk ? "Ochrana súkromia" : "Privacy" },
+        { href: `${prefix}/terms`, label: sk ? "Podmienky" : "Terms" },
+        { href: `${prefix}/cookies`, label: "Cookies" },
       ],
     },
   ];
@@ -53,7 +54,7 @@ export default function Footer() {
     <div className="container">
       <div className="grid gap-10 lg:grid-cols-[1.2fr_2fr]">
         <div>
-          <Link href="/" className="footer-brand">Mundus Languages</Link>
+          <Link href={prefix} className="footer-brand">Mundus Languages</Link>
           <p className="footer-desc max-w-sm">
             {sk ? "Online jazyková výučba 1:1, súkromné skupiny a firemné vzdelávanie s flexibilnými termínmi a modernými portálmi." : "Online 1:1 language lessons, private groups and company training with flexible scheduling and modern portals."}
           </p>

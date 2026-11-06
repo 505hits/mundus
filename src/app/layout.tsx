@@ -7,6 +7,7 @@ import NewsletterPopup from "@/components/NewsletterPopup";
 import { currentLanguage } from "@/lib/i18n";
 import AnalyticsManager from "@/components/AnalyticsManager";
 import AnalyticsConsentBanner from "@/components/AnalyticsConsentBanner";
+import { localizedPath } from "@/lib/seo-locales";
 
 export async function generateMetadata(): Promise<Metadata> {
   const language = await currentLanguage();
@@ -30,7 +31,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description: sk
         ? "Individuálne 1:1, súkromné skupiny aj firemná výučba. Flexibilné online hodiny a moderný študentský portál."
         : "1:1 lessons, private groups and company training with flexible online scheduling and a modern student portal.",
-      url: "https://munduslanguages.com",
+      url: `https://munduslanguages.com${localizedPath("/",language)}`,
       type: "website",
       locale: sk ? "sk_SK" : "en_GB",
       images: [{ url: "/logo-removebg-preview.png", width: 1200, height: 630, alt: "Mundus Languages — online language lessons" }],
@@ -41,7 +42,6 @@ export async function generateMetadata(): Promise<Metadata> {
       description: sk ? "1:1 hodiny, súkromné skupiny a firemná výučba online." : "1:1 lessons, private groups and company training online.",
       images: ["/logo-removebg-preview.png"],
     },
-    alternates: { canonical: "/" },
     robots: { index: true, follow: true },
     verification: {
       google: process.env.GOOGLE_SITE_VERIFICATION || "E8jeITeM86HOhcoQCXpdxzqra-O-Xy-2CsS3JH7QLFk",

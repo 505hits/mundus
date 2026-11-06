@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules:[
       {
         userAgent:"*",
-        allow:["/","/languages","/languages/","/pricing","/group-lessons","/companies","/contact","/privacy","/terms","/cookies"],
+        allow:["/","/sk/","/en/","/languages","/languages/","/learn/","/pricing","/group-lessons","/companies","/contact","/privacy","/terms","/cookies"],
         disallow:["/admin/","/teacher/","/dashboard","/lessons","/learning","/progress","/feedback","/level-test","/progress-test","/packages","/company/","/api/","/auth/","/signup","/login","/forgot-password","/reset-password","/onboarding","/newsletter/confirmed","/newsletter/unsubscribe"],
       },
     ],

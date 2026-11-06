@@ -1,12 +1,19 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, CreditCard, Globe, Send } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { currentLanguage } from "@/lib/i18n";
+import { localizedAlternates } from "@/lib/seo-locales";
 import { submitContactRequest } from "./actions";
 
 type PageProps = { searchParams: Promise<{ sent?: string; problem?: string; type?: string }> };
 
+
+export async function generateMetadata():Promise<Metadata>{
+ const language=await currentLanguage(); const sk=language==="sk";
+ return {title:sk?"Kontakt | Mundus Languages":"Contact | Mundus Languages",description:sk?"Kontaktujte Mundus Languages alebo pokračujte priamo k výberu jazyka, balíčka a online platbe.":"Contact Mundus Languages or continue directly to language selection, package choice and online payment.",alternates:localizedAlternates("/contact",language)};
+}
 export default async function ContactPage({ searchParams }: PageProps) {
   const language = await currentLanguage();
   const sk = language === "sk";

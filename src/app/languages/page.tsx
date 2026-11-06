@@ -3,13 +3,14 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import LanguageSelector from "@/components/LanguageSelector";
 import { currentLanguage } from "@/lib/i18n";
+import { localizedAlternates } from "@/lib/seo-locales";
 
 export async function generateMetadata():Promise<Metadata>{
- const sk=(await currentLanguage())==="sk";
+ const language=await currentLanguage(); const sk=language==="sk";
  return {
   title:sk?"Online jazykové kurzy podľa jazyka | Mundus Languages":"Online language lessons by language | Mundus Languages",
   description:sk?"Vyberte si angličtinu, nemčinu, španielčinu, taliančinu, francúzštinu, slovenčinu pre cudzincov a ďalšie jazyky. Potom pokračujte priamo k balíčku a platbe.":"Choose English, German, Spanish, Italian, French, Slovak for foreigners and more. Then continue directly to package selection and payment.",
-  alternates:{canonical:"/languages"},
+  alternates:localizedAlternates("/languages",language),
  };
 }
 export default async function LanguagesPage(){

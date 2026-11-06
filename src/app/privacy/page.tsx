@@ -1,7 +1,14 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { currentLanguage } from "@/lib/i18n";
+import { localizedAlternates } from "@/lib/seo-locales";
 
+
+export async function generateMetadata():Promise<Metadata>{
+ const language=await currentLanguage(); const sk=language==="sk";
+ return {title:sk?"Ochrana súkromia | Mundus Languages":"Privacy | Mundus Languages",description:sk?"Informácie o spracúvaní osobných údajov v Mundus Languages.":"Information about personal data processing at Mundus Languages.",alternates:localizedAlternates("/privacy",language)};
+}
 export default async function PrivacyPage() {
   const sk=(await currentLanguage())==="sk";
   return <main className="min-h-screen bg-[#FAFAF9]"><Navbar/><section className="mx-auto max-w-3xl px-6 pb-20 pt-32">

@@ -12,12 +12,13 @@ export default function Navbar() {
   const { t, language } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const prefix = `/${language}`;
 
   const navLinks = [
-    { name: t.nav.courses, href: "/languages" },
-    { name: language === "sk" ? "Skupinové hodiny" : "Group lessons", href: "/group-lessons" },
-    { name: t.nav.teachers, href: "/#teachers" },
-    { name: t.nav.prices, href: "/pricing" },
+    { name: t.nav.courses, href: `${prefix}/languages` },
+    { name: language === "sk" ? "Skupinové hodiny" : "Group lessons", href: `${prefix}/group-lessons` },
+    { name: t.nav.teachers, href: `${prefix}/#teachers` },
+    { name: t.nav.prices, href: `${prefix}/pricing` },
   ];
 
   useEffect(() => {
@@ -42,7 +43,7 @@ export default function Navbar() {
         className={`navbar border-b border-black/5 bg-white/90 backdrop-blur-xl ${isScrolled ? "shadow-sm" : ""}`}
       >
         <div className="navbar-inner flex w-full items-center justify-between px-5 sm:px-6">
-          <Link href="/" className="nav-logo relative h-12 w-36 shrink-0 sm:w-40" aria-label="Mundus Languages">
+          <Link href={prefix} className="nav-logo relative h-12 w-36 shrink-0 sm:w-40" aria-label="Mundus Languages">
             <Image src="/logo-removebg-preview.png" alt="Mundus Languages" fill className="object-contain object-left" priority />
           </Link>
 
@@ -55,7 +56,7 @@ export default function Navbar() {
               ))}
             </nav>
 
-            <Link href="/companies" className="inline-flex items-center gap-1.5 rounded-full border border-[#DDE2FB] bg-[#F5F6FF] px-4 py-2 text-sm font-semibold text-[#2F3AA2] transition hover:border-[#2F3AA2]/40 hover:bg-[#EEF2FF]">
+            <Link href={`${prefix}/companies`} className="inline-flex items-center gap-1.5 rounded-full border border-[#DDE2FB] bg-[#F5F6FF] px-4 py-2 text-sm font-semibold text-[#2F3AA2] transition hover:border-[#2F3AA2]/40 hover:bg-[#EEF2FF]">
               {language === "sk" ? "Pre firmy" : "For companies"}
               <ArrowRight size={15} />
             </Link>
@@ -66,7 +67,7 @@ export default function Navbar() {
               {language === "sk" ? "Prihlásenie" : "Sign in"}
             </Link>
 
-            <Link href="/pricing" className="btn btn-primary !px-5 !py-2.5 !text-sm whitespace-nowrap">
+            <Link href={`${prefix}/pricing`} className="btn btn-primary !px-5 !py-2.5 !text-sm whitespace-nowrap">
               {t.nav.book}
             </Link>
           </div>
@@ -114,7 +115,7 @@ export default function Navbar() {
                 </Link>
               ))}
 
-              <Link href="/companies" onClick={() => setIsMobileMenuOpen(false)} className="mt-5 flex items-center justify-between rounded-2xl border border-[#DDE2FB] bg-[#F5F6FF] p-4 text-lg font-semibold text-[#2F3AA2]">
+              <Link href={`${prefix}/companies`} onClick={() => setIsMobileMenuOpen(false)} className="mt-5 flex items-center justify-between rounded-2xl border border-[#DDE2FB] bg-[#F5F6FF] p-4 text-lg font-semibold text-[#2F3AA2]">
                 {language === "sk" ? "Pre firmy" : "For companies"}
                 <ArrowRight size={19} />
               </Link>
@@ -127,7 +128,7 @@ export default function Navbar() {
 
             <div className="mt-auto">
               <Link
-                href="/pricing"
+                href={`${prefix}/pricing`}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="btn btn-primary w-full justify-center py-3.5 text-base"
               >
@@ -135,7 +136,7 @@ export default function Navbar() {
               </Link>
               <p className="mt-5 text-center text-sm text-gray-500">
                 {t.nav.needHelp}{" "}
-                <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)} className="font-medium text-[#2F3AA2] underline underline-offset-4">
+                <Link href={`${prefix}/contact`} onClick={() => setIsMobileMenuOpen(false)} className="font-medium text-[#2F3AA2] underline underline-offset-4">
                   {t.nav.contactUs}
                 </Link>
               </p>

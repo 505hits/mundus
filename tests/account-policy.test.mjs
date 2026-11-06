@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { STUDENT_LANGUAGES, canAcceptTeacherInvitation, hasCompletedOnboarding, portalDestination, validEmail, validPassword } from "../src/lib/account-policy.ts";
+import { STUDENT_LANGUAGES, canAcceptCompanyInvitation, canAcceptTeacherInvitation, hasCompletedOnboarding, portalDestination, validEmail, validPassword } from "../src/lib/account-policy.ts";
 
 test("teacher access requires an unexpired, unconsumed trusted invitation", () => {
   const now = Date.parse("2026-09-29T00:00:00Z");
@@ -11,11 +11,21 @@ test("teacher access requires an unexpired, unconsumed trusted invitation", () =
   }
 });
 
+test("company access also requires an unexpired, unconsumed trusted invitation", () => {
+  const now = Date.parse("2026-11-06T00:00:00Z");
+  const invitation = { mundus_invited_role: "company", mundus_invitation_expires_at: "2026-11-07T00:00:00Z" };
+  assert.equal(canAcceptCompanyInvitation(invitation, now), true);
+  assert.equal(canAcceptCompanyInvitation({ ...invitation, mundus_invited_role: "teacher" }, now), false);
+  assert.equal(canAcceptCompanyInvitation({ ...invitation, mundus_invitation_accepted_at: "2026-11-06T01:00:00Z" }, now), false);
+});
+
 test("inactive or unknown roles cannot route into an active portal", () => {
   assert.equal(portalDestination("student", "active"), "/dashboard");
   assert.equal(portalDestination("teacher", "active"), "/teacher/dashboard");
   assert.equal(portalDestination("admin", "active"), "/admin/dashboard");
+  assert.equal(portalDestination("company", "active"), "/company/dashboard");
   assert.equal(portalDestination("teacher", "pending"), "/set-password");
+  assert.equal(portalDestination("company", "pending"), "/company/set-password");
   for (const [role, status] of [["admin", "pending"], ["student", "inactive"], ["teacher", "suspended"], ["owner", "active"], [null, "active"]]) {
     assert.equal(portalDestination(role, status), "/auth/error");
   }

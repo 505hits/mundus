@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 import { canAcceptTeacherInvitation, hasCompletedOnboarding, portalDestination } from "@/lib/account-policy";
@@ -12,6 +12,7 @@ import LanguageToggle from "@/components/LanguageToggle";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { language } = useLanguage();
   const sk = language === "sk";
   const errorRef = useRef<HTMLDivElement>(null);
@@ -21,11 +22,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   useEffect(() => { if (error) errorRef.current?.focus(); }, [error]);
   const [loading, setLoading] = useState(false);
-  const [nextPath, setNextPath] = useState<string | null>(null);
-
-  useEffect(() => {
-    setNextPath(purchaseReturnPath(new URLSearchParams(window.location.search).get("next")));
-  }, []);
+  const nextPath = purchaseReturnPath(searchParams.get("next"));
 
   async function handleLogin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -65,7 +62,7 @@ export default function LoginPage() {
         setError(sk ? "Váš účet zatiaľ nie je aktívny. Kontaktujte Mundus Languages." : "Your account is not active yet. Contact Mundus Languages.");
         return;
       }
-      const desired = purchaseReturnPath(new URLSearchParams(window.location.search).get("next"));
+      const desired = nextPath;
       let needsOnboarding = false;
       if (profile.role === "student" && data.user.user_metadata.signup_source === "self_service") {
         const { data: onboarding, error: onboardingError } = await supabase

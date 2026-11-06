@@ -29,7 +29,7 @@ export default function PortalNav({ paymentsEnabled }: { paymentsEnabled: boolea
   const pathname = usePathname();
   const { language } = useLanguage();
   const items = paymentsEnabled ? [...navItems, { sk: "Balíčky", en: "Packages", href: "/packages", icon: Package }] : navItems;
-  const mobileItems = items.filter((item) => !["/level-test", "/progress-test"].includes(item.href));
+  const mobileItems = items.filter((item) => !["/feedback", "/level-test", "/progress-test"].includes(item.href));
 
   return (
     <>
@@ -84,7 +84,7 @@ export default function PortalNav({ paymentsEnabled }: { paymentsEnabled: boolea
       {/* Mobile bottom navigation */}
       <div className="fixed right-4 top-4 z-50 flex items-center gap-2 lg:hidden"><LanguageToggle compact /><LogoutButton compact /></div>
       <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-black/5 bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
-        <div className="mx-auto flex max-w-3xl overflow-x-auto">
+        <div className="mx-auto grid max-w-2xl grid-cols-5">
           {mobileItems.map((item) => {
             const Icon = item.icon;
             const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
@@ -94,7 +94,7 @@ export default function PortalNav({ paymentsEnabled }: { paymentsEnabled: boolea
                 key={item.href}
                 href={item.href}
                   aria-current={active ? "page" : undefined}
-                className={`focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F3AA2] flex min-w-[80px] flex-1 flex-col items-center justify-center gap-1 whitespace-nowrap py-3 text-[11px] font-medium ${
+                className={`focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F3AA2] flex min-w-0 flex-col items-center justify-center gap-1 whitespace-nowrap py-3 text-[11px] font-medium ${
                   active ? "text-[#0a0a0f]" : "text-gray-400"
                 }`}
               >

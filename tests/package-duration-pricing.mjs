@@ -66,6 +66,7 @@ assert.equal(pkg.duration_minutes,45);
 
 const claim=(await db.query("select student_id,discount_name_key,discount_email_key from payment_discount_claims where student_id=$1",[buyer])).rows[0];
 assert.equal(claim.student_id,buyer,"successful discounted payment creates a permanent claim");
+await assert.rejects(db.query("update payment_discount_claims set claimed_at=now() where student_id=$1",[buyer]),/immutable/i,"discount claims are immutable");
 await assert.rejects(db.query("delete from payment_orders where id=$1",[first.id]),/violates foreign key|constraint/i,"claim ledger prevents silent deletion of the source discounted order");
 
 const evader="88888888-8888-4888-8888-888888888888";

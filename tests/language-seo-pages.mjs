@@ -19,7 +19,7 @@ assert.ok(page.includes("generateMetadata"));
 assert.ok(page.includes('"@type":"Service"'));
 assert.ok(page.includes('"@type":"BreadcrumbList"'));
 assert.ok(page.includes("Payment comes first") && page.includes("Najprv platba"));
-assert.ok(page.includes("/#buy-packages"));
+assert.ok(page.includes("/pricing?language="),"language landing pages must carry the selected language into pricing");
 assert.ok(data.includes("business English") && data.includes("pracovnú angličtinu"),"English page should contain genuinely useful work-specific intent");
 assert.ok(data.includes("Slovenčina pre cudzincov"),"Slovak-for-foreigners page should be explicit");
 console.log("PASS: language landing pages have unique content, metadata, internal links and sitemap coverage");

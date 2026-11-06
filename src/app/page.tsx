@@ -6,7 +6,6 @@ import HowItWorks from "@/components/HowItWorks";
 import TeacherSection from "@/components/TeacherSection";
 import PricingSection from "@/components/PricingSection";
 import PortalPreviewSection from "@/components/PortalPreviewSection";
-import FeaturesBento from "@/components/FeaturesBento";
 import TrustSection from "@/components/TrustSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import FAQSection from "@/components/FAQSection";
@@ -37,7 +36,6 @@ export default async function Home() {
       />
 
       <PortalPreviewSection />
-      <FeaturesBento />
       <TestimonialsSection />
       <FAQSection />
       <Footer />

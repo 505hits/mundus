@@ -6,13 +6,17 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { accountOrigin } from "@/lib/account-config";
 import { PACKAGE_PRICES, paymentEnabled, stripeClient, stripeIntegrationIdentifier } from "@/lib/payments";
 import { formUiLanguage } from "@/lib/i18n";
+import { MUNDUS_LANGUAGE_VALUES } from "@/lib/language-offer";
 
 export async function startPackageCheckout(form: FormData) {
   const uiLanguage = formUiLanguage(form);
   const lessons = Number(form.get("lessons"));
   const durationMinutes = Number(form.get("duration_minutes"));
+  const requestedLanguage=String(form.get("learning_language")||"");
+  const learningLanguage=MUNDUS_LANGUAGE_VALUES.includes(requestedLanguage as (typeof MUNDUS_LANGUAGE_VALUES)[number])?requestedLanguage:"";
   const chosen = PACKAGE_PRICES.some(item => item.lessons === lessons && item.durationMinutes === durationMinutes);
-  const { user } = await requireRole("student", chosen ? `/packages?selected=${lessons}&duration=${durationMinutes}` : undefined);
+  const returnPath=chosen ? `/packages?selected=${lessons}&duration=${durationMinutes}${learningLanguage ? `&language=${encodeURIComponent(learningLanguage)}` : ""}` : undefined;
+  const { user } = await requireRole("student", returnPath);
   if (!paymentEnabled()) redirect("/packages?problem=unavailable");
   if (!chosen) redirect("/packages?problem=package");
   const origin = accountOrigin();
@@ -40,7 +44,7 @@ export async function startPackageCheckout(form: FormData) {
       locale: uiLanguage,
       customer_email: user.email,
       client_reference_id: order.id,
-      metadata: { mundus_order_id: order.id },
+      metadata: { mundus_order_id: order.id, ...(learningLanguage ? { learning_language: learningLanguage } : {}) },
       integration_identifier: stripeIntegrationIdentifier(),
       line_items: [{ price_data: {
         currency: "eur",
@@ -54,8 +58,8 @@ export async function startPackageCheckout(form: FormData) {
             : `Individuálne online jazykové hodiny, ${durationMinutes} minút`
         },
       }, quantity: 1 }],
-      success_url: `${origin}/packages/return?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/packages?cancelled=1`,
+      success_url: `${origin}/packages/return?session_id={CHECKOUT_SESSION_ID}${learningLanguage ? `&language=${encodeURIComponent(learningLanguage)}` : ""}`,
+      cancel_url: `${origin}/packages?cancelled=1${learningLanguage ? `&language=${encodeURIComponent(learningLanguage)}` : ""}`,
     }, { idempotencyKey: `mundus-order-${order.id}` });
   } catch {
     await admin.rpc("mundus_close_payment_order", { order_id: order.id, session_id: null, new_status: "failed" });

@@ -8,7 +8,7 @@ type EmployeeRow={student_id:string;full_name:string|null;email:string|null;lang
 
 export default async function CompanyDashboardPage(){
   const language=await currentLanguage(); const sk=language==="sk";
-  const { profile }=await requireRole("company");
+  await requireRole("company");
   const supabase=await createSupabaseServerClient();
   const {data,error}=await supabase.rpc("company_employee_overview");
   const employees=(data??[]) as EmployeeRow[];

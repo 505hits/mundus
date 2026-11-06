@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { PACKAGE_PRICES } from "../src/lib/package-catalog.ts";
+import { firstPackageAmountCents, PACKAGE_PRICES } from "../src/lib/package-catalog.ts";
 
 const purchase = readFileSync(new URL("../src/components/PurchasePackages.tsx", import.meta.url), "utf8");
 const pricingSection = readFileSync(new URL("../src/components/PricingSection.tsx", import.meta.url), "utf8");
@@ -8,13 +8,18 @@ const nav = readFileSync(new URL("../src/components/Navbar.tsx", import.meta.url
 const translations = readFileSync(new URL("../src/data/translations.ts", import.meta.url), "utf8");
 
 assert.deepEqual(
-  PACKAGE_PRICES.map(item => [item.lessons, item.amountCents]),
-  [[1,2800],[5,13500],[10,26000],[20,49000],[30,70500]],
-  "public package catalog must match the approved Mundus prices",
+  PACKAGE_PRICES.map(item => [item.durationMinutes, item.lessons, item.amountCents]),
+  [
+    [45,1,2100],[45,5,10125],[45,10,19500],[45,20,36750],[45,30,52875],
+    [60,1,2800],[60,5,13500],[60,10,26000],[60,20,49000],[60,30,70500],
+  ],
+  "public package catalog must contain approved 45- and 60-minute prices",
 );
 
 assert.ok(purchase.includes("PACKAGE_PRICES.map"), "public pricing cards must render from the shared package catalog");
-assert.ok(purchase.includes("amountCents * 0.9"), "first-package display must derive the 10% discount from the shared catalog");
+assert.ok(purchase.includes("firstPackageAmountCents(amountCents)"), "first-package display must derive the 10% discount from the shared catalog");
+assert.deepEqual(PACKAGE_PRICES.filter(x=>x.durationMinutes===45).map(x=>firstPackageAmountCents(x.amountCents)),[1890,9113,17550,33075,47588],"45-minute first-package prices must be calculated automatically and rounded to cents");
+assert.deepEqual(PACKAGE_PRICES.filter(x=>x.durationMinutes===60).map(x=>firstPackageAmountCents(x.amountCents)),[2520,12150,23400,44100,63450],"60-minute first-package prices must be calculated automatically");
 assert.equal(purchase.includes("line-through"), false, "regular package prices must not be presented as obsolete crossed-out prices");
 assert.ok(purchase.includes("packages do not renew automatically") || purchase.includes("Packages do not renew automatically"));
 assert.ok(purchase.includes("Bez predplatného"), "Slovak pricing must explain there is no subscription");
@@ -22,6 +27,8 @@ assert.ok(purchase.includes("No subscription"), "English pricing must explain th
 assert.ok(purchase.includes("company invoice"), "public pricing must offer a company-invoice contact path");
 assert.ok(purchase.includes("faktúru na firmu"), "Slovak pricing must offer a company-invoice contact path");
 assert.ok(purchase.includes("lessons === 10"), "10-lesson package remains the neutral recommended package");
+assert.ok(purchase.includes("45 min") || purchase.includes("[45,60]"), "public pricing must expose 45-minute lessons");
+assert.ok(purchase.includes("60 min") || purchase.includes("[45,60]"), "public pricing must expose 60-minute lessons");
 assert.ok(pricingSection.includes('bg-[#FAFAF9]'), "public pricing should use the same warm portal background");
 assert.ok(nav.includes('href: "/#pricing"'), "navigation should have one clear pricing destination");
 assert.equal(nav.includes("Kúpiť hodiny"), false, "navigation must not duplicate pricing with a second buy-lessons item");

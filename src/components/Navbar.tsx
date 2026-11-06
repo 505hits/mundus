@@ -14,11 +14,10 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navLinks = [
-    { name: t.nav.courses, href: "/#languages" },
+    { name: t.nav.courses, href: "/languages" },
     { name: language === "sk" ? "Skupinové hodiny" : "Group lessons", href: "/group-lessons" },
-    { name: language === "sk" ? "Pre firmy" : "For companies", href: "/companies" },
     { name: t.nav.teachers, href: "/#teachers" },
-    { name: t.nav.prices, href: "/#pricing" },
+    { name: t.nav.prices, href: "/pricing" },
   ];
 
   useEffect(() => {
@@ -56,13 +55,18 @@ export default function Navbar() {
               ))}
             </nav>
 
+            <Link href="/companies" className="inline-flex items-center gap-1.5 rounded-full border border-[#DDE2FB] bg-[#F5F6FF] px-4 py-2 text-sm font-semibold text-[#2F3AA2] transition hover:border-[#2F3AA2]/40 hover:bg-[#EEF2FF]">
+              {language === "sk" ? "Pre firmy" : "For companies"}
+              <ArrowRight size={15} />
+            </Link>
+
             <LanguageToggle compact />
 
             <Link href="/login" className="whitespace-nowrap text-sm font-semibold text-[#171A2B] transition hover:text-[#2F3AA2]">
               {language === "sk" ? "Prihlásenie" : "Sign in"}
             </Link>
 
-            <Link href="/#buy-packages" className="btn btn-primary !px-5 !py-2.5 !text-sm whitespace-nowrap">
+            <Link href="/pricing" className="btn btn-primary !px-5 !py-2.5 !text-sm whitespace-nowrap">
               {t.nav.book}
             </Link>
           </div>
@@ -110,6 +114,11 @@ export default function Navbar() {
                 </Link>
               ))}
 
+              <Link href="/companies" onClick={() => setIsMobileMenuOpen(false)} className="mt-5 flex items-center justify-between rounded-2xl border border-[#DDE2FB] bg-[#F5F6FF] p-4 text-lg font-semibold text-[#2F3AA2]">
+                {language === "sk" ? "Pre firmy" : "For companies"}
+                <ArrowRight size={19} />
+              </Link>
+
               <div className="mt-5 flex items-center justify-between rounded-2xl bg-[#F6F7FB] p-3">
                 <span className="text-sm font-medium text-gray-500">{language === "sk" ? "Jazyk stránky" : "Site language"}</span>
                 <LanguageToggle />
@@ -118,7 +127,7 @@ export default function Navbar() {
 
             <div className="mt-auto">
               <Link
-                href="/#buy-packages"
+                href="/pricing"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="btn btn-primary w-full justify-center py-3.5 text-base"
               >

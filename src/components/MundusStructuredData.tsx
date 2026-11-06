@@ -1,4 +1,5 @@
 import { currentLanguage } from "@/lib/i18n";
+import { localizedPath } from "@/lib/seo-locales";
 
 export default async function MundusStructuredData(){
  const language=await currentLanguage();const sk=language==="sk";
@@ -30,7 +31,7 @@ export default async function MundusStructuredData(){
     name:sk?"Individuálne online jazykové hodiny 1:1":"Individual 1:1 online language lessons",
     provider:{"@id":"https://munduslanguages.com/#organization"},
     serviceType:sk?"Online jazykové hodiny":"Online language lessons",
-    url:"https://munduslanguages.com/pricing",
+    url:`https://munduslanguages.com${localizedPath("/pricing",language)}`,
     description:sk?"Individuálne online jazykové hodiny v dĺžke 45 alebo 60 minút.":"Individual online language lessons in 45- or 60-minute formats.",
     offers:{
       "@type":"OfferCatalog",
@@ -54,7 +55,7 @@ export default async function MundusStructuredData(){
     "@id":"https://munduslanguages.com/#group-lessons",
     name:sk?"Súkromné skupinové jazykové hodiny":"Private group language lessons",
     provider:{"@id":"https://munduslanguages.com/#organization"},
-    url:"https://munduslanguages.com/group-lessons",
+    url:`https://munduslanguages.com${localizedPath("/group-lessons",language)}`,
     description:sk?"Súkromné online skupiny pre 2–5 priateľov alebo kolegov s podobnou úrovňou.":"Private online groups for 2–5 friends or colleagues at a similar level."
    },
    {
@@ -62,7 +63,7 @@ export default async function MundusStructuredData(){
     "@id":"https://munduslanguages.com/#company-training",
     name:sk?"Firemné jazykové vzdelávanie":"Company language training",
     provider:{"@id":"https://munduslanguages.com/#organization"},
-    url:"https://munduslanguages.com/companies",
+    url:`https://munduslanguages.com${localizedPath("/companies",language)}`,
     description:sk?"Individuálne a skupinové jazykové vzdelávanie pre firmy s cenou na mieru a firemným portálom.":"Individual and group language training for companies with custom pricing and a company portal."
    }
   ]

@@ -5,8 +5,9 @@ import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { STUDENT_LANGUAGES, STUDENT_LEVELS } from "@/lib/account-policy";
 import { saveOnboarding } from "./actions";
 import { useLanguage } from "@/context/LanguageContext";
+import { MUNDUS_STUDENT_LANGUAGE_BY_VALUE } from "@/lib/language-offer";
 
-export default function OnboardingForm({ next }: { next: string | null }) {
+export default function OnboardingForm({ next, initialLanguage = null }: { next: string | null; initialLanguage?: string | null }) {
   const { language } = useLanguage();
   const sk = language === "sk";
   const [state, action, pending] = useActionState(saveOnboarding, {});
@@ -45,6 +46,7 @@ export default function OnboardingForm({ next }: { next: string | null }) {
     : ["Language & level", "Frequency", "Days & time", "Your goal"];
 
   const input = "mt-2 w-full rounded-xl border border-gray-200 bg-white p-3 outline-none transition focus:border-[#2F3AA2] focus:ring-2 focus:ring-[#EEF2FF]";
+  const initialStudentLanguage = initialLanguage ? (MUNDUS_STUDENT_LANGUAGE_BY_VALUE[initialLanguage] ?? "") : "";
 
   return (
     <form ref={formRef} action={action} className="space-y-6">
@@ -70,7 +72,7 @@ export default function OnboardingForm({ next }: { next: string | null }) {
         </div>
         <label className="block text-sm">
           {sk ? "Jazyk" : "Language"}
-          <select name="language" defaultValue="" required className={input}>
+          <select name="language" defaultValue={initialStudentLanguage} required className={input}>
             <option value="" disabled>{sk ? "Vyberte jazyk" : "Choose a language"}</option>
             {STUDENT_LANGUAGES.map(value => <option key={value} value={value}>{sk ? value : (languageLabels[value] ?? value)}</option>)}
           </select>

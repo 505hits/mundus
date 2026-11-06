@@ -10,16 +10,17 @@ import { formUiLanguage } from "@/lib/i18n";
 export async function startPackageCheckout(form: FormData) {
   const uiLanguage = formUiLanguage(form);
   const lessons = Number(form.get("lessons"));
-  const chosen = PACKAGE_PRICES.some(item => item.lessons === lessons);
-  const { user } = await requireRole("student", chosen ? `/packages?selected=${lessons}` : undefined);
+  const durationMinutes = Number(form.get("duration_minutes"));
+  const chosen = PACKAGE_PRICES.some(item => item.lessons === lessons && item.durationMinutes === durationMinutes);
+  const { user } = await requireRole("student", chosen ? `/packages?selected=${lessons}&duration=${durationMinutes}` : undefined);
   if (!paymentEnabled()) redirect("/packages?problem=unavailable");
-  if (!PACKAGE_PRICES.some(item => item.lessons === lessons)) redirect("/packages?problem=package");
+  if (!chosen) redirect("/packages?problem=package");
   const origin = accountOrigin();
   const stripe = stripeClient();
 
   const admin = createSupabaseAdminClient();
   const { data: order, error: reservationError } = await admin.rpc("mundus_reserve_payment_order", {
-    buyer_id: user.id, lesson_count: lessons,
+    buyer_id: user.id, lesson_count: lessons, lesson_duration: durationMinutes,
   });
   if (reservationError || !order) {
     const { data: pending } = await admin.from("payment_orders").select("id")
@@ -46,11 +47,11 @@ export async function startPackageCheckout(form: FormData) {
         unit_amount: order.amount_cents,
         product_data: {
           name: uiLanguage === "en"
-            ? `Mundus Languages – ${lessons} ${lessons === 1 ? "lesson" : "lessons"}`
-            : `Mundus Languages – ${lessons} ${lessons === 1 ? "hodina" : "hodín"}`,
+            ? `Mundus Languages – ${lessons} ${lessons === 1 ? "lesson" : "lessons"} × ${durationMinutes} min`
+            : `Mundus Languages – ${lessons} ${lessons === 1 ? "hodina" : "hodín"} × ${durationMinutes} min`,
           description: uiLanguage === "en"
-            ? "Individual online language lessons, 60 minutes"
-            : "Individuálne online jazykové hodiny, 60 minút"
+            ? `Individual online language lessons, ${durationMinutes} minutes`
+            : `Individuálne online jazykové hodiny, ${durationMinutes} minút`
         },
       }, quantity: 1 }],
       success_url: `${origin}/packages/return?session_id={CHECKOUT_SESSION_ID}`,

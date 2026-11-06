@@ -60,7 +60,7 @@ export default async function LanguageLandingPage({params}:{params:Promise<{slug
    <div className="pointer-events-none absolute left-1/2 top-[-55%] h-[760px] w-[760px] -translate-x-1/2 rounded-full bg-[#5361D4]/35 blur-[135px]"/>
    <div className="relative mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_.72fr] lg:items-end">
     <div>
-     <nav aria-label={sk?"Navigácia":"Breadcrumb"} className="text-sm text-[#BFC5E7]"><Link href="/" className="hover:text-white">Mundus</Link><span className="mx-2">/</span><a href="/#languages" className="hover:text-white">{sk?"Jazyky":"Languages"}</a><span className="mx-2">/</span><span>{copy.name}</span></nav>
+     <nav aria-label={sk?"Navigácia":"Breadcrumb"} className="text-sm text-[#BFC5E7]"><Link href="/" className="hover:text-white">Mundus</Link><span className="mx-2">/</span><Link href="/#languages" className="hover:text-white">{sk?"Jazyky":"Languages"}</Link><span className="mx-2">/</span><span>{copy.name}</span></nav>
      <p className="mt-7 text-sm font-semibold uppercase tracking-[.16em] text-[#C7D2FE]">{sk?"Individuálne online hodiny":"Private online lessons"}</p>
      <h1 className="mt-4 max-w-4xl text-[clamp(2.6rem,6vw,4.9rem)] font-semibold leading-[1.01] tracking-[-.045em] !text-white">{copy.hero}</h1>
      <p className="mt-6 max-w-3xl text-lg leading-8 text-[#D8DBE8]">{copy.intro}</p>

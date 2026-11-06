@@ -16,7 +16,7 @@ assert.deepEqual(
   "public package catalog must contain approved 45- and 60-minute prices",
 );
 
-assert.ok(purchase.includes("PACKAGE_PRICES.map"), "public pricing cards must render from the shared package catalog");
+assert.ok(purchase.includes("PACKAGE_PRICES.filter"), "public pricing cards must render from the shared package catalog filtered by duration");
 assert.ok(purchase.includes("firstPackageAmountCents(amountCents)"), "first-package display must derive the 10% discount from the shared catalog");
 assert.deepEqual(PACKAGE_PRICES.filter(x=>x.durationMinutes===45).map(x=>firstPackageAmountCents(x.amountCents)),[1890,9113,17550,33075,47588],"45-minute first-package prices must be calculated automatically and rounded to cents");
 assert.deepEqual(PACKAGE_PRICES.filter(x=>x.durationMinutes===60).map(x=>firstPackageAmountCents(x.amountCents)),[2520,12150,23400,44100,63450],"60-minute first-package prices must be calculated automatically");

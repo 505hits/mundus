@@ -13,24 +13,31 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     metadataBase: new URL("https://munduslanguages.com"),
     title: sk
-      ? "Mundus Languages | Individuálne online jazykové hodiny"
-      : "Mundus Languages | Personal online language lessons",
+      ? "Online jazykové kurzy a individuálne hodiny | Mundus Languages"
+      : "Online language lessons & courses | Mundus Languages",
     description: sk
-      ? "Individuálne online jazykové hodiny v dĺžke 45 alebo 60 minút s native aj skúsenými lektormi. Vyberte si balíček, zaplaťte online a nastavte si svoje študijné preferencie."
-      : "Personal 45- or 60-minute online language lessons with native speakers and experienced teachers. Choose a package, pay securely online and set your learning preferences.",
+      ? "Online jazykové kurzy: individuálne hodiny 1:1, súkromné skupiny a firemná výučba. 45 alebo 60 minút, flexibilné termíny, skúsení aj native lektori."
+      : "Online language lessons for individuals, private groups and companies. Choose 45 or 60 minutes, flexible scheduling, native speakers and experienced teachers.",
     keywords: sk
-      ? ["online jazykové hodiny", "native lektori", "angličtina", "nemčina", "španielčina", "taliančina", "francúzština", "portugalčina", "ruština", "slovenčina", "ukrajinčina"]
-      : ["online language lessons", "native speakers", "English lessons", "German lessons", "Spanish lessons", "Italian lessons", "French lessons", "Portuguese lessons", "Slovak lessons"],
+      ? ["online jazykové kurzy", "online jazykové hodiny", "individuálne hodiny", "skupinové jazykové kurzy", "firemné jazykové kurzy", "angličtina online", "nemčina online", "španielčina online", "taliančina online", "francúzština online"]
+      : ["online language lessons", "online language courses", "private language lessons", "group language lessons", "corporate language training", "English lessons online", "German lessons online", "Spanish lessons online"],
     openGraph: {
       title: sk
-        ? "Mundus Languages | Individuálne online jazykové hodiny"
-        : "Mundus Languages | Personal online language lessons",
+        ? "Online jazykové kurzy | Mundus Languages"
+        : "Online language lessons | Mundus Languages",
       description: sk
-        ? "Individuálne online jazykové hodiny na 45 alebo 60 minút, flexibilné termíny, native aj skúsení lektori a študentský portál."
-        : "Personal 45- or 60-minute online language lessons, flexible scheduling, native speakers and experienced teachers, plus your own student portal.",
+        ? "Individuálne 1:1, súkromné skupiny aj firemná výučba. Flexibilné online hodiny a moderný študentský portál."
+        : "1:1 lessons, private groups and company training with flexible online scheduling and a modern student portal.",
       url: "https://munduslanguages.com",
       type: "website",
       locale: sk ? "sk_SK" : "en_GB",
+      images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Mundus Languages — online language lessons" }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: sk ? "Online jazykové kurzy | Mundus Languages" : "Online language lessons | Mundus Languages",
+      description: sk ? "1:1 hodiny, súkromné skupiny a firemná výučba online." : "1:1 lessons, private groups and company training online.",
+      images: ["/opengraph-image"],
     },
     alternates: { canonical: "/" },
     robots: { index: true, follow: true },

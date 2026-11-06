@@ -1,7 +1,7 @@
 "use client";
 
 import Script from "next/script";
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
 
 declare global {
@@ -21,9 +21,21 @@ export function getAnalyticsConsent():AnalyticsConsent{
   return value==="granted"||value==="denied"?value:null;
 }
 
+function subscribeAnalyticsConsent(callback:()=>void){
+  if(typeof window==="undefined") return ()=>undefined;
+  const handler=()=>callback();
+  window.addEventListener("mundus-analytics-consent",handler);
+  window.addEventListener("storage",handler);
+  return()=>{window.removeEventListener("mundus-analytics-consent",handler);window.removeEventListener("storage",handler);};
+}
+
+export function useAnalyticsConsent(){
+  return useSyncExternalStore(subscribeAnalyticsConsent,getAnalyticsConsent,()=>null);
+}
+
 export function setAnalyticsConsent(value:Exclude<AnalyticsConsent,null>){
   window.localStorage.setItem(CONSENT_KEY,value);
-  window.dispatchEvent(new CustomEvent("mundus-analytics-consent",{detail:value}));
+  window.dispatchEvent(new Event("mundus-analytics-consent"));
 }
 
 export function trackEvent(name:string,params:Record<string,string|number|boolean|undefined>={}){
@@ -34,15 +46,9 @@ export function trackEvent(name:string,params:Record<string,string|number|boolea
 
 export default function AnalyticsManager(){
   const pathname=usePathname();
-  const [consent,setConsent]=useState<AnalyticsConsent>(null);
+  const consent=useAnalyticsConsent();
   const gaId=process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
   const clarityId=process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID;
-  useEffect(()=>{
-    setConsent(getAnalyticsConsent());
-    const handler=(event:Event)=>setConsent((event as CustomEvent<Exclude<AnalyticsConsent,null>>).detail);
-    window.addEventListener("mundus-analytics-consent",handler);
-    return()=>window.removeEventListener("mundus-analytics-consent",handler);
-  },[]);
   useEffect(()=>{
     if(consent!=="granted"||!gaId||!window.gtag) return;
     window.gtag("event","page_view",{page_path:pathname});

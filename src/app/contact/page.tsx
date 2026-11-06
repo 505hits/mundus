@@ -5,12 +5,13 @@ import Footer from "@/components/Footer";
 import { currentLanguage } from "@/lib/i18n";
 import { submitContactRequest } from "./actions";
 
-type PageProps = { searchParams: Promise<{ sent?: string; problem?: string }> };
+type PageProps = { searchParams: Promise<{ sent?: string; problem?: string; type?: string }> };
 
 export default async function ContactPage({ searchParams }: PageProps) {
   const language = await currentLanguage();
   const sk = language === "sk";
-  const { sent, problem } = await searchParams;
+  const { sent, problem, type } = await searchParams;
+  const initialType = type === "group" ? "group" : "individual";
 
   return (
     <main className="min-h-screen flex flex-col font-sans">
@@ -64,6 +65,13 @@ export default async function ContactPage({ searchParams }: PageProps) {
             </div>}
 
             <form action={submitContactRequest} className="mt-7 grid gap-5 sm:grid-cols-2">
+              <label className="block sm:col-span-2">
+                <span className="text-sm font-medium text-gray-700">{sk ? "Typ výučby" : "Lesson format"}</span>
+                <select name="request_type" defaultValue={initialType} className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 outline-none focus:border-[#2F3AA2]">
+                  <option value="individual">{sk ? "Individuálne hodiny 1:1" : "Individual 1:1 lessons"}</option>
+                  <option value="group">{sk ? "Súkromná skupina" : "Private group"}</option>
+                </select>
+              </label>
               <label className="block">
                 <span className="text-sm font-medium text-gray-700">{sk ? "Meno a priezvisko" : "Full name"}</span>
                 <input name="full_name" required maxLength={120} autoComplete="name" className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10" />
@@ -83,6 +91,11 @@ export default async function ContactPage({ searchParams }: PageProps) {
                   {[1,5,10,20,30].map(n => <option key={n} value={n}>{n} {sk ? (n === 1 ? "hodina" : "hodín") : (n === 1 ? "lesson" : "lessons")}</option>)}
                 </select>
               </label>
+              <label className="block">
+                <span className="text-sm font-medium text-gray-700">{sk ? "Veľkosť skupiny (iba pre skupiny)" : "Group size (groups only)"}</span>
+                <input name="group_size" type="number" min={2} max={5} defaultValue={initialType === "group" ? 2 : undefined} placeholder="2–5" className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10" />
+              </label>
+              <div className="hidden sm:block" aria-hidden="true" />
               <label className="block sm:col-span-2">
                 <span className="text-sm font-medium text-gray-700">{sk ? "Čo potrebujete?" : "What do you need?"}</span>
                 <textarea name="message" maxLength={2000} rows={4} placeholder={sk ? "Napr. som začiatočník a chcem sa zlepšiť kvôli práci..." : "For example: I am a beginner and want to improve for work..."} className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10" />
@@ -98,7 +111,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
             </form>
           </section>
 
-          <p className="mt-6 flex items-center gap-3 text-gray-600"><Globe size={22} className="shrink-0 text-[#2F3AA2]" aria-hidden="true" />{sk ? "Výučba prebieha online. Individuálne hodiny si dohodnete s lektorom." : "All lessons take place online. Arrange your individual lessons with your teacher."}</p>
+          <p className="mt-6 flex items-center gap-3 text-gray-600"><Globe size={22} className="shrink-0 text-[#2F3AA2]" aria-hidden="true" />{sk ? "Výučba prebieha online. Ponúkame individuálne hodiny aj malé súkromné skupiny." : "All lessons take place online. We offer individual lessons and small private groups."}</p>
         </div>
       </section>
       <Footer />

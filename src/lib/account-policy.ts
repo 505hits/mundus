@@ -11,18 +11,28 @@ export function validPassword(value: string) {
   return value.length >= 10 && value.length <= 128;
 }
 
-export function canAcceptTeacherInvitation(metadata: Record<string, unknown>, now = Date.now()) {
-  return metadata.mundus_invited_role === "teacher" &&
+function canAcceptInvitationRole(metadata: Record<string, unknown>, role: "teacher" | "company", now = Date.now()) {
+  return metadata.mundus_invited_role === role &&
     typeof metadata.mundus_invitation_expires_at === "string" &&
     Date.parse(metadata.mundus_invitation_expires_at) > now &&
     !metadata.mundus_invitation_accepted_at;
 }
 
+export function canAcceptTeacherInvitation(metadata: Record<string, unknown>, now = Date.now()) {
+  return canAcceptInvitationRole(metadata, "teacher", now);
+}
+
+export function canAcceptCompanyInvitation(metadata: Record<string, unknown>, now = Date.now()) {
+  return canAcceptInvitationRole(metadata, "company", now);
+}
+
 export function portalDestination(role: unknown, status: unknown) {
   if (role === "teacher" && status === "pending") return "/set-password";
+  if (role === "company" && status === "pending") return "/company/set-password";
   if (status !== "active") return "/auth/error";
   if (role === "admin") return "/admin/dashboard";
   if (role === "teacher") return "/teacher/dashboard";
+  if (role === "company") return "/company/dashboard";
   if (role === "student") return "/dashboard";
   return "/auth/error";
 }

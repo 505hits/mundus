@@ -1,0 +1,20 @@
+import { requireRole } from "@/lib/auth";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { currentLanguage, localeFor } from "@/lib/i18n";
+import { CreateCompanyForm, LinkEmployeeForm } from "./CompanyForms";
+import { markCompanyQuoteContacted, unlinkEmployee } from "./actions";
+
+export default async function AdminCompaniesPage(){
+ const language=await currentLanguage();const sk=language==="sk";await requireRole("admin");const admin=createSupabaseAdminClient();
+ const [{data:companies},{data:links},{data:quotes}]=await Promise.all([
+  admin.from("companies").select("id,name,billing_email,status,created_at").order("name"),
+  admin.from("company_employees").select("company_id,student_id,active,student:profiles!company_employees_student_id_fkey(full_name,email)").eq("active",true),
+  admin.from("company_quote_requests").select("*").eq("status","new").order("created_at",{ascending:false}).limit(30),
+ ]);
+ const companyRows=companies??[];const linkRows=links??[];
+ return <main className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10"><p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">{sk?"Firmy":"Companies"}</p><h1 className="mt-2 text-3xl font-semibold">{sk?"Firemní klienti":"Company clients"}</h1><p className="mt-2 text-gray-600">{sk?"Cenové dopyty, firemné účty a zamestnanci priradení k firemnému portálu.":"Quote requests, company accounts and employees assigned to company portals."}</p>
+ <div className="mt-7 grid gap-6 xl:grid-cols-2"><CreateCompanyForm/><LinkEmployeeForm companies={companyRows.map(c=>({id:c.id,name:c.name}))}/></div>
+ <section className="mt-8 rounded-3xl border border-black/5 bg-white p-6 shadow-sm"><h2 className="text-xl font-semibold">{sk?"Nové cenové dopyty":"New quote requests"} <span className="text-gray-400">({quotes?.length??0})</span></h2>{!quotes?.length?<p className="mt-4 text-gray-500">{sk?"Žiadne nové dopyty.":"No new requests."}</p>:<div className="mt-4 divide-y">{quotes.map(q=><div key={q.id} className="py-4"><div className="flex flex-wrap items-start justify-between gap-3"><div><p className="font-semibold">{q.company_name} · {q.contact_name}</p><p className="text-sm text-gray-500">{q.email}{q.phone?` · ${q.phone}`:""}</p><p className="mt-1 text-sm">{sk?"Zamestnanci":"Employees"}: {q.employee_count??"—"} · {sk?"Jazyky":"Languages"}: {q.languages||"—"}</p>{q.message&&<p className="mt-2 text-sm text-gray-600">{q.message}</p>}<p className="mt-1 text-xs text-gray-400">{new Intl.DateTimeFormat(localeFor(language),{dateStyle:"medium",timeStyle:"short",timeZone:"Europe/Bratislava"}).format(new Date(q.created_at))}</p></div><form action={markCompanyQuoteContacted}><input type="hidden" name="request_id" value={q.id}/><button className="rounded-xl border px-4 py-2 text-sm font-semibold">{sk?"Označiť ako kontaktované":"Mark contacted"}</button></form></div></div>)}</div>}</section>
+ <section className="mt-8 rounded-3xl border border-black/5 bg-white p-6 shadow-sm"><h2 className="text-xl font-semibold">{sk?"Aktívne firmy":"Active companies"}</h2>{!companyRows.length?<p className="mt-4 text-gray-500">{sk?"Zatiaľ žiadne firemné účty.":"No company accounts yet."}</p>:<div className="mt-4 space-y-5">{companyRows.map(c=>{const employees=linkRows.filter(l=>l.company_id===c.id);return <div key={c.id} className="rounded-2xl border border-gray-100 p-4"><p className="font-semibold">{c.name}</p><p className="text-sm text-gray-500">{c.billing_email||"—"} · {employees.length} {sk?"zamestnancov":"employees"}</p>{employees.length>0&&<div className="mt-3 flex flex-wrap gap-2">{employees.map((l)=>{const s=Array.isArray(l.student)?l.student[0]:l.student;return <form key={l.student_id} action={unlinkEmployee} className="rounded-xl bg-[#F6F7FB] px-3 py-2 text-xs"><input type="hidden" name="company_id" value={c.id}/><input type="hidden" name="student_id" value={l.student_id}/><span>{s?.full_name||s?.email||l.student_id}</span><button className="ml-2 font-semibold text-red-600">{sk?"Odobrať":"Remove"}</button></form>})}</div>}</div>})}</div>}</section>
+ </main>;
+}

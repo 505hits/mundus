@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import LanguageSelector from "@/components/LanguageSelector";
+import LearningFormatsSection from "@/components/LearningFormatsSection";
 import HowItWorks from "@/components/HowItWorks";
 import TeacherSection from "@/components/TeacherSection";
 import PricingSection from "@/components/PricingSection";
@@ -26,6 +27,7 @@ export default async function Home() {
       <Hero />
       <TrustSection />
       <LanguageSelector />
+      <LearningFormatsSection />
       <HowItWorks />
       <TeacherSection teachers={teachers} />
 

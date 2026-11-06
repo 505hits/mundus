@@ -14,6 +14,8 @@ export default function Footer() {
         { href: "/#how-it-works", label: sk ? "Ako to funguje" : "How it works" },
         { href: "/#teachers", label: sk ? "Lektori" : "Teachers" },
         { href: "/#pricing", label: sk ? "Cenník" : "Pricing" },
+        { href: "/group-lessons", label: sk ? "Skupinové hodiny" : "Group lessons" },
+        { href: "/companies", label: sk ? "Pre firmy" : "For companies" },
         { href: "/#faq", label: "FAQ" },
       ],
     },
@@ -52,7 +54,7 @@ export default function Footer() {
         <div>
           <Link href="/" className="footer-brand">Mundus Languages</Link>
           <p className="footer-desc max-w-sm">
-            {sk ? "Individuálna online výučba jazykov 1:1 s flexibilnými termínmi a vlastným študentským portálom." : "Individual 1:1 online language lessons with flexible scheduling and your own student portal."}
+            {sk ? "Online jazyková výučba 1:1, súkromné skupiny a firemné vzdelávanie s flexibilnými termínmi a modernými portálmi." : "Online 1:1 language lessons, private groups and company training with flexible scheduling and modern portals."}
           </p>
         </div>
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">

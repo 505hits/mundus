@@ -30,6 +30,16 @@ export async function generateMetadata({params}:{params:Promise<{slug:string}>})
 export default async function LanguageLandingPage({params}:{params:Promise<{slug:string}>}){
  const {slug}=await params;const config=languageSeoPage(slug);if(!config)notFound();
  const language=await currentLanguage();const sk=language==="sk";const copy=sk?config.sk:config.en;const prefix=`/${language}`;
+ const related=config.slug==="english"
+  ? [
+      ["anglictina-pre-zaciatocnikov",sk?"Angličtina pre začiatočníkov":"English for beginners"],
+      ["business-english","Business English"],
+      ["konverzacna-anglictina",sk?"Konverzačná angličtina":"Conversational English"],
+      ["anglictina-na-cestovanie",sk?"Angličtina na cestovanie":"English for travel"],
+    ]
+  : config.slug==="slovak-for-foreigners"
+    ? [["slovencina-pre-cudzincov-a1",sk?"Slovenčina pre cudzincov A1":"Slovak for foreigners A1"]]
+    : [];
  const structured={
   "@context":"https://schema.org",
   "@graph":[
@@ -85,6 +95,8 @@ export default async function LanguageLandingPage({params}:{params:Promise<{slug
     <div className="grid gap-4 sm:grid-cols-2">{copy.goals.map(goal=><article key={goal} className="rounded-3xl border border-black/5 bg-white p-5 shadow-[0_10px_30px_rgba(23,26,43,.04)]"><CheckCircle2 size={20} className="text-[#2F3AA2]"/><p className="mt-4 leading-7 text-gray-700">{goal}</p></article>)}</div>
    </div>
   </div></section>
+
+  {related.length>0&&<section className="px-6 pb-4 pt-4 sm:pb-8"><div className="mx-auto max-w-6xl rounded-[2rem] border border-[#DDE2FB] bg-[#F3F5FF] p-6 sm:p-8"><p className="text-sm font-semibold uppercase tracking-[.16em] text-[#2F3AA2]">{sk?"Vyberte si konkrétny cieľ":"Choose a specific goal"}</p><h2 className="mt-2 text-2xl font-semibold tracking-[-.03em] sm:text-3xl">{sk?"Praktické programy podľa toho, čo potrebujete":"Practical lesson paths for what you need"}</h2><div className="mt-5 flex flex-wrap gap-3">{related.map(([slug,label])=><Link key={slug} href={`${prefix}/learn/${slug}`} className="inline-flex items-center gap-2 rounded-full border border-[#C7CDF6] bg-white px-4 py-2.5 text-sm font-semibold text-[#2F3AA2] transition hover:-translate-y-0.5 hover:border-[#2F3AA2]">{label}<ArrowRight size={15}/></Link>)}</div></div></section>}
 
   <section className="bg-white px-6 py-20 sm:py-24"><div className="mx-auto max-w-5xl">
    <div className="max-w-3xl"><p className="text-sm font-semibold uppercase tracking-[.16em] text-[#2F3AA2]">{sk?"Časté otázky":"Common questions"}</p><h2 className="mt-3 text-3xl font-semibold tracking-[-.035em] sm:text-4xl">{sk?`Pred prvou hodinou ${copy.name.toLowerCase()}`:`Before your first ${copy.name} lesson`}</h2></div>

@@ -103,6 +103,38 @@ export async function GET(request:NextRequest) {
       failed++;
     }
   }
+  const {data:companyJobs,error:companyError}=await admin.rpc("claim_company_quote_emails",{batch_size:5});
+  const companyQueueUnavailable=!!companyError && /claim_company_quote_emails|could not find|does not exist/i.test(companyError.message||"");
+  if(companyError && !companyQueueUnavailable) throw companyError;
+  for(const job of companyJobs||[]){
+    try{
+      const {data:requestRow,error:requestError}=await admin.from("company_quote_requests").select("company_name,contact_name,email,phone,employee_count,languages,message,status").eq("id",job.request_id).single();
+      const {data:recipient}=await admin.from("profiles").select("status,email").eq("id",job.recipient_id).single();
+      const {data:auth}=await admin.auth.admin.getUserById(job.recipient_id);
+      if(requestError||!requestRow||requestRow.status==="closed") throw new Error("Request unavailable");
+      if(recipient?.status!=="active"||recipient.email!==job.recipient_email||!auth.user?.email_confirmed_at||auth.user.email?.toLowerCase()!==job.recipient_email.toLowerCase()) throw new Error("Recipient unavailable");
+      const details=[
+        "Firma: "+requestRow.company_name,
+        "Kontakt: "+requestRow.contact_name,
+        "E-mail: "+requestRow.email,
+        requestRow.phone ? "Telefón: "+requestRow.phone : null,
+        requestRow.employee_count ? "Počet zamestnancov: "+requestRow.employee_count : null,
+        requestRow.languages ? "Jazyky: "+requestRow.languages : null,
+        requestRow.message ? "Správa: "+requestRow.message : null,
+        "",
+        "Admin: "+origin+"/admin/companies",
+        "",
+        "Mundus Languages",
+      ].filter(Boolean).join("\n");
+      const result=await transport.sendMail({from:process.env.MUNDUS_EMAIL_FROM,to:job.recipient_email,subject:"Mundus: nový firemný dopyt",text:details,messageId:"<mundus-company-"+job.id+"@"+new URL(origin).hostname+">"});
+      if(!result.accepted.length) throw new Error("SMTP rejected");
+      const {error:finishError}=await admin.from("company_quote_email_outbox").update({status:"sent",sent_at:new Date().toISOString(),lease_until:null}).eq("id",job.id).eq("lease_token",job.lease_token);
+      if(finishError) throw finishError; sent++;
+    }catch{
+      const {error:retryError}=await admin.from("company_quote_email_outbox").update({status:job.attempts>=5?"failed":"pending",available_at:new Date(Date.now()+15*60*1000).toISOString(),lease_until:null}).eq("id",job.id).eq("lease_token",job.lease_token);
+      if(retryError) throw retryError; failed++;
+    }
+  }
   return NextResponse.json({sent,failed});
  }catch{return NextResponse.json({error:"Notification processing unavailable"},{status:503});}
 }

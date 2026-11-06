@@ -1,9 +1,23 @@
+import { MUNDUS_LANGUAGE_VALUES } from "@/lib/language-offer";
+
 export const PACKAGE_LESSONS = [1, 5, 10, 20, 30] as const;
 export const PACKAGE_DURATIONS = [45, 60] as const;
 
-// Only this internal route may survive login or an email confirmation link.
 export function purchaseReturnPath(value: unknown): string | null {
   if (typeof value !== "string") return null;
-  const match = /^\/packages\?selected=(1|5|10|20|30)&duration=(45|60)$/.exec(value);
-  return match ? `/packages?selected=${match[1]}&duration=${match[2]}` : null;
+  try {
+    const url=new URL(value,"https://munduslanguages.com");
+    if(url.origin!=="https://munduslanguages.com"||url.pathname!=="/packages") return null;
+    const selected=url.searchParams.get("selected");
+    const duration=url.searchParams.get("duration");
+    const language=url.searchParams.get("language");
+    if(!PACKAGE_LESSONS.some(item=>String(item)===selected)) return null;
+    if(!PACKAGE_DURATIONS.some(item=>String(item)===duration)) return null;
+    if(language && !MUNDUS_LANGUAGE_VALUES.includes(language as (typeof MUNDUS_LANGUAGE_VALUES)[number])) return null;
+    const params=new URLSearchParams({selected:selected!,duration:duration!});
+    if(language) params.set("language",language);
+    return `/packages?${params.toString()}`;
+  } catch {
+    return null;
+  }
 }

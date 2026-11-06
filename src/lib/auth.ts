@@ -3,7 +3,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { canAcceptTeacherInvitation } from "@/lib/account-policy";
 import { purchaseReturnPath } from "@/lib/purchase-intent";
 
-export type MundusRole = "student" | "teacher" | "admin";
+export type MundusRole = "student" | "teacher" | "admin" | "company";
 
 export async function requireRole(requiredRole: MundusRole, returnTo?: string) {
   const supabase = await createSupabaseServerClient();
@@ -35,6 +35,10 @@ export async function requireRole(requiredRole: MundusRole, returnTo?: string) {
     redirect("/pending-approval");
   }
 
+  if (profile.role === "company" && profile.status !== "active") {
+    redirect("/company/set-password");
+  }
+
   if (profile.role !== requiredRole || profile.status !== "active") {
     if (profile.role === "admin" && profile.status === "active") {
       redirect("/admin/dashboard");
@@ -44,9 +48,8 @@ export async function requireRole(requiredRole: MundusRole, returnTo?: string) {
       redirect("/teacher/dashboard");
     }
 
-    if (profile.role === "student" && profile.status === "active") {
-      redirect("/dashboard");
-    }
+    if (profile.role === "student" && profile.status === "active") redirect("/dashboard");
+    if (profile.role === "company" && profile.status === "active") redirect("/company/dashboard");
 
     redirect("/login");
   }

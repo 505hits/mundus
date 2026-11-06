@@ -8,7 +8,7 @@ import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function FloatingCTA() {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const pathname = usePathname();
     const [isVisible, setIsVisible] = useState(false);
 
@@ -54,7 +54,7 @@ export default function FloatingCTA() {
                     className="fixed bottom-4 left-4 right-4 z-40 sm:bottom-8 sm:left-auto sm:right-8"
                 >
                     <Link
-                        href="/pricing"
+                        href={`/${language}/pricing`}
                         className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#2F3AA2] px-6 py-4 font-semibold text-white shadow-lg shadow-blue-900/20 transition-all hover:bg-[#252E82] hover:shadow-xl sm:w-auto sm:rounded-full sm:hover:scale-105"
                     >
                         <span>{t.nav.book}</span>

@@ -17,16 +17,16 @@ export default function LanguageSelector(){
   {value:"Spanish",label:sk?"Španielčina":"Spanish",detail:"/languages/spanish"},
   {value:"Italian",label:sk?"Taliančina":"Italian",detail:"/languages/italian"},
   {value:"French",label:sk?"Francúzština":"French",detail:"/languages/french"},
-  {value:"Portuguese",label:sk?"Portugalčina":"Portuguese",detail:null},
+  {value:"Portuguese",label:sk?"Portugalčina":"Portuguese",detail:"/languages/portuguese"},
  ];
  const additional=[
-  {value:"Hungarian",label:sk?"Maďarčina":"Hungarian",detail:null},
-  {value:"Polish",label:sk?"Poľština":"Polish",detail:null},
-  {value:"Russian",label:sk?"Ruština":"Russian",detail:null},
-  {value:"Chinese",label:sk?"Čínština":"Chinese",detail:null},
+  {value:"Hungarian",label:sk?"Maďarčina":"Hungarian",detail:"/languages/hungarian"},
+  {value:"Polish",label:sk?"Poľština":"Polish",detail:"/languages/polish"},
+  {value:"Russian",label:sk?"Ruština":"Russian",detail:"/languages/russian"},
+  {value:"Chinese",label:sk?"Čínština":"Chinese",detail:"/languages/chinese"},
   {value:"Slovak",label:sk?"Slovenčina pre cudzincov":"Slovak for foreigners",detail:"/languages/slovak-for-foreigners"},
-  {value:"Ukrainian",label:sk?"Ukrajinčina":"Ukrainian",detail:null},
-  {value:"Modern Hebrew",label:sk?"Moderná hebrejčina":"Modern Hebrew",detail:null},
+  {value:"Ukrainian",label:sk?"Ukrajinčina":"Ukrainian",detail:"/languages/ukrainian"},
+  {value:"Modern Hebrew",label:sk?"Moderná hebrejčina":"Modern Hebrew",detail:"/languages/modern-hebrew"},
  ];
 
  return <section id="languages" className="bg-gradient-to-b from-[#F6F7FB] to-white py-20 md:py-28">
@@ -34,7 +34,7 @@ export default function LanguageSelector(){
    <motion.div variants={fadeInUp} className="text-center">
     <span className="inline-flex items-center gap-2 rounded-full border border-[#DDE2F4] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[.14em] text-[#2F3AA2] shadow-sm"><Languages size={15}/>{t.languageSelector.badge}</span>
     <h2 className="mt-5 text-4xl font-semibold tracking-[-.035em] text-[#171A2B] md:text-5xl">{sk?"1. Vyberte jazyk":"1. Choose your language"}</h2>
-    <p className="mx-auto mt-5 max-w-3xl text-base leading-7 text-gray-600 md:text-lg">{sk?"Po výbere jazyka pokračujete priamo k balíčkom a online platbe. Detailnú úroveň a termíny zadáte až po zaplatení.":"After choosing a language, continue directly to packages and online payment. You’ll add your level and availability only after payment."}</p>
+    <p className="mx-auto mt-5 max-w-3xl text-base leading-7 text-gray-600 md:text-lg">{sk?"Po výbere jazyka pokračujete priamo k balíčkom. Detailnú úroveň a termíny zadáte až po potvrdení platby.":"After choosing a language, continue directly to packages. You’ll add your level and availability only after payment is confirmed."}</p>
    </motion.div>
 
    <motion.div variants={stagger} className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -50,7 +50,7 @@ export default function LanguageSelector(){
 
    <motion.div variants={fadeInUp} className="mt-7 rounded-3xl border border-[#E5E7F0] bg-white/80 p-5 backdrop-blur">
     <div className="flex items-center gap-2"><Sparkles size={17} className="text-[#2F3AA2]"/><p className="text-sm font-semibold text-[#171A2B]">{sk?"Ďalšie dostupné jazyky":"More available languages"}</p></div>
-    <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{additional.map(item=><div key={item.value} className="rounded-2xl border border-[#E1E5F0] bg-[#FAFAF9] p-3.5"><div className="flex items-center justify-between gap-2"><span className="text-sm font-semibold text-gray-700">{item.label}</span>{item.detail&&<Link href={item.detail} className="text-[#2F3AA2]" aria-label={sk?`Viac o ${item.label}`:`Learn more about ${item.label}`}><ArrowUpRight size={15}/></Link>}</div><Link href={`${prefix}/pricing?language=${encodeURIComponent(item.value)}`} onClick={()=>trackEvent("select_language",{language:item.value,placement:"additional_language_card"})} className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-[#2F3AA2]">{sk?"Vybrať a pokračovať":"Choose & continue"}<ArrowRight size={13}/></Link></div>)}</div>
+    <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{additional.map(item=><div key={item.value} className="rounded-2xl border border-[#E1E5F0] bg-[#FAFAF9] p-3.5"><div className="flex items-center justify-between gap-2"><span className="text-sm font-semibold text-gray-700">{item.label}</span>{item.detail&&<Link href={`${prefix}${item.detail}`} className="text-[#2F3AA2]" aria-label={sk?`Viac o ${item.label}`:`Learn more about ${item.label}`}><ArrowUpRight size={15}/></Link>}</div><Link href={`${prefix}/pricing?language=${encodeURIComponent(item.value)}`} onClick={()=>trackEvent("select_language",{language:item.value,placement:"additional_language_card"})} className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-[#2F3AA2]">{sk?"Vybrať a pokračovať":"Choose & continue"}<ArrowRight size={13}/></Link></div>)}</div>
    </motion.div>
   </motion.div></div>
  </section>;

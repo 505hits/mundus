@@ -7,13 +7,13 @@ const page=read("src/app/languages/[slug]/page.tsx");
 const selector=read("src/components/LanguageSelector.tsx");
 const sitemap=read("src/app/sitemap.ts");
 
-const slugs=["english","german","italian","spanish","french","slovak-for-foreigners"];
+const slugs=["english","german","italian","spanish","french","portuguese","hungarian","polish","russian","chinese","slovak-for-foreigners","ukrainian","modern-hebrew"];
 for(const slug of slugs){
   assert.ok(data.includes(`slug:"${slug}"`),`missing content for ${slug}`);
 }
 assert.ok(sitemap.includes("LANGUAGE_SEO_PAGES"),"sitemap must derive language URLs from the shared language-page catalog");
 assert.ok(sitemap.includes("languagePaths"),"sitemap must generate language-page paths from the catalog");
-for(const slug of ["english","german","italian","spanish","french","slovak-for-foreigners"]){
+for(const slug of slugs){
   assert.ok(selector.includes(`/languages/${slug}`),`missing internal link for ${slug}`);
 }
 assert.ok(page.includes("generateMetadata"));

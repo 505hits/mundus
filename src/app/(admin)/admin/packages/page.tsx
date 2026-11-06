@@ -26,7 +26,7 @@ export default async function AdminPackagesPage() {
     supabase
       .from("lesson_packages")
       .select(`
-        id,student_id,package_type,total_lessons,used_lessons,remaining_lessons,
+        id,student_id,package_type,total_lessons,used_lessons,remaining_lessons,duration_minutes,
         purchased_at,status,expires_at,
         student:profiles!lesson_packages_student_id_fkey(full_name,email)
       `)
@@ -118,7 +118,7 @@ export default async function AdminPackagesPage() {
                         {student?.full_name?.trim() || student?.email || (sk?"Študent":"Student")}
                       </p>
                       <p className="mt-1 text-sm text-gray-400">
-                        {formatPackageType(item.package_type,language)} · {formatDate(item.purchased_at,language)}
+                        {formatPackageType(item.package_type,language)} · {item.duration_minutes ?? 60} min · {formatDate(item.purchased_at,language)}
                       </p>
                       <div
                         role="progressbar"

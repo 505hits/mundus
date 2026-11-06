@@ -46,6 +46,7 @@ const { startPackageCheckout } = load("../src/app/(portal)/packages/actions.ts",
   "@/lib/supabase/admin": {}, "@/lib/account-config": {},
   "@/lib/i18n": { formUiLanguage: form => form.get("ui_language") === "en" ? "en" : "sk" },
   "@/lib/payments": { PACKAGE_PRICES: [45,60].flatMap(durationMinutes => [1,5,10,20,30].map(lessons => ({ lessons, durationMinutes }))) },
+  "@/lib/language-offer": { MUNDUS_LANGUAGE_VALUES: ["English","German","Spanish","Italian","French","Portuguese","Hungarian","Polish","Russian","Chinese","Slovak","Ukrainian","Modern Hebrew"] },
 });
 for (const count of [1,5,10,20,30]) {
   for (const duration of [45,60]) {
@@ -54,6 +55,12 @@ for (const count of [1,5,10,20,30]) {
     assert.equal(capturedReturn, `/packages?selected=${count}&duration=${duration}`);
   }
 }
+const languageForm = new FormData(); languageForm.set("lessons","10"); languageForm.set("duration_minutes","60"); languageForm.set("learning_language","Italian");
+await assert.rejects(startPackageCheckout(languageForm), error => error.path === "/login");
+assert.equal(capturedReturn,"/packages?selected=10&duration=60&language=Italian");
+assert.equal(purchaseReturnPath("/packages?selected=10&duration=60&language=Italian"),"/packages?selected=10&duration=60&language=Italian");
+assert.equal(purchaseReturnPath("/packages?selected=10&duration=60&language=NotReal"),null);
+
 const bad = new FormData(); bad.set("lessons", "999");
 await assert.rejects(startPackageCheckout(bad), error => error.path === "/login");
 assert.equal(capturedReturn, undefined);

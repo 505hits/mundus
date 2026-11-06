@@ -6,13 +6,13 @@ import { hasCompletedOnboarding } from "@/lib/account-policy";
 import PaymentStatusRefresh from "./PaymentStatusRefresh";
 import { currentLanguage } from "@/lib/i18n";
 
-type PageProps = { searchParams: Promise<{ session_id?: string }> };
+type PageProps = { searchParams: Promise<{ session_id?: string; language?: string }> };
 
 export default async function PaymentReturnPage({ searchParams }: PageProps) {
   const language = await currentLanguage();
   const sk = language === "sk";
   const { user } = await requireRole("student");
-  const { session_id } = await searchParams;
+  const { session_id, language: selectedLanguage } = await searchParams;
   const supabase = await createSupabaseServerClient();
 
   const [{ data: order, error }, { data: onboarding, error: onboardingError }] = await Promise.all([
@@ -25,7 +25,7 @@ export default async function PaymentReturnPage({ searchParams }: PageProps) {
 
   if (!error && !onboardingError && order?.status === "paid") {
     if (!hasCompletedOnboarding(onboarding)) {
-      redirect("/dashboard/setup?payment=success");
+      redirect(`/dashboard/setup?payment=success${selectedLanguage ? `&language=${encodeURIComponent(selectedLanguage)}` : ""}`);
     }
     redirect("/dashboard?payment=success");
   }

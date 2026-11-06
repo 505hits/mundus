@@ -1,15 +1,25 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { ArrowRight, Check, CreditCard, ShieldCheck, Sparkles } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { firstPackageAmountCents, PACKAGE_PRICES, type PackageDuration } from "@/lib/package-catalog";
+import { MUNDUS_LANGUAGE_OPTIONS, MUNDUS_LANGUAGE_VALUES } from "@/lib/language-offer";
 
 export default function PurchasePackages({ paymentsAvailable, signupAvailable }: { paymentsAvailable: boolean; signupAvailable: boolean }) {
   const { language, t } = useLanguage();
   const sk = language === "sk";
+  const searchParams = useSearchParams();
+  const queryLanguage = searchParams.get("language");
+  const validQueryLanguage = queryLanguage && MUNDUS_LANGUAGE_VALUES.includes(queryLanguage as (typeof MUNDUS_LANGUAGE_VALUES)[number]) ? queryLanguage : "";
+  const [selectedLanguage, setSelectedLanguage] = useState(validQueryLanguage);
   const [durationMinutes, setDurationMinutes] = useState<PackageDuration>(60);
+
+  useEffect(() => {
+    setSelectedLanguage(validQueryLanguage);
+  }, [validQueryLanguage]);
 
   const money = (cents: number) => new Intl.NumberFormat(sk ? "sk-SK" : "en-IE", {
     style: "currency",
@@ -25,10 +35,26 @@ export default function PurchasePackages({ paymentsAvailable, signupAvailable }:
 
   return (
     <div id="buy-packages" className="mb-8 scroll-mt-32">
+      <div className="mb-8 rounded-[1.75rem] border border-[#C7CDF6] bg-gradient-to-br from-white to-[#F2F4FF] p-5 shadow-[0_18px_44px_rgba(47,58,162,0.08)] sm:p-6">
+        <div className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#2F3AA2]">{sk ? "Krok 1 z 2" : "Step 1 of 2"}</p>
+            <h3 className="mt-2 text-2xl font-semibold text-[#171A2B]">{sk ? "Vyberte si jazyk" : "Choose your language"}</h3>
+            <p className="mt-2 text-sm leading-6 text-gray-600">{sk ? "Jazyk si vyberiete ešte pred balíčkom. Po platbe doplníte úroveň, cieľ a termíny." : "Choose your language before the package. After payment, add your level, goal and availability."}</p>
+          </div>
+          <label className="block text-sm font-semibold text-[#171A2B]">
+            {sk ? "Jazyk výučby" : "Lesson language"}
+            <select value={selectedLanguage} onChange={event => setSelectedLanguage(event.target.value)} className="mt-2 w-full rounded-2xl border border-[#DDE2FB] bg-white px-4 py-3.5 text-base font-medium outline-none transition focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10">
+              <option value="">{sk ? "Vyberte jazyk" : "Choose a language"}</option>
+              {MUNDUS_LANGUAGE_OPTIONS.map(item => <option key={item.value} value={item.value}>{sk ? item.label : item.value}</option>)}
+            </select>
+          </label>
+        </div>
+      </div>
       <div className="mb-8 grid gap-5 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
         <div>
           <p className="mb-2 text-sm font-semibold uppercase tracking-[0.18em] text-[#2F3AA2]">
-            {sk ? "Individuálne online hodiny" : "Individual online lessons"}
+            {sk ? "Krok 2 z 2 · Individuálne online hodiny" : "Step 2 of 2 · Individual online lessons"}
           </p>
           <h3 className="max-w-2xl text-3xl font-semibold tracking-tight text-[#171A2B] md:text-4xl">
             {sk ? "Vyberte si dĺžku a počet hodín." : "Choose lesson length and package size."}
@@ -134,19 +160,18 @@ export default function PurchasePackages({ paymentsAvailable, signupAvailable }:
               <div className="mt-auto grid gap-2">
                 <Link
                   href={
-                    paymentsAvailable
-                      ? signupAvailable
-                        ? `/signup?next=${encodeURIComponent(`/packages?selected=${lessons}&duration=${durationMinutes}`)}`
-                        : `/login?next=${encodeURIComponent(`/packages?selected=${lessons}&duration=${durationMinutes}`)}`
-                      : "/contact"
+                    !selectedLanguage
+                      ? "/languages"
+                      : paymentsAvailable
+                        ? signupAvailable
+                          ? `/signup?next=${encodeURIComponent(`/packages?selected=${lessons}&duration=${durationMinutes}&language=${encodeURIComponent(selectedLanguage)}`)}`
+                          : `/login?next=${encodeURIComponent(`/packages?selected=${lessons}&duration=${durationMinutes}&language=${encodeURIComponent(selectedLanguage)}`)}`
+                        : "/contact"
                   }
                   className="flex items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-3 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#252E82]"
                 >
-                  {paymentsAvailable ? (sk ? "Zaplatiť online" : "Pay online") : t.pricing.individual.contactLabel}
+                  {!selectedLanguage ? (sk ? "Najprv vybrať jazyk" : "Choose a language first") : paymentsAvailable ? (sk ? "Zaplatiť online" : "Pay online") : t.pricing.individual.contactLabel}
                   <ArrowRight size={16} />
-                </Link>
-                <Link href="/contact" className="flex items-center justify-center rounded-xl border border-[#2F3AA2]/20 bg-white px-3 py-3 text-center text-sm font-semibold text-[#2F3AA2] transition hover:bg-indigo-50">
-                  {sk ? "Mám otázku" : "I have a question"}
                 </Link>
               </div>
             </article>
@@ -178,7 +203,7 @@ export default function PurchasePackages({ paymentsAvailable, signupAvailable }:
         </p>
         <div className="flex shrink-0 flex-col gap-2 md:items-end">
           <span className="inline-flex items-center gap-2 font-medium text-[#2F3AA2]"><CreditCard size={17} />{sk ? "Jednorazová platba v EUR" : "One-time payment in EUR"}</span>
-          <Link href="/contact" className="text-xs font-medium text-gray-500 underline underline-offset-2 hover:text-[#2F3AA2]">{sk ? "Potrebujete faktúru na firmu? Kontaktujte nás." : "Need a company invoice? Contact us."}</Link>
+          <Link href="/companies" className="text-xs font-medium text-gray-500 underline underline-offset-2 hover:text-[#2F3AA2]">{sk ? "Kupujete výučbu pre firmu? Pozrite si firemnú ponuku." : "Buying training for a company? See company options."}</Link>
         </div>
       </div>
     </div>

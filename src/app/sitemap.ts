@@ -8,6 +8,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {url:base+"/group-lessons",lastModified:now,changeFrequency:"monthly",priority:0.85},
     {url:base+"/companies",lastModified:now,changeFrequency:"monthly",priority:0.9},
     {url:base+"/contact",lastModified:now,changeFrequency:"monthly",priority:0.7},
+    {url:base+"/languages",lastModified:now,changeFrequency:"monthly",priority:0.95},
+    {url:base+"/pricing",lastModified:now,changeFrequency:"weekly",priority:0.95},
     {url:base+"/languages/english",lastModified:now,changeFrequency:"monthly",priority:0.9},
     {url:base+"/languages/german",lastModified:now,changeFrequency:"monthly",priority:0.88},
     {url:base+"/languages/italian",lastModified:now,changeFrequency:"monthly",priority:0.86},

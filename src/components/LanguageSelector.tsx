@@ -17,16 +17,16 @@ export default function LanguageSelector(){
   {value:"Spanish",label:sk?"Španielčina":"Spanish",detail:"/languages/spanish"},
   {value:"Italian",label:sk?"Taliančina":"Italian",detail:"/languages/italian"},
   {value:"French",label:sk?"Francúzština":"French",detail:"/languages/french"},
-  {value:"Portuguese",label:sk?"Portugalčina":"Portuguese",detail:null},
+  {value:"Portuguese",label:sk?"Portugalčina":"Portuguese",detail:"/languages/portuguese"},
  ];
  const additional=[
-  {value:"Hungarian",label:sk?"Maďarčina":"Hungarian",detail:null},
-  {value:"Polish",label:sk?"Poľština":"Polish",detail:null},
-  {value:"Russian",label:sk?"Ruština":"Russian",detail:null},
-  {value:"Chinese",label:sk?"Čínština":"Chinese",detail:null},
+  {value:"Hungarian",label:sk?"Maďarčina":"Hungarian",detail:"/languages/hungarian"},
+  {value:"Polish",label:sk?"Poľština":"Polish",detail:"/languages/polish"},
+  {value:"Russian",label:sk?"Ruština":"Russian",detail:"/languages/russian"},
+  {value:"Chinese",label:sk?"Čínština":"Chinese",detail:"/languages/chinese"},
   {value:"Slovak",label:sk?"Slovenčina pre cudzincov":"Slovak for foreigners",detail:"/languages/slovak-for-foreigners"},
-  {value:"Ukrainian",label:sk?"Ukrajinčina":"Ukrainian",detail:null},
-  {value:"Modern Hebrew",label:sk?"Moderná hebrejčina":"Modern Hebrew",detail:null},
+  {value:"Ukrainian",label:sk?"Ukrajinčina":"Ukrainian",detail:"/languages/ukrainian"},
+  {value:"Modern Hebrew",label:sk?"Moderná hebrejčina":"Modern Hebrew",detail:"/languages/modern-hebrew"},
  ];
 
  return <section id="languages" className="bg-gradient-to-b from-[#F6F7FB] to-white py-20 md:py-28">

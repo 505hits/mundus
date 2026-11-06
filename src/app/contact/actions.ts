@@ -13,6 +13,9 @@ export async function submitContactRequest(form: FormData) {
   const honeypot = String(form.get("website") ?? "").trim();
   const rawPackage = String(form.get("package_lessons") ?? "").trim();
   const packageLessons = rawPackage ? Number(rawPackage) : null;
+  const requestType = String(form.get("request_type") ?? "individual") === "group" ? "group" : "individual";
+  const rawGroupSize = String(form.get("group_size") ?? "").trim();
+  const groupSize = rawGroupSize ? Number(rawGroupSize) : null;
 
   if (honeypot) redirect("/contact?sent=1");
 
@@ -24,7 +27,9 @@ export async function submitContactRequest(form: FormData) {
     language.length < 2 ||
     language.length > 80 ||
     message.length > 2000 ||
-    (packageLessons !== null && ![1, 5, 10, 20, 30].includes(packageLessons))
+    (packageLessons !== null && ![1, 5, 10, 20, 30].includes(packageLessons)) ||
+    (groupSize !== null && (!Number.isInteger(groupSize) || groupSize < 2 || groupSize > 20)) ||
+    (requestType === "group" && groupSize === null)
   ) {
     redirect("/contact?problem=invalid");
   }
@@ -45,6 +50,8 @@ export async function submitContactRequest(form: FormData) {
     email,
     language,
     package_lessons: packageLessons,
+    request_type: requestType,
+    group_size: requestType === "group" ? groupSize : null,
     message,
   });
 

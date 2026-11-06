@@ -8,6 +8,7 @@ import { formUiLanguage, uiText } from "@/lib/i18n";
 
 export async function createCompanyAndInvite(_previous:AccountFormState,form:FormData):Promise<AccountFormState>{
  const language=formUiLanguage(form);const t=(sk:string,en:string)=>uiText(language,sk,en);await requireRole("admin");
+ if(process.env.MUNDUS_INVITATIONS_ENABLED!=="true") return {error:t("Pozvánky ešte nie sú aktivované.","Invitations are not enabled yet.")};
  const companyName=String(form.get("company_name")||"").trim();const managerName=String(form.get("manager_name")||"").trim();const email=String(form.get("email")||"").trim().toLowerCase();
  if(companyName.length<2||companyName.length>160||managerName.length<2||managerName.length>120||!validEmail(email))return{error:t("Skontrolujte názov firmy, meno kontaktnej osoby a e-mail.","Check the company name, contact name and email.")};
  try{

@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import LanguageSelector from "@/components/LanguageSelector";
 import { currentLanguage } from "@/lib/i18n";
-import { localizedAlternates, localizedPath } from "@/lib/seo-locales";
+import { localizedAlternates } from "@/lib/seo-locales";
 
 export async function generateMetadata():Promise<Metadata>{
  const language=await currentLanguage(); const sk=language==="sk";

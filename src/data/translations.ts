@@ -20,7 +20,7 @@ export const translations = {
             ctaPrimary: "Choose your lesson package",
             ctaSecondary: "See how it works",
             interactive: "Your Mundus learning portal",
-            students: "1:1 · 60-minute lessons",
+            students: "1:1 · 45 or 60-minute lessons",
             rating: "Flexible scheduling",
         },
         languageSelector: {
@@ -39,7 +39,7 @@ export const translations = {
                 {
                     number: "01",
                     title: "Choose your lesson package",
-                    description: "Pick the number of 60-minute 1:1 lessons that suits you. If you want help first, you can still contact Mundus.",
+                    description: "Choose 45- or 60-minute 1:1 lessons and the package size that suits you. If you want help first, you can still contact Mundus.",
                 },
                 {
                     number: "02",
@@ -142,7 +142,7 @@ export const translations = {
             label: "Pricing",
             titleStart: "Personal lessons,",
             titleEnd: "clear pricing",
-            subtitle: "One-to-one online lessons with clear package prices. Your first eligible package is 10% off, then you continue at the regular package price.",
+            subtitle: "Choose 45- or 60-minute one-to-one lessons with clear package prices. Your first eligible package is automatically 10% off once, then you continue at the regular price.",
             individual: {
                 title: "INDIVIDUAL (1-ON-1) LESSONS",
                 headers: {
@@ -236,7 +236,7 @@ export const translations = {
             ctaPrimary: "Vybrať balíček",
             ctaSecondary: "Ako to funguje",
             interactive: "Váš študijný portál Mundus",
-            students: "1:1 · 60-minútové hodiny",
+            students: "1:1 · 45 alebo 60-minútové hodiny",
             rating: "Flexibilné termíny",
         },
         languageSelector: {
@@ -255,7 +255,7 @@ export const translations = {
                 {
                     number: "01",
                     title: "Vyberte si balíček hodín",
-                    description: "Zvoľte počet individuálnych 60-minútových hodín. Ak sa chcete najprv poradiť, stále nás môžete kontaktovať.",
+                    description: "Vyberte si 45- alebo 60-minútové individuálne hodiny a počet hodín v balíčku. Ak sa chcete najprv poradiť, stále nás môžete kontaktovať.",
                 },
                 {
                     number: "02",
@@ -358,7 +358,7 @@ export const translations = {
             label: "Cenník",
             titleStart: "Osobné hodiny,",
             titleEnd: "jasný cenník",
-            subtitle: "Individuálne online hodiny s jasnými cenami balíčkov. Pri prvom balíčku môžete získať zľavu 10 %, potom pokračujete za bežnú cenu.",
+            subtitle: "Vyberte si 45- alebo 60-minútové individuálne hodiny s jasnými cenami. Prvý oprávnený balíček má automaticky zľavu 10 % iba raz, potom pokračujete za bežnú cenu."
             individual: {
                 title: "INDIVIDUÁLNE (1-ON-1) LEKCIE",
                 headers: {

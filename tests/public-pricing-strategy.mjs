@@ -10,7 +10,7 @@ const translations = readFileSync(new URL("../src/data/translations.ts", import.
 assert.deepEqual(
   PACKAGE_PRICES.map(item => [item.durationMinutes, item.lessons, item.amountCents]),
   [
-    [45,1,2100],[45,5,10125],[45,10,19500],[45,20,36750],[45,30,52875],
+    [45,1,2400],[45,5,11500],[45,10,22000],[45,20,41500],[45,30,59500],
     [60,1,2800],[60,5,13500],[60,10,26000],[60,20,49000],[60,30,70500],
   ],
   "public package catalog must contain approved 45- and 60-minute prices",
@@ -18,7 +18,7 @@ assert.deepEqual(
 
 assert.ok(purchase.includes("PACKAGE_PRICES.filter"), "public pricing cards must render from the shared package catalog filtered by duration");
 assert.ok(purchase.includes("firstPackageAmountCents(amountCents)"), "first-package display must derive the 10% discount from the shared catalog");
-assert.deepEqual(PACKAGE_PRICES.filter(x=>x.durationMinutes===45).map(x=>firstPackageAmountCents(x.amountCents)),[1890,9113,17550,33075,47588],"45-minute first-package prices must be calculated automatically and rounded to cents");
+assert.deepEqual(PACKAGE_PRICES.filter(x=>x.durationMinutes===45).map(x=>firstPackageAmountCents(x.amountCents)),[2160,10350,19800,37350,53550],"45-minute first-package prices must be calculated automatically and rounded to cents");
 assert.deepEqual(PACKAGE_PRICES.filter(x=>x.durationMinutes===60).map(x=>firstPackageAmountCents(x.amountCents)),[2520,12150,23400,44100,63450],"60-minute first-package prices must be calculated automatically");
 assert.equal(purchase.includes("line-through"), false, "regular package prices must not be presented as obsolete crossed-out prices");
 assert.ok(purchase.includes("packages do not renew automatically") || purchase.includes("Packages do not renew automatically"));

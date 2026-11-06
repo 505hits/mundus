@@ -45,7 +45,7 @@ export default async function DashboardSetupPage({ searchParams }: { searchParam
 
         <p className="mt-7 text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">{sk?"Krok 2 z 2":"Step 2 of 2"}</p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">{sk?"Povedzte nám, ako sa chcete učiť":"Tell us how you want to learn"}</h1>
-        <p className="mt-4 leading-7 text-gray-600">{sk?"Platbu už máte za sebou. Tieto údaje nemenia cenu ani nákup — používame ich iba na matching a nastavenie výučby.":"Your payment is already complete. These details do not change the price or purchase — we use them only for matching and lesson setup."}</p>
+        <p className="mt-4 leading-7 text-gray-600">{sk?"Platbu už máte za sebou. Tieto údaje nemenia cenu ani nákup — používame ich iba na výber vhodného lektora a nastavenie výučby.":"Your payment is already complete. These details do not change the price or purchase — we use them only to choose a suitable teacher and set up your lessons."}</p>
 
         <div className="mt-6 space-y-3 text-sm text-gray-600">
           <p>✓ {sk?"jazyk a približná úroveň":"language and approximate level"}</p>

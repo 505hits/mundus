@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ArrowRight, Check, CreditCard, Instagram, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowRight, Check, CreditCard, ShieldCheck, Sparkles } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { firstPackageAmountCents, PACKAGE_PRICES, type PackageDuration } from "@/lib/package-catalog";
 
@@ -145,10 +145,9 @@ export default function PurchasePackages({ paymentsAvailable, signupAvailable }:
                   {paymentsAvailable ? (sk ? "Zaplatiť online" : "Pay online") : t.pricing.individual.contactLabel}
                   <ArrowRight size={16} />
                 </Link>
-                <a href="https://www.instagram.com/mundus.languages/" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 rounded-xl border border-[#2F3AA2]/20 bg-white px-3 py-3 text-center text-sm font-semibold text-[#2F3AA2] transition hover:bg-indigo-50">
-                  <Instagram size={16} />
-                  {sk ? "Napísať na Instagram" : "Message on Instagram"}
-                </a>
+                <Link href="/contact" className="flex items-center justify-center rounded-xl border border-[#2F3AA2]/20 bg-white px-3 py-3 text-center text-sm font-semibold text-[#2F3AA2] transition hover:bg-indigo-50">
+                  {sk ? "Mám otázku" : "I have a question"}
+                </Link>
               </div>
             </article>
           );

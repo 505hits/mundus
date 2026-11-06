@@ -14,10 +14,10 @@ assert.ok(contact.includes('name="website"'), "public request form must retain i
 assert.ok(action.includes(">= 3"), "request action must rate-limit repeated email submissions");
 assert.ok(action.includes('from("contact_requests")'));
 assert.ok(pricing.includes("Zaplatiť online"));
-assert.ok(pricing.includes("Message on Instagram"));
+assert.ok(pricing.includes("I have a question"));
 assert.ok(worker.includes("claim_contact_request_emails"));
 assert.ok(worker.includes("Mundus: nová žiadosť z webu"));
 assert.ok(dashboard.includes('from("contact_requests")'));
 assert.ok(dashboard.includes("markContactRequestContacted"));
 
-console.log("PASS: public pay/Instagram/request choices and admin request notification flow");
+console.log("PASS: public pay/help/request choices and admin request notification flow");

@@ -35,8 +35,8 @@ export default function TeacherSection({teachers}:{teachers:PublicTeacher[]}) {
         <h2 className="mt-4 text-3xl font-bold sm:text-4xl">{sk?"Spoznajte lektorov Mundus":"Meet the Mundus teachers"}</h2>
         <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-gray-600">
           {sk
-            ?"Pri priradení zohľadňujeme jazyk, úroveň, vaše ciele aj časové možnosti. Konkrétnu dostupnosť vhodného lektora vždy overíme."
-            :"We match teachers based on language, level, goals and availability, and confirm the right teacher before lessons begin."}
+            ?"V tíme máme native aj skúsených lektorov. Pri priradení zohľadňujeme jazyk, úroveň, vaše ciele aj časové možnosti a dostupnosť vždy overíme."
+            :"Our team includes native speakers and experienced teachers. We match each student by language, level, goals and availability before lessons begin."}
         </p>
       </div>
 
@@ -67,8 +67,8 @@ export default function TeacherSection({teachers}:{teachers:PublicTeacher[]}) {
             </div>
             <div className="p-5">
               <h3 className="text-xl font-semibold text-[#171A2B]">{teacher.name}</h3>
-              {teacher.headline&&<p className="mt-1 text-sm font-semibold text-[#2F3AA2]">{teacher.headline}</p>}
-              <p className="mt-3 text-sm leading-6 text-gray-600">{teacher.bio}</p>
+              <p className="mt-1 text-sm font-semibold text-[#2F3AA2]">{sk ? "Lektor Mundus" : "Mundus teacher"}</p>
+              <p className="mt-3 text-sm leading-6 text-gray-600">{sk ? "Individuálna online výučba prispôsobená vašej úrovni, cieľom a časovým možnostiam." : "Personal online teaching tailored to your level, goals and availability."}</p>
               <div className="mt-4 flex flex-wrap gap-1.5">
                 {teacher.languages.map(item=><span key={item} className="rounded-full bg-[#EEF2FF] px-2.5 py-1 text-xs font-medium text-[#2F3AA2]">{displayLanguage(item)}</span>)}
               </div>

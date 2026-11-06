@@ -15,13 +15,13 @@ export const translations = {
         hero: {
             badge: "Personal 1:1 online language lessons",
             titleBefore: "Learn languages with",
-            nativeSpeakers: "experienced teachers",
-            subtitle: "Learn with a teacher who fits your goals, arrange lessons around your schedule, and keep everything in one simple portal.",
+            nativeSpeakers: "native and experienced teachers",
+            subtitle: "Learn with carefully selected native and experienced teachers matched to your goals and availability, with lessons, materials and progress in one simple portal.",
             ctaPrimary: "Choose your lesson package",
             ctaSecondary: "See how it works",
             interactive: "Your Mundus learning portal",
-            students: "1:1 · 45 or 60-minute lessons",
-            rating: "Flexible scheduling",
+            students: "100+ students",
+            rating: "Native & experienced teachers",
         },
         languageSelector: {
             badge: "Choose your language",
@@ -74,7 +74,7 @@ export const translations = {
                     description: "Meet your teacher online using the lesson meeting link.",
                 },
                 {
-                    title: "Smart progress tracking",
+                    title: "Clear progress tracking",
                     description: "Track your learning journey and adapt lessons to your pace.",
                 },
                 {
@@ -216,13 +216,13 @@ export const translations = {
         hero: {
             badge: "Individuálna 1:1 online výučba jazykov",
             titleBefore: "Učte sa jazyky s",
-            nativeSpeakers: "skúsenými lektormi",
-            subtitle: "Učte sa s lektorom podľa vašich cieľov, dohodnite si termíny flexibilne a majte hodiny, materiály aj pokrok v jednom jednoduchom portáli.",
+            nativeSpeakers: "native a skúsenými lektormi",
+            subtitle: "Učte sa so starostlivo vybranými native aj skúsenými lektormi podľa vašich cieľov a časových možností. Hodiny, materiály aj pokrok máte v jednom jednoduchom portáli.",
             ctaPrimary: "Vybrať balíček",
             ctaSecondary: "Ako to funguje",
             interactive: "Váš študijný portál Mundus",
-            students: "1:1 · 45 alebo 60-minútové hodiny",
-            rating: "Flexibilné termíny",
+            students: "100+ študentov",
+            rating: "Native aj skúsení lektori",
         },
         languageSelector: {
             badge: "Vyberte si jazyk",
@@ -275,7 +275,7 @@ export const translations = {
                     description: "S lektorom sa stretnete online cez odkaz na hodinu.",
                 },
                 {
-                    title: "Smart sledovanie pokroku",
+                    title: "Prehľadné sledovanie pokroku",
                     description: "Sledujte svoju cestu učením a prispôsobte lekcie svojmu tempu.",
                 },
                 {

@@ -519,20 +519,24 @@ export default async function TeacherDashboardPage() {
               </p>
 
               <h3 className="mt-3 font-semibold text-[#92400e]">
-                {myPendingRequests.length === 1
-                  ? "1 študent čaká na vašu odpoveď"
-                  : `${myPendingRequests.length} študentov čaká na vašu odpoveď`}
+                {sk
+                  ? (myPendingRequests.length === 1
+                      ? "1 študent čaká na vašu odpoveď"
+                      : `${myPendingRequests.length} študentov čaká na vašu odpoveď`)
+                  : (myPendingRequests.length === 1
+                      ? "1 student is waiting for your response"
+                      : `${myPendingRequests.length} students are waiting for your response`)}
               </h3>
 
               <p className="mt-2 text-sm leading-6 text-[#92400e]/75">
-                Skontrolujte navrhované termíny pred potvrdením zmeny.
+                {sk ? "Skontrolujte navrhované termíny pred potvrdením zmeny." : "Review the proposed times before confirming the change."}
               </p>
 
               <Link
                 href="/teacher/schedule"
                 className="mt-5 inline-flex rounded-xl bg-[#2F3AA2] px-4 py-2.5 text-sm font-semibold text-white"
               >
-                Skontrolovať žiadosti
+                {sk ? "Skontrolovať žiadosti" : "Review requests"}
               </Link>
             </div>
           </section>
@@ -541,9 +545,9 @@ export default async function TeacherDashboardPage() {
         <section className="mt-10">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-400">Študenti</p>
+              <p className="text-sm text-gray-400">{sk ? "Študenti" : "Students"}</p>
               <h2 className="mt-1 text-xl font-semibold">
-                Moji študenti
+                {sk ? "Moji študenti" : "My students"}
               </h2>
             </div>
 
@@ -552,9 +556,9 @@ export default async function TeacherDashboardPage() {
 
           {students.length === 0 ? (
             <div className="mt-4 rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
-              <p className="font-medium">Žiadni študenti s naplánovanou hodinou</p>
+              <p className="font-medium">{sk ? "Žiadni študenti s naplánovanou hodinou" : "No students with a scheduled lesson"}</p>
               <p className="mt-1 text-sm text-gray-400">
-                Študenti s naplánovanou ďalšou hodinou sa zobrazia tu.
+                {sk ? "Študenti s naplánovanou ďalšou hodinou sa zobrazia tu." : "Students with an upcoming lesson will appear here."}
               </p>
             </div>
           ) : (
@@ -573,7 +577,7 @@ export default async function TeacherDashboardPage() {
                     <p className="font-semibold">{student.name}</p>
 
                     <p className="mt-1 text-sm text-gray-400">
-                      {student.language} · {sk ? "Najbližšia:" : "Next:"}{" "}
+                      {formatLanguage(student.language, language)} · {sk ? "Najbližšia:" : "Next:"}{" "}
                       {formatShortDate(student.nextLesson, language)} ·{" "}
                       {formatTime(student.nextLesson, language)}
                     </p>

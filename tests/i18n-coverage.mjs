@@ -43,10 +43,12 @@ const floatingCta = read("src/components/FloatingCTA.tsx");
 const formats = read("src/components/LearningFormatsSection.tsx");
 const selector = read("src/components/LanguageSelector.tsx");
 const groupLessons = read("src/app/group-lessons/page.tsx");
+const languagePage = read("src/app/languages/[slug]/page.tsx");
 assert.match(floatingCta, /`\/\$\{language\}\/pricing`/, "floating purchase CTA must preserve the selected public locale");
 assert.ok(formats.includes("const prefix=`/${language}`") && formats.includes("`${prefix}/group-lessons`") && formats.includes("`${prefix}/companies`"), "learning format links must preserve locale");
 assert.ok(selector.includes("`${prefix}${item.detail}`"), "language detail links must preserve locale");
 assert.ok(groupLessons.includes("`/${language}/contact?type=group`"), "group quote CTA must preserve locale");
+assert.ok(languagePage.includes("`${prefix}/pricing?language=${encodeURIComponent(config.value)}`"), "language landing pricing CTAs must preserve locale");
 
 const packages = read("src/app/(portal)/packages/actions.ts");
 assert.match(packages, /locale: uiLanguage/, "Stripe Checkout locale must follow the UI language");

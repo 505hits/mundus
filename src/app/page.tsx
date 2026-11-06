@@ -25,6 +25,7 @@ export default async function Home() {
       <MundusStructuredData />
       <Navbar />
       <Hero />
+      <TrustSection />
       <LanguageSelector />
       <HowItWorks />
       <TeacherSection teachers={teachers} />
@@ -36,7 +37,6 @@ export default async function Home() {
 
       <PortalPreviewSection />
       <FeaturesBento />
-      <TrustSection />
       <TestimonialsSection />
       <FAQSection />
       <CalendlyWidget />

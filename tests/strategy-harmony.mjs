@@ -51,10 +51,10 @@ assert.ok(faq.includes("Až potom doplníte jazyk"));
 assert.ok(faq.includes("Only then do you enter language"));
 assert.ok(preview.includes("Preview based on the real dashboard"));
 assert.ok(preview.includes("same structure and information types as the student dashboard"));
-assert.ok(footer.includes('href: "/#faq"'));
-assert.ok(footer.includes('href: "/privacy"'));
-assert.ok(footer.includes('href: "/terms"'));
-assert.ok(footer.includes('href: "/cookies"'));
+assert.ok(footer.includes('${prefix}/#faq'));
+assert.ok(footer.includes('${prefix}/privacy'));
+assert.ok(footer.includes('${prefix}/terms'));
+assert.ok(footer.includes('${prefix}/cookies'));
 assert.ok(footer.includes('href: "/dashboard"'));
 
 assert.equal(hero.includes("images.unsplash.com/photo-1507003211169"), false, "hero must not use stock faces as student proof");

@@ -1,5 +1,8 @@
+import type { Metadata } from "next";
 import TeacherNav from "@/components/TeacherNav";
 import { requireRole } from "@/lib/auth";
+
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default async function TeacherLayout({
   children,

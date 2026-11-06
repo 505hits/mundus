@@ -1,7 +1,6 @@
 import { safeLessonLink } from "@/lib/lesson-link";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import BrandLogo from "@/components/BrandLogo";
 import {
   BookOpen,
   CalendarDays,
@@ -200,32 +199,6 @@ export default async function DashboardPage({ searchParams }: { searchParams?: P
 
   return (
     <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
-      <header className="border-b border-black/5 bg-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
-          <BrandLogo compact />
-
-          <div className="flex items-center gap-3">
-            <div className="hidden text-right sm:block">
-              <p className="text-sm font-semibold text-[#0a0a0f]">
-                {sk ? "Portál študenta" : "Student portal"}
-              </p>
-
-              <p className="text-xs text-gray-400">
-                {user.email}
-              </p>
-            </div>
-
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#2F3AA2] text-sm font-semibold text-white">
-              {(
-                profile?.full_name?.trim()?.[0] ||
-                user.email?.[0] ||
-                "S"
-              ).toUpperCase()}
-            </div>
-          </div>
-        </div>
-      </header>
-
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         {paymentSuccess && <section role="status" className="mb-6 rounded-3xl border border-emerald-200 bg-emerald-50 p-5">
           <p className="font-semibold text-emerald-900">{sk ? "Platba bola potvrdená" : "Payment confirmed"}</p>

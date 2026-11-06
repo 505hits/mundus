@@ -56,7 +56,7 @@ export default function AnalyticsManager(){
         function gtag(){dataLayer.push(arguments);}
         window.gtag = gtag;
         gtag("js", new Date());
-        gtag("config", "${gaId}", { send_page_view: false, anonymize_ip: true });
+        gtag("config", "${gaId}", { send_page_view: true, anonymize_ip: true });
       `}</Script>
     </>}
     {clarityId&&<Script id="mundus-clarity" strategy="afterInteractive">{`

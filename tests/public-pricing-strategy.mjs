@@ -24,13 +24,13 @@ assert.equal(purchase.includes("line-through"), false, "regular package prices m
 assert.ok(purchase.includes("packages do not renew automatically") || purchase.includes("Packages do not renew automatically"));
 assert.ok(purchase.includes("Bez predplatného"), "Slovak pricing must explain there is no subscription");
 assert.ok(purchase.includes("No subscription"), "English pricing must explain there is no subscription");
-assert.ok(purchase.includes("company invoice"), "public pricing must offer a company-invoice contact path");
-assert.ok(purchase.includes("faktúru na firmu"), "Slovak pricing must offer a company-invoice contact path");
+assert.ok(purchase.includes('href="/companies"'), "business buyers must be routed to the dedicated company offer");
 assert.ok(purchase.includes("lessons === 10"), "10-lesson package remains the neutral recommended package");
 assert.ok(purchase.includes("45 min") || purchase.includes("[45,60]"), "public pricing must expose 45-minute lessons");
 assert.ok(purchase.includes("60 min") || purchase.includes("[45,60]"), "public pricing must expose 60-minute lessons");
 assert.ok(pricingSection.includes('bg-[#FAFAF9]'), "public pricing should use the same warm portal background");
-assert.ok(nav.includes('href: "/#pricing"'), "navigation should have one clear pricing destination");
+assert.ok(nav.includes('href: "/pricing"'), "navigation should have one clear dedicated pricing destination");
+assert.ok(nav.includes('href="/companies"'),"companies must have a distinct top-level navigation treatment");
 assert.equal(nav.includes("Kúpiť hodiny"), false, "navigation must not duplicate pricing with a second buy-lessons item");
 assert.ok(translations.includes("10% off"), "English copy must clearly explain the first-package discount");
 assert.ok(translations.includes("zľavu 10 %"), "Slovak copy must clearly explain the first-package discount");

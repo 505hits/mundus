@@ -263,7 +263,7 @@ export default async function AdminDashboardPage() {
             <div><p className="text-sm font-semibold uppercase tracking-[0.14em] text-emerald-800">{sk ? "Pripravené na matching" : "Ready for matching"}</p><h2 className="mt-1 text-xl font-semibold text-emerald-950">{sk ? "Skontrolujte odporúčané zhody" : "Review recommended matches"}</h2><p className="mt-2 text-sm text-emerald-900/75">{sk ? "Títo študenti majú zaplatený balíček, dokončený onboarding a systém už má údaje na odporúčanie lektora." : "These students have a paid package, completed onboarding, and enough data for teacher recommendations."}</p></div>
             <Link href="/admin/matching" className="rounded-xl bg-[#2F3AA2] px-4 py-2.5 text-sm font-semibold text-white">{sk ? "Zobraziť odporúčania" : "View recommendations"}</Link>
           </div>
-          <ul className="mt-4 divide-y divide-emerald-200">{readyForMatching.map(student=><li key={student.id} className="flex flex-wrap items-center justify-between gap-3 py-3"><div><p className="font-semibold text-emerald-950">{getName(student,"Študent")}</p><p className="text-sm text-emerald-900/70">{student.email}</p></div><span className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-emerald-900">{sk ? "Pripravené" : "Ready"}</span></li>)}</ul>
+          <ul className="mt-4 divide-y divide-emerald-200">{readyForMatching.map(student=><li key={student.id} className="flex flex-wrap items-center justify-between gap-3 py-3"><div><p className="font-semibold text-emerald-950">{getName(student, sk ? "Študent" : "Student")}</p><p className="text-sm text-emerald-900/70">{student.email}</p></div><span className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-emerald-900">{sk ? "Pripravené" : "Ready"}</span></li>)}</ul>
         </section>}
 
         {paidWaitingForOnboarding.length > 0 && <section className="mt-6 rounded-3xl border border-amber-200 bg-amber-50 p-5">
@@ -314,32 +314,44 @@ export default async function AdminDashboardPage() {
 
             <div className="mt-5 space-y-3">
               <div className="rounded-2xl bg-amber-50 p-4">
-                <p className="font-medium">{paidOrdersError || lessonsError ? (sk ? "Nové nákupy sa nepodarilo overiť" : "New purchases could not be verified") : sk ? readyForMatching.length + " pripravených na matching · " + paidWaitingForOnboarding.length + " čaká na onboarding" : readyForMatching.length + " ready for matching · " + paidWaitingForOnboarding.length + " waiting for onboarding"}</p>
-                <p className="mt-1 text-sm text-gray-500">{sk ? "Po nákupe skontrolujte smart matching a vytvorte prvú hodinu." : "After purchase, check smart matching and create the first lesson."}</p>
+                <p className="font-medium">{paidOrdersError || lessonsError ? (sk ? "Nové nákupy sa nepodarilo overiť" : "New purchases could not be verified") : sk ? readyForMatching.length + " pripravených na priradenie · " + paidWaitingForOnboarding.length + " čaká na nastavenie štúdia" : readyForMatching.length + " ready for teacher assignment · " + paidWaitingForOnboarding.length + " waiting for learning setup"}</p>
+                <p className="mt-1 text-sm text-gray-500">{sk ? "Po nákupe skontrolujte odporúčané priradenie a vytvorte prvú hodinu." : "After purchase, review the recommended teacher assignment and create the first lesson."}</p>
               </div>
               <div className="rounded-2xl bg-[#EEF2FF] p-4">
-                <p className="font-medium">{packagesError ? "Stav balíčkov sa nepodarilo načítať" : packageAlertLabel(lowPackages.length, language)}</p>
+                <p className="font-medium">{packagesError ? (sk ? "Stav balíčkov sa nepodarilo načítať" : "Package status could not be loaded") : packageAlertLabel(lowPackages.length, language)}</p>
                 <p className="mt-1 text-sm text-gray-500">{sk ? "Odporúčame kontaktovať študenta ohľadom pokračovania." : "We recommend contacting the student about continuing."}</p>
               </div>
               <div className="rounded-2xl bg-[#EEF2FF] p-4">
-                <p className="font-medium">{requestsError ? "Žiadosti sa nepodarilo načítať" : requestAlertLabel(pendingRequests, language)}</p>
+                <p className="font-medium">{requestsError ? (sk ? "Žiadosti sa nepodarilo načítať" : "Requests could not be loaded") : requestAlertLabel(pendingRequests, language)}</p>
                 <p className="mt-1 text-sm text-gray-500">{sk ? "Čaká sa na kontrolu alebo odpoveď lektora." : "Waiting for teacher review or response."}</p>
               </div>
               <div className="rounded-2xl bg-[#EEF2FF] p-4">
-                <p className="font-medium">{studentsError || lessonsError ? "Ďalšie termíny sa nepodarilo overiť" : noUpcomingLabel(noUpcoming, language)}</p>
+                <p className="font-medium">{studentsError || lessonsError ? (sk ? "Ďalšie termíny sa nepodarilo overiť" : "Upcoming lessons could not be verified") : noUpcomingLabel(noUpcoming, language)}</p>
                 <p className="mt-1 text-sm text-gray-500">{sk ? "Môže byť potrebné dohodnúť ďalší termín." : "A new lesson time may need to be arranged."}</p>
               </div>
               <div className="rounded-2xl bg-amber-50 p-4">
-                <p className="font-medium">{onboardingError ? "Onboarding študentov sa nepodarilo overiť" : studentsMissingOnboarding.length === 1 ? "1 aktívny študent nemá dokončený onboarding" : `${studentsMissingOnboarding.length} aktívnych študentov nemá dokončený onboarding`}</p>
-                <p className="mt-1 text-sm text-gray-500">Bez onboardingu môžu chýbať údaje potrebné pre matching a správne nastavenie výučby.</p>
+                <p className="font-medium">{onboardingError
+  ? (sk ? "Nastavenie študentov sa nepodarilo overiť" : "Student setup could not be verified")
+  : sk
+    ? (studentsMissingOnboarding.length === 1 ? "1 aktívny študent nemá dokončené nastavenie štúdia" : `${studentsMissingOnboarding.length} aktívnych študentov nemá dokončené nastavenie štúdia`)
+    : (studentsMissingOnboarding.length === 1 ? "1 active student has not completed learning setup" : `${studentsMissingOnboarding.length} active students have not completed learning setup`)}</p>
+                <p className="mt-1 text-sm text-gray-500">{sk ? "Bez dokončeného nastavenia môžu chýbať údaje potrebné na priradenie lektora a správne nastavenie výučby." : "Without completed setup, information needed for teacher assignment and lesson setup may be missing."}</p>
               </div>
               <div className="rounded-2xl bg-amber-50 p-4">
-                <p className="font-medium">{teacherPreferencesError ? "Matching nastavenia lektorov sa nepodarilo overiť" : teachersMissingMatching.length === 1 ? "1 aktívny lektor nemá kompletné matching nastavenia" : `${teachersMissingMatching.length} aktívnych lektorov nemá kompletné matching nastavenia`}</p>
-                <p className="mt-1 text-sm text-gray-500">Lektor potrebuje jazyky, úrovne, dni, časové okno a kapacitu.</p>
+                <p className="font-medium">{teacherPreferencesError
+  ? (sk ? "Nastavenia dostupnosti lektorov sa nepodarilo overiť" : "Teacher availability settings could not be verified")
+  : sk
+    ? (teachersMissingMatching.length === 1 ? "1 aktívny lektor nemá kompletné nastavenia dostupnosti" : `${teachersMissingMatching.length} aktívnych lektorov nemá kompletné nastavenia dostupnosti`)
+    : (teachersMissingMatching.length === 1 ? "1 active teacher has incomplete availability settings" : `${teachersMissingMatching.length} active teachers have incomplete availability settings`)}</p>
+                <p className="mt-1 text-sm text-gray-500">{sk ? "Lektor potrebuje jazyky, úrovne, dni, časové okno a kapacitu." : "Teachers need languages, levels, days, a time window and capacity."}</p>
               </div>
               <div className="rounded-2xl bg-amber-50 p-4">
-                <p className="font-medium">{teacherPublicProfilesError ? "Verejné profily lektorov sa nepodarilo overiť" : teachersMissingPublicProfile.length === 1 ? "1 aktívny lektor nemá kompletný verejný profil" : `${teachersMissingPublicProfile.length} aktívnych lektorov nemá kompletný verejný profil`}</p>
-                <p className="mt-1 text-sm text-gray-500">Pred zverejnením je potrebná fotka, jazyky, titulok a predstavenie.</p>
+                <p className="font-medium">{teacherPublicProfilesError
+  ? (sk ? "Verejné profily lektorov sa nepodarilo overiť" : "Public teacher profiles could not be verified")
+  : sk
+    ? (teachersMissingPublicProfile.length === 1 ? "1 aktívny lektor nemá kompletný verejný profil" : `${teachersMissingPublicProfile.length} aktívnych lektorov nemá kompletný verejný profil`)
+    : (teachersMissingPublicProfile.length === 1 ? "1 active teacher has an incomplete public profile" : `${teachersMissingPublicProfile.length} active teachers have incomplete public profiles`)}</p>
+                <p className="mt-1 text-sm text-gray-500">{sk ? "Pred zverejnením je potrebná fotka, jazyky, titulok a predstavenie." : "A photo, languages, headline and introduction are required before publishing."}</p>
               </div>
             </div>
           </section>
@@ -357,20 +369,20 @@ export default async function AdminDashboardPage() {
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <h2 className="text-xl font-semibold text-[#2F3AA2]">{sk ? "Vyťaženie lektorov" : "Teacher workload"}</h2>
-              <p className="mt-2 text-sm text-gray-600">Naplánované a presunuté hodiny počas najbližších 7 dní. Je to orientačný prehľad pre priraďovanie nových študentov.</p>
+              <p className="mt-2 text-sm text-gray-600">{sk ? "Naplánované a presunuté hodiny počas najbližších 7 dní. Je to orientačný prehľad pre priraďovanie nových študentov." : "Scheduled and rescheduled lessons over the next 7 days. This is a planning overview for assigning new students."}</p>
             </div>
             <Link href="/admin/matching" className="font-semibold text-[#2F3AA2] underline">{sk ? "Otvoriť priradenie" : "Open matching"}</Link>
           </div>
           {teachersError || lessonsError ? (
-            <p role="alert" className="mt-4 text-red-700">{sk ? "Vyťaženie lektorov" : "Teacher workload"} sa nepodarilo načítať.</p>
+            <p role="alert" className="mt-4 text-red-700">{sk ? "Vyťaženie lektorov sa nepodarilo načítať." : "Teacher workload could not be loaded."}</p>
           ) : teacherWorkload.length === 0 ? (
-            <p className="mt-4 text-gray-600">Zatiaľ nemáte aktívnych lektorov.</p>
+            <p className="mt-4 text-gray-600">{sk ? "Zatiaľ nemáte aktívnych lektorov." : "You do not have any active teachers yet."}</p>
           ) : (
             <ul className="mt-4 divide-y divide-indigo-100">
               {teacherWorkload.map((teacher) => (
                 <li key={teacher.id} className="flex items-center justify-between gap-4 py-3">
                   <div>
-                    <p className="font-semibold">{getName(teacher, "Lektor")}</p>
+                    <p className="font-semibold">{getName(teacher, sk ? "Lektor" : "Teacher")}</p>
                     <p className="text-sm text-gray-500">{sk ? "Najbližších 7 dní" : "Next 7 days"}</p>
                   </div>
                   <span className="rounded-full bg-indigo-50 px-3 py-2 text-sm font-semibold text-[#2F3AA2]">
@@ -385,7 +397,7 @@ export default async function AdminDashboardPage() {
         <section className="mt-8 rounded-3xl border border-indigo-100 bg-white p-6 shadow-sm">
           <h2 className="text-xl font-semibold text-[#2F3AA2]">{sk ? "Dokončené hodiny bez záznamu lektora" : "Completed lessons without teacher reports"}</h2>
           <p className="mt-2 text-sm text-gray-600">Kontrola posledných 50 dokončených hodín. Záznam pomáha študentovi vidieť spätnú väzbu a ďalšie zameranie; jeho uloženie nemení zostatok balíčka.</p>
-          {missingReports === null ? <p role="alert" className="mt-4 text-red-700">Záznamy hodín sa nepodarilo overiť. Obnovte stránku.</p> : !missingReports.length ? <p className="mt-4 text-gray-600">Skontrolované dokončené hodiny majú uložený záznam alebo zatiaľ nemáte dokončené hodiny.</p> : <ul className="mt-4 divide-y divide-indigo-100">{missingReports.map(lesson=>{const student=Array.isArray(lesson.student)?lesson.student[0]:lesson.student;const teacher=Array.isArray(lesson.teacher)?lesson.teacher[0]:lesson.teacher;return <li key={lesson.id} className="flex flex-wrap items-center justify-between gap-3 py-4"><div><p className="font-semibold">{getName(student,"Študent")} · {formatLanguage(lesson.language, language)}</p><p className="mt-1 text-sm text-gray-600">{new Intl.DateTimeFormat(localeFor(language),{dateStyle:"medium",timeStyle:"short",timeZone:"Europe/Bratislava"}).format(new Date(lesson.scheduled_at))} · Lektor: {getName(teacher,"Nepriradený")}</p></div><span className="rounded-full bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-900">Doplniť záznam</span></li>;})}</ul>}
+          {missingReports === null ? <p role="alert" className="mt-4 text-red-700">Záznamy hodín sa nepodarilo overiť. Obnovte stránku.</p> : !missingReports.length ? <p className="mt-4 text-gray-600">Skontrolované dokončené hodiny majú uložený záznam alebo zatiaľ nemáte dokončené hodiny.</p> : <ul className="mt-4 divide-y divide-indigo-100">{missingReports.map(lesson=>{const student=Array.isArray(lesson.student)?lesson.student[0]:lesson.student;const teacher=Array.isArray(lesson.teacher)?lesson.teacher[0]:lesson.teacher;return <li key={lesson.id} className="flex flex-wrap items-center justify-between gap-3 py-4"><div><p className="font-semibold">{getName(student,"Študent")} · {formatLanguage(lesson.language, language)}</p><p className="mt-1 text-sm text-gray-600">{new Intl.DateTimeFormat(localeFor(language),{dateStyle:"medium",timeStyle:"short",timeZone:"Europe/Bratislava"}).format(new Date(lesson.scheduled_at))} · Lektor: {getName(teacher, sk ? "Nepriradený" : "Unassigned")}</p></div><span className="rounded-full bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-900">Doplniť záznam</span></li>;})}</ul>}
           <Link href="/admin/lessons" className="mt-5 inline-block font-semibold text-[#2F3AA2] underline">{sk ? "Otvoriť prehľad hodín" : "Open lesson overview"}</Link>
         </section>
 
@@ -429,7 +441,7 @@ export default async function AdminDashboardPage() {
                 return (
                   <div key={lesson.id} className="flex flex-col gap-3 py-4 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                      <p className="font-semibold">{getName(student, "Študent")}</p>
+                      <p className="font-semibold">{getName(student, sk ? "Študent" : "Student")}</p>
                       <p className="mt-1 text-sm text-gray-500">
                         {formatLanguage(lesson.language, language)} · {getName(teacher, "Lektor")}
                       </p>

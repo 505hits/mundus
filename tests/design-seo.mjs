@@ -13,7 +13,7 @@ const formats=read("src/components/LearningFormatsSection.tsx");
 for(const route of ["/group-lessons","/companies","/contact"]) assert.ok(sitemap.includes(route));
 assert.ok(robots.includes("/admin/") && robots.includes("/teacher/") && robots.includes("/company/"));
 assert.ok(robots.includes("sitemap.xml"));
-assert.ok(layout.includes("summary_large_image") && layout.includes("/opengraph-image"));
+assert.ok(layout.includes("summary_large_image") && layout.includes("/logo-removebg-preview.png"));
 assert.ok(structured.includes('"@type":"WebSite"') && structured.includes('"@type":"Service"'));
 assert.ok(structured.includes("#group-lessons") && structured.includes("#company-training"));
 assert.equal(home.includes("FeaturesBento"),false,"redundant feature block should stay off the homepage");

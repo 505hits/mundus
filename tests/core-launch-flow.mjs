@@ -37,7 +37,7 @@ profileResult = { data: { role: "student", status: "active", full_name: "Student
 assert.equal((await requireRole("student")).user.id, "student");
 await assert.rejects(requireRole("admin"), error => error.path === "/dashboard");
 currentUser = null;
-await assert.rejects(requireRole("student", "/packages?selected=10"), error => error.path === "/login?next=%2Fpackages%3Fselected%3D10");
+await assert.rejects(requireRole("student", "/packages?selected=10&duration=45"), error => error.path === "/login?next=%2Fpackages%3Fselected%3D10%26duration%3D45");
 
 let capturedReturn;
 const { startPackageCheckout } = load("../src/app/(portal)/packages/actions.ts", {
@@ -45,12 +45,14 @@ const { startPackageCheckout } = load("../src/app/(portal)/packages/actions.ts",
   "@/lib/auth": { requireRole: async (_role, next) => { capturedReturn = next; redirect("/login"); } },
   "@/lib/supabase/admin": {}, "@/lib/account-config": {},
   "@/lib/i18n": { formUiLanguage: form => form.get("ui_language") === "en" ? "en" : "sk" },
-  "@/lib/payments": { PACKAGE_PRICES: [1,5,10,20,30].map(lessons => ({ lessons })) },
+  "@/lib/payments": { PACKAGE_PRICES: [45,60].flatMap(durationMinutes => [1,5,10,20,30].map(lessons => ({ lessons, durationMinutes }))) },
 });
 for (const count of [1,5,10,20,30]) {
-  const form = new FormData(); form.set("lessons", String(count));
-  await assert.rejects(startPackageCheckout(form), error => error.path === "/login");
-  assert.equal(capturedReturn, `/packages?selected=${count}`);
+  for (const duration of [45,60]) {
+    const form = new FormData(); form.set("lessons", String(count)); form.set("duration_minutes", String(duration));
+    await assert.rejects(startPackageCheckout(form), error => error.path === "/login");
+    assert.equal(capturedReturn, `/packages?selected=${count}&duration=${duration}`);
+  }
 }
 const bad = new FormData(); bad.set("lessons", "999");
 await assert.rejects(startPackageCheckout(bad), error => error.path === "/login");

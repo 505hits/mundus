@@ -68,7 +68,7 @@ export default function Hero(){
       </div>
 
       <div className="mt-3 flex items-center gap-3 rounded-2xl border border-[#DDE2FB] bg-[#EEF2FF] p-4">
-        <CheckCircle2 size={20} className="shrink-0 text-[#2F3AA2]"/><p className="text-sm leading-6 text-[#343A6B]">{sk?"Vyberiete si jazyk a balíček, doplníte svoje ciele a Mundus vám pomôže nájsť vhodného lektora.":"Choose your language and package, tell us your goals and Mundus helps match you with the right teacher."}</p>
+        <CheckCircle2 size={20} className="shrink-0 text-[#2F3AA2]"/><p className="text-sm leading-6 text-[#343A6B]">{sk?"Najprv platba. Potom doplníte svoje ciele, úroveň a dostupnosť a Mundus vám pomôže nájsť vhodného lektora.":"Payment comes first. Then tell us your goals, level and availability, and Mundus helps match you with the right teacher."}</p>
       </div>
     </div>
    </motion.div>

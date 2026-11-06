@@ -7,6 +7,7 @@ import { formUiLanguage, uiText } from "@/lib/i18n";
 
 export async function acceptCompanyInvitation(_previous:AccountFormState,form:FormData):Promise<AccountFormState>{
  const language=formUiLanguage(form); const t=(sk:string,en:string)=>uiText(language,sk,en);
+ if(process.env.MUNDUS_INVITATIONS_ENABLED!=="true") return {error:t("Aktivácia pozvánok ešte nie je dostupná.","Invitation activation is not available yet.")};
  const password=String(form.get("password")||"");
  if(!validPassword(password)) return {error:t("Heslo musí mať 10 až 128 znakov.","Password must be 10 to 128 characters long.")};
  if(password!==form.get("confirmPassword")) return {error:t("Heslá sa nezhodujú.","Passwords do not match.")};

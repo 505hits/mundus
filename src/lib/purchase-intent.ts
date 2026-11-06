@@ -1,6 +1,5 @@
-import { PACKAGE_DURATIONS, PACKAGE_LESSONS } from "@/lib/package-catalog";
-
-export { PACKAGE_DURATIONS, PACKAGE_LESSONS };
+export const PACKAGE_LESSONS = [1, 5, 10, 20, 30] as const;
+export const PACKAGE_DURATIONS = [45, 60] as const;
 
 // Only this internal route may survive login or an email confirmation link.
 export function purchaseReturnPath(value: unknown): string | null {

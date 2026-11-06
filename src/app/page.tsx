@@ -9,7 +9,6 @@ import FeaturesBento from "@/components/FeaturesBento";
 import TrustSection from "@/components/TrustSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import FAQSection from "@/components/FAQSection";
-import CalendlyWidget from "@/components/CalendlyWidget";
 import Footer from "@/components/Footer";
 import MundusStructuredData from "@/components/MundusStructuredData";
 import { paymentEnabled } from "@/lib/payments";
@@ -39,7 +38,6 @@ export default async function Home() {
       <FeaturesBento />
       <TestimonialsSection />
       <FAQSection />
-      <CalendlyWidget />
       <Footer />
     </main>
   );

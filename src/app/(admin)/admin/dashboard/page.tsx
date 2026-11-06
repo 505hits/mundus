@@ -246,7 +246,7 @@ export default async function AdminDashboardPage() {
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <p className="font-semibold text-indigo-950">{request.full_name}</p>
-                  <p className="text-sm text-indigo-900/70">{request.email} · {request.language}{request.package_lessons ? ` · ${request.package_lessons} × 60 min` : ""}</p>
+                  <p className="text-sm text-indigo-900/70">{request.email} · {request.language}{request.package_lessons ? ` · ${request.package_lessons} ${sk ? (request.package_lessons === 1 ? "hodina" : "hodín") : (request.package_lessons === 1 ? "lesson" : "lessons")}` : ""}</p>
                   {request.message && <p className="mt-1 max-w-3xl text-sm text-indigo-900/75">{request.message}</p>}
                 </div>
                 <form action={markContactRequestContacted}>
@@ -397,7 +397,7 @@ export default async function AdminDashboardPage() {
         <section className="mt-8 rounded-3xl border border-indigo-100 bg-white p-6 shadow-sm">
           <h2 className="text-xl font-semibold text-[#2F3AA2]">{sk ? "Dokončené hodiny bez záznamu lektora" : "Completed lessons without teacher reports"}</h2>
           <p className="mt-2 text-sm text-gray-600">{sk ? "Kontrola posledných 50 dokončených hodín. Záznam pomáha študentovi vidieť spätnú väzbu a ďalšie zameranie; jeho uloženie nemení zostatok balíčka." : "Review of the latest 50 completed lessons. Reports help students see feedback and their next focus; saving a report does not change the package balance."}</p>
-          {missingReports === null ? <p role="alert" className="mt-4 text-red-700">Záznamy hodín sa nepodarilo overiť. Obnovte stránku.</p> : !missingReports.length ? <p className="mt-4 text-gray-600">Skontrolované dokončené hodiny majú uložený záznam alebo zatiaľ nemáte dokončené hodiny.</p> : <ul className="mt-4 divide-y divide-indigo-100">{missingReports.map(lesson=>{const student=Array.isArray(lesson.student)?lesson.student[0]:lesson.student;const teacher=Array.isArray(lesson.teacher)?lesson.teacher[0]:lesson.teacher;return <li key={lesson.id} className="flex flex-wrap items-center justify-between gap-3 py-4"><div><p className="font-semibold">{getName(student,"Študent")} · {formatLanguage(lesson.language, language)}</p><p className="mt-1 text-sm text-gray-600">{new Intl.DateTimeFormat(localeFor(language),{dateStyle:"medium",timeStyle:"short",timeZone:"Europe/Bratislava"}).format(new Date(lesson.scheduled_at))} · Lektor: {getName(teacher, sk ? "Nepriradený" : "Unassigned")}</p></div><span className="rounded-full bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-900">Doplniť záznam</span></li>;})}</ul>}
+          {missingReports === null ? <p role="alert" className="mt-4 text-red-700">{sk ? "Záznamy hodín sa nepodarilo overiť. Obnovte stránku." : "Lesson reports could not be verified. Refresh the page."}</p> : !missingReports.length ? <p className="mt-4 text-gray-600">{sk ? "Skontrolované dokončené hodiny majú uložený záznam alebo zatiaľ nemáte dokončené hodiny." : "The reviewed completed lessons have reports, or there are no completed lessons yet."}</p> : <ul className="mt-4 divide-y divide-indigo-100">{missingReports.map(lesson=>{const student=Array.isArray(lesson.student)?lesson.student[0]:lesson.student;const teacher=Array.isArray(lesson.teacher)?lesson.teacher[0]:lesson.teacher;return <li key={lesson.id} className="flex flex-wrap items-center justify-between gap-3 py-4"><div><p className="font-semibold">{getName(student, sk ? "Študent" : "Student")} · {formatLanguage(lesson.language, language)}</p><p className="mt-1 text-sm text-gray-600">{new Intl.DateTimeFormat(localeFor(language),{dateStyle:"medium",timeStyle:"short",timeZone:"Europe/Bratislava"}).format(new Date(lesson.scheduled_at))} · {sk ? "Lektor" : "Teacher"}: {getName(teacher, sk ? "Nepriradený" : "Unassigned")}</p></div><span className="rounded-full bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-900">{sk ? "Doplniť záznam" : "Add report"}</span></li>;})}</ul>}
           <Link href="/admin/lessons" className="mt-5 inline-block font-semibold text-[#2F3AA2] underline">{sk ? "Otvoriť prehľad hodín" : "Open lesson overview"}</Link>
         </section>
 
@@ -443,7 +443,7 @@ export default async function AdminDashboardPage() {
                     <div>
                       <p className="font-semibold">{getName(student, sk ? "Študent" : "Student")}</p>
                       <p className="mt-1 text-sm text-gray-500">
-                        {formatLanguage(lesson.language, language)} · {getName(teacher, "Lektor")}
+                        {formatLanguage(lesson.language, language)} · {getName(teacher, sk ? "Lektor" : "Teacher")}
                       </p>
                     </div>
                     <div className="flex items-center gap-3">

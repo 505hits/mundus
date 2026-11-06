@@ -77,10 +77,10 @@ export default async function ContactPage({ searchParams }: PageProps) {
                 <input name="language" required maxLength={80} placeholder={sk ? "napr. angličtina" : "e.g. English"} className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10" />
               </label>
               <label className="block">
-                <span className="text-sm font-medium text-gray-700">{sk ? "Balíček (voliteľné)" : "Package (optional)"}</span>
+                <span className="text-sm font-medium text-gray-700">{sk ? "Počet hodín (voliteľné)" : "Number of lessons (optional)"}</span>
                 <select name="package_lessons" defaultValue="" className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 outline-none focus:border-[#2F3AA2]">
                   <option value="">{sk ? "Ešte neviem" : "Not sure yet"}</option>
-                  {[1,5,10,20,30].map(n => <option key={n} value={n}>{n} × 60 min</option>)}
+                  {[1,5,10,20,30].map(n => <option key={n} value={n}>{n} {sk ? (n === 1 ? "hodina" : "hodín") : (n === 1 ? "lesson" : "lessons")}</option>)}
                 </select>
               </label>
               <label className="block sm:col-span-2">

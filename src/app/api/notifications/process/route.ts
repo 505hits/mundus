@@ -84,7 +84,7 @@ export async function GET(request:NextRequest) {
         "Meno: "+requestRow.full_name,
         "E-mail: "+requestRow.email,
         "Jazyk: "+requestRow.language,
-        "Balíček: "+(requestRow.package_lessons ? requestRow.package_lessons+" × 60 min" : "neuvedený"),
+        "Počet hodín: "+(requestRow.package_lessons ? requestRow.package_lessons : "neuvedený"),
         requestRow.message ? "Správa: "+requestRow.message : null,
         "",
         "Admin: "+origin+"/admin/dashboard",

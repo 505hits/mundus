@@ -33,8 +33,8 @@ function formatTime(value: string, language: Language) {
   }).format(new Date(value));
 }
 
-function name(profile: { full_name?: string | null; email?: string | null } | null | undefined) {
-  return profile?.full_name?.trim() || profile?.email || "Neznáme";
+function name(profile: { full_name?: string | null; email?: string | null } | null | undefined, language: Language) {
+  return profile?.full_name?.trim() || profile?.email || (language === "sk" ? "Neznáme" : "Unknown");
 }
 
 export default async function AdminLessonsPage() {
@@ -140,12 +140,12 @@ export default async function AdminLessonsPage() {
                 return (
                   <div key={lesson.id} className="grid gap-4 px-5 py-5 lg:grid-cols-[1.2fr_1fr_0.9fr_0.7fr_0.9fr_0.9fr_0.5fr_0.7fr] lg:items-center lg:px-6">
                     <div>
-                      <p className="font-semibold">{name(student)}</p>
+                      <p className="font-semibold">{name(student, language)}</p>
                       <p className="mt-1 text-sm text-gray-400">{formatLanguage(lesson.language,language)}</p>
                     </div>
                     <div>
                       <p className="text-xs text-gray-400 lg:hidden">{sk?"Lektor":"Teacher"}</p>
-                      <p className="mt-1 text-sm font-medium lg:mt-0">{name(teacher)}</p>
+                      <p className="mt-1 text-sm font-medium lg:mt-0">{name(teacher, language)}</p>
                     </div>
                     <div>
                       <p className="text-xs text-gray-400 lg:hidden">{sk?"Dátum":"Date"}</p>

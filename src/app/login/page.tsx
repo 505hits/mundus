@@ -76,9 +76,13 @@ export default function LoginPage() {
         }
         needsOnboarding = !hasCompletedOnboarding(onboarding);
       }
-      router.replace(needsOnboarding
-        ? `/onboarding${desired ? `?next=${encodeURIComponent(desired)}` : ""}`
-        : profile.role === "student" && desired ? desired : destination);
+      router.replace(
+        profile.role === "student" && desired
+          ? desired
+          : needsOnboarding
+            ? "/onboarding"
+            : destination
+      );
     } catch {
       setError(sk ? "Prihlásenie je momentálne nedostupné. Skúste to znova." : "Sign in is currently unavailable. Please try again.");
     } finally {

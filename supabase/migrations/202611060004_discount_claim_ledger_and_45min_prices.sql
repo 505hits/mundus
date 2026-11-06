@@ -35,6 +35,22 @@ create unique index if not exists payment_discount_claim_name_unique
 create unique index if not exists payment_discount_claim_email_unique
   on public.payment_discount_claims(discount_email_key);
 
+create or replace function public.mundus_prevent_discount_claim_mutation()
+returns trigger
+language plpgsql
+set search_path=''
+as $
+begin
+  raise exception 'First-package discount claims are immutable';
+end;
+$;
+revoke all on function public.mundus_prevent_discount_claim_mutation() from public,anon,authenticated;
+
+drop trigger if exists prevent_discount_claim_mutation on public.payment_discount_claims;
+create trigger prevent_discount_claim_mutation
+before update or delete on public.payment_discount_claims
+for each row execute function public.mundus_prevent_discount_claim_mutation();
+
 -- Backfill every already-paid discounted order. If historical duplicate claims
 -- exist, this migration fails instead of silently legitimising two discounts.
 insert into public.payment_discount_claims(

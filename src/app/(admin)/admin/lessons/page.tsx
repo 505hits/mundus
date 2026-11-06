@@ -72,7 +72,7 @@ export default async function AdminLessonsPage() {
       .order("full_name", { ascending: true }),
     supabase
       .from("lesson_packages")
-      .select("id,student_id,total_lessons,remaining_lessons")
+      .select("id,student_id,total_lessons,remaining_lessons,duration_minutes")
       .eq("status", "active"),
   ]);
 

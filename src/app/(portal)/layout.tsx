@@ -11,7 +11,7 @@ export default async function PortalLayout({
     <div className="portal-surface min-h-screen lg:flex">
       <PortalNav paymentsEnabled={process.env.MUNDUS_PAYMENTS_ENABLED === "true"} />
 
-      <div className="min-w-0 flex-1 pb-24 lg:pb-0">
+      <div className="min-w-0 flex-1 pb-24 pt-14 lg:pb-0 lg:pt-0">
         {children}
       </div>
     </div>

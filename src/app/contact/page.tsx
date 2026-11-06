@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, CreditCard, Globe, Instagram, Send } from "lucide-react";
+import { ArrowRight, CreditCard, Globe, Send } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { currentLanguage } from "@/lib/i18n";
@@ -22,32 +22,22 @@ export default async function ContactPage({ searchParams }: PageProps) {
           <h1 className="mt-4 text-4xl font-bold sm:text-5xl">{sk ? "Ako chcete začať?" : "How would you like to start?"}</h1>
           <p className="mt-5 max-w-3xl text-lg leading-relaxed text-gray-600">
             {sk
-              ? "Môžete si rovno vybrať balíček a zaplatiť online, napísať nám na Instagrame alebo poslať krátku žiadosť cez web."
-              : "Choose a package and pay online, message us on Instagram, or send a short lesson request through the website."}
+              ? "Ak chcete začať individuálne hodiny, najrýchlejšia cesta je vybrať si jazyk a balíček a zaplatiť online. Tento formulár použite iba vtedy, ak sa chcete najprv niečo opýtať."
+              : "For individual lessons, the fastest path is to choose a language and package and pay online. Use this form only if you want to ask something first."}
           </p>
 
-          <div className="mt-10 grid gap-5 md:grid-cols-2">
+          <div className="mt-10">
             <div className="rounded-3xl border border-indigo-100 bg-white p-7 shadow-sm">
               <CreditCard className="text-[#2F3AA2]" size={32} aria-hidden="true" />
               <h2 className="mt-5 text-2xl font-semibold">{sk ? "Zaplatiť online" : "Pay online"}</h2>
               <p className="mt-3 leading-relaxed text-gray-600">
                 {sk ? "Vyberte si balíček, vytvorte si alebo otvorte študentský účet a pokračujte k bezpečnej platbe." : "Choose a package, create or open your student account, and continue to secure online payment."}
               </p>
-              <Link href="/#buy-packages" className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#2F3AA2] px-6 py-4 font-semibold text-white hover:bg-[#252E82]">
+              <Link href="/languages" className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#2F3AA2] px-6 py-4 font-semibold text-white hover:bg-[#252E82]">
                 {sk ? "Vybrať balíček" : "Choose a package"}<ArrowRight size={20} aria-hidden="true" />
               </Link>
             </div>
 
-            <div className="rounded-3xl border border-indigo-100 bg-white p-7 shadow-sm">
-              <Instagram className="text-[#2F3AA2]" size={32} aria-hidden="true" />
-              <h2 className="mt-5 text-2xl font-semibold">@mundus.languages</h2>
-              <p className="mt-3 leading-relaxed text-gray-600">
-                {sk ? "Ak si chcete najprv niečo overiť, napíšte nám jazyk, približnú úroveň a cieľ." : "If you want to ask first, send us your language, approximate level and goal."}
-              </p>
-              <a href="https://www.instagram.com/mundus.languages/" target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 rounded-xl border border-[#2F3AA2]/20 bg-white px-6 py-4 font-semibold text-[#2F3AA2] hover:bg-indigo-50">
-                {sk ? "Napísať na Instagrame" : "Message us on Instagram"}<ArrowUpRight size={20} aria-hidden="true" />
-              </a>
-            </div>
           </div>
 
           <section className="mt-8 rounded-3xl border border-[#E5E7F0] bg-white p-6 shadow-sm sm:p-8">
@@ -59,9 +49,9 @@ export default async function ContactPage({ searchParams }: PageProps) {
 
             {sent === "1" && <div role="status" className="mt-5 rounded-2xl border border-green-200 bg-green-50 p-4 text-sm text-green-800">{sk ? "Ďakujeme. Vašu žiadosť sme prijali a ozveme sa vám." : "Thank you. We received your request and will contact you."}</div>}
             {problem && <div role="alert" className="mt-5 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-              {problem === "rate" ? (sk ? "Dostali sme už viac žiadostí z tohto e-mailu. Skúste to neskôr alebo nám napíšte na Instagrame." : "We already received several requests from this email. Try later or message us on Instagram.")
+              {problem === "rate" ? (sk ? "Dostali sme už viac žiadostí z tohto e-mailu. Skúste to prosím neskôr." : "We already received several requests from this email. Please try again later.")
                 : problem === "invalid" ? (sk ? "Skontrolujte prosím vyplnené údaje." : "Please check the information you entered.")
-                : (sk ? "Žiadosť sa teraz nepodarilo odoslať. Napíšte nám prosím na Instagrame." : "The request could not be sent right now. Please message us on Instagram.")}
+                : (sk ? "Žiadosť sa teraz nepodarilo odoslať. Skúste to prosím neskôr." : "The request could not be sent right now. Please try again later.")}
             </div>}
 
             <form action={submitContactRequest} className="mt-7 grid gap-5 sm:grid-cols-2">

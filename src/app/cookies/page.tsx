@@ -1,8 +1,15 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { currentLanguage } from "@/lib/i18n";
+import { localizedAlternates } from "@/lib/seo-locales";
 import AnalyticsConsentSettings from "@/components/AnalyticsConsentSettings";
 
+
+export async function generateMetadata():Promise<Metadata>{
+ const language=await currentLanguage(); const sk=language==="sk";
+ return {title:sk?"Cookies | Mundus Languages":"Cookies | Mundus Languages",description:sk?"Informácie o nevyhnutných a analytických cookies vrátane Google Analytics a Microsoft Clarity.":"Information about necessary and analytics cookies including Google Analytics and Microsoft Clarity.",alternates:localizedAlternates("/cookies",language)};
+}
 export default async function CookiesPage() {
   const sk=(await currentLanguage())==="sk";
   return <main className="min-h-screen bg-[#FAFAF9]"><Navbar/><section className="mx-auto max-w-3xl px-6 pb-20 pt-32">

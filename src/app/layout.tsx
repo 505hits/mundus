@@ -5,6 +5,8 @@ import FloatingCTA from "@/components/FloatingCTA";
 import ClientProviders from "@/components/ClientProviders";
 import NewsletterPopup from "@/components/NewsletterPopup";
 import { currentLanguage } from "@/lib/i18n";
+import AnalyticsManager from "@/components/AnalyticsManager";
+import AnalyticsConsentBanner from "@/components/AnalyticsConsentBanner";
 
 export async function generateMetadata(): Promise<Metadata> {
   const language = await currentLanguage();
@@ -42,7 +44,8 @@ export async function generateMetadata(): Promise<Metadata> {
     alternates: { canonical: "/" },
     robots: { index: true, follow: true },
     verification: {
-      google: "E8jeITeM86HOhcoQCXpdxzqra-O-Xy-2CsS3JH7QLFk",
+      google: process.env.GOOGLE_SITE_VERIFICATION || "E8jeITeM86HOhcoQCXpdxzqra-O-Xy-2CsS3JH7QLFk",
+      other: process.env.BING_SITE_VERIFICATION ? { "msvalidate.01": process.env.BING_SITE_VERIFICATION } : undefined,
     },
   };
 }
@@ -60,6 +63,8 @@ export default async function RootLayout({
           {children}
           <FloatingCTA />
           <NewsletterPopup />
+          <AnalyticsManager />
+          <AnalyticsConsentBanner />
         </ClientProviders>
       </body>
     </html>

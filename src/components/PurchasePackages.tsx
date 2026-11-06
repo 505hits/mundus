@@ -7,6 +7,7 @@ import { ArrowRight, Check, CreditCard, ShieldCheck, Sparkles } from "lucide-rea
 import { useLanguage } from "@/context/LanguageContext";
 import { firstPackageAmountCents, PACKAGE_PRICES, type PackageDuration } from "@/lib/package-catalog";
 import { MUNDUS_LANGUAGE_OPTIONS, MUNDUS_LANGUAGE_VALUES } from "@/lib/language-offer";
+import { trackEvent } from "@/components/AnalyticsManager";
 
 export default function PurchasePackages({ paymentsAvailable, signupAvailable }: { paymentsAvailable: boolean; signupAvailable: boolean }) {
   const { language, t } = useLanguage();
@@ -44,7 +45,7 @@ export default function PurchasePackages({ paymentsAvailable, signupAvailable }:
           </div>
           <label className="block text-sm font-semibold text-[#171A2B]">
             {sk ? "Jazyk výučby" : "Lesson language"}
-            <select value={selectedLanguage} onChange={event => setSelectedLanguage(event.target.value)} className="mt-2 w-full rounded-2xl border border-[#DDE2FB] bg-white px-4 py-3.5 text-base font-medium outline-none transition focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10">
+            <select value={selectedLanguage} onChange={event => { setSelectedLanguage(event.target.value); if(event.target.value) trackEvent("select_language",{language:event.target.value,placement:"pricing_selector"}); }} className="mt-2 w-full rounded-2xl border border-[#DDE2FB] bg-white px-4 py-3.5 text-base font-medium outline-none transition focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10">
               <option value="">{sk ? "Vyberte jazyk" : "Choose a language"}</option>
               {MUNDUS_LANGUAGE_OPTIONS.map(item => <option key={item.value} value={item.value}>{sk ? item.label : item.value}</option>)}
             </select>
@@ -70,7 +71,7 @@ export default function PurchasePackages({ paymentsAvailable, signupAvailable }:
               <button
                 key={duration}
                 type="button"
-                onClick={() => setDurationMinutes(duration)}
+                onClick={() => { setDurationMinutes(duration); trackEvent("select_lesson_duration",{duration_minutes:duration}); }}
                 className={`rounded-xl px-5 py-2.5 text-sm font-semibold transition ${durationMinutes===duration?"bg-[#2F3AA2] text-white":"text-[#2F3AA2] hover:bg-[#F3F5FF]"}`}
               >
                 {duration} min
@@ -168,6 +169,7 @@ export default function PurchasePackages({ paymentsAvailable, signupAvailable }:
                           : `/login?next=${encodeURIComponent(`/packages?selected=${lessons}&duration=${durationMinutes}&language=${encodeURIComponent(selectedLanguage)}`)}`
                         : "/contact"
                   }
+                  onClick={()=>trackEvent("select_package",{language:selectedLanguage,duration_minutes:durationMinutes,lessons,amount_eur:amountCents/100})}
                   className="flex items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-3 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#252E82]"
                 >
                   {!selectedLanguage ? (sk ? "Najprv vybrať jazyk" : "Choose a language first") : paymentsAvailable ? (sk ? "Zaplatiť online" : "Pay online") : t.pricing.individual.contactLabel}

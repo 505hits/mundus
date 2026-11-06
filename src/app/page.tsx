@@ -11,6 +11,7 @@ import TestimonialsSection from "@/components/TestimonialsSection";
 import FAQSection from "@/components/FAQSection";
 import CalendlyWidget from "@/components/CalendlyWidget";
 import Footer from "@/components/Footer";
+import MundusStructuredData from "@/components/MundusStructuredData";
 import { paymentEnabled } from "@/lib/payments";
 import { publicTeachers } from "@/lib/public-teachers";
 
@@ -21,6 +22,7 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen">
+      <MundusStructuredData />
       <Navbar />
       <Hero />
       <LanguageSelector />

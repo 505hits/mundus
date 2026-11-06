@@ -32,23 +32,6 @@ export function LanguageProvider({ children, initialLanguage = "sk" }: { childre
         } catch {}
     }, [language]);
 
-    useEffect(() => {
-        const pathLocale = pathname.match(/^\/(sk|en)(?:\/|$)/)?.[1] as Language | undefined;
-        if (pathLocale) {
-            try { window.localStorage.setItem("mundus-language", pathLocale); } catch {}
-            document.cookie = `mundus_language=${pathLocale}; Path=/; Max-Age=31536000; SameSite=Lax`;
-            return;
-        }
-        try {
-            const stored = window.localStorage.getItem("mundus-language");
-            if ((stored === "en" || stored === "sk") && stored !== language) {
-                document.cookie = `mundus_language=${stored}; Path=/; Max-Age=31536000; SameSite=Lax`;
-                setLanguageState(stored);
-                router.refresh();
-            }
-        } catch {}
-    }, [language, pathname, router]);
-
     const setLanguage = useCallback((lang: Language) => {
         if (lang === language) return;
         document.cookie = `mundus_language=${lang}; Path=/; Max-Age=31536000; SameSite=Lax`;

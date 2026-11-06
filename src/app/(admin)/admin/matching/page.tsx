@@ -24,7 +24,7 @@ export default async function MatchingPage({ searchParams }: { searchParams?: Pr
   const [people,prefs,packages,onboarding,upcoming]=await Promise.all([
     db.from("profiles").select("id,full_name,email,role").eq("status","active").in("role",["teacher","student"]),
     db.from("teacher_preferences").select("*"),
-    db.from("lesson_packages").select("id,student_id,total_lessons,remaining_lessons").eq("status","active").gt("remaining_lessons",0),
+    db.from("lesson_packages").select("id,student_id,total_lessons,remaining_lessons,duration_minutes").eq("status","active").gt("remaining_lessons",0),
     db.from("student_onboarding").select("student_id,language,level,goal,lessons_per_week,preferred_days,preferred_time_from,preferred_time_to"),
     db.from("lessons").select("student_id,teacher_id,status,scheduled_at").in("status",["scheduled","rescheduled"]).gte("scheduled_at",now),
   ]);
@@ -87,7 +87,8 @@ export default async function MatchingPage({ searchParams }: { searchParams?: Pr
                 <div>
                   <h3 className="text-lg font-semibold">{personName(student)}</h3>
                   <p className="mt-1 text-sm text-gray-500">{request.language} · {request.level}</p>
-                  <p className="mt-2 max-w-2xl text-sm text-gray-600">{request.goal}</p>\n                  <p className="mt-2 text-sm font-medium text-[#2F3AA2]">{sk ? "Frekvencia: " : "Frequency: "}{request.lessons_per_week ?? 1}× {sk ? "týždenne" : "per week"}</p>
+                  <p className="mt-2 max-w-2xl text-sm text-gray-600">{request.goal}</p>
+                  <p className="mt-2 text-sm font-medium text-[#2F3AA2]">{sk ? "Frekvencia: " : "Frequency: "}{request.lessons_per_week ?? 1}× {sk ? "týždenne" : "per week"}</p>
                   {(request.preferred_days?.length||request.preferred_time_from)&&
                     <p className="mt-2 text-sm text-gray-500">
                       {sk?"Preferencie: ":"Preferences: "}{(request.preferred_days??[]).map((d:string)=>days[Number(d)]).join(", ")||(sk?"ľubovoľný deň":"any day")}

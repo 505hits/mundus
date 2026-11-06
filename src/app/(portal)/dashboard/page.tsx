@@ -66,7 +66,7 @@ export default async function DashboardPage({ searchParams }: { searchParams?: P
     supabase
       .from("lesson_packages")
       .select(
-        "id,total_lessons,remaining_lessons,used_lessons,status,purchased_at"
+        "id,total_lessons,remaining_lessons,used_lessons,duration_minutes,status,purchased_at"
       )
       .eq("student_id", user.id)
       .eq("status", "active"),
@@ -172,6 +172,7 @@ export default async function DashboardPage({ searchParams }: { searchParams?: P
     (sum, pkg) => sum + (pkg.remaining_lessons ?? 0),
     0
   );
+  const activeDurations = [...new Set(activePackages.map(pkg => pkg.duration_minutes ?? 60))].sort();
 
   const renewalDue = activePackages.some(pkg => {
     const low =
@@ -364,6 +365,7 @@ export default async function DashboardPage({ searchParams }: { searchParams?: P
                   <p className="mt-1 text-sm text-gray-400">
                     {sk ? "Zostáva" : "Remaining:"} {formatLessonCount(remainingLessons, language)}
                   </p>
+                  <p className="mt-2 text-xs font-medium text-[#2F3AA2]">{activeDurations.join(" / ")} min</p>
                 </div>
 
                 <div

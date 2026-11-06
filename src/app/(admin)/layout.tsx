@@ -1,6 +1,9 @@
+import type { Metadata } from "next";
 import AdminNav from "@/components/AdminNav";
 import { requireRole } from "@/lib/auth";
 import { paymentEnabled } from "@/lib/payments";
+
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default async function AdminLayout({
   children,

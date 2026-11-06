@@ -1,19 +1,26 @@
-export default function MundusStructuredData() {
+import { currentLanguage } from "@/lib/i18n";
+
+export default async function MundusStructuredData() {
+  const language = await currentLanguage();
+  const sk = language === "sk";
+
   const data = {
     "@context": "https://schema.org",
     "@type": "EducationalOrganization",
     name: "Mundus Languages",
     url: "https://munduslanguages.com",
+    inLanguage: sk ? "sk" : "en",
     sameAs: ["https://www.instagram.com/mundus.languages/"],
-    description:
-      "Individual 1:1 online language lessons with 45- or 60-minute lesson options, flexible scheduling, online payment and a student portal.",
+    description: sk
+      ? "Individuálne online jazykové hodiny s možnosťou 45- alebo 60-minútových lekcií, flexibilnými termínmi, online platbou a študentským portálom."
+      : "Personal online language lessons with 45- or 60-minute options, flexible scheduling, online payment and a student portal.",
     hasOfferCatalog: {
       "@type": "OfferCatalog",
-      name: "Individual online language lesson packages",
+      name: sk ? "Balíčky individuálnych online jazykových hodín" : "Individual online language lesson packages",
       itemListElement: [
         {
           "@type": "OfferCatalog",
-          name: "45-minute lessons",
+          name: sk ? "45-minútové hodiny" : "45-minute lessons",
           itemListElement: [
             { "@type": "Offer", priceCurrency: "EUR", price: "24", name: "1 × 45 min" },
             { "@type": "Offer", priceCurrency: "EUR", price: "115", name: "5 × 45 min" },
@@ -24,7 +31,7 @@ export default function MundusStructuredData() {
         },
         {
           "@type": "OfferCatalog",
-          name: "60-minute lessons",
+          name: sk ? "60-minútové hodiny" : "60-minute lessons",
           itemListElement: [
             { "@type": "Offer", priceCurrency: "EUR", price: "28", name: "1 × 60 min" },
             { "@type": "Offer", priceCurrency: "EUR", price: "135", name: "5 × 60 min" },

@@ -39,11 +39,11 @@ create or replace function public.mundus_prevent_discount_claim_mutation()
 returns trigger
 language plpgsql
 set search_path=''
-as $
+as $$
 begin
   raise exception 'First-package discount claims are immutable';
 end;
-$;
+$$;
 revoke all on function public.mundus_prevent_discount_claim_mutation() from public,anon,authenticated;
 
 drop trigger if exists prevent_discount_claim_mutation on public.payment_discount_claims;

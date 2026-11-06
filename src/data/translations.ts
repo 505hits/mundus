@@ -152,33 +152,18 @@ export const translations = {
                     launchPrice: "First package (10% off)"
                 },
                 rows: [
-                    {
-                        package: "1× 60 min",
-                        originalPrice: "€ 28",
-                        launchPrice: "€ 25.20"
-                    },
-                    {
-                        package: "5× 60 min Pack",
-                        originalPrice: "€ 135",
-                        launchPrice: "€ 121.50"
-                    },
-                    {
-                        package: "10× 60 min Pack",
-                        originalPrice: "€ 260",
-                        launchPrice: "€ 234"
-                    },
-                    {
-                        package: "20× 60 min Pack",
-                        originalPrice: "€ 490",
-                        launchPrice: "€ 441"
-                    },
-                    {
-                        package: "30× 60 min Pack",
-                        originalPrice: "€ 705",
-                        launchPrice: "€ 634.50"
-                    }
+                    { package: "1× 45 min", originalPrice: "€ 21", launchPrice: "€ 18.90" },
+                    { package: "5× 45 min", originalPrice: "€ 101.25", launchPrice: "€ 91.13" },
+                    { package: "10× 45 min", originalPrice: "€ 195", launchPrice: "€ 175.50" },
+                    { package: "20× 45 min", originalPrice: "€ 367.50", launchPrice: "€ 330.75" },
+                    { package: "30× 45 min", originalPrice: "€ 528.75", launchPrice: "€ 475.88" },
+                    { package: "1× 60 min", originalPrice: "€ 28", launchPrice: "€ 25.20" },
+                    { package: "5× 60 min", originalPrice: "€ 135", launchPrice: "€ 121.50" },
+                    { package: "10× 60 min", originalPrice: "€ 260", launchPrice: "€ 234" },
+                    { package: "20× 60 min", originalPrice: "€ 490", launchPrice: "€ 441" },
+                    { package: "30× 60 min", originalPrice: "€ 705", launchPrice: "€ 634.50" }
                 ],
-                note: "First-package offer applies to eligible student accounts.",
+                note: "The 10% first-package discount is calculated automatically and can be used only once per student/person.",
                 buyLabel: "Choose package",
                 contactLabel: "Contact us",
                 paymentNote: "Create or sign in to your student account to confirm your final price and continue to secure payment.",
@@ -368,33 +353,18 @@ export const translations = {
                     launchPrice: "Prvý balíček (zľava 10 %)"
                 },
                 rows: [
-                    {
-                        package: "1× 60 min",
-                        originalPrice: "28 €",
-                        launchPrice: "25,20 €"
-                    },
-                    {
-                        package: "5× 60 min balíček",
-                        originalPrice: "135 €",
-                        launchPrice: "121,50 €"
-                    },
-                    {
-                        package: "10× 60 min balíček",
-                        originalPrice: "260 €",
-                        launchPrice: "234 €"
-                    },
-                    {
-                        package: "20× 60 min balíček",
-                        originalPrice: "490 €",
-                        launchPrice: "441 €"
-                    },
-                    {
-                        package: "30× 60 min balíček",
-                        originalPrice: "705 €",
-                        launchPrice: "634,50 €"
-                    }
+                    { package: "1× 45 min", originalPrice: "21 €", launchPrice: "18,90 €" },
+                    { package: "5× 45 min", originalPrice: "101,25 €", launchPrice: "91,13 €" },
+                    { package: "10× 45 min", originalPrice: "195 €", launchPrice: "175,50 €" },
+                    { package: "20× 45 min", originalPrice: "367,50 €", launchPrice: "330,75 €" },
+                    { package: "30× 45 min", originalPrice: "528,75 €", launchPrice: "475,88 €" },
+                    { package: "1× 60 min", originalPrice: "28 €", launchPrice: "25,20 €" },
+                    { package: "5× 60 min", originalPrice: "135 €", launchPrice: "121,50 €" },
+                    { package: "10× 60 min", originalPrice: "260 €", launchPrice: "234 €" },
+                    { package: "20× 60 min", originalPrice: "490 €", launchPrice: "441 €" },
+                    { package: "30× 60 min", originalPrice: "705 €", launchPrice: "634,50 €" }
                 ],
-                note: "Zľava na prvý balíček platí pre oprávnené študentské účty.",
+                note: "Zľava 10 % sa vypočíta automaticky a môže sa použiť iba raz na študenta/osobu.",
                 buyLabel: "Vybrať balíček",
                 contactLabel: "Kontaktovať nás",
                 paymentNote: "Vytvorte si alebo otvorte študentský účet, kde sa overí konečná cena a môžete pokračovať k bezpečnej platbe.",

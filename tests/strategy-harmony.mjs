@@ -35,7 +35,7 @@ assert.ok(legacyOnboarding.includes('redirect("/dashboard/setup")'));
 assert.ok(paymentReturn.includes('redirect("/dashboard/setup?payment=success")'));
 assert.ok(paymentReturn.includes('redirect("/dashboard?payment=success")'));
 assert.ok(login.includes('profile.role === "student" && desired'), "login must preserve an explicit package/payment destination before onboarding");
-assert.ok(login.indexOf('profile.role === "student" && desired') < login.indexOf('needsOnboarding'), "payment intent must take precedence over onboarding");
+assert.match(login, /router\.replace\([\s\S]*profile\.role === "student" && desired[\s\S]*\? desired[\s\S]*: needsOnboarding/, "payment intent must take precedence over onboarding in the final redirect");
 assert.ok(matching.includes("lessons_per_week"));
 assert.ok(matching.includes("Approve this match"));
 assert.ok(matching.includes("Schváliť túto zhodu"));

@@ -1,0 +1,34 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+
+const read=(p)=>readFileSync(new URL("../"+p,import.meta.url),"utf8");
+const migration=read("supabase/migrations/202611060009_newsletter_subscriptions.sql");
+const popup=read("src/components/NewsletterPopup.tsx");
+const signup=read("src/components/NewsletterSignup.tsx");
+const action=read("src/app/newsletter/actions.ts");
+const worker=read("src/app/api/notifications/process/route.ts");
+const confirm=read("src/app/newsletter/confirm/route.ts");
+const unsubscribe=read("src/app/newsletter/unsubscribe/actions.ts");
+const footer=read("src/components/Footer.tsx");
+const privacy=read("src/app/privacy/page.tsx");
+const admin=read("src/app/(admin)/admin/newsletter/page.tsx");
+
+assert.ok(migration.includes("newsletter_subscribers"));
+assert.ok(migration.includes("newsletter_email_outbox"));
+assert.ok(migration.includes("revoke all on public.newsletter_subscribers from anon, authenticated"));
+assert.ok(migration.includes("claim_newsletter_emails"));
+assert.ok(popup.includes('PUBLIC_PATHS=["/","/contact","/companies","/group-lessons"]'));
+assert.ok(popup.includes("30000"),"popup should not appear immediately");
+assert.ok(popup.includes("0.45"),"popup should also react to engaged scrolling");
+assert.ok(popup.includes("14"),"dismissal should suppress the popup for a meaningful period");
+assert.ok(signup.includes('name="marketing_consent"') && signup.includes("required"));
+assert.ok(action.includes('status:"pending"'));
+assert.ok(action.includes('kind:"confirm"'));
+assert.ok(worker.includes("claim_newsletter_emails"));
+assert.ok(worker.includes("Confirm subscription") && worker.includes("Potvrďte odber"));
+assert.ok(confirm.includes('status:"active"') && confirm.includes("confirmed_at"));
+assert.ok(unsubscribe.includes('status:"unsubscribed"') && unsubscribe.includes("unsubscribed_at"));
+assert.ok(footer.includes('NewsletterSignup source="footer"'));
+assert.ok(privacy.includes("Newsletter a marketingové ponuky") && privacy.includes("Newsletter & marketing offers"));
+assert.ok(admin.includes("Newsletter subscribers") && admin.includes("Odberatelia noviniek"));
+console.log("PASS: newsletter consent, double opt-in, popup, unsubscribe and admin safeguards");

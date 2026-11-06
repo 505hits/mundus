@@ -74,7 +74,7 @@ export async function GET(request:NextRequest) {
   if(contactError && !contactQueueUnavailable) throw contactError;
   for(const job of contactJobs||[]) {
     try {
-      const {data:requestRow,error:requestError}=await admin.from("contact_requests").select("full_name,email,language,package_lessons,message,status").eq("id",job.request_id).single();
+      const {data:requestRow,error:requestError}=await admin.from("contact_requests").select("full_name,email,language,package_lessons,request_type,group_size,message,status").eq("id",job.request_id).single();
       const {data:recipient}=await admin.from("profiles").select("status,email").eq("id",job.recipient_id).single();
       const {data:auth}=await admin.auth.admin.getUserById(job.recipient_id);
       if(requestError || !requestRow || requestRow.status==="closed") throw new Error("Request unavailable");
@@ -84,6 +84,7 @@ export async function GET(request:NextRequest) {
         "Meno: "+requestRow.full_name,
         "E-mail: "+requestRow.email,
         "Jazyk: "+requestRow.language,
+        "Formát: "+(requestRow.request_type==="group" ? "súkromná skupina ("+(requestRow.group_size||"?")+" osôb)" : "individuálne 1:1"),
         "Počet hodín: "+(requestRow.package_lessons ? requestRow.package_lessons : "neuvedený"),
         requestRow.message ? "Správa: "+requestRow.message : null,
         "",

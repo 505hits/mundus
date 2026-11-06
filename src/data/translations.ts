@@ -152,11 +152,11 @@ export const translations = {
                     launchPrice: "First package (10% off)"
                 },
                 rows: [
-                    { package: "1× 45 min", originalPrice: "€ 21", launchPrice: "€ 18.90" },
-                    { package: "5× 45 min", originalPrice: "€ 101.25", launchPrice: "€ 91.13" },
-                    { package: "10× 45 min", originalPrice: "€ 195", launchPrice: "€ 175.50" },
-                    { package: "20× 45 min", originalPrice: "€ 367.50", launchPrice: "€ 330.75" },
-                    { package: "30× 45 min", originalPrice: "€ 528.75", launchPrice: "€ 475.88" },
+                    { package: "1× 45 min", originalPrice: "€ 24", launchPrice: "€ 21.60" },
+                    { package: "5× 45 min", originalPrice: "€ 115", launchPrice: "€ 103.50" },
+                    { package: "10× 45 min", originalPrice: "€ 220", launchPrice: "€ 198" },
+                    { package: "20× 45 min", originalPrice: "€ 415", launchPrice: "€ 373.50" },
+                    { package: "30× 45 min", originalPrice: "€ 595", launchPrice: "€ 535.50" },
                     { package: "1× 60 min", originalPrice: "€ 28", launchPrice: "€ 25.20" },
                     { package: "5× 60 min", originalPrice: "€ 135", launchPrice: "€ 121.50" },
                     { package: "10× 60 min", originalPrice: "€ 260", launchPrice: "€ 234" },
@@ -353,11 +353,11 @@ export const translations = {
                     launchPrice: "Prvý balíček (zľava 10 %)"
                 },
                 rows: [
-                    { package: "1× 45 min", originalPrice: "21 €", launchPrice: "18,90 €" },
-                    { package: "5× 45 min", originalPrice: "101,25 €", launchPrice: "91,13 €" },
-                    { package: "10× 45 min", originalPrice: "195 €", launchPrice: "175,50 €" },
-                    { package: "20× 45 min", originalPrice: "367,50 €", launchPrice: "330,75 €" },
-                    { package: "30× 45 min", originalPrice: "528,75 €", launchPrice: "475,88 €" },
+                    { package: "1× 45 min", originalPrice: "24 €", launchPrice: "21,60 €" },
+                    { package: "5× 45 min", originalPrice: "115 €", launchPrice: "103,50 €" },
+                    { package: "10× 45 min", originalPrice: "220 €", launchPrice: "198 €" },
+                    { package: "20× 45 min", originalPrice: "415 €", launchPrice: "373,50 €" },
+                    { package: "30× 45 min", originalPrice: "595 €", launchPrice: "535,50 €" },
                     { package: "1× 60 min", originalPrice: "28 €", launchPrice: "25,20 €" },
                     { package: "5× 60 min", originalPrice: "135 €", launchPrice: "121,50 €" },
                     { package: "10× 60 min", originalPrice: "260 €", launchPrice: "234 €" },

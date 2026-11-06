@@ -90,7 +90,7 @@ export default function PortalNav({ paymentsEnabled }: { paymentsEnabled: boolea
         </div>
       </div>
       <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-black/5 bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
-        <div className="mx-auto grid max-w-2xl grid-cols-5">
+        <div className="mx-auto flex max-w-2xl">
           {mobileItems.map((item) => {
             const Icon = item.icon;
             const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
@@ -100,7 +100,7 @@ export default function PortalNav({ paymentsEnabled }: { paymentsEnabled: boolea
                 key={item.href}
                 href={item.href}
                   aria-current={active ? "page" : undefined}
-                className={`focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F3AA2] flex min-w-0 flex-col items-center justify-center gap-1 whitespace-nowrap py-3 text-[11px] font-medium ${
+                className={`focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F3AA2] flex min-w-0 flex-1 flex-col items-center justify-center gap-1 whitespace-nowrap py-3 text-[11px] font-medium ${
                   active ? "text-[#0a0a0f]" : "text-gray-400"
                 }`}
               >

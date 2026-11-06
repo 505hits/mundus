@@ -1,17 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { ShieldCheck } from "lucide-react";
 import Link from "next/link";
-import { getAnalyticsConsent, setAnalyticsConsent, type AnalyticsConsent } from "@/components/AnalyticsManager";
+import { setAnalyticsConsent, useAnalyticsConsent } from "@/components/AnalyticsManager";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function AnalyticsConsentBanner(){
   const {language}=useLanguage(); const sk=language==="sk";
-  const [consent,setConsent]=useState<AnalyticsConsent>(null);
-  useEffect(()=>setConsent(getAnalyticsConsent()),[]);
+  const consent=useAnalyticsConsent();
   if(consent!==null) return null;
-  const choose=(value:"granted"|"denied")=>{setAnalyticsConsent(value);setConsent(value);};
+  const choose=(value:"granted"|"denied")=>setAnalyticsConsent(value);
   return <div className="fixed bottom-4 left-4 right-4 z-[120] mx-auto max-w-3xl rounded-3xl border border-[#DDE2FB] bg-white/95 p-5 shadow-[0_24px_70px_rgba(23,26,43,.20)] backdrop-blur-xl sm:bottom-6 sm:p-6">
     <div className="flex items-start gap-3">
       <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#EEF2FF] text-[#2F3AA2]"><ShieldCheck size={19}/></span>

@@ -7,7 +7,7 @@ import NewsletterPopup from "@/components/NewsletterPopup";
 import { currentLanguage } from "@/lib/i18n";
 import AnalyticsManager from "@/components/AnalyticsManager";
 import AnalyticsConsentBanner from "@/components/AnalyticsConsentBanner";
-import { localizedAlternates, localizedPath } from "@/lib/seo-locales";
+import { localizedPath } from "@/lib/seo-locales";
 
 export async function generateMetadata(): Promise<Metadata> {
   const language = await currentLanguage();
@@ -42,7 +42,6 @@ export async function generateMetadata(): Promise<Metadata> {
       description: sk ? "1:1 hodiny, súkromné skupiny a firemná výučba online." : "1:1 lessons, private groups and company training online.",
       images: ["/logo-removebg-preview.png"],
     },
-    alternates: localizedAlternates("/",language),
     robots: { index: true, follow: true },
     verification: {
       google: process.env.GOOGLE_SITE_VERIFICATION || "E8jeITeM86HOhcoQCXpdxzqra-O-Xy-2CsS3JH7QLFk",

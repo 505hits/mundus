@@ -1,9 +1,15 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Users, CalendarDays, MessageCircle, Sparkles } from "lucide-react";
 import { currentLanguage } from "@/lib/i18n";
 
+
+export async function generateMetadata(): Promise<Metadata> {
+ const sk=(await currentLanguage())==="sk";
+ return { title: sk ? "Skupinové jazykové kurzy online | Mundus Languages" : "Private group language lessons online | Mundus Languages", description: sk ? "Súkromné online jazykové hodiny pre 2–5 priateľov alebo kolegov. Flexibilné termíny, spoločný cieľ a cena na mieru." : "Private online language lessons for 2–5 friends or colleagues with flexible scheduling, a shared goal and custom pricing.", alternates:{canonical:"/group-lessons"}, openGraph:{title:sk?"Skupinové jazykové kurzy online | Mundus Languages":"Private group language lessons online | Mundus Languages",description:sk?"Súkromné online jazykové hodiny pre 2–5 priateľov alebo kolegov. Flexibilné termíny, spoločný cieľ a cena na mieru.":"Private online language lessons for 2–5 friends or colleagues with flexible scheduling, a shared goal and custom pricing.",url:"https://munduslanguages.com/group-lessons",type:"website",images:[{url:"/opengraph-image",width:1200,height:630}]}, twitter:{card:"summary_large_image",title:sk?"Skupinové jazykové kurzy online | Mundus Languages":"Private group language lessons online | Mundus Languages",description:sk?"Súkromné online jazykové hodiny pre 2–5 priateľov alebo kolegov. Flexibilné termíny, spoločný cieľ a cena na mieru.":"Private online language lessons for 2–5 friends or colleagues with flexible scheduling, a shared goal and custom pricing.",images:["/opengraph-image"]} };
+}
 export default async function GroupLessonsPage(){
  const language=await currentLanguage();const sk=language==="sk";
  return <main className="min-h-screen bg-[#FAFAF9]"><Navbar/><section className="px-6 pb-16 pt-32"><div className="mx-auto max-w-6xl"><p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">{sk?"Súkromné skupiny":"Private groups"}</p><h1 className="mt-4 max-w-4xl text-4xl font-semibold tracking-tight sm:text-6xl">{sk?"Učte sa spolu s priateľmi alebo kolegami":"Learn together with friends or colleagues"}</h1><p className="mt-6 max-w-3xl text-lg leading-8 text-gray-600">{sk?"Malé súkromné online skupiny pre ľudí, ktorí sa už poznajú. Ideálne pre 2–5 osôb s podobnou úrovňou a spoločným cieľom.":"Small private online groups for people who already know each other. Ideal for 2–5 people with a similar level and shared goal."}</p><Link href="/contact?type=group" className="mt-8 inline-flex rounded-xl bg-[#2F3AA2] px-6 py-4 font-semibold text-white">{sk?"Požiadať o cenu":"Request group pricing"}</Link></div></section>

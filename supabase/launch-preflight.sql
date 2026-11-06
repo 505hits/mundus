@@ -230,3 +230,22 @@ from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='publ
 and p.proname in ('mundus_reserve_payment_order','mundus_fulfill_payment_order','mundus_attach_checkout_session',
  'claim_schedule_emails','retry_schedule_email','claim_portal_emails','claim_contact_request_emails','mundus_german_assessments_ready','mundus_spanish_assessments_ready','mundus_italian_assessments_ready','mundus_french_assessments_ready','mundus_portuguese_assessments_ready','mundus_complete_lesson','student_lesson_reports','mundus_active_portal_account');
 commit;
+
+-- Paid package duration + pricing checks.
+do $lesson_duration_minutes$ declare
+  order_duration boolean:=false; package_duration boolean:=false;
+  pricing_function boolean:=false; discount_function boolean:=false;
+begin
+  order_duration := exists(
+    select 1 from information_schema.columns
+    where table_schema='public' and table_name='payment_orders' and column_name='duration_minutes'
+  );
+  package_duration := exists(
+    select 1 from information_schema.columns
+    where table_schema='public' and table_name='lesson_packages' and column_name='duration_minutes'
+  );
+  pricing_function := to_regprocedure('public.mundus_package_base_amount(integer,integer)') is not null;
+  discount_function := to_regprocedure('public.mundus_discounted_amount(integer)') is not null;
+  raise notice '45/60 minute package support order/package/base/discount: %/%/%/%',
+    order_duration,package_duration,pricing_function,discount_function;
+end $lesson_duration_minutes$;

@@ -7,11 +7,13 @@ import { redirect } from "next/navigation";
 import { currentLanguage } from "@/lib/i18n";
 import OnboardingForm from "@/app/onboarding/OnboardingForm";
 
-export default async function DashboardSetupPage({ searchParams }: { searchParams: Promise<{ payment?: string }> }) {
+export default async function DashboardSetupPage({ searchParams }: { searchParams: Promise<{ payment?: string; language?: string }> }) {
   const language=await currentLanguage();
   const sk=language==="sk";
   const { user }=await requireRole("student");
-  const paymentSuccess=(await searchParams).payment==="success";
+  const setupParams=await searchParams;
+  const paymentSuccess=setupParams.payment==="success";
+  const initialLanguage=setupParams.language ?? null;
   const supabase=await createSupabaseServerClient();
 
   const [{data:onboarding,error:onboardingError},{data:packages,error:packagesError}] = await Promise.all([
@@ -56,7 +58,7 @@ export default async function DashboardSetupPage({ searchParams }: { searchParam
       </section>
 
       <section className="rounded-3xl border border-[#E5E7F0] bg-white p-6 shadow-sm sm:p-8">
-        <OnboardingForm next="/dashboard?payment=success" />
+        <OnboardingForm next="/dashboard?payment=success" initialLanguage={initialLanguage} />
       </section>
     </div>
   </main>;

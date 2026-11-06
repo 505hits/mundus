@@ -5,16 +5,17 @@ import PurchasePackages from "@/components/PurchasePackages";
 import PurchaseJourney from "@/components/PurchaseJourney";
 import { paymentEnabled } from "@/lib/payments";
 import { currentLanguage } from "@/lib/i18n";
+import { localizedAlternates, localizedPath } from "@/lib/seo-locales";
 
 export const dynamic="force-dynamic";
 
 export async function generateMetadata():Promise<Metadata>{
- const sk=(await currentLanguage())==="sk";
+ const language=await currentLanguage(); const sk=language==="sk";
  return {
   title:sk?"Cenník online jazykových hodín | Mundus Languages":"Online language lesson pricing | Mundus Languages",
   description:sk?"Vyberte si jazyk, 45- alebo 60-minútové individuálne hodiny a balíček. Prvý oprávnený balíček má automaticky 10 % zľavu. Bez predplatného.":"Choose your language, 45- or 60-minute private lessons and package. The first eligible package is automatically 10% off. No subscription.",
-  alternates:{canonical:"/pricing"},
-  openGraph:{title:sk?"Cenník | Mundus Languages":"Pricing | Mundus Languages",description:sk?"Jazyk → balíček → bezpečná online platba.":"Language → package → secure online payment.",url:"https://munduslanguages.com/pricing",type:"website",images:[{url:"/logo-removebg-preview.png",width:1200,height:630}]}
+  alternates:localizedAlternates("/pricing",language),
+  openGraph:{title:sk?"Cenník | Mundus Languages":"Pricing | Mundus Languages",description:sk?"Jazyk → balíček → bezpečná online platba.":"Language → package → secure online payment.",url:`https://munduslanguages.com${localizedPath("/pricing",language)}`,type:"website",images:[{url:"/logo-removebg-preview.png",width:1200,height:630}]}
  };
 }
 

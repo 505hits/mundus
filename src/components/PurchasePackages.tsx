@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ArrowRight, Check, CreditCard, ShieldCheck, Sparkles } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
@@ -15,12 +15,9 @@ export default function PurchasePackages({ paymentsAvailable, signupAvailable }:
   const searchParams = useSearchParams();
   const queryLanguage = searchParams.get("language");
   const validQueryLanguage = queryLanguage && MUNDUS_LANGUAGE_VALUES.includes(queryLanguage as (typeof MUNDUS_LANGUAGE_VALUES)[number]) ? queryLanguage : "";
-  const [selectedLanguage, setSelectedLanguage] = useState(validQueryLanguage);
+  const [selectedLanguageOverride, setSelectedLanguageOverride] = useState<string | null>(null);
+  const selectedLanguage = selectedLanguageOverride ?? validQueryLanguage;
   const [durationMinutes, setDurationMinutes] = useState<PackageDuration>(60);
-
-  useEffect(() => {
-    setSelectedLanguage(validQueryLanguage);
-  }, [validQueryLanguage]);
 
   const money = (cents: number) => new Intl.NumberFormat(sk ? "sk-SK" : "en-IE", {
     style: "currency",
@@ -45,7 +42,7 @@ export default function PurchasePackages({ paymentsAvailable, signupAvailable }:
           </div>
           <label className="block text-sm font-semibold text-[#171A2B]">
             {sk ? "Jazyk výučby" : "Lesson language"}
-            <select value={selectedLanguage} onChange={event => { setSelectedLanguage(event.target.value); if(event.target.value) trackEvent("select_language",{language:event.target.value,placement:"pricing_selector"}); }} className="mt-2 w-full rounded-2xl border border-[#DDE2FB] bg-white px-4 py-3.5 text-base font-medium outline-none transition focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10">
+            <select value={selectedLanguage} onChange={event => { setSelectedLanguageOverride(event.target.value); if(event.target.value) trackEvent("select_language",{language:event.target.value,placement:"pricing_selector"}); }} className="mt-2 w-full rounded-2xl border border-[#DDE2FB] bg-white px-4 py-3.5 text-base font-medium outline-none transition focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10">
               <option value="">{sk ? "Vyberte jazyk" : "Choose a language"}</option>
               {MUNDUS_LANGUAGE_OPTIONS.map(item => <option key={item.value} value={item.value}>{sk ? item.label : item.value}</option>)}
             </select>

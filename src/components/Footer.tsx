@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
+import NewsletterSignup from "@/components/NewsletterSignup";
 
 export default function Footer() {
   const { language } = useLanguage();
@@ -68,6 +69,15 @@ export default function Footer() {
               </li>)}
             </ul>
           </nav>)}
+        </div>
+      </div>
+      <div className="mt-10 rounded-3xl border border-[#E5E7F0] bg-[#FAFAF9] p-5 sm:p-6">
+        <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+          <div>
+            <p className="text-lg font-semibold">{sk ? "Novinky a sezónne ponuky" : "Updates & seasonal offers"}</p>
+            <p className="mt-1 text-sm leading-6 text-gray-500">{sk ? "Občas vám pošleme nové termíny, jazykové novinky a špeciálne ponuky Mundus." : "Occasional updates about new openings, language news and special Mundus offers."}</p>
+          </div>
+          <NewsletterSignup source="footer" compact />
         </div>
       </div>
       <div className="footer-bottom">

@@ -3,6 +3,7 @@ import "@fontsource-variable/inter";
 import "./globals.css";
 import FloatingCTA from "@/components/FloatingCTA";
 import ClientProviders from "@/components/ClientProviders";
+import NewsletterPopup from "@/components/NewsletterPopup";
 import { currentLanguage } from "@/lib/i18n";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -51,6 +52,7 @@ export default async function RootLayout({
         <ClientProviders initialLanguage={language}>
           {children}
           <FloatingCTA />
+          <NewsletterPopup />
         </ClientProviders>
       </body>
     </html>

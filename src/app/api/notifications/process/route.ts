@@ -135,6 +135,33 @@ export async function GET(request:NextRequest) {
       if(retryError) throw retryError; failed++;
     }
   }
+  const {data:newsletterJobs,error:newsletterError}=await admin.rpc("claim_newsletter_emails",{batch_size:5});
+  const newsletterQueueUnavailable=!!newsletterError && /claim_newsletter_emails|could not find|does not exist/i.test(newsletterError.message||"");
+  if(newsletterError && !newsletterQueueUnavailable) throw newsletterError;
+  for(const job of newsletterJobs||[]){
+    try{
+      const {data:subscriber,error:subscriberError}=await admin.from("newsletter_subscribers").select("email,language,status,confirm_token,unsubscribe_token").eq("id",job.subscriber_id).single();
+      if(subscriberError||!subscriber||subscriber.email!==job.recipient_email||subscriber.status!=="pending"){
+        const {error:skipError}=await admin.from("newsletter_email_outbox").update({status:"skipped",lease_until:null}).eq("id",job.id).eq("lease_token",job.lease_token);
+        if(skipError) throw skipError;
+        continue;
+      }
+      const sk=subscriber.language!=="en";
+      const confirmUrl=origin+"/newsletter/confirm?token="+encodeURIComponent(subscriber.confirm_token);
+      const unsubscribeUrl=origin+"/newsletter/unsubscribe?token="+encodeURIComponent(subscriber.unsubscribe_token);
+      const subject=sk?"Potvrďte odber noviniek Mundus":"Confirm your Mundus subscription";
+      const textBody=sk
+        ? ["Dobrý deň,","","potvrďte prosím, že chcete dostávať občasné novinky, sezónne ponuky a informácie od Mundus Languages.","","Potvrdiť odber: "+confirmUrl,"","Ak ste sa neprihlásili vy, tento e-mail môžete ignorovať.","Odhlásiť sa: "+unsubscribeUrl,"","Mundus Languages"].join("\n")
+        : ["Hello,","","please confirm that you would like to receive occasional Mundus Languages updates, seasonal offers and news.","","Confirm subscription: "+confirmUrl,"","If you did not subscribe, you can ignore this email.","Unsubscribe: "+unsubscribeUrl,"","Mundus Languages"].join("\n");
+      const result=await transport.sendMail({from:process.env.MUNDUS_EMAIL_FROM,to:job.recipient_email,subject,text:textBody,messageId:"<mundus-newsletter-"+job.id+"@"+new URL(origin).hostname+">"});
+      if(!result.accepted.length) throw new Error("SMTP rejected");
+      const {error:finishError}=await admin.from("newsletter_email_outbox").update({status:"sent",sent_at:new Date().toISOString(),lease_until:null}).eq("id",job.id).eq("lease_token",job.lease_token);
+      if(finishError) throw finishError; sent++;
+    }catch{
+      const {error:retryError}=await admin.from("newsletter_email_outbox").update({status:job.attempts>=5?"failed":"pending",available_at:new Date(Date.now()+15*60*1000).toISOString(),lease_until:null}).eq("id",job.id).eq("lease_token",job.lease_token);
+      if(retryError) throw retryError; failed++;
+    }
+  }
   return NextResponse.json({sent,failed});
  }catch{return NextResponse.json({error:"Notification processing unavailable"},{status:503});}
 }

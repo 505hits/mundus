@@ -15,10 +15,10 @@ export default function Navbar() {
 
   const navLinks = [
     { name: t.nav.courses, href: "/#languages" },
-    { name: t.nav.howItWorks, href: "/#how-it-works" },
+    { name: language === "sk" ? "Skupinové hodiny" : "Group lessons", href: "/group-lessons" },
+    { name: language === "sk" ? "Pre firmy" : "For companies", href: "/companies" },
     { name: t.nav.teachers, href: "/#teachers" },
     { name: t.nav.prices, href: "/#pricing" },
-    { name: t.nav.contact, href: "/contact" },
   ];
 
   useEffect(() => {

@@ -46,6 +46,7 @@ Code is merged to main. The reviewed database activation is applied. The current
    - 202611050001_contact_requests.sql
    - 202611060001_student_frequency_preference.sql
    - 202611060002_matching_ready_notification.sql
+   - 202611060003_lesson_duration_packages.sql
    `202610050001_teacher_language_offer.sql` removes the retired Turkish preference value from existing teacher preference rows and expands the allowed teacher-language list to the current 13-language offer. These augment an existing base schema, not an empty database. Check profile creation trigger compatibility and discounted pending-order identity duplicates before applying. Run preflight again afterward.
 3. Run npm run launch:check in an environment with deployment variables, or npm run launch:check -- --env-file <local-env-file>. Never commit that file or paste secret values into chat. The command outputs only status, checks presence/shape, and does not validate credentials or prove launch readiness. Disabled optional features are reported as disabled, not missing. Public Supabase values must be supplied at build time and require a fresh deployment build.
 4. Use docs/account-onboarding.md for Auth redirects, confirmed email and signup/invite checks; docs/payments.md for Stripe test mode; docs/placement-tests.md for language/audio tests; docs/learning-and-notifications.md for private files/SMTP/scheduler. Enable each feature only after its preview checks. SMTP and scheduling remain off until configured; no production cron is created by this work.
@@ -141,3 +142,10 @@ The intended V1 customer journey is now:
 A paid student who has not completed onboarding is shown separately from a paid student whose matching data is ready. Completing onboarding after payment queues an idempotent admin “ready for matching” email in addition to the original payment notification.
 
 The public website must not use fabricated testimonials, student-count/rating claims or old group-course pricing. The testimonial section renders only entries deliberately added to the verified public testimonial source.
+
+
+## Lesson duration and first-package pricing
+
+Mundus supports 45- and 60-minute individual lesson packages. The 60-minute price list remains the approved base list. A 45-minute package is 75% of the equivalent 60-minute package price. The first eligible package receives an automatically calculated 10% discount, rounded to the nearest cent. A successful paid discounted package consumes the offer once per student/person; failed or expired checkout attempts do not consume it.
+
+The chosen duration is stored on the payment order and paid lesson package and is used automatically when admin schedules a lesson from that package.

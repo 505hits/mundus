@@ -26,8 +26,8 @@ export default async function Home() {
       <Navbar />
       <Hero />
       <TrustSection />
-      <LanguageSelector />
       <LearningFormatsSection />
+      <LanguageSelector />
       <HowItWorks />
       <TeacherSection teachers={teachers} />
 

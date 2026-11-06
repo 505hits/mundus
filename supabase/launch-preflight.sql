@@ -249,3 +249,15 @@ begin
   raise notice '45/60 minute package support order/package/base/discount: %/%/%/%',
     order_duration,package_duration,pricing_function,discount_function;
 end $lesson_duration_minutes$;
+
+do $discount_claim_ledger$ declare
+  claim_table boolean:=false;
+  claim_name_unique boolean:=false;
+  claim_email_unique boolean:=false;
+begin
+  claim_table := to_regclass('public.payment_discount_claims') is not null;
+  claim_name_unique := to_regclass('public.payment_discount_claim_name_unique') is not null;
+  claim_email_unique := to_regclass('public.payment_discount_claim_email_unique') is not null;
+  raise notice 'Permanent discount claim ledger table/name/email: %/%/%',
+    claim_table,claim_name_unique,claim_email_unique;
+end $discount_claim_ledger$;

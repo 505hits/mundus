@@ -93,7 +93,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
               </label>
               <label className="block">
                 <span className="text-sm font-medium text-gray-700">{sk ? "Veľkosť skupiny (iba pre skupiny)" : "Group size (groups only)"}</span>
-                <input name="group_size" type="number" min={2} max={20} defaultValue={initialType === "group" ? 2 : undefined} placeholder="2–5" className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10" />
+                <input name="group_size" type="number" min={2} max={5} defaultValue={initialType === "group" ? 2 : undefined} placeholder="2–5" className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10" />
               </label>
               <div className="hidden sm:block" aria-hidden="true" />
               <label className="block sm:col-span-2">

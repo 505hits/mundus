@@ -32,7 +32,7 @@ assert.ok(dashboardSetup.includes("Payment confirmed"));
 assert.ok(dashboardSetup.includes('OnboardingForm next="/dashboard?payment=success"'));
 assert.ok(legacyOnboarding.includes('redirect("/packages")'));
 assert.ok(legacyOnboarding.includes('redirect("/dashboard/setup")'));
-assert.ok(paymentReturn.includes('redirect("/dashboard/setup?payment=success")'));
+assert.ok(paymentReturn.includes("dashboard/setup?payment=success"),"paid students must continue to setup, optionally with preserved language context");
 assert.ok(paymentReturn.includes('redirect("/dashboard?payment=success")'));
 assert.ok(login.includes('profile.role === "student" && desired'), "login must preserve an explicit package/payment destination before onboarding");
 assert.match(login, /router\.replace\([\s\S]*profile\.role === "student" && desired[\s\S]*\? desired[\s\S]*: needsOnboarding/, "payment intent must take precedence over onboarding in the final redirect");

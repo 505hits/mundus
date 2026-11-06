@@ -28,7 +28,7 @@ export async function submitContactRequest(form: FormData) {
     language.length > 80 ||
     message.length > 2000 ||
     (packageLessons !== null && ![1, 5, 10, 20, 30].includes(packageLessons)) ||
-    (groupSize !== null && (!Number.isInteger(groupSize) || groupSize < 2 || groupSize > 20)) ||
+    (groupSize !== null && (!Number.isInteger(groupSize) || groupSize < 2 || groupSize > 5)) ||
     (requestType === "group" && groupSize === null)
   ) {
     redirect("/contact?problem=invalid");

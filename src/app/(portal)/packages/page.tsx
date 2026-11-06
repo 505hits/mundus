@@ -6,15 +6,18 @@ import { cancelPackageCheckout, resumePackageCheckout, startPackageCheckout } fr
 import { PACKAGE_LESSONS } from "@/lib/purchase-intent";
 import { currentLanguage, localeFor } from "@/lib/i18n";
 import { formatPackageStatus } from "@/lib/portalLabels";
+import { MUNDUS_LANGUAGE_OPTIONS, MUNDUS_LANGUAGE_VALUES } from "@/lib/language-offer";
 
-type PageProps = { searchParams: Promise<{ problem?: string; cancelled?: string; selected?: string; duration?: string }> };
+type PageProps = { searchParams: Promise<{ problem?: string; cancelled?: string; selected?: string; duration?: string; language?: string }> };
 export default async function PackagesPage({ searchParams }: PageProps) {
   const language = await currentLanguage();
   const sk = language === "sk";
-  const { problem, cancelled, selected, duration } = await searchParams;
+  const { problem, cancelled, selected, duration, language: selectedLanguageRaw } = await searchParams;
+  const selectedLanguage = selectedLanguageRaw && MUNDUS_LANGUAGE_VALUES.includes(selectedLanguageRaw as (typeof MUNDUS_LANGUAGE_VALUES)[number]) ? selectedLanguageRaw : null;
   const selectedLessons = PACKAGE_LESSONS.find(item => String(item) === selected);
   const selectedDuration = (PACKAGE_DURATIONS.find(item => String(item) === duration) ?? 60) as PackageDuration;
-  const { user } = await requireRole("student", selectedLessons ? `/packages?selected=${selectedLessons}&duration=${selectedDuration}` : undefined);
+  const selectedReturn = selectedLessons ? `/packages?selected=${selectedLessons}&duration=${selectedDuration}${selectedLanguage ? `&language=${encodeURIComponent(selectedLanguage)}` : ""}` : undefined;
+  const { user } = await requireRole("student", selectedReturn);
   const enabled = paymentEnabled();
   const supabase = await createSupabaseServerClient();
   const [{ data: packages, error: packageError }, { data: orders, error: orderError }, { data: discountSetting, error: discountError }, { data: paidOrders, error: paidError }, { data: pendingOrder, error: pendingError }] = await Promise.all([
@@ -43,6 +46,7 @@ export default async function PackagesPage({ searchParams }: PageProps) {
     {packageError ? <p role="alert" className="mt-3 text-red-700">{sk ? "Zostatok hodín sa nepodarilo načítať. Obnovte stránku alebo to skúste o chvíľu znova." : "Your lesson balance could not be loaded. Refresh the page or try again shortly."}</p> : <p className="mt-3 text-gray-600">{sk ? "Zostáva vám" : "You have"} <strong>{totalRemaining} {sk ? (totalRemaining === 1 ? "hodina" : "hodín") : (totalRemaining === 1 ? "lesson left" : "lessons left")}</strong>. {sk ? "Nový balíček si vyberiete nižšie." : "Choose a new package below."}</p>}
     {packages && packages.length > 0 && <section className="mt-6 rounded-2xl border border-gray-200 bg-white p-5"><h2 className="text-xl font-semibold">{sk ? "Vaše zakúpené balíčky" : "Your purchased packages"}</h2><ul className="mt-4 space-y-3">{packages.map(pkg => <li key={pkg.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-gray-50 p-4"><div><p className="font-semibold">{pkg.total_lessons} × {pkg.duration_minutes ?? 60} min · {formatPackageStatus(pkg.status, language)}</p><p className="mt-1 text-sm text-gray-600">{sk ? "Využité:" : "Used:"} {pkg.used_lessons ?? 0} · {sk ? "Zostáva:" : "Remaining:"} {pkg.remaining_lessons ?? 0}</p></div><a href={enabled ? "#available-packages" : "/contact"} className="text-sm font-semibold text-[#2F3AA2] underline">{sk ? "Kúpiť ďalší balíček" : "Buy another package"}</a></li>)}</ul></section>}
     <div className="mt-5 rounded-2xl border border-[#2F3AA2]/20 bg-[#f0f2ff] p-5"><p className="font-semibold text-[#2F3AA2]">{sk ? "Prvý balíček −10 %. Iba raz na študenta." : "10% off your first package. Once per student."}</p><p className="mt-2 text-sm text-gray-600">{sk ? "Kontrolujeme celé meno a overený e-mail. Ďalší účet ani zmena údajov neobnovuje nárok na zľavu. Ak sa vaše meno zhoduje s iným klientom, kontaktujte Mundus na overenie." : "We verify your full name and confirmed email. Creating another account or changing details does not restore discount eligibility. If your name matches another client, contact Mundus for verification."}</p></div>
+    {selectedLanguage && <div className="mt-5 rounded-2xl border border-[#DDE2FB] bg-[#F5F6FF] p-4 text-sm"><p className="font-semibold text-[#2F3AA2]">{sk ? "Vybraný jazyk" : "Selected language"}: {sk ? (MUNDUS_LANGUAGE_OPTIONS.find(item=>item.value===selectedLanguage)?.label ?? selectedLanguage) : selectedLanguage}</p><p className="mt-1 text-gray-600">{sk ? "Tento jazyk prenesieme aj do nastavenia štúdia po platbe." : "We’ll carry this language into your learning setup after payment."}</p></div>}
     {selectedLessons && enabled && <p role="status" className="mt-5 rounded-2xl bg-blue-50 p-4 text-sm text-blue-900">{sk ? "Vybrali ste si" : "You selected"} {selectedLessons} × {selectedDuration} min. {sk ? "Skontrolujte cenu podľa svojho účtu a pokračujte tlačidlom pri balíčku." : "Check the price for your account and continue with the button on the package."}</p>}
     {!enabled && <p className="mt-6 rounded-2xl bg-amber-50 p-4 text-sm text-amber-900">{sk ? "Online platby pripravujeme. Ak chcete pokračovať vo výučbe, kontaktujte Mundus Languages." : "Online payments are being prepared. To continue learning, contact Mundus Languages."}</p>}
     {unavailable && <p role="alert" className="mt-6 rounded-2xl bg-red-50 p-4 text-sm text-red-700">{sk ? "Stav účtu sa nepodarilo overiť. Skúste obnoviť stránku pred začatím platby." : "We could not verify your account status. Refresh the page before starting payment."}</p>}
@@ -54,7 +58,7 @@ export default async function PackagesPage({ searchParams }: PageProps) {
       {pendingOrder.stripe_session_id && <form action={cancelPackageCheckout} className="mt-3"><input type="hidden" name="ui_language" value={language}/><input type="hidden" name="order_id" value={pendingOrder.id} /><button className="font-semibold underline">{sk ? "Zrušiť otvorenú platbu" : "Cancel open payment"}</button></form>}
     </div>}
     <div className="mt-8 flex gap-2" aria-label={sk ? "Dĺžka hodiny" : "Lesson duration"}>
-      {PACKAGE_DURATIONS.map(item => <a key={item} href={`/packages?duration=${item}`} className={`rounded-xl px-4 py-2.5 text-sm font-semibold ${selectedDuration===item?"bg-[#2F3AA2] text-white":"border border-[#DDE2FB] bg-white text-[#2F3AA2]"}`}>{item} min</a>)}
+      {PACKAGE_DURATIONS.map(item => <a key={item} href={`/packages?duration=${item}${selectedLanguage ? `&language=${encodeURIComponent(selectedLanguage)}` : ""}`} className={`rounded-xl px-4 py-2.5 text-sm font-semibold ${selectedDuration===item?"bg-[#2F3AA2] text-white":"border border-[#DDE2FB] bg-white text-[#2F3AA2]"}`}>{item} min</a>)}
     </div>
     <section id="available-packages" className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-label={sk ? "Balíčky hodín" : "Lesson packages"}>
       {PACKAGE_PRICES.filter(item => item.durationMinutes === selectedDuration).map(({ lessons, amountCents, durationMinutes }) => {
@@ -69,7 +73,7 @@ export default async function PackagesPage({ searchParams }: PageProps) {
             {first ? (sk ? "uplatní sa automaticky" : "applied automatically") : (sk ? "na tomto účte už nie je dostupná" : "no longer available on this account")}
           </p>
           <p className="mt-3 text-sm text-gray-500">{sk ? `Individuálne online hodiny po ${durationMinutes} minút` : `Individual ${durationMinutes}-minute online lessons`}</p>
-          <form action={startPackageCheckout} className="mt-6"><input type="hidden" name="ui_language" value={language}/><input type="hidden" name="lessons" value={lessons} /><input type="hidden" name="duration_minutes" value={durationMinutes} /><input type="hidden" name="expected_amount" value={shown} />
+          <form action={startPackageCheckout} className="mt-6"><input type="hidden" name="ui_language" value={language}/>{selectedLanguage && <input type="hidden" name="learning_language" value={selectedLanguage} />}<input type="hidden" name="lessons" value={lessons} /><input type="hidden" name="duration_minutes" value={durationMinutes} /><input type="hidden" name="expected_amount" value={shown} />
             <button disabled={!enabled || unavailable || !!pendingOrder} className="w-full rounded-xl bg-[#2F3AA2] px-4 py-3 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50">{pendingOrder ? (sk ? "Čaká sa na platbu" : "Payment pending") : (sk ? "Kúpiť balíček" : "Buy package")}</button>
           </form>
         </article>;

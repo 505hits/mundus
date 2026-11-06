@@ -55,7 +55,7 @@ for(const [duration,lessons,base,discounted] of prices){
 
 // One paid discounted purchase consumes the offer across both durations.
 const buyer="99999999-9999-4999-8999-999999999999";
-await db.query("insert into profiles values ($1,'Once Student','once@example.com','student','active')",[buyer]);
+await db.query("insert into profiles values ($1,'Once Student','once.student+first@gmail.com','student','active')",[buyer]);
 const first=(await db.query("select * from mundus_reserve_payment_order($1,5,45)",[buyer])).rows[0];
 assert.equal(first.amount_cents,10350);
 await db.query("select mundus_attach_checkout_session($1,$2)",[first.id,"cs_45_once"]);
@@ -74,8 +74,9 @@ const evaderOrder=(await db.query("select * from mundus_reserve_payment_order($1
 assert.equal(evaderOrder.discount_percent,0,"same normalized name cannot claim a second discount");
 
 const alias="77777777-7777-4777-8777-777777777777";
-await db.query("insert into profiles values ($1,'Different Person','once+again@example.com','student','active')",[alias]);
-// Non-Gmail aliases are intentionally not guessed; account + normalized name/email protections remain exact.
+await db.query("insert into profiles values ($1,'Different Person','oncestudent+again@googlemail.com','student','active')",[alias]);
+const aliasOrder=(await db.query("select * from mundus_reserve_payment_order($1,5,60)",[alias])).rows[0];
+assert.equal(aliasOrder.discount_percent,0,"Gmail dots/tags/googlemail alias cannot claim a second discount after the permanent claim");
 
 const renewal=(await db.query("select * from mundus_reserve_payment_order($1,10,60)",[buyer])).rows[0];
 assert.equal(renewal.amount_cents,26000,"later 60-minute package must be full price");

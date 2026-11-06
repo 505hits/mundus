@@ -23,6 +23,7 @@ type PackageOption = {
   student_id: string;
   total_lessons: number | null;
   remaining_lessons: number | null;
+  duration_minutes: number | null;
 };
 
 type Props = {
@@ -50,7 +51,6 @@ export default function AdminCreateLessonForm({
   const [studentId, setStudentId] = useState(initialStudentId && students.some(item => item.id === initialStudentId) ? initialStudentId : students[0]?.id ?? "");
   const [teacherId, setTeacherId] = useState(initialTeacherId && teachers.some(item => item.id === initialTeacherId) ? initialTeacherId : teachers[0]?.id ?? "");
   const [dateTime, setDateTime] = useState("");
-  const [duration, setDuration] = useState("60");
   const [language, setLanguage] = useState("English");
   const [meetLink, setMeetLink] = useState("");
   const [packageId, setPackageId] = useState("");
@@ -74,6 +74,8 @@ export default function AdminCreateLessonForm({
     studentPackages.some((pkg) => pkg.id === packageId)
       ? packageId
       : studentPackages[0]?.id ?? "";
+  const effectivePackage = studentPackages.find(pkg => pkg.id === effectivePackageId);
+  const durationMinutes = effectivePackage?.duration_minutes ?? 60;
 
   async function createLesson() {
     if (busy.current) return;
@@ -109,17 +111,6 @@ export default function AdminCreateLessonForm({
       scheduledAt.getTime() <= Date.now()
     ) {
       setError(sk?"Termín hodiny musí byť v budúcnosti.":"The lesson time must be in the future.");
-      return;
-    }
-
-    const durationMinutes = Number(duration);
-
-    if (
-      !Number.isInteger(durationMinutes) ||
-      durationMinutes < 15 ||
-      durationMinutes > 180
-    ) {
-      setError(sk?"Dĺžka hodiny musí byť medzi 15 a 180 minútami.":"Lesson duration must be between 15 and 180 minutes.");
       return;
     }
 
@@ -264,17 +255,9 @@ export default function AdminCreateLessonForm({
 
         <label className="text-sm font-medium">
           {sk?"Dĺžka":"Duration"}
-          <select
-            disabled={saving}
-            value={duration}
-            onChange={(event) => { setDuration(event.target.value); setSaved(false); }}
-            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 font-normal outline-none focus:border-[#2F3AA2]"
-          >
-            <option value="30">30 {sk?"minút":"minutes"}</option>
-            <option value="45">45 {sk?"minút":"minutes"}</option>
-            <option value="60">60 {sk?"minút":"minutes"}</option>
-            <option value="90">90 {sk?"minút":"minutes"}</option>
-          </select>
+          <div className="mt-2 w-full rounded-xl border border-black/10 bg-gray-50 px-3 py-2.5 font-normal text-gray-700">
+            {durationMinutes} {sk?"minút":"minutes"}
+          </div>
         </label>
 
         <label className="text-sm font-medium">
@@ -290,7 +273,7 @@ export default function AdminCreateLessonForm({
             ) : (
               studentPackages.map((pkg) => (
                 <option key={pkg.id} value={pkg.id}>
-                  {pkg.total_lessons == null ? (sk?"Neznámy balíček":"Unknown package") : formatLessonCount(pkg.total_lessons,uiLanguage)} · {sk?"zostáva":"remaining"} {formatLessonCount(pkg.remaining_lessons ?? 0,uiLanguage)}
+                  {pkg.total_lessons == null ? (sk?"Neznámy balíček":"Unknown package") : formatLessonCount(pkg.total_lessons,uiLanguage)} × {pkg.duration_minutes ?? 60} min · {sk?"zostáva":"remaining"} {formatLessonCount(pkg.remaining_lessons ?? 0,uiLanguage)}
                 </option>
               ))
             )}

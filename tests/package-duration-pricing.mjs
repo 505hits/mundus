@@ -21,6 +21,7 @@ for(const migration of [
   "202609290002_payments.sql",
   "202610030001_first_package_identity.sql",
   "202611060003_lesson_duration_packages.sql",
+  "202611060004_discount_claim_ledger_and_45min_prices.sql",
 ]) {
   await db.exec(readFileSync(new URL("../supabase/migrations/"+migration,import.meta.url),"utf8"));
 }
@@ -28,11 +29,11 @@ for(const migration of [
 await db.exec("set request.jwt.claim.role='service_role'; set role service_role");
 
 const prices=[
-  [45,1,2100,1890],
-  [45,5,10125,9113],
-  [45,10,19500,17550],
-  [45,20,36750,33075],
-  [45,30,52875,47588],
+  [45,1,2400,2160],
+  [45,5,11500,10350],
+  [45,10,22000,19800],
+  [45,20,41500,37350],
+  [45,30,59500,53550],
   [60,1,2800,2520],
   [60,5,13500,12150],
   [60,10,26000,23400],
@@ -56,12 +57,25 @@ for(const [duration,lessons,base,discounted] of prices){
 const buyer="99999999-9999-4999-8999-999999999999";
 await db.query("insert into profiles values ($1,'Once Student','once@example.com','student','active')",[buyer]);
 const first=(await db.query("select * from mundus_reserve_payment_order($1,5,45)",[buyer])).rows[0];
-assert.equal(first.amount_cents,9113);
+assert.equal(first.amount_cents,10350);
 await db.query("select mundus_attach_checkout_session($1,$2)",[first.id,"cs_45_once"]);
-await db.query("select mundus_fulfill_payment_order($1,$2,$3,$4,$5)",[first.id,"cs_45_once","pi_45_once",9113,"eur"]);
+await db.query("select mundus_fulfill_payment_order($1,$2,$3,$4,$5)",[first.id,"cs_45_once","pi_45_once",10350,"eur"]);
 const pkg=(await db.query("select total_lessons,duration_minutes from lesson_packages where student_id=$1",[buyer])).rows[0];
 assert.equal(pkg.total_lessons,5);
 assert.equal(pkg.duration_minutes,45);
+
+const claim=(await db.query("select student_id,discount_name_key,discount_email_key from payment_discount_claims where student_id=$1",[buyer])).rows[0];
+assert.equal(claim.student_id,buyer,"successful discounted payment creates a permanent claim");
+await assert.rejects(db.query("delete from payment_orders where id=$1",[first.id]),/violates foreign key|constraint/i,"claim ledger prevents silent deletion of the source discounted order");
+
+const evader="88888888-8888-4888-8888-888888888888";
+await db.query("insert into profiles values ($1,'Once Student','different@example.com','student','active')",[evader]);
+const evaderOrder=(await db.query("select * from mundus_reserve_payment_order($1,5,60)",[evader])).rows[0];
+assert.equal(evaderOrder.discount_percent,0,"same normalized name cannot claim a second discount");
+
+const alias="77777777-7777-4777-8777-777777777777";
+await db.query("insert into profiles values ($1,'Different Person','once+again@example.com','student','active')",[alias]);
+// Non-Gmail aliases are intentionally not guessed; account + normalized name/email protections remain exact.
 
 const renewal=(await db.query("select * from mundus_reserve_payment_order($1,10,60)",[buyer])).rows[0];
 assert.equal(renewal.amount_cents,26000,"later 60-minute package must be full price");

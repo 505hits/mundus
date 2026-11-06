@@ -10,6 +10,8 @@ import {
   FileText,
   GraduationCap,
   Video,
+  WalletCards,
+  Target,
 } from "lucide-react";
 import type { StudentLessonReport } from "@/lib/student-report";
 import { requireRole } from "@/lib/auth";
@@ -254,6 +256,30 @@ export default async function DashboardPage({ searchParams }: { searchParams?: P
             {sk ? "Váš prehľad učenia v Mundus." : "Your learning overview in Mundus."}
           </p>
         </section>
+
+        {/* Quick navigation */}
+        <nav aria-label={sk ? "Rýchla navigácia" : "Quick navigation"} className="mt-7 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {[
+            { href: "/lessons", icon: CalendarDays, title: sk ? "Moje hodiny" : "My lessons", text: sk ? "Rozvrh a zmeny termínov" : "Schedule and changes" },
+            { href: "/learning", icon: BookOpen, title: sk ? "Učenie" : "Learning", text: sk ? "Úlohy, materiály a poznámky" : "Homework, materials and notes" },
+            { href: "/progress", icon: Target, title: sk ? "Pokrok" : "Progress", text: sk ? "Spätná väzba a ďalšie zameranie" : "Feedback and next focus" },
+            { href: "/packages", icon: WalletCards, title: sk ? "Balíčky" : "Packages", text: sk ? "Zostatok, ceny a platby" : "Balance, prices and payments" },
+          ].map((item) => {
+            const Icon = item.icon;
+            return (
+              <Link key={item.href} href={item.href} className="group flex items-center gap-3 rounded-2xl border border-black/5 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-[#C7CDF6] hover:shadow-[0_12px_30px_rgba(47,58,162,0.08)]">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EEF2FF] text-[#2F3AA2]">
+                  <Icon size={19} />
+                </span>
+                <span className="min-w-0">
+                  <span className="block font-semibold text-[#171A2B]">{item.title}</span>
+                  <span className="mt-0.5 block text-xs leading-5 text-gray-500">{item.text}</span>
+                </span>
+                <ChevronRight size={17} className="ml-auto shrink-0 text-gray-300 transition group-hover:translate-x-0.5 group-hover:text-[#2F3AA2]" />
+              </Link>
+            );
+          })}
+        </nav>
 
         {hasLoadError && (
           <div role="alert" aria-live="polite" className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">

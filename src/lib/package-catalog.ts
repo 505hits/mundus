@@ -12,11 +12,18 @@ const SIXTY_MINUTE_PRICES: Record<PackageLessons, number> = {
   30: 70500,
 };
 
+const FORTY_FIVE_MINUTE_PRICES: Record<PackageLessons, number> = {
+  1: 2400,
+  5: 11500,
+  10: 22000,
+  20: 41500,
+  30: 59500,
+};
+
 export function packageAmountCents(lessons: PackageLessons, durationMinutes: PackageDuration) {
-  const sixtyMinuteAmount = SIXTY_MINUTE_PRICES[lessons];
   return durationMinutes === 60
-    ? sixtyMinuteAmount
-    : Math.round(sixtyMinuteAmount * 0.75);
+    ? SIXTY_MINUTE_PRICES[lessons]
+    : FORTY_FIVE_MINUTE_PRICES[lessons];
 }
 
 export function firstPackageAmountCents(amountCents: number) {

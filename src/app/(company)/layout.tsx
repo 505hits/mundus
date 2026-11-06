@@ -1,5 +1,8 @@
+import type { Metadata } from "next";
 import CompanyNav from "@/components/CompanyNav";
 import { requireRole } from "@/lib/auth";
+
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default async function CompanyLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   await requireRole("company");

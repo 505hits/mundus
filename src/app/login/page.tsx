@@ -217,7 +217,7 @@ export default function LoginPage() {
           <p className="mt-6 text-center text-sm text-gray-600">
             {sk ? "Ešte nemáte účet? " : "Don’t have an account yet? "}<Link href={nextPath ? `/signup?next=${encodeURIComponent(nextPath)}` : "/signup"} className="font-semibold text-[#2F3AA2] underline">{sk ? "Vytvoriť študentský účet" : "Create student account"}</Link>
           </p>
-          <p className="mt-3 text-center text-xs text-gray-500">{sk ? "Lektorský účet získate cez e-mailovú pozvánku od Mundus." : "Teacher accounts are created through an email invitation from Mundus."}</p>
+          <p className="mt-3 text-center text-xs text-gray-500">{sk ? "Lektorské a firemné účty získate cez e-mailovú pozvánku od Mundus; prihlasujú sa na tejto stránke." : "Teacher and company accounts are created through an email invitation from Mundus and sign in on this page."}</p>
 
           <p className="mt-8 text-center text-sm text-gray-400">
             {sk ? "Potrebujete pomoc? " : "Need help? "}<Link href="/contact" className="font-medium text-[#2F3AA2] underline">{sk ? "Kontaktujte Mundus Languages." : "Contact Mundus Languages."}</Link>

@@ -16,3 +16,8 @@ export const MUNDUS_LANGUAGE_OPTIONS = [
 
 export const MUNDUS_LANGUAGE_VALUES = MUNDUS_LANGUAGE_OPTIONS.map((language) => language.value);
 export const MUNDUS_LANGUAGE_LABELS = MUNDUS_LANGUAGE_OPTIONS.map((language) => language.label);
+
+
+export const MUNDUS_STUDENT_LANGUAGE_BY_VALUE: Record<string,string> = Object.fromEntries(
+  MUNDUS_LANGUAGE_OPTIONS.map(item => [item.value,item.label]),
+);

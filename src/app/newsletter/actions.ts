@@ -1,4 +1,5 @@
 "use server";
+import { randomUUID } from "node:crypto";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { validEmail } from "@/lib/account-policy";
 import type { AccountFormState } from "@/lib/account-policy";
@@ -19,8 +20,8 @@ export async function subscribeNewsletter(_previous: NewsletterState, form: Form
 
   if(existing?.status==="active") return {success: language==="sk"?"Tento e-mail už odoberá novinky Mundus.":"This email is already subscribed to Mundus updates.",subscribed:true};
 
-  const confirmToken=crypto.randomUUID();
-  const unsubscribeToken=crypto.randomUUID();
+  const confirmToken=randomUUID();
+  const unsubscribeToken=randomUUID();
   let subscriberId=existing?.id;
 
   if(existing){

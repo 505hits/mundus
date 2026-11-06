@@ -11,7 +11,8 @@ const PUBLIC_PATHS=["/","/contact","/companies","/group-lessons"];
 export default function NewsletterPopup(){
   const pathname=usePathname();const {language}=useLanguage();const sk=language==="sk";
   const [open,setOpen]=useState(false);
-  const allowed=PUBLIC_PATHS.includes(pathname);
+  const normalizedPath=pathname.replace(/^\\/(sk|en)(?=\\/|$)/,"")||"/";
+  const allowed=PUBLIC_PATHS.includes(normalizedPath);
 
   const hideForDays=useCallback((days:number)=>{
     try{localStorage.setItem(STORAGE_KEY,String(Date.now()+days*24*60*60*1000));}catch{}

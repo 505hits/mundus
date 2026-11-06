@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Building2, CheckCircle2, Users, BarChart3, ShieldCheck } from "lucide-react";
@@ -5,6 +6,11 @@ import { currentLanguage } from "@/lib/i18n";
 import { submitCompanyQuote } from "./actions";
 
 type Props={searchParams:Promise<{sent?:string;problem?:string}>};
+
+export async function generateMetadata(): Promise<Metadata> {
+ const sk=(await currentLanguage())==="sk";
+ return { title: sk ? "Firemné jazykové kurzy online | Mundus Languages" : "Corporate language training online | Mundus Languages", description: sk ? "Firemné jazykové vzdelávanie online: individuálne aj skupinové hodiny, cena na mieru a firemný portál pre prehľad výučby." : "Online corporate language training with individual and group lessons, custom pricing and a company portal for learning oversight.", alternates:{canonical:"/companies"}, openGraph:{title:sk?"Firemné jazykové kurzy online | Mundus Languages":"Corporate language training online | Mundus Languages",description:sk?"Firemné jazykové vzdelávanie online: individuálne aj skupinové hodiny, cena na mieru a firemný portál pre prehľad výučby.":"Online corporate language training with individual and group lessons, custom pricing and a company portal for learning oversight.",url:"https://munduslanguages.com/companies",type:"website",images:[{url:"/opengraph-image",width:1200,height:630}]}, twitter:{card:"summary_large_image",title:sk?"Firemné jazykové kurzy online | Mundus Languages":"Corporate language training online | Mundus Languages",description:sk?"Firemné jazykové vzdelávanie online: individuálne aj skupinové hodiny, cena na mieru a firemný portál pre prehľad výučby.":"Online corporate language training with individual and group lessons, custom pricing and a company portal for learning oversight.",images:["/opengraph-image"]} };
+}
 export default async function CompaniesPage({searchParams}:Props){
  const language=await currentLanguage();const sk=language==="sk";const {sent,problem}=await searchParams;
  const benefits=sk?[

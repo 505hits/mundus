@@ -3,6 +3,8 @@ import { readFileSync } from "node:fs";
 
 const read=(p)=>readFileSync(new URL("../"+p,import.meta.url),"utf8");
 const migration=read("supabase/migrations/202611060005_company_portal_and_group_requests.sql");
+const notificationMigration=read("supabase/migrations/202611060007_company_quote_notifications.sql");
+const notificationWorker=read("src/app/api/notifications/process/route.ts");
 const dashboard=read("src/app/(company)/company/dashboard/page.tsx");
 const employees=read("src/app/(company)/company/employees/page.tsx");
 const companies=read("src/app/companies/page.tsx");
@@ -22,4 +24,6 @@ assert.ok(companies.includes("Request a quote") && companies.includes("Požiada�
 assert.ok(groups.includes("2–5") && groups.includes("/contact?type=group"));
 assert.ok(adminActions.includes('role:"company"') && adminActions.includes("company_employees"));
 assert.ok(auth.includes('"company"'));
+assert.ok(notificationMigration.includes("company_quote_email_outbox") && notificationMigration.includes("claim_company_quote_emails"));
+assert.ok(notificationWorker.includes("claim_company_quote_emails") && notificationWorker.includes("Mundus: nový firemný dopyt"));
 console.log("PASS: company portal privacy, quote requests and group lesson offer");

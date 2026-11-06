@@ -19,6 +19,7 @@ import {
   WalletCards,
   NotebookPen,
   Building2,
+  Mail,
 } from "lucide-react";
 
 const navItems = [
@@ -28,6 +29,7 @@ const navItems = [
   { sk: "Študenti", en: "Students", href: "/admin/students", icon: Users },
   { sk: "Lektori", en: "Teachers", href: "/admin/teachers", icon: GraduationCap },
   { sk: "Firmy", en: "Companies", href: "/admin/companies", icon: Building2 },
+  { sk: "Newsletter", en: "Newsletter", href: "/admin/newsletter", icon: Mail },
   { sk: "Hodiny", en: "Lessons", href: "/admin/lessons", icon: CalendarDays },
   { sk: "Výkon", en: "Performance", href: "/admin/teacher-ranking", icon: Trophy },
   { sk: "Retencia", en: "Retention", href: "/admin/retention", icon: HeartPulse },

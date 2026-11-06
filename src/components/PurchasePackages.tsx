@@ -12,6 +12,7 @@ import { trackEvent } from "@/components/AnalyticsManager";
 export default function PurchasePackages({ paymentsAvailable, signupAvailable }: { paymentsAvailable: boolean; signupAvailable: boolean }) {
   const { language, t } = useLanguage();
   const sk = language === "sk";
+  const prefix = `/${language}`;
   const searchParams = useSearchParams();
   const queryLanguage = searchParams.get("language");
   const validQueryLanguage = queryLanguage && MUNDUS_LANGUAGE_VALUES.includes(queryLanguage as (typeof MUNDUS_LANGUAGE_VALUES)[number]) ? queryLanguage : "";
@@ -159,12 +160,12 @@ export default function PurchasePackages({ paymentsAvailable, signupAvailable }:
                 <Link
                   href={
                     !selectedLanguage
-                      ? "/languages"
+                      ? `${prefix}/languages`
                       : paymentsAvailable
                         ? signupAvailable
                           ? `/signup?next=${encodeURIComponent(`/packages?selected=${lessons}&duration=${durationMinutes}&language=${encodeURIComponent(selectedLanguage)}`)}`
                           : `/login?next=${encodeURIComponent(`/packages?selected=${lessons}&duration=${durationMinutes}&language=${encodeURIComponent(selectedLanguage)}`)}`
-                        : "/contact"
+                        : `${prefix}/contact`
                   }
                   onClick={()=>trackEvent("select_package",{language:selectedLanguage,duration_minutes:durationMinutes,lessons,amount_eur:amountCents/100})}
                   className="flex items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-3 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#252E82]"
@@ -183,13 +184,13 @@ export default function PurchasePackages({ paymentsAvailable, signupAvailable }:
           <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[#2F3AA2]">{sk ? "Súkromná skupina" : "Private group"}</p>
           <h4 className="mt-2 text-2xl font-semibold">{sk ? "2–5 osôb" : "2–5 people"}</h4>
           <p className="mt-3 text-sm leading-6 text-gray-600">{sk ? "Chcete sa učiť s priateľmi alebo kolegami? Cena závisí od veľkosti skupiny, dĺžky hodiny, frekvencie a počtu lekcií." : "Want to learn with friends or colleagues? Pricing depends on group size, lesson length, frequency and number of lessons."}</p>
-          <Link href="/group-lessons" className="mt-5 inline-flex items-center gap-2 rounded-xl border border-[#2F3AA2]/20 px-4 py-3 text-sm font-semibold text-[#2F3AA2]">{sk ? "Požiadať o cenu" : "Request group pricing"}<ArrowRight size={16}/></Link>
+          <Link href={`${prefix}/group-lessons`} className="mt-5 inline-flex items-center gap-2 rounded-xl border border-[#2F3AA2]/20 px-4 py-3 text-sm font-semibold text-[#2F3AA2]">{sk ? "Požiadať o cenu" : "Request group pricing"}<ArrowRight size={16}/></Link>
         </div>
         <div className="rounded-3xl border border-[#DDE2FB] bg-[#F5F6FF] p-6">
           <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[#2F3AA2]">{sk ? "Pre firmy" : "For companies"}</p>
           <h4 className="mt-2 text-2xl font-semibold">{sk ? "Cena na mieru" : "Custom quote"}</h4>
           <p className="mt-3 text-sm leading-6 text-gray-600">{sk ? "Individuálna aj skupinová výučba pre zamestnancov a firemný portál so základným prehľadom využívania hodín." : "Individual and group employee training plus a company portal with a limited overview of lesson usage."}</p>
-          <Link href="/companies" className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[#2F3AA2] px-4 py-3 text-sm font-semibold text-white">{sk ? "Požiadať o firemnú ponuku" : "Request company quote"}<ArrowRight size={16}/></Link>
+          <Link href={`${prefix}/companies`} className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[#2F3AA2] px-4 py-3 text-sm font-semibold text-white">{sk ? "Požiadať o firemnú ponuku" : "Request company quote"}<ArrowRight size={16}/></Link>
         </div>
       </div>
 

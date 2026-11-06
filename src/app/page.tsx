@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import LanguageSelector from "@/components/LanguageSelector";
@@ -13,8 +14,15 @@ import Footer from "@/components/Footer";
 import MundusStructuredData from "@/components/MundusStructuredData";
 import { paymentEnabled } from "@/lib/payments";
 import { publicTeachers } from "@/lib/public-teachers";
+import { currentLanguage } from "@/lib/i18n";
+import { localizedAlternates } from "@/lib/seo-locales";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata():Promise<Metadata>{
+  const language=await currentLanguage();
+  return {alternates:localizedAlternates("/",language)};
+}
 
 export default async function Home() {
   const teachers = await publicTeachers();

@@ -7,12 +7,12 @@ export default function TrustSection() {
   const { language } = useLanguage();
   const sk = language === "sk";
   const items = sk ? [
-    ["1:1 výučba", "Každý balíček je určený na individuálne 60-minútové online hodiny."],
+    ["1:1 výučba", "Vyberiete si individuálne 45- alebo 60-minútové online hodiny."],
     ["Flexibilné termíny", "Preferované dni a časy zadáte po platbe a konkrétne hodiny sa dohodnú podľa dostupnosti."],
     ["Schválené priradenie", "Systém odporučí vhodných lektorov, ale finálne priradenie schvaľuje Mundus."],
     ["Bez automatického predplatného", "Ďalší balíček si kúpite len vtedy, keď chcete pokračovať."],
   ] : [
-    ["1:1 teaching", "Every package is for individual 60-minute online lessons."],
+    ["1:1 teaching", "Choose individual 45- or 60-minute online lessons."],
     ["Flexible scheduling", "Enter preferred days and times after payment; specific lessons are arranged around availability."],
     ["Approved matching", "The system recommends suitable teachers, but Mundus approves the final match."],
     ["No automatic subscription", "Buy another package only when you want to continue."],

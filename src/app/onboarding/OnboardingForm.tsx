@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { STUDENT_LANGUAGES, STUDENT_LEVELS } from "@/lib/account-policy";
 import { saveOnboarding } from "./actions";
@@ -11,6 +11,19 @@ export default function OnboardingForm({ next }: { next: string | null }) {
   const sk = language === "sk";
   const [state, action, pending] = useActionState(saveOnboarding, {});
   const [step, setStep] = useState(1);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const goNext = () => {
+    const currentSection = formRef.current?.querySelector<HTMLElement>(`[data-step="${step}"]`);
+    const requiredFields = currentSection?.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>("[required]");
+    for (const field of requiredFields ?? []) {
+      if (!field.checkValidity()) {
+        field.reportValidity();
+        return;
+      }
+    }
+    setStep(current => Math.min(4, current + 1));
+  };
 
   const dayLabels = sk
     ? [["1","Po"],["2","Ut"],["3","St"],["4","Št"],["5","Pi"],["6","So"],["7","Ne"]]
@@ -34,7 +47,7 @@ export default function OnboardingForm({ next }: { next: string | null }) {
   const input = "mt-2 w-full rounded-xl border border-gray-200 bg-white p-3 outline-none transition focus:border-[#2F3AA2] focus:ring-2 focus:ring-[#EEF2FF]";
 
   return (
-    <form action={action} className="space-y-6">
+    <form ref={formRef} action={action} className="space-y-6">
       <input type="hidden" name="ui_language" value={language}/>
       {next && <input type="hidden" name="next" value={next} />}
 
@@ -50,7 +63,7 @@ export default function OnboardingForm({ next }: { next: string | null }) {
         </div>
       </div>
 
-      <section className={step === 1 ? "space-y-5" : "hidden"} aria-hidden={step !== 1}>
+      <section data-step="1" className={step === 1 ? "space-y-5" : "hidden"} aria-hidden={step !== 1}>
         <div>
           <h2 className="text-xl font-semibold">{sk ? "Čo sa chcete učiť?" : "What would you like to learn?"}</h2>
           <p className="mt-1 text-sm text-gray-500">{sk ? "Stačí približná úroveň. Lektor ju môže neskôr upresniť." : "An approximate level is enough. Your teacher can refine it later."}</p>
@@ -70,7 +83,7 @@ export default function OnboardingForm({ next }: { next: string | null }) {
         </label>
       </section>
 
-      <section className={step === 2 ? "space-y-5" : "hidden"} aria-hidden={step !== 2}>
+      <section data-step="2" className={step === 2 ? "space-y-5" : "hidden"} aria-hidden={step !== 2}>
         <div>
           <h2 className="text-xl font-semibold">{sk ? "Ako často chcete hodiny?" : "How often would you like lessons?"}</h2>
           <p className="mt-1 text-sm text-gray-500">{sk ? "Frekvenciu môžete neskôr prispôsobiť podľa svojho rozvrhu." : "You can adjust the frequency later around your schedule."}</p>
@@ -83,7 +96,7 @@ export default function OnboardingForm({ next }: { next: string | null }) {
         </label>
       </section>
 
-      <section className={step === 3 ? "space-y-5" : "hidden"} aria-hidden={step !== 3}>
+      <section data-step="3" className={step === 3 ? "space-y-5" : "hidden"} aria-hidden={step !== 3}>
         <div>
           <h2 className="text-xl font-semibold">{sk ? "Kedy vám hodiny najviac vyhovujú?" : "When do lessons suit you best?"}</h2>
           <p className="mt-1 text-sm text-gray-500">{sk ? "Vyberte viac možností, aby sme ľahšie našli vhodného lektora." : "Choose several options to help us find a suitable teacher."}</p>
@@ -111,7 +124,7 @@ export default function OnboardingForm({ next }: { next: string | null }) {
         </div>
       </section>
 
-      <section className={step === 4 ? "space-y-5" : "hidden"} aria-hidden={step !== 4}>
+      <section data-step="4" className={step === 4 ? "space-y-5" : "hidden"} aria-hidden={step !== 4}>
         <div>
           <h2 className="text-xl font-semibold">{sk ? "Čo chcete dosiahnuť?" : "What would you like to achieve?"}</h2>
           <p className="mt-1 text-sm text-gray-500">{sk ? "Napíšte hlavný cieľ, aby sme podľa neho nastavili výučbu." : "Tell us your main goal so we can shape the lessons around it."}</p>
@@ -154,7 +167,7 @@ export default function OnboardingForm({ next }: { next: string | null }) {
         {step < 4 ? (
           <button
             type="button"
-            onClick={() => setStep(current => Math.min(4, current + 1))}
+            onClick={goNext}
             className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] p-3.5 font-semibold text-white"
           >
             {sk ? "Pokračovať" : "Continue"}

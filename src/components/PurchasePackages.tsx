@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ArrowRight, Check, CreditCard, ShieldCheck, Sparkles } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
@@ -19,6 +19,14 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
   const [selectedLanguageOverride, setSelectedLanguageOverride] = useState<string | null>(null);
   const selectedLanguage = selectedLanguageOverride ?? validQueryLanguage;
   const [durationMinutes, setDurationMinutes] = useState<PackageDuration>(60);
+  const languageSelectRef = useRef<HTMLSelectElement>(null);
+  const [showLanguagePrompt, setShowLanguagePrompt] = useState(false);
+
+  const focusLanguageSelect = () => {
+    setShowLanguagePrompt(true);
+    languageSelectRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    window.setTimeout(() => languageSelectRef.current?.focus(), 350);
+  };
 
   const money = (cents: number) => new Intl.NumberFormat(sk ? "sk-SK" : "en-IE", {
     style: "currency",
@@ -43,10 +51,11 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
           </div>
           <label className="block text-sm font-semibold text-[#171A2B]">
             {sk ? "Jazyk výučby" : "Lesson language"}
-            <select value={selectedLanguage} onChange={event => { setSelectedLanguageOverride(event.target.value); if(event.target.value) trackEvent("select_language",{language:event.target.value,placement:"pricing_selector"}); }} className="mt-2 w-full rounded-2xl border border-[#DDE2FB] bg-white px-4 py-3.5 text-base font-medium outline-none transition focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10">
+            <select ref={languageSelectRef} value={selectedLanguage} onChange={event => { setSelectedLanguageOverride(event.target.value); setShowLanguagePrompt(false); if(event.target.value) trackEvent("select_language",{language:event.target.value,placement:"pricing_selector"}); }} className={`mt-2 w-full rounded-2xl border bg-white px-4 py-3.5 text-base font-medium outline-none transition focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10 ${showLanguagePrompt ? "border-[#2F3AA2] ring-4 ring-[#2F3AA2]/10" : "border-[#DDE2FB]"}`}>
               <option value="">{sk ? "Vyberte jazyk" : "Choose a language"}</option>
               {MUNDUS_LANGUAGE_OPTIONS.map(item => <option key={item.value} value={item.value}>{sk ? item.label : item.value}</option>)}
             </select>
+            {showLanguagePrompt && <span className="mt-2 block text-sm font-semibold text-[#2F3AA2]">{sk ? "Najprv si vyberte jazyk a potom môžete pokračovať k platbe." : "Choose a language first, then continue to payment."}</span>}
           </label>
         </div>
       </div>
@@ -157,20 +166,27 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
               </div>
 
               <div className="mt-auto grid gap-2">
-                <Link
-                  href={
-                    !selectedLanguage
-                      ? `${prefix}/#languages`
-                      : paymentsAvailable
-                        ? `/signup?next=${encodeURIComponent(`/packages?selected=${lessons}&duration=${durationMinutes}&language=${encodeURIComponent(selectedLanguage)}`)}`
-                        : `${prefix}/contact`
-                  }
-                  onClick={()=>trackEvent("select_package",{language:selectedLanguage,duration_minutes:durationMinutes,lessons,amount_eur:amountCents/100})}
-                  className="flex items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-3 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#252E82]"
-                >
-                  {!selectedLanguage ? (sk ? "Najprv vybrať jazyk" : "Choose a language first") : paymentsAvailable ? (sk ? "Zaplatiť online" : "Pay online") : t.pricing.individual.contactLabel}
-                  <ArrowRight size={16} />
-                </Link>
+                {!selectedLanguage ? (
+                  <button
+                    type="button"
+                    onClick={focusLanguageSelect}
+                    className="flex items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-3 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#252E82]"
+                  >
+                    {sk ? "Vybrať jazyk a pokračovať" : "Choose language & continue"}
+                    <ArrowRight size={16} />
+                  </button>
+                ) : (
+                  <Link
+                    href={paymentsAvailable
+                      ? `/signup?next=${encodeURIComponent(`/packages?selected=${lessons}&duration=${durationMinutes}&language=${encodeURIComponent(selectedLanguage)}`)}`
+                      : `${prefix}/contact`}
+                    onClick={()=>trackEvent("select_package",{language:selectedLanguage,duration_minutes:durationMinutes,lessons,amount_eur:amountCents/100})}
+                    className="flex items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-3 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#252E82]"
+                  >
+                    {paymentsAvailable ? (sk ? "Pokračovať k platbe" : "Continue to payment") : t.pricing.individual.contactLabel}
+                    <ArrowRight size={16} />
+                  </Link>
+                )}
               </div>
             </article>
           );

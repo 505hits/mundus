@@ -20,6 +20,7 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
   const selectedLanguage = selectedLanguageOverride ?? validQueryLanguage;
   const [durationMinutes, setDurationMinutes] = useState<PackageDuration>(60);
   const languageSelectRef = useRef<HTMLSelectElement>(null);
+  const packageGridRef = useRef<HTMLDivElement>(null);
   const [showLanguagePrompt, setShowLanguagePrompt] = useState(false);
 
   const focusLanguageSelect = () => {
@@ -51,7 +52,7 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
           </div>
           <label className="block text-sm font-semibold text-[#171A2B]">
             {sk ? "Jazyk výučby" : "Lesson language"}
-            <select ref={languageSelectRef} value={selectedLanguage} onChange={event => { setSelectedLanguageOverride(event.target.value); setShowLanguagePrompt(false); if(event.target.value) trackEvent("select_language",{language:event.target.value,placement:"pricing_selector"}); }} className={`mt-2 w-full rounded-2xl border bg-white px-4 py-3.5 text-base font-medium outline-none transition focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10 ${showLanguagePrompt ? "border-[#2F3AA2] ring-4 ring-[#2F3AA2]/10" : "border-[#DDE2FB]"}`}>
+            <select ref={languageSelectRef} value={selectedLanguage} onChange={event => { const value=event.target.value; setSelectedLanguageOverride(value); setShowLanguagePrompt(false); if(value){ trackEvent("select_language",{language:value,placement:"pricing_selector"}); window.setTimeout(()=>packageGridRef.current?.scrollIntoView({behavior:"smooth",block:"start"}),120); } }} className={`mt-2 w-full rounded-2xl border bg-white px-4 py-3.5 text-base font-medium outline-none transition focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10 ${showLanguagePrompt ? "border-[#2F3AA2] ring-4 ring-[#2F3AA2]/10" : "border-[#DDE2FB]"}`}>
               <option value="">{sk ? "Vyberte jazyk" : "Choose a language"}</option>
               {MUNDUS_LANGUAGE_OPTIONS.map(item => <option key={item.value} value={item.value}>{sk ? item.label : item.value}</option>)}
             </select>
@@ -113,7 +114,7 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
         ))}
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+      <div ref={packageGridRef} className="scroll-mt-32 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         {packages.map(({ lessons, amountCents, durationMinutes }) => {
           const firstPackageCents = firstPackageAmountCents(amountCents);
           const perLesson = amountCents / lessons;
@@ -177,13 +178,11 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
                   </button>
                 ) : (
                   <Link
-                    href={paymentsAvailable
-                      ? `/signup?next=${encodeURIComponent(`/packages?selected=${lessons}&duration=${durationMinutes}&language=${encodeURIComponent(selectedLanguage)}`)}`
-                      : `${prefix}/contact`}
+                    href={`${prefix}/payment?selected=${lessons}&duration=${durationMinutes}&language=${encodeURIComponent(selectedLanguage)}`}
                     onClick={()=>trackEvent("select_package",{language:selectedLanguage,duration_minutes:durationMinutes,lessons,amount_eur:amountCents/100})}
                     className="flex items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-3 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#252E82]"
                   >
-                    {paymentsAvailable ? (sk ? "Pokračovať k platbe" : "Continue to payment") : t.pricing.individual.contactLabel}
+                    {sk ? "Pokračovať k platbe" : "Continue to payment"}
                     <ArrowRight size={16} />
                   </Link>
                 )}

@@ -5,7 +5,9 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export async function submitContactRequest(form: FormData) {\n  const uiLanguage = String(form.get("ui_language") ?? "sk") === "en" ? "en" : "sk";\n  const base = `/${uiLanguage}/contact`;
+export async function submitContactRequest(form: FormData) {
+  const uiLanguage = String(form.get("ui_language") ?? "sk") === "en" ? "en" : "sk";
+  const base = `/${uiLanguage}/contact`;
   const fullName = String(form.get("full_name") ?? "").trim().replace(/\s+/g, " ");
   const email = String(form.get("email") ?? "").trim().toLowerCase();
   const language = String(form.get("language") ?? "").trim().replace(/\s+/g, " ");

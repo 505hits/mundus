@@ -21,7 +21,7 @@ for(const slug of ["anglictina-pre-zaciatocnikov","business-english","konverzacn
   assert.ok(intents.includes('slug:"'+slug+'"'),"missing intent page "+slug);
 }
 assert.ok(intentPage.includes("localizedAlternates(path,language)"));
-assert.ok(intentPage.includes("/?language=") && intentPage.includes("#pricing"));
+assert.ok(intentPage.includes("/pricing?language="));
 assert.ok(languagePage.includes("related.length>0"));
 assert.ok(languagePage.includes("/learn/"));
 assert.ok(sitemap.includes('["sk","en"]'));

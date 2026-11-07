@@ -15,7 +15,9 @@ assert.ok(contact.includes('name="website"'), "public request form must retain i
 assert.ok(action.includes(">= 3"), "request action must rate-limit repeated email submissions");
 assert.ok(action.includes('from("contact_requests")'));
 assert.ok(pricing.includes("Pokračovať k platbe"));
-assert.ok(pricing.includes("Vybrať jazyk a pokračovať") && pricing.includes("Choose language & continue"));\nassert.ok(pricing.includes("`/signup?next=${encodeURIComponent(`"),"paid package CTA must carry purchase intent into student signup");\nassert.ok(pricing.includes("focusLanguageSelect"),"missing-language CTA must focus the language selector in the pricing flow");
+assert.ok(pricing.includes("Vybrať jazyk a pokračovať") && pricing.includes("Choose language & continue"));
+assert.ok(pricing.includes("`/signup?next=${encodeURIComponent(`"),"paid package CTA must carry purchase intent into student signup");
+assert.ok(pricing.includes("focusLanguageSelect"),"missing-language CTA must focus the language selector in the pricing flow");
 assert.equal(pricing.includes("I have a question"),false,"package cards should have one primary conversion action");
 assert.ok(worker.includes("claim_contact_request_emails"));
 assert.ok(worker.includes("Mundus: nová žiadosť z webu"));

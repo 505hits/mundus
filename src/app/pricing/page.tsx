@@ -24,7 +24,7 @@ export default async function PricingPage(){
  const paymentsAvailable=paymentEnabled();
  return <main className="min-h-screen bg-[#F7F8FC]"><Navbar/>
   <section className="px-6 pb-10 pt-32 sm:pt-36"><div className="mx-auto max-w-6xl"><p className="text-sm font-semibold uppercase tracking-[.16em] text-[#2F3AA2]">{sk?"Cenník a platba":"Pricing & payment"}</p><h1 className="mt-3 max-w-4xl text-4xl font-semibold tracking-[-.04em] text-[#171A2B] sm:text-6xl">{paymentsAvailable?(sk?"Vyberte jazyk. Vyberte balíček. Zaplaťte online.":"Choose a language. Choose a package. Pay online."):(sk?"Vyberte si jazyk a balíček.":"Choose your language and package.")}</h1><p className="mt-5 max-w-3xl text-lg leading-8 text-gray-600">{paymentsAvailable?(sk?"Žiadne telefonovanie ani objednávka cez správy nie sú potrebné. Pri individuálnych hodinách môžete celý nákup dokončiť online.":"No phone call or message is required. For individual lessons, you can complete the full purchase online."):(sk?"Online platbu práve pripravujeme. Ceny a balíčky si môžete vybrať tu; dokončenie objednávky vás presmeruje na kontakt, kým platobná brána nie je aktívna.":"Online checkout is currently being prepared. You can choose your package here; checkout will route you to contact while the payment gateway is unavailable.")}</p><div className="mt-8"><PurchaseJourney/></div></div></section>
-  <section className="px-6 pb-20 pt-8"><div className="mx-auto max-w-7xl"><PurchasePackages paymentsAvailable={paymentsAvailable} signupAvailable={process.env.MUNDUS_SELF_SIGNUP_ENABLED==="true"}/></div></section>
+  <section className="px-6 pb-20 pt-8"><div className="mx-auto max-w-7xl"><PurchasePackages paymentsAvailable={paymentsAvailable}/></div></section>
   <Footer/>
  </main>;
 }

@@ -17,7 +17,7 @@ assert.ok(confirm.includes('type === "invite" ? "/set-password"'));
 assert.ok(confirm.includes('purchaseReturnPath(request.nextUrl.searchParams.get("next"))'));
 
 const signup = read("src/app/signup/actions.ts");
-assert.ok(signup.includes('MUNDUS_SELF_SIGNUP_ENABLED !== "true"'));
+assert.equal(signup.includes('MUNDUS_SELF_SIGNUP_ENABLED'), false, "student checkout signup must not be blocked by a stale feature flag");
 assert.ok(signup.includes("emailRedirectTo:"));
 assert.ok(signup.includes("accountOrigin()"));
 assert.ok(signup.includes("if (data.session) await supabase.auth.signOut()"));

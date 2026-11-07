@@ -9,13 +9,7 @@ const fadeInUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
-export default function PricingSection({
-  paymentsAvailable = false,
-  signupAvailable = false,
-}: {
-  paymentsAvailable?: boolean;
-  signupAvailable?: boolean;
-}) {
+export default function PricingSection({ paymentsAvailable = false }: { paymentsAvailable?: boolean }) {
   const { t, language } = useLanguage();
   const sk = language === "sk";
 
@@ -54,7 +48,7 @@ export default function PricingSection({
           </p>
         </motion.div>
 
-        <PurchasePackages paymentsAvailable={paymentsAvailable} signupAvailable={signupAvailable} />
+        <PurchasePackages paymentsAvailable={paymentsAvailable} />
       </div>
     </section>
   );

@@ -23,7 +23,7 @@ assert.ok(pricing.includes("<PurchaseJourney"));
 assert.ok(languages.includes("Start by choosing your language."));
 assert.ok(purchase.includes('name') || purchase.includes("selectedLanguage"));
 assert.ok(purchase.includes("Choose a language first"));
-assert.ok(purchase.includes("Pay online"));
+assert.ok(purchase.includes("Pay online"));\nassert.ok(purchase.includes("`/signup?next=${encodeURIComponent(`"),"online payment CTA must preserve package intent through signup");
 assert.equal(purchase.includes("I have a question"),false);
 assert.ok(selector.includes("/?language=") && selector.includes("#pricing"),"language cards must lead directly to the homepage pricing section with language context");
 assert.ok(nav.includes("${prefix}/#pricing") && nav.includes("${prefix}/#languages"));

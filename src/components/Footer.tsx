@@ -13,7 +13,7 @@ export default function Footer() {
     {
       title: sk ? "Mundus" : "Mundus",
       links: [
-        { href: `${prefix}/#how-it-works`, label: sk ? "Ako to funguje" : "How it works" },
+        { href: `${prefix}/#learning-formats`, label: sk ? "Ako to funguje" : "How it works" },
         { href: `${prefix}/#teachers`, label: sk ? "Lektori" : "Teachers" },
         { href: `${prefix}/#pricing`, label: sk ? "Cenník a platba" : "Pricing & payment" },
         { href: `${prefix}/group-lessons`, label: sk ? "Skupinové hodiny" : "Group lessons" },

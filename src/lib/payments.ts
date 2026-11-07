@@ -8,8 +8,7 @@ export { PACKAGE_PRICES } from "@/lib/package-catalog";
 export function paymentEnabled() {
   try { accountOrigin(); } catch { return false; }
   const live = process.env.MUNDUS_PAYMENTS_LIVE_ENABLED === "true";
-  return process.env.MUNDUS_PAYMENTS_ENABLED === "true" &&
-    !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY &&
+  return !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY &&
     !!process.env.SUPABASE_SERVICE_ROLE_KEY &&
     !!process.env.STRIPE_WEBHOOK_SECRET &&
     !!process.env.STRIPE_RESTRICTED_KEY?.startsWith(live ? "rk_live_" : "rk_test_");

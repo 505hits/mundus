@@ -3,7 +3,8 @@ import { redirect } from "next/navigation";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { validEmail } from "@/lib/account-policy";
 
-export async function submitCompanyQuote(form:FormData){\n const uiLanguage=String(form.get("ui_language")||"sk")==="en"?"en":"sk"; const base=`/${uiLanguage}/companies`;
+export async function submitCompanyQuote(form:FormData){
+ const uiLanguage=String(form.get("ui_language")||"sk")==="en"?"en":"sk"; const base=`/${uiLanguage}/companies`;
  const companyName=String(form.get("company_name")||"").trim().replace(/\s+/g," ");
  const contactName=String(form.get("contact_name")||"").trim().replace(/\s+/g," ");
  const email=String(form.get("email")||"").trim().toLowerCase();

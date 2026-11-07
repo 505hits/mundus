@@ -28,10 +28,7 @@ export default async function Home() {
       <LearningFormatsSection />
       <LanguageSelector />
       <InstagramTeachersSection />
-      <PricingSection
-        paymentsAvailable={paymentEnabled()}
-        signupAvailable={process.env.MUNDUS_SELF_SIGNUP_ENABLED === "true"}
-      />
+      <PricingSection paymentsAvailable={paymentEnabled()} />
       <InstagramTestimonialsSection />
       <FAQSection />
       <Footer />

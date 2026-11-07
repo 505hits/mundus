@@ -24,7 +24,7 @@ assert.equal(purchase.includes("line-through"), false, "regular package prices m
 assert.ok(purchase.includes("packages do not renew automatically") || purchase.includes("Packages do not renew automatically"));
 assert.ok(purchase.includes("Bez predplatného"), "Slovak pricing must explain there is no subscription");
 assert.ok(purchase.includes("No subscription"), "English pricing must explain there is no subscription");
-assert.ok(purchase.includes('href="/companies"'), "business buyers must be routed to the dedicated company offer");
+assert.ok(purchase.includes('href={`${prefix}/companies`}'), "business buyers must be routed to the localized dedicated company offer");
 assert.ok(purchase.includes("lessons === 10"), "10-lesson package remains the neutral recommended package");
 assert.ok(purchase.includes("45 min") || purchase.includes("[45,60]"), "public pricing must expose 45-minute lessons");
 assert.ok(purchase.includes("60 min") || purchase.includes("[45,60]"), "public pricing must expose 60-minute lessons");

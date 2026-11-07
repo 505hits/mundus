@@ -15,6 +15,7 @@ export default function LoginPage() {
   const searchParams = useSearchParams();
   const { language } = useLanguage();
   const sk = language === "sk";
+  const prefix = `/${language}`;
   const errorRef = useRef<HTMLDivElement>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -93,7 +94,7 @@ export default function LoginPage() {
         <div className="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-[#2F3AA2]/50 blur-3xl" />
         <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-[#6575ff]/20 blur-3xl" />
 
-        <Link href="/" className="relative z-10">
+        <Link href={prefix} className="relative z-10">
           <Image
             src="/logo-removebg-preview.png"
             alt="Mundus Languages"
@@ -126,7 +127,7 @@ export default function LoginPage() {
       <section className="flex w-full items-center justify-center px-6 py-12 lg:w-1/2">
         <div className="w-full max-w-md rounded-3xl border border-gray-200 bg-white p-6 shadow-xl shadow-indigo-100/30 sm:p-9">
           <div className="mb-10 lg:hidden">
-            <Link href="/">
+            <Link href={prefix}>
               <Image
                 src="/logo-removebg-preview.png"
                 alt="Mundus Languages"
@@ -217,12 +218,12 @@ export default function LoginPage() {
           <p className="mt-3 text-center text-xs text-gray-500">{sk ? "Lektorské a firemné účty získate cez e-mailovú pozvánku od Mundus; prihlasujú sa na tejto stránke." : "Teacher and company accounts are created through an email invitation from Mundus and sign in on this page."}</p>
 
           <p className="mt-8 text-center text-sm text-gray-400">
-            {sk ? "Potrebujete pomoc? " : "Need help? "}<Link href="/contact" className="font-medium text-[#2F3AA2] underline">{sk ? "Kontaktujte Mundus Languages." : "Contact Mundus Languages."}</Link>
+            {sk ? "Potrebujete pomoc? " : "Need help? "}<Link href={`${prefix}/contact`} className="font-medium text-[#2F3AA2] underline">{sk ? "Kontaktujte Mundus Languages." : "Contact Mundus Languages."}</Link>
           </p>
 
           <div className="mt-6 text-center">
             <Link
-              href="/"
+              href={prefix}
               className="text-sm font-medium text-[#2F3AA2] hover:underline"
             >
               {sk ? "← Späť na Mundus Languages" : "← Back to Mundus Languages"}

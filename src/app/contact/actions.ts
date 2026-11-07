@@ -6,6 +6,8 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function submitContactRequest(form: FormData) {
+  const uiLanguage = String(form.get("ui_language") ?? "sk") === "en" ? "en" : "sk";
+  const base = `/${uiLanguage}/contact`;
   const fullName = String(form.get("full_name") ?? "").trim().replace(/\s+/g, " ");
   const email = String(form.get("email") ?? "").trim().toLowerCase();
   const language = String(form.get("language") ?? "").trim().replace(/\s+/g, " ");
@@ -17,7 +19,7 @@ export async function submitContactRequest(form: FormData) {
   const rawGroupSize = String(form.get("group_size") ?? "").trim();
   const groupSize = rawGroupSize ? Number(rawGroupSize) : null;
 
-  if (honeypot) redirect("/contact?sent=1");
+  if (honeypot) redirect(`${base}?sent=1`);
 
   if (
     fullName.length < 2 ||
@@ -31,7 +33,7 @@ export async function submitContactRequest(form: FormData) {
     (groupSize !== null && (!Number.isInteger(groupSize) || groupSize < 2 || groupSize > 5)) ||
     (requestType === "group" && groupSize === null)
   ) {
-    redirect("/contact?problem=invalid");
+    redirect(`${base}?problem=invalid`);
   }
 
   const admin = createSupabaseAdminClient();
@@ -42,8 +44,8 @@ export async function submitContactRequest(form: FormData) {
     .eq("email", email)
     .gte("created_at", cutoff);
 
-  if (countError) redirect("/contact?problem=unavailable");
-  if ((count ?? 0) >= 3) redirect("/contact?problem=rate");
+  if (countError) redirect(`${base}?problem=unavailable`);
+  if ((count ?? 0) >= 3) redirect(`${base}?problem=rate`);
 
   const { error } = await admin.from("contact_requests").insert({
     full_name: fullName,
@@ -55,6 +57,6 @@ export async function submitContactRequest(form: FormData) {
     message,
   });
 
-  if (error) redirect("/contact?problem=unavailable");
-  redirect("/contact?sent=1");
+  if (error) redirect(`${base}?problem=unavailable`);
+  redirect(`${base}?sent=1`);
 }

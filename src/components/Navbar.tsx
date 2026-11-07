@@ -128,7 +128,7 @@ export default function Navbar() {
 
             <div className="mt-auto">
               <Link
-                href={`${prefix}/#pricing`}
+                href={`${prefix}/#languages`}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="btn btn-primary w-full justify-center py-3.5 text-base"
               >

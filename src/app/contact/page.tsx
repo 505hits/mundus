@@ -61,7 +61,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
                 : (sk ? "Žiadosť sa teraz nepodarilo odoslať. Skúste to prosím neskôr." : "The request could not be sent right now. Please try again later.")}
             </div>}
 
-            <form action={submitContactRequest} className="mt-7 grid gap-5 sm:grid-cols-2">
+            <form action={submitContactRequest} className="mt-7 grid gap-5 sm:grid-cols-2"><input type="hidden" name="ui_language" value={language}/>
               <label className="block sm:col-span-2">
                 <span className="text-sm font-medium text-gray-700">{sk ? "Typ výučby" : "Lesson format"}</span>
                 <select name="request_type" defaultValue={initialType} className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 outline-none focus:border-[#2F3AA2]">

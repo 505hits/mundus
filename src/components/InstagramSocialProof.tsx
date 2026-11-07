@@ -22,6 +22,8 @@ const testimonialPosts = [
 
 function InstagramCard({ shortcode, title }: { shortcode: string; title: string }) {
   const consent = useAnalyticsConsent();
+  const { language } = useLanguage();
+  const sk = language === "sk";
   const postUrl = `https://www.instagram.com/p/${shortcode}/`;
 
   if (consent !== "granted") {
@@ -34,7 +36,7 @@ function InstagramCard({ shortcode, title }: { shortcode: string; title: string 
           <p className="mt-6 text-xs font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">Instagram</p>
           <h3 className="mt-2 text-xl font-semibold text-[#171A2B]">{title}</h3>
           <p className="mt-3 text-sm leading-6 text-gray-600">
-            Instagram content is loaded only after you accept cookies.
+            {sk ? "Obsah z Instagramu načítame až po prijatí cookies." : "Instagram content is loaded only after you accept cookies."}
           </p>
         </div>
         <div className="mt-8 grid gap-3">
@@ -43,7 +45,7 @@ function InstagramCard({ shortcode, title }: { shortcode: string; title: string 
             onClick={() => setAnalyticsConsent("granted")}
             className="rounded-xl bg-[#2F3AA2] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#252E82]"
           >
-            Show Instagram content
+            {sk ? "Zobraziť obsah z Instagramu" : "Show Instagram content"}
           </button>
           <a
             href={postUrl}
@@ -51,7 +53,7 @@ function InstagramCard({ shortcode, title }: { shortcode: string; title: string 
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#DDE2FB] bg-white px-4 py-3 text-sm font-semibold text-[#2F3AA2]"
           >
-            Open on Instagram <ExternalLink size={15} />
+            {sk ? "Otvoriť na Instagrame" : "Open on Instagram"} <ExternalLink size={15} />
           </a>
         </div>
       </article>
@@ -73,7 +75,7 @@ function InstagramCard({ shortcode, title }: { shortcode: string; title: string 
         rel="noopener noreferrer"
         className="flex items-center justify-center gap-2 border-t border-[#E5E7F0] px-4 py-3 text-sm font-semibold text-[#2F3AA2] transition hover:bg-[#F7F8FF]"
       >
-        Open on Instagram <ExternalLink size={15} />
+        {sk ? "Otvoriť na Instagrame" : "Open on Instagram"} <ExternalLink size={15} />
       </a>
     </article>
   );

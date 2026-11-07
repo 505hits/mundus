@@ -14,7 +14,8 @@ export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { language } = useLanguage();
-  const sk = language === "sk";\n  const prefix = `/${language}`;
+  const sk = language === "sk";
+  const prefix = `/${language}`;
   const errorRef = useRef<HTMLDivElement>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

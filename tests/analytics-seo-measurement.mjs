@@ -15,7 +15,7 @@ assert.ok(manager.includes("NEXT_PUBLIC_GA_MEASUREMENT_ID") && manager.includes(
 assert.ok(manager.includes('consent!=="granted"'),"analytics scripts must require consent");
 assert.ok(manager.includes("googletagmanager.com/gtag/js") && manager.includes("clarity.ms/tag"));
 assert.ok(manager.includes("initialPageViewHandled") && manager.includes("send_page_view: true"),"GA4 should let config own the initial page view and only emit route-change page views afterward");
-assert.ok(banner.includes("Necessary only") && banner.includes("Allow analytics"));
+assert.ok(banner.includes("Essential only") && banner.includes("Accept cookies"));
 assert.ok(settings.includes("Disable analytics"));
 assert.ok(cookies.includes("Google Analytics 4") && cookies.includes("Microsoft Clarity"));
 assert.ok(languages.includes('trackEvent("select_language"'));

@@ -3,14 +3,8 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import LanguageSelector from "@/components/LanguageSelector";
 import LearningFormatsSection from "@/components/LearningFormatsSection";
-import LearnerGoalsSection from "@/components/LearnerGoalsSection";
-import HowItWorks from "@/components/HowItWorks";
 import TeacherSection from "@/components/TeacherSection";
 import PricingSection from "@/components/PricingSection";
-import PortalPreviewSection from "@/components/PortalPreviewSection";
-import TrustSection from "@/components/TrustSection";
-import MatchGuaranteeSection from "@/components/MatchGuaranteeSection";
-import TestimonialsSection from "@/components/TestimonialsSection";
 import FAQSection from "@/components/FAQSection";
 import Footer from "@/components/Footer";
 import MundusStructuredData from "@/components/MundusStructuredData";
@@ -34,21 +28,13 @@ export default async function Home() {
       <MundusStructuredData />
       <Navbar />
       <Hero />
-      <TrustSection />
-      <LearnerGoalsSection />
       <LearningFormatsSection />
       <LanguageSelector />
-      <HowItWorks />
       <TeacherSection teachers={teachers} />
-      <MatchGuaranteeSection />
-
       <PricingSection
         paymentsAvailable={paymentEnabled()}
         signupAvailable={process.env.MUNDUS_SELF_SIGNUP_ENABLED === "true"}
       />
-
-      <PortalPreviewSection />
-      <TestimonialsSection />
       <FAQSection />
       <Footer />
     </main>

@@ -6,7 +6,7 @@ import { useLanguage } from "@/context/LanguageContext";
 export default function LearningFormatsSection(){
  const {language}=useLanguage();const sk=language==="sk";const prefix=`/${language}`;
  const cards=[
-  {icon:UserRound,eyebrow:sk?"Najobľúbenejšie":"Most popular",title:sk?"Individuálne 1:1":"Individual 1:1",text:sk?"Maximum pozornosti na váš cieľ. Vyberiete si 45 alebo 60 minút a balíček zaplatíte bezpečne online.":"Maximum focus on your goal. Choose 45 or 60 minutes and pay securely online.",href:`${prefix}/#buy-packages`,cta:sk?"Pozrieť cenník":"View pricing",featured:true},
+  {icon:UserRound,eyebrow:sk?"Najobľúbenejšie":"Most popular",title:sk?"Individuálne 1:1":"Individual 1:1",text:sk?"Maximum pozornosti na váš cieľ. Vyberiete si 45 alebo 60 minút a balíček zaplatíte bezpečne online.":"Maximum focus on your goal. Choose 45 or 60 minutes and pay securely online.",href:`${prefix}/#pricing`,cta:sk?"Pozrieť cenník":"View pricing",featured:true},
   {icon:Users,eyebrow:sk?"2–5 osôb":"2–5 people",title:sk?"Súkromné skupiny":"Private groups",text:sk?"Pre priateľov alebo kolegov s podobnou úrovňou. Spoločný cieľ, flexibilný termín a cena na mieru.":"For friends or colleagues at a similar level. Shared goal, flexible scheduling and custom pricing.",href:`${prefix}/group-lessons`,cta:sk?"Skupinové hodiny":"Group lessons"},
   {icon:Building2,eyebrow:"B2B",title:sk?"Pre firmy":"For companies",text:sk?"Individuálna aj skupinová výučba, cenová ponuka na mieru a firemný portál so základným prehľadom zamestnancov.":"Individual and group training, custom pricing and a company portal with essential employee oversight.",href:`${prefix}/companies`,cta:sk?"Firemná výučba":"Company training"},
  ];

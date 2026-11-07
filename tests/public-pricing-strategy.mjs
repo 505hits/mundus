@@ -29,7 +29,7 @@ assert.ok(purchase.includes("lessons === 10"), "10-lesson package remains the ne
 assert.ok(purchase.includes("45 min") || purchase.includes("[45,60]"), "public pricing must expose 45-minute lessons");
 assert.ok(purchase.includes("60 min") || purchase.includes("[45,60]"), "public pricing must expose 60-minute lessons");
 assert.ok(pricingSection.includes('bg-[#FAFAF9]'), "public pricing should use the same warm portal background");
-assert.ok(nav.includes("${prefix}/pricing"), "navigation should have one clear localized pricing destination");
+assert.ok(nav.includes("${prefix}/#pricing"), "navigation should have one clear localized pricing destination");
 assert.ok(nav.includes("${prefix}/companies"),"companies must have a distinct localized top-level navigation treatment");
 assert.equal(nav.includes("Kúpiť hodiny"), false, "navigation must not duplicate pricing with a second buy-lessons item");
 assert.ok(translations.includes("10% off"), "English copy must clearly explain the first-package discount");

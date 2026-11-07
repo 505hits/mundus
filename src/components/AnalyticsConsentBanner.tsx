@@ -25,7 +25,7 @@ export default function AnalyticsConsentBanner(){
 
         <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
           <button onClick={()=>choose("granted")} className="rounded-xl bg-[#2F3AA2] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#252E82]">
-            {sk?"Prijať analytické cookies":"Accept analytics"}
+            {sk?"Prijať cookies":"Accept cookies"}
           </button>
           <button onClick={()=>choose("denied")} className="rounded-xl border border-[#DDE2FB] bg-white px-4 py-3 text-sm font-semibold text-[#2F3AA2] transition hover:bg-[#F5F6FF]">
             {sk?"Len nevyhnutné cookies":"Essential only"}

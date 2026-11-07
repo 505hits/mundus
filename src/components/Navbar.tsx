@@ -17,7 +17,7 @@ export default function Navbar() {
   const navLinks = [
     { name: t.nav.courses, href: `${prefix}/languages` },
     { name: language === "sk" ? "Skupinové hodiny" : "Group lessons", href: `${prefix}/group-lessons` },
-    { name: t.nav.teachers, href: `${prefix}/#teachers` },
+    { name: t.nav.teachers, href: `${prefix}/teachers` },
     { name: t.nav.prices, href: `${prefix}/pricing` },
   ];
 

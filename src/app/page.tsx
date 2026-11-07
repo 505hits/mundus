@@ -3,13 +3,12 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import LanguageSelector from "@/components/LanguageSelector";
 import LearningFormatsSection from "@/components/LearningFormatsSection";
-import TeacherSection from "@/components/TeacherSection";
+import { InstagramTeachersSection, InstagramTestimonialsSection } from "@/components/InstagramSocialProof";
 import PricingSection from "@/components/PricingSection";
 import FAQSection from "@/components/FAQSection";
 import Footer from "@/components/Footer";
 import MundusStructuredData from "@/components/MundusStructuredData";
 import { paymentEnabled } from "@/lib/payments";
-import { publicTeachers } from "@/lib/public-teachers";
 import { currentLanguage } from "@/lib/i18n";
 import { localizedAlternates } from "@/lib/seo-locales";
 
@@ -21,8 +20,6 @@ export async function generateMetadata():Promise<Metadata>{
 }
 
 export default async function Home() {
-  const teachers = await publicTeachers();
-
   return (
     <main className="min-h-screen">
       <MundusStructuredData />
@@ -30,11 +27,12 @@ export default async function Home() {
       <Hero />
       <LearningFormatsSection />
       <LanguageSelector />
-      <TeacherSection teachers={teachers} />
+      <InstagramTeachersSection />
       <PricingSection
         paymentsAvailable={paymentEnabled()}
         signupAvailable={process.env.MUNDUS_SELF_SIGNUP_ENABLED === "true"}
       />
+      <InstagramTestimonialsSection />
       <FAQSection />
       <Footer />
     </main>

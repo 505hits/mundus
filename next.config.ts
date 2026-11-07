@@ -17,6 +17,36 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async rewrites() {
+    const localizedPublicRoots = [
+      "languages",
+      "pricing",
+      "prices",
+      "group-lessons",
+      "companies",
+      "contact",
+      "privacy",
+      "terms",
+      "cookies",
+      "learn",
+    ];
+
+    const beforeFiles = [
+      { source: "/sk", destination: "/" },
+      { source: "/en", destination: "/" },
+    ];
+
+    for (const locale of ["sk", "en"]) {
+      for (const root of localizedPublicRoots) {
+        beforeFiles.push(
+          { source: `/${locale}/${root}`, destination: `/${root}` },
+          { source: `/${locale}/${root}/:path*`, destination: `/${root}/:path*` },
+        );
+      }
+    }
+
+    return { beforeFiles };
+  },
   images: {
     remotePatterns: [
       {

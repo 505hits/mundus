@@ -31,10 +31,10 @@ export default function Hero(){
     </motion.p>
 
     <motion.div variants={fadeInUp} className="mt-8 flex flex-col gap-3 sm:flex-row">
-      <Link href="#languages" className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-[#5361D4] px-6 py-4 font-semibold text-white shadow-[0_16px_42px_rgba(70,82,194,.35)] transition hover:-translate-y-0.5 hover:bg-[#6572DF]">
+      <Link href={`/${language}/languages`} className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-[#5361D4] px-6 py-4 font-semibold text-white shadow-[0_16px_42px_rgba(70,82,194,.35)] transition hover:-translate-y-0.5 hover:bg-[#6572DF]">
         {sk?"Vybrať jazyk":"Choose a language"}<ArrowRight size={18}/>
       </Link>
-      <Link href="#pricing" className="inline-flex min-h-14 items-center justify-center rounded-2xl border border-white/20 bg-white/[0.06] px-6 py-4 font-semibold text-white backdrop-blur transition hover:bg-white/[0.1]">
+      <Link href={`/${language}/pricing`} className="inline-flex min-h-14 items-center justify-center rounded-2xl border border-white/20 bg-white/[0.06] px-6 py-4 font-semibold text-white backdrop-blur transition hover:bg-white/[0.1]">
         {sk?"Pozrieť ceny":"See pricing"}
       </Link>
     </motion.div>

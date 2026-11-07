@@ -29,6 +29,8 @@ const nextConfig: NextConfig = {
       "terms",
       "cookies",
       "learn",
+      "payment",
+      "teachers",
     ];
 
     const beforeFiles = [

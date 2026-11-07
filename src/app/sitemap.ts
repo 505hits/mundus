@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ["/pricing",0.95,"weekly"],
     ["/group-lessons",0.85,"monthly"],
     ["/companies",0.9,"monthly"],
+    ["/teachers",0.85,"monthly"],
     ["/contact",0.7,"monthly"],
     ["/privacy",0.2,"yearly"],
     ["/terms",0.2,"yearly"],

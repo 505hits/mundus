@@ -21,9 +21,11 @@ const login=read("src/app/login/page.tsx");
 const contact=read("src/app/contact/page.tsx");
 const notificationWorker=read("src/app/api/notifications/process/route.ts");
 
-for(const component of ["PortalPreviewSection","TrustSection","FAQSection"]) {
+for(const component of ["LearningFormatsSection","LanguageSelector","TeacherSection","PricingSection","FAQSection"]) {
   assert.ok(home.includes(component), `homepage must include ${component}`);
 }
+assert.equal(home.includes("PortalPreviewSection"), false, "homepage should not repeat a long portal explainer");
+assert.equal(home.includes("TrustSection"), false, "homepage should not repeat a separate trust block before the core offer");
 assert.ok(onboarding.includes('name="lessons_per_week"'));
 assert.ok(onboardingAction.includes("lessons_per_week: lessonsPerWeek"));
 assert.ok(onboardingAction.includes("lessonsPerWeek < 1 || lessonsPerWeek > 5"));
@@ -59,7 +61,7 @@ assert.ok(footer.includes('href: "/dashboard"'));
 
 assert.equal(hero.includes("images.unsplash.com/photo-1507003211169"), false, "hero must not use stock faces as student proof");
 assert.equal(hero.includes("Gemini_Generated_Image"), false, "hero must not use generated learner imagery");
-assert.ok(hero.includes("Payment comes first") || hero.includes("Najprv platba"));
+assert.ok(hero.includes("Vyberiete balíček, zaplatíte") || hero.includes("Choose a package, pay"), "hero must keep the pay-first journey clear without excess copy");
 assert.equal(translations.includes("200+ students"), false);
 assert.equal(translations.includes("200+ študentov"), false);
 assert.equal(translations.includes("4.9/5"), false);

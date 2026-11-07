@@ -46,7 +46,7 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
 
   return (
     <div id="buy-packages" className="mb-8 scroll-mt-32">
-      <div className="mb-8 rounded-[1.75rem] border border-[#C7CDF6] bg-gradient-to-br from-white to-[#F2F4FF] p-5 shadow-[0_18px_44px_rgba(47,58,162,0.08)] sm:p-6">
+      <div className="mb-6 rounded-[1.5rem] border sm:mb-8 sm:rounded-[1.75rem] border-[#C7CDF6] bg-gradient-to-br from-white to-[#F2F4FF] p-5 shadow-[0_18px_44px_rgba(47,58,162,0.08)] sm:p-6">
         <div className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#2F3AA2]">{sk ? "Krok 1 z 2" : "Step 1 of 2"}</p>
@@ -63,7 +63,7 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
           </label>
         </div>
       </div>
-      <div className="mb-8 grid gap-5 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
+      <div className="mb-6 grid gap-4 sm:mb-8 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
         <div>
           <p className="mb-2 text-sm font-semibold uppercase tracking-[0.18em] text-[#2F3AA2]">
             {sk ? "Krok 2 z 2 · Individuálne online hodiny" : "Step 2 of 2 · Individual online lessons"}
@@ -108,7 +108,7 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
         </div>
       </div>
 
-      <div className="mb-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mb-6 hidden gap-3 sm:grid sm:grid-cols-2 lg:mb-8 lg:grid-cols-4">
         {benefits.map((benefit) => (
           <div key={benefit} className="flex items-center gap-2 rounded-2xl border border-[#E7E9F2] bg-white px-4 py-3 text-sm font-medium text-gray-700">
             <Check size={16} className="shrink-0 text-[#2F3AA2]" />
@@ -117,7 +117,7 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
         ))}
       </div>
 
-      <div ref={packageGridRef} className="scroll-mt-32 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+      <div ref={packageGridRef} className="scroll-mt-24 grid gap-3 sm:scroll-mt-32 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 xl:grid-cols-5">
         {packages.map(({ lessons, amountCents, durationMinutes }) => {
           const firstPackageCents = firstPackageAmountCents(amountCents);
           const perLesson = amountCents / lessons;
@@ -127,31 +127,31 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
           return (
             <article
               key={`${durationMinutes}-${lessons}`}
-              className={`relative flex min-h-[375px] flex-col rounded-3xl border p-5 transition duration-200 hover:-translate-y-1 hover:shadow-[0_18px_42px_rgba(47,58,162,0.10)] sm:p-6 ${
+              className={`relative flex min-h-0 flex-col rounded-[1.35rem] border p-4 sm:min-h-[375px] sm:rounded-3xl sm:p-5 transition duration-200 hover:-translate-y-1 hover:shadow-[0_18px_42px_rgba(47,58,162,0.10)] sm:p-6 ${
                 isSelected
                   ? "border-[#2F3AA2] ring-2 ring-[#2F3AA2]/20 bg-[#F7F7FF] shadow-[0_16px_38px_rgba(47,58,162,0.10)]"
                   : "border-[#E5E7F0] bg-white shadow-[0_10px_28px_rgba(23,26,43,0.035)]"
               }`}
             >
               {isRecommended ? (
-                <span className="mb-4 self-start rounded-full bg-[#2F3AA2] px-3 py-1 text-xs font-semibold text-white">
+                <span className="mb-2 self-start rounded-full bg-[#2F3AA2] sm:mb-4 px-3 py-1 text-xs font-semibold text-white">
                   {sk ? "Odporúčame" : "Recommended"}
                 </span>
               ) : (
-                <div className="mb-4 h-6" aria-hidden="true" />
+                <div className="mb-1 h-3 sm:mb-4 sm:h-6" aria-hidden="true" />
               )}
 
               <h4 className="text-xl font-semibold text-[#171A2B]">{lessons} × {durationMinutes} min</h4>
 
-              <p className="mt-5 text-xs font-semibold uppercase tracking-[0.14em] text-gray-400">
+              <p className="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-gray-400 sm:mt-5">
                 {sk ? "Bežná cena" : "Regular price"}
               </p>
-              <p className="mt-1 text-3xl font-semibold tracking-tight text-[#171A2B]">{money(amountCents)}</p>
+              <p className="mt-1 text-[1.75rem] font-semibold tracking-tight text-[#171A2B] sm:text-3xl">{money(amountCents)}</p>
               <p className="mt-1 text-sm text-gray-500">
                 {money(perLesson)} {sk ? "/ hodina" : "/ lesson"}
               </p>
 
-              <div className="mt-5 rounded-2xl border border-[#DDE2FB] bg-white/80 p-4">
+              <div className="mt-3 rounded-xl border border-[#DDE2FB] bg-white/80 p-3 sm:mt-5 sm:rounded-2xl sm:p-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#2F3AA2]">
                   {sk ? "Prvý balíček −10 %" : "First package −10%"}
                 </p>
@@ -161,7 +161,7 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
                 </p>
               </div>
 
-              <div className="my-5 flex items-start gap-2 text-sm leading-6 text-gray-600">
+              <div className="my-3 flex items-start gap-2 text-xs leading-5 text-gray-600 sm:my-5 sm:text-sm sm:leading-6">
                 <ShieldCheck size={17} className="mt-0.5 shrink-0 text-[#2F3AA2]" />
                 <span>
                   {sk
@@ -179,12 +179,12 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
         })}
       </div>
 
-      <div className="sticky bottom-3 z-30 mt-7 rounded-3xl border border-[#C7CDF6] bg-white/95 p-4 shadow-[0_15px_45px_rgba(23,26,43,.15)] backdrop-blur-xl sm:p-5 lg:bottom-5">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="sticky bottom-[max(.5rem,env(safe-area-inset-bottom))] z-30 mt-5 rounded-2xl border border-[#C7CDF6] bg-white/95 p-3 sm:bottom-3 sm:mt-7 sm:rounded-3xl sm:p-4 shadow-[0_15px_45px_rgba(23,26,43,.15)] backdrop-blur-xl sm:p-5 lg:bottom-5">
+        <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wider text-[#2F3AA2]">{sk ? "Váš výber" : "Your selection"}</p>
-            <p className="mt-1 font-semibold">{selectedLanguage || (sk ? "Vyberte jazyk" : "Choose a language")} · {activePackage.lessons} × {durationMinutes} min</p>
-            <p className="mt-1 text-sm text-gray-600"><strong className="text-[#2F3AA2]">{money(firstPackageAmountCents(activePackage.amountCents))}</strong> <span className="line-through">{money(activePackage.amountCents)}</span> · {sk ? "prvý oprávnený balíček" : "eligible first package"}</p>
+            <p className="mt-1 text-sm font-semibold sm:text-base">{selectedLanguage || (sk ? "Vyberte jazyk" : "Choose a language")} · {activePackage.lessons} × {durationMinutes} min</p>
+            <p className="mt-1 text-xs text-gray-600 sm:text-sm"><strong className="text-[#2F3AA2]">{money(firstPackageAmountCents(activePackage.amountCents))}</strong> <span className="line-through">{money(activePackage.amountCents)}</span> · {sk ? "prvý oprávnený balíček" : "eligible first package"}</p>
           </div>
           {activeHref ? <Link href={activeHref} className="flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-6 py-3 font-semibold text-white hover:bg-[#252E82]"><LockKeyhole size={17}/>{sk ? "Pokračovať k platbe" : "Continue to payment"}<ArrowRight size={17}/></Link>
             : <button type="button" onClick={focusLanguageSelect} className="flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-6 py-3 font-semibold text-white">{sk ? "Vybrať jazyk" : "Choose language"}<ArrowRight size={17}/></button>}

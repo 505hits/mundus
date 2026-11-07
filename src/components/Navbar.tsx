@@ -67,7 +67,7 @@ export default function Navbar() {
               {language === "sk" ? "Prihlásenie" : "Sign in"}
             </Link>
 
-            <Link href={`${prefix}/#pricing`} className="btn btn-primary !px-5 !py-2.5 !text-sm whitespace-nowrap">
+            <Link href={`${prefix}/#languages`} className="btn btn-primary !px-5 !py-2.5 !text-sm whitespace-nowrap">
               {t.nav.book}
             </Link>
           </div>

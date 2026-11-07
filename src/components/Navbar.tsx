@@ -42,8 +42,8 @@ export default function Navbar() {
         transition={{ duration: 0.4, ease: "easeOut" }}
         className={`navbar border-b border-black/5 bg-white/90 backdrop-blur-xl ${isScrolled ? "shadow-sm" : ""}`}
       >
-        <div className="navbar-inner flex w-full items-center justify-between px-5 sm:px-6">
-          <Link href={prefix} className="nav-logo relative h-12 w-36 shrink-0 sm:w-40" aria-label="Mundus Languages">
+        <div className="navbar-inner flex w-full items-center justify-between !px-4 sm:!px-6">
+          <Link href={prefix} className="nav-logo relative h-10 w-32 shrink-0 sm:h-12 sm:w-40" aria-label="Mundus Languages">
             <Image src="/logo-removebg-preview.png" alt="Mundus Languages" fill className="object-contain object-left" priority />
           </Link>
 
@@ -91,13 +91,13 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: "-8%" }}
             transition={{ duration: 0.22 }}
-            className="fixed inset-0 z-40 flex flex-col overflow-y-auto overscroll-contain bg-white px-6 pb-[max(2rem,env(safe-area-inset-bottom))] pt-24 xl:hidden"
+            className="fixed inset-0 z-40 flex min-h-0 flex-col overflow-y-auto overscroll-contain bg-white px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-20 xl:hidden"
           >
             <div className="flex flex-col">
               <Link
                 href="/login"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center justify-between border-b border-gray-100 py-4 text-xl font-semibold text-[#171A2B]"
+                className="flex min-h-12 items-center justify-between border-b border-gray-100 py-3 text-lg font-semibold text-[#171A2B]"
               >
                 {language === "sk" ? "Prihlásenie" : "Sign in"}
                 <ArrowRight size={19} className="text-gray-400" />
@@ -108,19 +108,19 @@ export default function Navbar() {
                   key={link.name}
                   href={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center justify-between border-b border-gray-100 py-4 text-xl font-medium text-[#171A2B]"
+                  className="flex min-h-12 items-center justify-between border-b border-gray-100 py-3 text-lg font-medium text-[#171A2B]"
                 >
                   {link.name}
                   <ArrowRight size={19} className="text-gray-400" />
                 </Link>
               ))}
 
-              <Link href={`${prefix}/companies`} onClick={() => setIsMobileMenuOpen(false)} className="mt-5 flex items-center justify-between rounded-2xl border border-[#DDE2FB] bg-[#F5F6FF] p-4 text-lg font-semibold text-[#2F3AA2]">
+              <Link href={`${prefix}/companies`} onClick={() => setIsMobileMenuOpen(false)} className="mt-3 flex items-center justify-between rounded-2xl border border-[#DDE2FB] bg-[#F5F6FF] p-4 text-lg font-semibold text-[#2F3AA2]">
                 {language === "sk" ? "Pre firmy" : "For companies"}
                 <ArrowRight size={19} />
               </Link>
 
-              <div className="mt-5 flex items-center justify-between rounded-2xl bg-[#F6F7FB] p-3">
+              <div className="mt-3 flex items-center justify-between rounded-2xl bg-[#F6F7FB] p-3">
                 <span className="text-sm font-medium text-gray-500">{language === "sk" ? "Jazyk stránky" : "Site language"}</span>
                 <LanguageToggle />
               </div>

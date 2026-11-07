@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { ArrowRight, Check, CreditCard, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowRight, Check, CreditCard, ShieldCheck, Sparkles, LockKeyhole } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { firstPackageAmountCents, PACKAGE_PRICES, type PackageDuration } from "@/lib/package-catalog";
 import { MUNDUS_LANGUAGE_OPTIONS, MUNDUS_LANGUAGE_VALUES } from "@/lib/language-offer";
@@ -22,6 +22,7 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
   const languageSelectRef = useRef<HTMLSelectElement>(null);
   const packageGridRef = useRef<HTMLDivElement>(null);
   const [showLanguagePrompt, setShowLanguagePrompt] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState(10);
 
   const focusLanguageSelect = () => {
     setShowLanguagePrompt(true);
@@ -40,6 +41,8 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
     : ["Individual 1:1 lessons", `${durationMinutes} minutes with your teacher`, "Flexible scheduling", "Progress and materials in your portal"];
 
   const packages = PACKAGE_PRICES.filter(item => item.durationMinutes === durationMinutes);
+  const activePackage = packages.find(item => item.lessons === selectedPackage) ?? packages[0];
+  const activeHref = activePackage && selectedLanguage ? `${prefix}/payment?selected=${activePackage.lessons}&duration=${durationMinutes}&language=${encodeURIComponent(selectedLanguage)}` : null;
 
   return (
     <div id="buy-packages" className="mb-8 scroll-mt-32">
@@ -114,18 +117,19 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
         ))}
       </div>
 
-      <div ref={packageGridRef} className="scroll-mt-32 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+      <div ref={packageGridRef} className="scroll-mt-32 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {packages.map(({ lessons, amountCents, durationMinutes }) => {
           const firstPackageCents = firstPackageAmountCents(amountCents);
           const perLesson = amountCents / lessons;
           const isRecommended = lessons === 10;
+          const isSelected = selectedPackage === lessons;
 
           return (
             <article
               key={`${durationMinutes}-${lessons}`}
-              className={`relative flex min-h-[410px] flex-col rounded-3xl border p-5 transition duration-200 hover:-translate-y-1 hover:shadow-[0_18px_42px_rgba(47,58,162,0.10)] sm:p-6 ${
-                isRecommended
-                  ? "border-[#2F3AA2] bg-[#F7F7FF] shadow-[0_16px_38px_rgba(47,58,162,0.10)]"
+              className={`relative flex min-h-[375px] flex-col rounded-3xl border p-5 transition duration-200 hover:-translate-y-1 hover:shadow-[0_18px_42px_rgba(47,58,162,0.10)] sm:p-6 ${
+                isSelected
+                  ? "border-[#2F3AA2] ring-2 ring-[#2F3AA2]/20 bg-[#F7F7FF] shadow-[0_16px_38px_rgba(47,58,162,0.10)]"
                   : "border-[#E5E7F0] bg-white shadow-[0_10px_28px_rgba(23,26,43,0.035)]"
               }`}
             >
@@ -166,32 +170,26 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
                 </span>
               </div>
 
-              <div className="mt-auto grid gap-2">
-                {!selectedLanguage ? (
-                  <button
-                    type="button"
-                    onClick={focusLanguageSelect}
-                    className="flex items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-3 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#252E82]"
-                  >
-                    {sk ? "Vybrať jazyk a pokračovať" : "Choose language & continue"}
-                    <ArrowRight size={16} />
-                  </button>
-                ) : (
-                  <Link
-                    href={`${prefix}/payment?selected=${lessons}&duration=${durationMinutes}&language=${encodeURIComponent(selectedLanguage)}`}
-                    onClick={()=>trackEvent("select_package",{language:selectedLanguage,duration_minutes:durationMinutes,lessons,amount_eur:amountCents/100})}
-                    className="flex items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-3 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#252E82]"
-                  >
-                    {sk ? "Pokračovať k platbe" : "Continue to payment"}
-                    <ArrowRight size={16} />
-                  </Link>
-                )}
-              </div>
+              <button type="button" aria-pressed={isSelected} onClick={() => {setSelectedPackage(lessons);trackEvent("select_package",{language:selectedLanguage || "not_selected",duration_minutes:durationMinutes,lessons,amount_eur:amountCents/100});}} className={`mt-auto flex min-h-12 items-center justify-center gap-2 rounded-xl px-3 py-3 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F3AA2] ${isSelected ? "bg-[#2F3AA2] text-white" : "border border-[#C7CDF6] bg-white text-[#2F3AA2] hover:bg-[#EEF2FF]"}`}>
+                {isSelected ? <Check size={17}/> : <ArrowRight size={16}/>}
+                {isSelected ? (sk ? "Vybraný balíček" : "Selected package") : (sk ? "Vybrať balíček" : "Select package")}
+              </button>
             </article>
           );
         })}
       </div>
 
+      <div className="sticky bottom-3 z-30 mt-7 rounded-3xl border border-[#C7CDF6] bg-white/95 p-4 shadow-[0_15px_45px_rgba(23,26,43,.15)] backdrop-blur-xl sm:p-5 lg:bottom-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider text-[#2F3AA2]">{sk ? "Váš výber" : "Your selection"}</p>
+            <p className="mt-1 font-semibold">{selectedLanguage || (sk ? "Vyberte jazyk" : "Choose a language")} · {activePackage.lessons} × {durationMinutes} min</p>
+            <p className="mt-1 text-sm text-gray-600"><strong className="text-[#2F3AA2]">{money(firstPackageAmountCents(activePackage.amountCents))}</strong> <span className="line-through">{money(activePackage.amountCents)}</span> · {sk ? "prvý oprávnený balíček" : "eligible first package"}</p>
+          </div>
+          {activeHref ? <Link href={activeHref} className="flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-6 py-3 font-semibold text-white hover:bg-[#252E82]"><LockKeyhole size={17}/>{sk ? "Pokračovať k platbe" : "Continue to payment"}<ArrowRight size={17}/></Link>
+            : <button type="button" onClick={focusLanguageSelect} className="flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-6 py-3 font-semibold text-white">{sk ? "Vybrať jazyk" : "Choose language"}<ArrowRight size={17}/></button>}
+        </div>
+      </div>
       <div className="mt-8 grid gap-4 md:grid-cols-2">
         <div className="rounded-3xl border border-[#DDE2FB] bg-white p-6">
           <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[#2F3AA2]">{sk ? "Súkromná skupina" : "Private group"}</p>

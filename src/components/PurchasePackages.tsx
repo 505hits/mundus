@@ -9,7 +9,7 @@ import { firstPackageAmountCents, PACKAGE_PRICES, type PackageDuration } from "@
 import { MUNDUS_LANGUAGE_OPTIONS, MUNDUS_LANGUAGE_VALUES } from "@/lib/language-offer";
 import { trackEvent } from "@/components/AnalyticsManager";
 
-export default function PurchasePackages({ paymentsAvailable, signupAvailable }: { paymentsAvailable: boolean; signupAvailable: boolean }) {
+export default function PurchasePackages({ paymentsAvailable }: { paymentsAvailable: boolean; signupAvailable?: boolean }) {
   const { language, t } = useLanguage();
   const sk = language === "sk";
   const prefix = `/${language}`;
@@ -160,11 +160,9 @@ export default function PurchasePackages({ paymentsAvailable, signupAvailable }:
                 <Link
                   href={
                     !selectedLanguage
-                      ? `${prefix}/languages`
+                      ? `${prefix}/#languages`
                       : paymentsAvailable
-                        ? signupAvailable
-                          ? `/signup?next=${encodeURIComponent(`/packages?selected=${lessons}&duration=${durationMinutes}&language=${encodeURIComponent(selectedLanguage)}`)}`
-                          : `/login?next=${encodeURIComponent(`/packages?selected=${lessons}&duration=${durationMinutes}&language=${encodeURIComponent(selectedLanguage)}`)}`
+                        ? `/signup?next=${encodeURIComponent(`/packages?selected=${lessons}&duration=${durationMinutes}&language=${encodeURIComponent(selectedLanguage)}`)}`
                         : `${prefix}/contact`
                   }
                   onClick={()=>trackEvent("select_package",{language:selectedLanguage,duration_minutes:durationMinutes,lessons,amount_eur:amountCents/100})}

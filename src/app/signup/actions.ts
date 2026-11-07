@@ -8,7 +8,6 @@ import { formUiLanguage, uiText } from "@/lib/i18n";
 
 export async function signUpStudent(_previous: AccountFormState, form: FormData): Promise<AccountFormState> {
   const language=formUiLanguage(form); const t=(sk:string,en:string)=>uiText(language,sk,en);
-  if (process.env.MUNDUS_SELF_SIGNUP_ENABLED !== "true") return { error: t("Registrácia ešte nie je dostupná. Kontaktujte nás a pomôžeme vám s vytvorením účtu.","Registration is not available yet. Contact us and we’ll help you create an account.") };
   const name = String(form.get("name") || "").trim();
   const email = String(form.get("email") || "").trim().toLowerCase();
   const password = String(form.get("password") || "");

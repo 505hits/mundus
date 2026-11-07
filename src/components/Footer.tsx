@@ -15,7 +15,7 @@ export default function Footer() {
       links: [
         { href: `${prefix}/#learning-formats`, label: sk ? "Ako to funguje" : "How it works" },
         { href: `${prefix}/#teachers`, label: sk ? "Lektori" : "Teachers" },
-        { href: `${prefix}/#pricing`, label: sk ? "Cenník a platba" : "Pricing & payment" },
+        { href: `${prefix}/pricing`, label: sk ? "Cenník a platba" : "Pricing & payment" },
         { href: `${prefix}/group-lessons`, label: sk ? "Skupinové hodiny" : "Group lessons" },
         { href: `${prefix}/companies`, label: sk ? "Pre firmy" : "For companies" },
         { href: `${prefix}/#faq`, label: "FAQ" },
@@ -34,7 +34,7 @@ export default function Footer() {
     {
       title: sk ? "Jazyky" : "Languages",
       links: [
-        { href: `${prefix}/#languages`, label: sk ? "Všetky jazyky" : "All languages" },
+        { href: `${prefix}/languages`, label: sk ? "Všetky jazyky" : "All languages" },
         { href: `${prefix}/languages/english`, label: sk ? "Angličtina online" : "English online" },
         { href: `${prefix}/languages/german`, label: sk ? "Nemčina online" : "German online" },
         { href: `${prefix}/languages/slovak-for-foreigners`, label: sk ? "Slovenčina pre cudzincov" : "Slovak for foreigners" },

@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, CalendarClock, CheckCircle2, FileText, LayoutDashboard, ShieldCheck, WalletCards } from "lucide-react";
+import { ArrowRight, CalendarClock, CheckCircle2, FileText, LayoutDashboard, ShieldCheck, WalletCards, UsersRound } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
 const fadeInUp={hidden:{opacity:0,y:22},visible:{opacity:1,y:0}};
@@ -37,6 +37,12 @@ export default function Hero(){
       <Link href={`/${language}/pricing`} className="inline-flex min-h-14 items-center justify-center rounded-2xl border border-white/20 bg-white/[0.06] px-6 py-4 font-semibold text-white backdrop-blur transition hover:bg-white/[0.1]">
         {sk?"Pozrieť ceny":"See pricing"}
       </Link>
+    </motion.div>
+
+    <motion.div variants={fadeInUp} className="mt-5 flex flex-wrap items-center gap-2 text-sm text-[#D8DBE8]">
+      <UsersRound size={17} className="text-[#C7D2FE]"/>
+      <span>{sk ? "Chcete najprv spoznať lektorov?" : "Want to meet the teachers first?"}</span>
+      <Link href={`/${language}/teachers`} className="font-semibold text-white underline decoration-[#9DA8FF] underline-offset-4 transition hover:text-[#C7D2FE]">{sk ? "Pozrite si reálne predstavenia" : "See real teacher introductions"} <ArrowRight size={14} className="inline"/></Link>
     </motion.div>
 
     <motion.div variants={fadeInUp} className="mt-7 flex flex-wrap gap-2.5 text-sm text-[#E8EAF5]">

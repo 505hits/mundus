@@ -13,7 +13,7 @@ const css=read("src/app/globals.css");
 
 assert.equal(languages.includes("flagcdn.com"),false,"language section must not restore decorative remote flags");
 assert.equal(nav.includes("tel:+421904082794"),false,"primary navbar must stay focused on navigation and purchase");
-assert.ok(home.indexOf("<PricingSection") < home.indexOf("<PortalPreviewSection"),"pricing should appear before deeper product proof");
+assert.ok(home.indexOf("<PricingSection") < home.indexOf("<InstagramTestimonialsSection"),"pricing should appear before testimonials and deeper social proof");
 assert.ok(portalNav.includes('!["/feedback", "/level-test", "/progress-test"].includes(item.href)'),"mobile nav must stay focused on five core destinations");
 assert.ok(portalNav.includes("fixed left-0 right-0 top-0"),"mobile portal needs a consistent top bar");
 assert.ok(dashboard.includes("Quick navigation"),"dashboard must expose obvious task shortcuts");

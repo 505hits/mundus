@@ -30,6 +30,7 @@ const nextConfig: NextConfig = {
       "cookies",
       "learn",
       "payment",
+      "teachers",
     ];
 
     const beforeFiles = [

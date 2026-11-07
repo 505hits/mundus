@@ -126,7 +126,7 @@ export default function LoginPage() {
       <section className="flex w-full items-center justify-center px-6 py-12 lg:w-1/2">
         <div className="w-full max-w-md rounded-3xl border border-gray-200 bg-white p-6 shadow-xl shadow-indigo-100/30 sm:p-9">
           <div className="mb-10 lg:hidden">
-            <Link href="/">
+            <Link href={prefix}>
               <Image
                 src="/logo-removebg-preview.png"
                 alt="Mundus Languages"
@@ -222,7 +222,7 @@ export default function LoginPage() {
 
           <div className="mt-6 text-center">
             <Link
-              href="/"
+              href={prefix}
               className="text-sm font-medium text-[#2F3AA2] hover:underline"
             >
               {sk ? "← Späť na Mundus Languages" : "← Back to Mundus Languages"}

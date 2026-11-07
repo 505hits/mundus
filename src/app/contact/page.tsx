@@ -40,7 +40,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
               <p className="mt-3 leading-relaxed text-gray-600">
                 {sk ? "Vyberte si balíček, vytvorte si alebo otvorte študentský účet a pokračujte k bezpečnej platbe." : "Choose a package, create or open your student account, and continue to secure online payment."}
               </p>
-              <Link href={`/${language}/#languages`} className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#2F3AA2] px-6 py-4 font-semibold text-white hover:bg-[#252E82]">
+              <Link href={`/${language}/pricing`} className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#2F3AA2] px-6 py-4 font-semibold text-white hover:bg-[#252E82]">
                 {sk ? "Vybrať balíček" : "Choose a package"}<ArrowRight size={20} aria-hidden="true" />
               </Link>
             </div>

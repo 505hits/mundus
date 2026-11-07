@@ -52,14 +52,14 @@ export default function Footer() {
 
   return <footer className="footer bg-white">
     <div className="container">
-      <div className="grid gap-10 lg:grid-cols-[1.2fr_2fr]">
+      <div className="grid gap-7 sm:gap-10 lg:grid-cols-[1.2fr_2fr]">
         <div>
           <Link href={prefix} className="footer-brand">Mundus Languages</Link>
           <p className="footer-desc max-w-sm">
             {sk ? "Online jazyková výučba 1:1, súkromné skupiny a firemné vzdelávanie s flexibilnými termínmi a modernými portálmi." : "Online 1:1 language lessons, private groups and company training with flexible scheduling and modern portals."}
           </p>
         </div>
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-7 sm:gap-8 lg:grid-cols-4">
           {groups.map(group => <nav key={group.title} aria-label={group.title}>
             <p className="footer-title">{group.title}</p>
             <ul className="footer-links">
@@ -72,7 +72,7 @@ export default function Footer() {
           </nav>)}
         </div>
       </div>
-      <div className="mt-10 rounded-3xl border border-[#E5E7F0] bg-[#FAFAF9] p-5 sm:p-6">
+      <div className="mt-8 rounded-2xl border sm:mt-10 sm:rounded-3xl border-[#E5E7F0] bg-[#FAFAF9] p-5 sm:p-6">
         <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <div>
             <p className="text-lg font-semibold">{sk ? "Novinky a sezónne ponuky" : "Updates & seasonal offers"}</p>

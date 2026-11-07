@@ -75,7 +75,7 @@ export default function Navbar() {
           <button
             type="button"
             onClick={() => setIsMobileMenuOpen((open) => !open)}
-            className="relative z-50 ml-auto rounded-xl p-2 text-[#171A2B] xl:hidden"
+            className="relative z-50 ml-auto flex min-h-11 min-w-11 items-center justify-center rounded-xl p-2 text-[#171A2B] transition hover:bg-[#EEF2FF] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F3AA2] xl:hidden"
             aria-label={isMobileMenuOpen ? (language === "sk" ? "Zavrieť menu" : "Close menu") : (language === "sk" ? "Otvoriť menu" : "Open menu")}
             aria-expanded={isMobileMenuOpen}
           >
@@ -91,7 +91,7 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: "-8%" }}
             transition={{ duration: 0.22 }}
-            className="fixed inset-0 z-40 flex flex-col bg-white px-6 pb-8 pt-24 xl:hidden"
+            className="fixed inset-0 z-40 flex flex-col overflow-y-auto overscroll-contain bg-white px-6 pb-[max(2rem,env(safe-area-inset-bottom))] pt-24 xl:hidden"
           >
             <div className="flex flex-col">
               <Link
@@ -126,7 +126,7 @@ export default function Navbar() {
               </div>
             </div>
 
-            <div className="mt-auto">
+            <div className="mt-auto pt-8">
               <Link
                 href={`${prefix}/pricing`}
                 onClick={() => setIsMobileMenuOpen(false)}

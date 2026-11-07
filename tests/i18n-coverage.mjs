@@ -45,12 +45,12 @@ const selector = read("src/components/LanguageSelector.tsx");
 const groupLessons = read("src/app/group-lessons/page.tsx");
 const languagePage = read("src/app/languages/[slug]/page.tsx");
 const pricing = read("src/components/PurchasePackages.tsx");
-assert.match(floatingCta, /`\/\$\{language\}\/pricing`/, "floating purchase CTA must preserve the selected public locale");
+assert.match(floatingCta, /`\/\$\{language\}\/\#languages`/, "floating purchase CTA must preserve locale and begin with language selection");
 assert.ok(formats.includes("const prefix=`/${language}`") && formats.includes("`${prefix}/group-lessons`") && formats.includes("`${prefix}/companies`"), "learning format links must preserve locale");
 assert.ok(selector.includes("`${prefix}${item.detail}`"), "language detail links must preserve locale");
 assert.ok(groupLessons.includes("`/${language}/contact?type=group`"), "group quote CTA must preserve locale");
-assert.ok(languagePage.includes("`${prefix}/pricing?language=${encodeURIComponent(config.value)}`"), "language landing pricing CTAs must preserve locale");
-assert.ok(pricing.includes("`${prefix}/languages`") && pricing.includes("`${prefix}/contact`") && pricing.includes("`${prefix}/group-lessons`") && pricing.includes("`${prefix}/companies`"), "pricing conversion links must preserve locale");
+assert.ok(languagePage.includes("`${prefix}/?language=${encodeURIComponent(config.value)}#pricing`"), "language landing pricing CTAs must preserve locale");
+assert.ok(pricing.includes("focusLanguageSelect") && pricing.includes("`${prefix}/contact`") && pricing.includes("`${prefix}/group-lessons`") && pricing.includes("`${prefix}/companies`"), "pricing conversion links must preserve locale and guide missing language selection in place");
 
 const packages = read("src/app/(portal)/packages/actions.ts");
 assert.match(packages, /locale: uiLanguage/, "Stripe Checkout locale must follow the UI language");

@@ -896,3 +896,19 @@ h3 {
     scroll-behavior: auto !important;
   }
 }
+
+/* Mobile layout system — preserve desktop composition while preventing cramped cards and overflow. */
+@media (max-width: 639px) {
+  html, body { max-width: 100%; overflow-x: clip; }
+  .container { width: 100%; padding-inline: 18px; }
+  .section { padding-block: 52px; }
+  .section-header { margin-bottom: 30px; }
+  .section-title { font-size: clamp(1.75rem, 8vw, 2.25rem); line-height: 1.15; letter-spacing: -.035em; }
+  .section-subtitle { font-size: 1rem; line-height: 1.65; }
+  .footer { padding: 48px 0 24px; }
+  .footer-brand { font-size: 1.25rem; }
+  .footer-links a { font-size: .875rem; line-height: 1.45; }
+  .footer-bottom { flex-direction: column; align-items: flex-start; gap: 8px; padding-top: 20px; font-size: .8rem; }
+  input, select, textarea { max-width: 100%; min-width: 0; font-size: 16px; }
+  section[id] { scroll-margin-top: 84px; }
+}

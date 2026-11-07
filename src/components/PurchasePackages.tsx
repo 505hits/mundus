@@ -9,7 +9,7 @@ import { firstPackageAmountCents, PACKAGE_PRICES, type PackageDuration } from "@
 import { MUNDUS_LANGUAGE_OPTIONS, MUNDUS_LANGUAGE_VALUES } from "@/lib/language-offer";
 import { trackEvent } from "@/components/AnalyticsManager";
 
-export default function PurchasePackages({ paymentsAvailable }: { paymentsAvailable: boolean; signupAvailable?: boolean }) {
+export default function PurchasePackages({ paymentsAvailable }: { paymentsAvailable: boolean }) {
   const { language, t } = useLanguage();
   const sk = language === "sk";
   const prefix = `/${language}`;
@@ -195,13 +195,13 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
       <div className="mt-7 flex flex-col gap-3 rounded-2xl border border-[#E7E9F2] bg-[#FAFAF9] p-5 text-sm leading-6 text-gray-600 md:flex-row md:items-center md:justify-between">
         <p className="max-w-3xl">
           {paymentsAvailable
-            ? signupAvailable ? t.pricing.individual.paymentNote : t.pricing.individual.existingAccountNote
+            ? t.pricing.individual.paymentNote
             : t.pricing.individual.offlineNote}{" "}
           {sk ? "Balíčky sa automaticky neobnovujú." : "Packages do not renew automatically."}
         </p>
         <div className="flex shrink-0 flex-col gap-2 md:items-end">
           <span className="inline-flex items-center gap-2 font-medium text-[#2F3AA2]"><CreditCard size={17} />{sk ? "Jednorazová platba v EUR" : "One-time payment in EUR"}</span>
-          <Link href="/companies" className="text-xs font-medium text-gray-500 underline underline-offset-2 hover:text-[#2F3AA2]">{sk ? "Kupujete výučbu pre firmu? Pozrite si firemnú ponuku." : "Buying training for a company? See company options."}</Link>
+          <Link href={`${prefix}/companies`} className="text-xs font-medium text-gray-500 underline underline-offset-2 hover:text-[#2F3AA2]">{sk ? "Kupujete výučbu pre firmu? Pozrite si firemnú ponuku." : "Buying training for a company? See company options."}</Link>
         </div>
       </div>
     </div>

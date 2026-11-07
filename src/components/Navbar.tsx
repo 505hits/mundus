@@ -15,10 +15,10 @@ export default function Navbar() {
   const prefix = `/${language}`;
 
   const navLinks = [
-    { name: t.nav.courses, href: `${prefix}/#languages` },
+    { name: t.nav.courses, href: `${prefix}/languages` },
     { name: language === "sk" ? "Skupinové hodiny" : "Group lessons", href: `${prefix}/group-lessons` },
     { name: t.nav.teachers, href: `${prefix}/#teachers` },
-    { name: t.nav.prices, href: `${prefix}/#pricing` },
+    { name: t.nav.prices, href: `${prefix}/pricing` },
   ];
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export default function Navbar() {
               {language === "sk" ? "Prihlásenie" : "Sign in"}
             </Link>
 
-            <Link href={`${prefix}/#languages`} className="btn btn-primary !px-5 !py-2.5 !text-sm whitespace-nowrap">
+            <Link href={`${prefix}/pricing`} className="btn btn-primary !px-5 !py-2.5 !text-sm whitespace-nowrap">
               {t.nav.book}
             </Link>
           </div>
@@ -128,7 +128,7 @@ export default function Navbar() {
 
             <div className="mt-auto">
               <Link
-                href={`${prefix}/#languages`}
+                href={`${prefix}/pricing`}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="btn btn-primary w-full justify-center py-3.5 text-base"
               >

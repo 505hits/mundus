@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 
 const port = 3100;
 const base = `http://127.0.0.1:${port}`;
-const routes = ["/","/login","/signup","/forgot-password","/reset-password","/resend-confirmation","/auth/error","/contact","/prices","/privacy","/terms","/cookies","/pending-approval"];
+const routes = ["/","/login","/signup","/forgot-password","/reset-password","/resend-confirmation","/auth/error","/contact","/languages","/pricing","/teachers","/group-lessons","/companies","/payment?selected=10&duration=60&language=English","/prices","/privacy","/terms","/cookies","/pending-approval","/sk","/en","/sk/languages","/en/languages","/sk/pricing","/en/pricing","/sk/teachers","/en/teachers","/sk/group-lessons","/en/group-lessons","/sk/companies","/en/companies","/sk/payment?selected=10&duration=60&language=English","/en/payment?selected=10&duration=60&language=English"];
 
 const child = spawn(process.execPath, ["node_modules/next/dist/bin/next", "start", "-p", String(port)], {
   stdio: ["ignore", "pipe", "pipe"],

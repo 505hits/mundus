@@ -20,8 +20,9 @@ const legacyOnboarding=read("src/app/onboarding/page.tsx");
 const login=read("src/app/login/page.tsx");
 const contact=read("src/app/contact/page.tsx");
 const notificationWorker=read("src/app/api/notifications/process/route.ts");
+const instagramProof=read("src/components/InstagramSocialProof.tsx");
 
-for(const component of ["LearningFormatsSection","LanguageSelector","TeacherSection","PricingSection","FAQSection"]) {
+for(const component of ["LearningFormatsSection","LanguageSelector","InstagramTeachersSection","PricingSection","InstagramTestimonialsSection","FAQSection"]) {
   assert.ok(home.includes(component), `homepage must include ${component}`);
 }
 assert.equal(home.includes("PortalPreviewSection"), false, "homepage should not repeat a long portal explainer");
@@ -68,6 +69,8 @@ assert.equal(translations.includes("4.9/5"), false);
 assert.equal(layout.toLowerCase().includes("turečtina"), false);
 assert.equal(translations.includes("SKUPINOVÉ KURZY"), false, "new strategy must not restore old group-course pricing");
 assert.equal(home.includes("CalendlyWidget"), false, "homepage must stay focused on direct purchase instead of consultation booking");
+for (const shortcode of ["DfPIUSjjVZf","DdjYZh5DVIB","Da2WeDTjeQJ","DXjsNYMjUKq","DVlzW5cDUkS","DUbA1PqDdMg","DSZhwDmjdHL","DRjrYFGDe0T","DYUFE0ijV_3","DfbmEUTjWxU"]) assert.ok(instagramProof.includes(shortcode), `homepage social proof must retain supplied Instagram post ${shortcode}`);
+assert.ok(instagramProof.includes("useAnalyticsConsent"), "Instagram embeds must respect cookie consent before loading");
 assert.equal(contact.includes("× 60 min</option>"), false, "contact form must not imply every enquiry is for 60-minute lessons");
 assert.equal(notificationWorker.includes('requestRow.package_lessons+" × 60 min"'), false, "contact notification must not invent a 60-minute duration");
 

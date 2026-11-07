@@ -50,7 +50,7 @@ assert.ok(formats.includes("const prefix=`/${language}`") && formats.includes("`
 assert.ok(selector.includes("`${prefix}${item.detail}`"), "language detail links must preserve locale");
 assert.ok(groupLessons.includes("`/${language}/contact?type=group`"), "group quote CTA must preserve locale");
 assert.ok(languagePage.includes("`${prefix}/pricing?language=${encodeURIComponent(config.value)}`"), "language landing pricing CTAs must preserve locale");
-assert.ok(pricing.includes("focusLanguageSelect") && pricing.includes("`${prefix}/contact`") && pricing.includes("`${prefix}/group-lessons`") && pricing.includes("`${prefix}/companies`"), "pricing conversion links must preserve locale and guide missing language selection in place");
+assert.ok(pricing.includes("focusLanguageSelect") && pricing.includes("`${prefix}/payment?selected=") && pricing.includes("`${prefix}/group-lessons`") && pricing.includes("`${prefix}/companies`"), "pricing conversion links must preserve locale, guide language selection and continue through the payment page");
 
 const packages = read("src/app/(portal)/packages/actions.ts");
 assert.match(packages, /locale: uiLanguage/, "Stripe Checkout locale must follow the UI language");

@@ -14,7 +14,7 @@ export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { language } = useLanguage();
-  const sk = language === "sk";
+  const sk = language === "sk";\n  const prefix = `/${language}`;
   const errorRef = useRef<HTMLDivElement>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -217,7 +217,7 @@ export default function LoginPage() {
           <p className="mt-3 text-center text-xs text-gray-500">{sk ? "Lektorské a firemné účty získate cez e-mailovú pozvánku od Mundus; prihlasujú sa na tejto stránke." : "Teacher and company accounts are created through an email invitation from Mundus and sign in on this page."}</p>
 
           <p className="mt-8 text-center text-sm text-gray-400">
-            {sk ? "Potrebujete pomoc? " : "Need help? "}<Link href="/contact" className="font-medium text-[#2F3AA2] underline">{sk ? "Kontaktujte Mundus Languages." : "Contact Mundus Languages."}</Link>
+            {sk ? "Potrebujete pomoc? " : "Need help? "}<Link href={`${prefix}/contact`} className="font-medium text-[#2F3AA2] underline">{sk ? "Kontaktujte Mundus Languages." : "Contact Mundus Languages."}</Link>
           </p>
 
           <div className="mt-6 text-center">

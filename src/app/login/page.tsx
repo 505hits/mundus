@@ -93,7 +93,7 @@ export default function LoginPage() {
         <div className="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-[#2F3AA2]/50 blur-3xl" />
         <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-[#6575ff]/20 blur-3xl" />
 
-        <Link href="/" className="relative z-10">
+        <Link href={prefix} className="relative z-10">
           <Image
             src="/logo-removebg-preview.png"
             alt="Mundus Languages"

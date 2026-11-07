@@ -28,7 +28,7 @@ function InstagramCard({ shortcode, title }: { shortcode: string; title: string 
 
   if (consent !== "granted") {
     return (
-      <article className="flex min-h-[420px] flex-col justify-between rounded-[1.75rem] border border-[#E5E7F0] bg-gradient-to-br from-white to-[#F5F6FF] p-6 shadow-[0_14px_36px_rgba(23,26,43,.06)]">
+      <article className="flex min-h-[285px] flex-col sm:min-h-[420px] justify-between rounded-[1.75rem] border border-[#E5E7F0] bg-gradient-to-br from-white to-[#F5F6FF] p-4 shadow-[0_14px_36px_rgba(23,26,43,.06)] sm:p-6">
         <div>
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#EEF2FF] text-[#2F3AA2]">
             <Instagram size={23} />
@@ -67,7 +67,7 @@ function InstagramCard({ shortcode, title }: { shortcode: string; title: string 
         src={`https://www.instagram.com/p/${shortcode}/embed/`}
         loading="lazy"
         allow="clipboard-write; encrypted-media; picture-in-picture; web-share"
-        className="h-[610px] w-full border-0 bg-white"
+        className="h-[475px] w-full border-0 bg-white sm:h-[610px]"
       />
       <a
         href={postUrl}
@@ -86,14 +86,14 @@ export function InstagramTeachersSection() {
   const sk = language === "sk";
 
   return (
-    <section id="teachers" className="bg-white px-6 py-20 sm:py-24">
+    <section id="teachers" className="bg-white px-4 py-14 sm:px-6 sm:py-24">
       <div className="mx-auto max-w-6xl">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-2xl">
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
               {sk ? "Naši lektori" : "Our teachers"}
             </p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-[-.035em] text-[#171A2B] sm:text-5xl">
+            <h2 className="mt-3 text-[clamp(1.75rem,7.5vw,3rem)] font-semibold leading-tight tracking-[-.035em] text-[#171A2B] sm:text-5xl">
               {sk ? "Spoznajte ľudí, s ktorými sa budete učiť." : "Meet the people you can learn with."}
             </h2>
             <p className="mt-4 max-w-xl text-base leading-7 text-gray-600">
@@ -112,9 +112,9 @@ export function InstagramTeachersSection() {
           </a>
         </div>
 
-        <div className="mt-9 flex snap-x gap-5 overflow-x-auto pb-4">
+        <div className="-mx-4 mt-6 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-4 sm:mx-0 sm:mt-9 sm:gap-5 sm:px-0">
           {teacherPosts.map((shortcode, index) => (
-            <div key={shortcode} className="w-[320px] shrink-0 snap-start sm:w-[360px]">
+            <div key={shortcode} className="w-[min(84vw,320px)] shrink-0 snap-start sm:w-[360px]">
               <InstagramCard
                 shortcode={shortcode}
                 title={sk ? `Predstavenie lektora ${index + 1}` : `Teacher introduction ${index + 1}`}
@@ -132,13 +132,13 @@ export function InstagramTestimonialsSection() {
   const sk = language === "sk";
 
   return (
-    <section id="testimonials" className="bg-[#F8F9FF] px-6 py-20 sm:py-24">
+    <section id="testimonials" className="bg-[#F8F9FF] px-4 py-14 sm:px-6 sm:py-24">
       <div className="mx-auto max-w-6xl">
         <div className="max-w-2xl">
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
             {sk ? "Skúsenosti študentov" : "Student experiences"}
           </p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-[-.035em] text-[#171A2B] sm:text-5xl">
+          <h2 className="mt-3 text-[clamp(1.75rem,7.5vw,3rem)] font-semibold leading-tight tracking-[-.035em] text-[#171A2B] sm:text-5xl">
             {sk ? "Čo o Mundus hovoria naši študenti." : "What our students say about Mundus."}
           </h2>
           <p className="mt-4 max-w-xl text-base leading-7 text-gray-600">
@@ -148,7 +148,7 @@ export function InstagramTestimonialsSection() {
           </p>
         </div>
 
-        <div className="mt-9 grid gap-5 lg:grid-cols-2">
+        <div className="mt-6 grid gap-4 sm:mt-9 sm:gap-5 lg:grid-cols-2">
           {testimonialPosts.map((shortcode, index) => (
             <InstagramCard
               key={shortcode}

@@ -59,6 +59,7 @@ export default async function PaymentPage({ searchParams }: PageProps) {
   const signupHref = `/signup?next=${encodeURIComponent(nextPath)}`;
   const loginHref = `/login?next=${encodeURIComponent(nextPath)}`;
   const enabled = paymentEnabled();
+  const contactFallback = `${prefix}/contact?language=${encodeURIComponent(selectedLanguage)}&lessons=${pkg.lessons}&duration=${pkg.durationMinutes}`;
 
   return (
     <main className="min-h-screen bg-[#F7F8FC]">
@@ -109,8 +110,8 @@ export default async function PaymentPage({ searchParams }: PageProps) {
               </>
             ) : (
               <>
-                <p className="mt-3 rounded-2xl bg-amber-50 p-4 text-sm leading-6 text-amber-900">{sk ? "Online platba na tomto nasadení zatiaľ nie je aktívna. Výber balíčka je uložený v URL, ale Stripe sa otvorí až po aktivovaní produkčných platobných údajov." : "Online payment is not active on this deployment yet. Your package selection is preserved, but Stripe opens only after production payment credentials are enabled."}</p>
-                <Link href={`${prefix}/contact`} className="mt-5 inline-flex items-center gap-2 font-semibold text-[#2F3AA2]">{sk ? "Kontaktovať Mundus" : "Contact Mundus"}<ArrowRight size={16}/></Link>
+                <p className="mt-3 rounded-2xl bg-amber-50 p-4 text-sm leading-6 text-amber-900">{sk ? "Online platba zatiaľ nie je aktívna. Vybraný jazyk, počet hodín a dĺžku lekcie môžete odoslať ako nezáväznú žiadosť." : "Online payment is not active yet. You can send your selected language, package and lesson length as a no-obligation request."}</p>
+                <Link href={contactFallback} className="mt-5 inline-flex min-h-12 items-center gap-2 rounded-xl bg-[#2F3AA2] px-5 py-3 font-semibold text-white">{sk ? "Poslať žiadosť o vybraný balíček" : "Request your selected package"}<ArrowRight size={16}/></Link>
               </>
             )}
             <Link href={`${prefix}/pricing?language=${encodeURIComponent(selectedLanguage)}`} className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-gray-500 underline underline-offset-4">

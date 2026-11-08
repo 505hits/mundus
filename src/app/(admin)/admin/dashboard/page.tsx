@@ -216,10 +216,10 @@ export default async function AdminDashboardPage() {
     profile?.full_name?.trim()?.split(/\s+/)[0] || (sk ? "Administrátor" : "Administrator");
 
   return (
-    <main className="min-h-screen bg-transparent text-[#0a0a0f]">
+    <main className="dashboard-page min-h-screen bg-transparent text-[#171A2B]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
-        <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
+        <section className="dashboard-welcome relative overflow-hidden rounded-[1.6rem] p-6 sm:rounded-[2rem] sm:p-9">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#DDE4FF]">
             {sk ? "Administrácia Mundus" : "Mundus administration"}
           </p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">

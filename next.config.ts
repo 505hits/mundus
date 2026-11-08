@@ -31,6 +31,7 @@ const nextConfig: NextConfig = {
       "learn",
       "payment",
       "teachers",
+      "community",
     ];
 
     const beforeFiles = [

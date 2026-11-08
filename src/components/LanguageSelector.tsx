@@ -11,7 +11,7 @@ import { trackEvent } from "@/components/AnalyticsManager";
 const fadeInUp={hidden:{opacity:0,y:18},visible:{opacity:1,y:0,transition:{duration:.45}}};
 const stagger={hidden:{opacity:0},visible:{opacity:1,transition:{staggerChildren:.06}}};
 
-export default function LanguageSelector(){
+export default function LanguageSelector({compact=false}:{compact?:boolean}){
  const {t,language}=useLanguage();const sk=language==="sk";const prefix=`/${language}`;
  const primary=[
   {value:"English",label:sk?"Angličtina":"English",detail:"/languages/english"},
@@ -30,6 +30,20 @@ export default function LanguageSelector(){
   {value:"Ukrainian",label:sk?"Ukrajinčina":"Ukrainian",detail:"/languages/ukrainian"},
   {value:"Modern Hebrew",label:sk?"Moderná hebrejčina":"Modern Hebrew",detail:"/languages/modern-hebrew"},
  ];
+
+ if(compact) return <section id="languages" className="scroll-mt-24 bg-[#F7F8FD] px-4 py-12 sm:px-6 sm:py-16">
+  <div className="mx-auto max-w-6xl">
+   <div className="flex flex-wrap items-end justify-between gap-4">
+    <div><p className="text-xs font-bold uppercase tracking-[.16em] text-[#3846AD]">{sk?"Vyberte si jazyk":"Choose a language"}</p>
+     <h2 className="mt-2 text-[clamp(1.8rem,5vw,2.8rem)] font-semibold tracking-tight">{sk?"Ktorým jazykom chcete hovoriť?":"What language would you like to speak?"}</h2></div>
+    <Link href={`${prefix}/languages`} className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-[#D8DFF2] bg-white px-4 text-sm font-semibold text-[#3846AD]">{sk?"Všetkých 13 jazykov":"All 13 languages"} <ArrowRight size={16}/></Link>
+   </div>
+   <div className="mt-6 grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6">{primary.map(item=><Link key={item.value} href={`${prefix}/pricing?language=${encodeURIComponent(item.value)}`} onClick={()=>trackEvent("select_language",{language:item.value,placement:"home_compact"})} className="group flex min-h-[104px] flex-col items-center justify-center rounded-[1.2rem] border border-[#E1E5F2] bg-white p-3 text-center shadow-[0_5px_24px_rgba(32,43,93,.03)] transition hover:-translate-y-0.5 hover:border-[#A5B1F4] hover:shadow-md">
+    <Image unoptimized src={`https://flagcdn.com/w80/${flagForLanguage(item.value).code}.png`} alt="" width={44} height={32} className="h-8 w-11 rounded-md border border-[#E1E5F0] object-cover shadow-sm"/>
+    <span className="mt-2 text-sm font-semibold text-[#20263D]">{item.label}</span>
+   </Link>)}</div>
+  </div>
+ </section>;
 
  return <section id="languages" className="bg-gradient-to-b from-[#F6F7FB] to-white py-14 md:py-24">
   <div className="container"><motion.div initial={false} animate="visible" variants={stagger} className="mx-auto max-w-5xl">

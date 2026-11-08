@@ -22,10 +22,11 @@ export default function InstagramHomepageSpotlight(){
     <Link href={`/${language}/teachers`} className="inline-flex min-h-12 items-center gap-2 self-start rounded-xl bg-[#2F3AA2] px-5 py-3 text-sm font-semibold text-white hover:bg-[#252E82]">{sk?"Spoznať lektorov":"Meet our teachers"}<ArrowRight size={17}/></Link>
    </div>
    <div className="mt-7 grid gap-3 sm:grid-cols-3 sm:gap-4">
-    {featured.map(item=><Link key={item.id} href={`/${language}/${item.route}`} className="group relative flex h-[270px] overflow-hidden rounded-[1.5rem] bg-[#E5E6ED] shadow-[0_14px_40px_rgba(23,26,43,.06)] transition hover:-translate-y-1 hover:shadow-xl sm:h-[330px]">
-      <Image src={`/images/mundus/${item.id}.webp`} fill sizes="(max-width:640px) 92vw,33vw" alt={sk?`Fotografia z Mundus Instagramu: ${item.sk}`:`Mundus Instagram photo: ${item.en}`} className="object-cover transition duration-700 group-hover:scale-105" />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#11162B]/90 via-transparent to-transparent"/>
-      <div className="absolute bottom-0 left-0 right-0 p-5 text-white sm:p-6"><h3 className="text-2xl font-semibold !text-white">{sk?item.sk:item.en}</h3><p className="mt-2 text-sm text-[#E3E7F6]">{sk?item.descSk:item.descEn}</p><p className="mt-3 inline-flex items-center gap-2 text-xs font-semibold text-white/90">{sk?"Zistiť viac":"Explore"}<ArrowRight size={15}/></p></div>
+    {featured.map(item=><Link key={item.id} href={`/${language}/${item.route}`} className="group flex min-h-[340px] flex-col overflow-hidden rounded-[1.5rem] border border-[#E2E6F2] bg-white shadow-[0_14px_40px_rgba(23,26,43,.06)] transition hover:-translate-y-1 hover:shadow-xl sm:min-h-[380px]">
+      <div className="relative flex min-h-[250px] flex-1 items-center justify-center overflow-hidden bg-gradient-to-br from-[#EEF0FC] to-[#E2E8F1] p-3">
+        <Image src={`/images/mundus/${item.id}.webp`} fill sizes="(max-width:640px) 92vw,33vw" alt={sk?`Fotografia z Mundus Instagramu: ${item.sk}`:`Mundus Instagram photo: ${item.en}`} className="object-contain p-2 transition duration-500 group-hover:scale-[1.03]" />
+      </div>
+      <div className="flex items-center justify-between gap-3 p-5 sm:p-6"><div><h3 className="text-xl font-semibold text-[#171A2B]">{sk?item.sk:item.en}</h3><p className="mt-1 text-xs leading-5 text-[#626B81]">{sk?item.descSk:item.descEn}</p></div><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#EEF0FF] text-[#2F3AA2]"><ArrowRight size={18}/></span></div>
     </Link>)}
    </div>
    <div className="mt-5 flex flex-wrap items-center justify-between gap-4">

@@ -2,38 +2,24 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, GraduationCap, Sparkles, MessageCircle } from "lucide-react";
+import { ArrowUpRight, GraduationCap, MessageCircle } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function HeroTeacherPanel() {
- const { language } = useLanguage();
- const sk = language === "sk";
- return (
-  <div className="relative mx-auto w-full max-w-[590px] lg:ml-auto">
-   <div aria-hidden="true" className="pointer-events-none absolute -inset-5 rounded-[3rem] bg-[#7381D7]/20 blur-3xl"/>
-   <div className="relative grid grid-cols-[1fr_.72fr] gap-3 rounded-[2rem] border border-white/20 bg-white/10 p-3 shadow-[0_35px_90px_rgba(6,10,36,.28)] sm:gap-4 sm:p-4">
-    <div className="relative col-span-2 grid min-h-[225px] grid-cols-[.9fr_1.1fr] overflow-hidden rounded-[1.6rem] bg-[#E4E8FF] sm:min-h-[345px]">
-    <div className="relative z-10 flex flex-col justify-between p-4 text-[#28326F] sm:p-7">
-      <div className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider sm:text-xs"><MessageCircle size={17}/>{sk?"Mundus komunita":"Mundus community"}</div>
-      <div><p className="text-[clamp(1.45rem,4vw,2.7rem)] font-semibold leading-[1.06] tracking-[-.045em] text-[#222B6D]">{sk?"Jazyky naozaj používajte.":"Find your voice."}</p><p className="mt-3 max-w-[180px] text-xs leading-5 text-[#556093] sm:text-sm sm:leading-6">{sk?"Prirodzená komunikácia a flexibilné hodiny.":"Real conversations. Flexible lessons."}</p></div>
-    </div>
-    <div className="relative flex min-h-[260px] items-center justify-center overflow-hidden bg-[#CFD9F3] p-3 sm:min-h-[345px] sm:p-5">
-      <div className="relative h-[230px] w-full max-w-[230px] overflow-hidden rounded-[1.25rem] border-[6px] border-white bg-white shadow-[0_20px_45px_rgba(31,40,91,.18)] sm:h-[300px]">
-       <Image src="/images/mundus/DWQ3XM8DQ9W.webp" fill priority sizes="230px" alt={sk?"Skutočná fotografia z Mundus Instagramu":"Real Mundus Instagram photo"} className="object-contain"/>
-      </div>
-    </div>
+ const {language}=useLanguage(); const sk=language==="sk";
+ return <div className="relative mx-auto w-full max-w-[590px] lg:ml-auto">
+  <div aria-hidden className="pointer-events-none absolute -inset-6 rounded-[3rem] bg-[#7381D7]/25 blur-3xl"/>
+  <div className="relative h-[305px] overflow-hidden rounded-[1.75rem] border border-white/15 bg-[#C9D5EE] shadow-[0_30px_75px_rgba(0,0,0,.2)] sm:h-[475px] sm:rounded-[2.25rem]">
+   <Image unoptimized src="https://images.unsplash.com/photo-1758876020491-9560594ec362?auto=format&fit=crop&w=1200&q=85" fill priority sizes="(max-width:1024px) 96vw,590px" alt={sk?"Online výučba jazykov – atmosférická fotografia":"Online language learning – editorial photograph"} className="object-cover object-center"/>
+   <div className="absolute inset-0 bg-gradient-to-t from-[#10152A]/80 via-[#10152A]/5 to-transparent"/>
+   <div className="absolute bottom-4 left-4 right-[135px] sm:bottom-8 sm:left-8 sm:right-52">
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/20 px-2.5 py-1.5 text-[10px] font-bold text-white backdrop-blur"><MessageCircle size={13}/>{sk?"Učte sa prirodzene":"Learn naturally"}</span>
+    <p className="mt-3 text-xl font-semibold leading-tight tracking-[-.03em] !text-white sm:text-[2rem]">{sk?"Jazyk, ktorý naozaj využijete.":"Languages you'll actually use."}</p>
    </div>
-   <div className="relative hidden min-h-[188px] overflow-hidden sm:block rounded-[1.4rem] bg-[#DCE4F7] sm:min-h-[230px]">
-     <Image src="/images/mundus/DYSRMMnNZbh.webp" fill sizes="(max-width:640px) 54vw,325px" alt={sk?"Moment z komunity Mundus":"A Mundus community moment"} className="object-contain p-2"/>
-    </div>
-    <Link href={`/${language}/teachers`} className="hidden min-w-0 flex-col justify-between rounded-[1.4rem] bg-[#E5E6FD] sm:flex p-4 text-[#27328A] transition hover:bg-[#F0F1FF] sm:p-6">
-     <div className="flex items-center justify-between"><GraduationCap size={25}/><ArrowUpRight size={20}/></div>
-     <div>
-      <p className="text-xl font-semibold leading-tight tracking-tight sm:text-[1.65rem]">{sk?"Spoznajte našich lektorov.":"Meet our teachers."}</p>
-      <p className="mt-2 text-xs leading-5 text-[#56609B] sm:text-sm">{sk?"Skutočné tváre Mundus":"Real Mundus people"}</p>
-     </div>
-    </Link>
-   </div>
+   <Link href={`/${language}/teachers`} className="absolute bottom-4 right-4 w-[110px] overflow-hidden rounded-[1.1rem] border-[3px] border-white bg-white shadow-2xl transition hover:-translate-y-1 sm:bottom-7 sm:right-7 sm:w-[155px]">
+    <div className="relative h-[118px] bg-[#DDE2F0] sm:h-[178px]"><Image src="/images/mundus/teacher-veronika.webp" fill sizes="155px" alt={sk?"Veronika, lektorka Mundus":"Veronika, Mundus teacher"} className="object-cover"/></div>
+    <div className="flex items-center justify-between gap-1 p-2 text-[#1D2958] sm:p-3"><div className="min-w-0"><p className="truncate text-xs font-semibold sm:text-sm">{sk?"Spoznajte lektorov":"Meet our teachers"}</p><p className="mt-0.5 hidden text-[11px] text-[#657086] sm:block">Mundus people</p></div><ArrowUpRight size={16} className="shrink-0"/></div>
+   </Link>
   </div>
- );
+ </div>;
 }

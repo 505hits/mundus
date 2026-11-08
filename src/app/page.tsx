@@ -27,8 +27,8 @@ export default async function Home() {
       <Hero />
       <LearningFormatsSection />
       <LanguageSelector />
-      <InstagramHomepageSpotlight />
       <PricingSection paymentsAvailable={paymentEnabled()} />
+      <InstagramHomepageSpotlight />
       <FAQSection />
       <Footer />
     </main>

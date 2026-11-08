@@ -5,6 +5,7 @@ import { ArrowRight, CheckCircle2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { currentLanguage } from "@/lib/i18n";
+import { paymentEnabled } from "@/lib/payments";
 import { INTENT_SEO_PAGES,intentSeoPage } from "@/data/intent-seo-pages";
 import { localizedAlternates,localizedPath } from "@/lib/seo-locales";
 
@@ -19,7 +20,7 @@ export async function generateMetadata({params}:{params:Promise<{slug:string}>})
 
 export default async function IntentPage({params}:{params:Promise<{slug:string}>}){
  const {slug}=await params;const config=intentSeoPage(slug);if(!config)notFound();
- const language=await currentLanguage();const sk=language==="sk";const copy=sk?config.sk:config.en;const prefix=`/${language}`;
+ const language=await currentLanguage();const sk=language==="sk";const copy=sk?config.sk:config.en;const prefix=`/${language}`;const paymentsAvailable=paymentEnabled();
  const languageSlug=config.languageValue==="Slovak"?"slovak-for-foreigners":"english";
  const structured={"@context":"https://schema.org","@type":"Service",name:copy.title,description:copy.description,provider:{"@type":"EducationalOrganization","name":"Mundus Languages","url":"https://munduslanguages.com"},url:`https://munduslanguages.com${localizedPath(`/learn/${config.slug}`,language)}`};
  return <main className="min-h-screen bg-[#F7F8FC]"><script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(structured)}}/><Navbar/>
@@ -31,7 +32,7 @@ export default async function IntentPage({params}:{params:Promise<{slug:string}>
   </div></section>
   <section className="px-6 py-20"><div className="mx-auto max-w-5xl"><h2 className="text-3xl font-semibold tracking-[-.035em]">{sk?"Na čo sa zameriame":"What we can focus on"}</h2><div className="mt-7 grid gap-4 sm:grid-cols-2">{copy.points.map(x=><div key={x} className="rounded-3xl border border-black/5 bg-white p-5 shadow-sm"><CheckCircle2 size={19} className="text-[#2F3AA2]"/><p className="mt-3 leading-7 text-gray-700">{x}</p></div>)}</div></div></section>
   <section className="bg-white px-6 py-20"><div className="mx-auto max-w-5xl"><h2 className="text-3xl font-semibold tracking-[-.035em]">{sk?"Časté otázky":"Common questions"}</h2><div className="mt-7 divide-y divide-[#E5E7F0] rounded-3xl border border-[#E5E7F0] bg-[#FAFAF9] px-6">{copy.faq.map(([q,a])=><details key={q} className="py-5"><summary className="cursor-pointer font-semibold">{q}</summary><p className="mt-3 max-w-3xl text-sm leading-7 text-gray-600">{a}</p></details>)}</div></div></section>
-  <section className="px-6 py-20"><div className="mx-auto max-w-5xl rounded-[2rem] bg-[#171A2B] p-8 text-white sm:p-10"><h2 className="text-3xl font-semibold !text-white">{sk?"Chcete začať?":"Ready to start?"}</h2><p className="mt-3 max-w-2xl leading-7 text-[#D8DBE8]">{sk?"Vyberte si 45 alebo 60 minút a balíček. Prvý oprávnený balíček má automaticky 10 % zľavu.":"Choose 45 or 60 minutes and your package. The first eligible package is automatically 10% off."}</p><Link href={`${prefix}/pricing?language=${encodeURIComponent(config.languageValue)}`} className="mt-6 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 font-semibold text-[#2F3AA2]">{sk?"Cenník a platba":"Pricing & payment"}<ArrowRight size={17}/></Link></div></section>
+  <section className="px-6 py-20"><div className="mx-auto max-w-5xl rounded-[2rem] bg-[#171A2B] p-8 text-white sm:p-10"><h2 className="text-3xl font-semibold !text-white">{sk?"Chcete začať?":"Ready to start?"}</h2><p className="mt-3 max-w-2xl leading-7 text-[#D8DBE8]">{sk?"Vyberte si 45 alebo 60 minút a balíček. Prvý oprávnený balíček má automaticky 10 % zľavu.":"Choose 45 or 60 minutes and your package. The first eligible package is automatically 10% off."}</p><Link href={`${prefix}/pricing?language=${encodeURIComponent(config.languageValue)}`} className="mt-6 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 font-semibold text-[#2F3AA2]">{paymentsAvailable?(sk?"Cenník a platba":"Pricing & payment"):(sk?"Cenník a nezáväzný dopyt":"Pricing & inquiry")}<ArrowRight size={17}/></Link></div></section>
   <Footer/>
  </main>;
 }

@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 
 const port = 3100;
 const base = `http://127.0.0.1:${port}`;
-const routes = ["/","/login","/signup","/forgot-password","/reset-password","/resend-confirmation","/auth/error","/contact","/languages","/pricing","/teachers","/group-lessons","/companies","/payment?selected=10&duration=60&language=English","/prices","/privacy","/terms","/cookies","/pending-approval","/sk","/en","/sk/languages","/en/languages","/sk/pricing","/en/pricing","/sk/teachers","/en/teachers","/sk/group-lessons","/en/group-lessons","/sk/companies","/en/companies","/sk/payment?selected=10&duration=60&language=English","/en/payment?selected=10&duration=60&language=English"];
+const routes = ["/","/login","/signup","/forgot-password","/reset-password","/resend-confirmation","/auth/error","/contact","/languages","/pricing","/teachers","/group-lessons","/companies","/payment?selected=10&duration=60&language=English","/privacy","/terms","/cookies","/pending-approval","/sk","/en","/sk/languages","/en/languages","/sk/pricing","/en/pricing","/sk/teachers","/en/teachers","/sk/group-lessons","/en/group-lessons","/sk/companies","/en/companies","/sk/payment?selected=10&duration=60&language=English","/en/payment?selected=10&duration=60&language=English"];
 
 const child = spawn(process.execPath, ["node_modules/next/dist/bin/next", "start", "-p", String(port)], {
   stdio: ["ignore", "pipe", "pipe"],
@@ -42,7 +42,13 @@ try {
       if (!permissions.includes(directive)) throw new Error(`${route} missing Permissions-Policy directive ${directive}`);
     }
   }
-  console.log(`PASS: production server rendered ${routes.length} public/auth routes with baseline security headers`);
+  for (const [legacy,destination] of [["/prices","/sk/pricing"],["/sk/prices","/sk/pricing"],["/en/prices","/en/pricing"]]) {
+    const response=await fetch(base+legacy,{redirect:"manual"});
+    if(response.status!==308 || response.headers.get("location")!==destination) {
+      throw new Error(`Expected permanent legacy pricing redirect ${legacy} -> ${destination}; got ${response.status} ${response.headers.get("location")}`);
+    }
+  }
+  console.log(`PASS: production server rendered ${routes.length} public/auth routes with baseline security headers and permanent legacy pricing redirects`);
 } finally {
   child.kill("SIGTERM");
 }

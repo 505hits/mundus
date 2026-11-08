@@ -27,17 +27,21 @@ export default function FloatingCTA() {
         pathname.startsWith("/progress") ||
         pathname.startsWith("/packages") ||
         pathname.startsWith("/teacher") ||
-        pathname.startsWith("/admin");
+        pathname.startsWith("/admin") ||
+        /^\/(sk|en)\/(pricing|payment)(\/|$)/.test(pathname) ||
+        pathname === "/pricing" || pathname === "/payment";
 
     useEffect(() => {
         const handleScroll = () => {
             // Show button after scrolling down 600px (past hero)
-            setIsVisible(window.scrollY > 600);
+            setIsVisible(window.scrollY > 450);
         };
 
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
+
+    const onCompanies = /^\/(sk|en)\/companies(\/|$)/.test(pathname) || pathname === "/companies";
 
     if (isPortalRoute) {
         return null;
@@ -51,13 +55,13 @@ export default function FloatingCTA() {
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: 100, opacity: 0 }}
                     transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                    className="fixed bottom-4 left-4 right-4 z-40 sm:bottom-8 sm:left-auto sm:right-8"
+                    className="fixed bottom-[max(.75rem,env(safe-area-inset-bottom))] left-4 right-4 z-30 sm:bottom-8 sm:left-auto sm:right-8"
                 >
                     <Link
-                        href={`/${language}/pricing`}
-                        className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#2F3AA2] px-6 py-4 font-semibold text-white shadow-lg shadow-blue-900/20 transition-all hover:bg-[#252E82] hover:shadow-xl sm:w-auto sm:rounded-full sm:hover:scale-105"
+                        href={onCompanies ? `/${language}/companies#quote` : `/${language}/pricing`}
+                        className="flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-[#2F3AA2] px-5 py-3 font-semibold text-white shadow-lg shadow-blue-900/20 transition-all hover:bg-[#252E82] hover:shadow-xl sm:w-auto sm:rounded-full sm:hover:scale-105"
                     >
-                        <span>{t.nav.book}</span>
+                        <span>{onCompanies ? (language === "sk" ? "Získať ponuku" : "Get a quote") : t.nav.book}</span>
                         <ArrowRight size={20} />
                     </Link>
                 </motion.div>

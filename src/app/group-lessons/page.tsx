@@ -38,7 +38,7 @@ export default async function GroupLessonsPage(){
       <div className="mt-7 flex flex-wrap gap-2 text-xs font-semibold text-white/90">{[sk?"2–5 ľudí":"2–5 people",sk?"Online odkiaľkoľvek":"Online from anywhere",sk?"Termín podľa vás":"Your schedule"].map(t=><span key={t} className="rounded-full border border-white/15 bg-white/10 px-3 py-2">{t}</span>)}</div>
     </div>
     <div className="relative h-[340px] overflow-hidden rounded-[2rem] border border-white/15 bg-[#BFC8DF] shadow-[0_35px_70px_rgba(5,10,40,.3)] sm:h-[430px]">
-      <Image unoptimized src="https://images.unsplash.com/photo-1758270705518-b61b40527e76?auto=format&fit=crop&w=1250&q=84" alt={sk?"Ilustračná fotografia skupinového učenia":"Illustrative photograph of group learning"} fill sizes="(max-width: 1024px) 95vw, 50vw" className="object-cover"/>
+      <Image unoptimized src="/images/mundus/DW8aF4-DZDd.webp" alt={sk?"Fotografia Mundus":"Mundus photo"} fill sizes="(max-width: 1024px) 95vw, 50vw" className="object-cover"/>
       <div className="absolute inset-0 bg-gradient-to-t from-[#171A2B]/65 via-transparent to-transparent"/>
       <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between gap-3"><span className="rounded-full bg-white/90 px-4 py-2 text-xs font-bold text-[#2F3AA2]">{sk?"Vaša partia. Váš kurz.":"Your people. Your course."}</span></div>
     </div>

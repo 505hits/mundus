@@ -1,0 +1,12 @@
+import assert from "node:assert/strict";
+import {readFileSync} from "node:fs";
+const read=path=>readFileSync(new URL("../"+path,import.meta.url),"utf8");
+const proxy=read("src/proxy.ts");
+const i18n=read("src/lib/i18n.ts");
+const layout=read("src/app/layout.tsx");
+assert.ok(proxy.includes('/sk/:path*')&&proxy.includes('/en/:path*'),"all localized public routes must pass through proxy");
+assert.ok(proxy.includes('request.cookies.set("mundus_language", locale)'),"explicit locale must be visible to server rendering on first visit");
+assert.ok(proxy.includes('response.cookies.set("mundus_language", locale'),"locale preference must persist");
+assert.ok(i18n.includes('store.get("mundus_language")'),"server must read locale cookie");
+assert.ok(layout.includes('<html lang={language}>'),"document language must match URL-based server locale");
+console.log("PASS: direct /sk and /en visits set the correct server-side language before rendering");

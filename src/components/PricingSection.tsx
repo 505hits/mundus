@@ -49,13 +49,15 @@ export default function PricingSection({ paymentsAvailable = false }: { payments
           </p>
         </motion.div>
 
-        <div className="relative mb-7 h-44 overflow-hidden rounded-[1.65rem] bg-[#DDE2FB] sm:mb-9 sm:h-56">
-          <Image unoptimized src="/images/mundus/DeRGioptTPN.webp" alt={sk ? "Fotografia Mundus" : "Mundus photo"} fill sizes="(max-width: 900px) 95vw, 1100px" className="object-cover object-center"/>
-          <div className="absolute inset-0 bg-gradient-to-r from-[#171A2B]/90 via-[#171A2B]/50 to-transparent"/>
-          <div className="absolute inset-y-0 left-0 flex max-w-lg flex-col justify-center p-5 text-white sm:p-9">
-            <p className="text-xs font-bold uppercase tracking-[.15em] text-[#C7D2FE]">{sk ? "Výučba podľa vás" : "Learning your way"}</p>
-            <p className="mt-2 text-xl font-semibold leading-tight sm:text-3xl">{sk ? "Vyberte si balíček. Ostatné doladíme spolu." : "Pick your package. We'll tailor the rest."}</p>
-            
+        <div className="mb-7 grid min-h-[205px] overflow-hidden rounded-[1.8rem] bg-[#22284F] sm:mb-9 md:grid-cols-[1.1fr_.9fr]">
+          <div className="relative z-10 flex flex-col justify-center px-6 py-8 sm:px-10 sm:py-10">
+            <p className="text-xs font-bold uppercase tracking-[.16em] text-[#C7D2FE]">{sk ? "Výučba podľa vás" : "Learning your way"}</p>
+            <p className="mt-3 max-w-lg text-[clamp(1.6rem,4vw,2.35rem)] font-semibold leading-[1.1] tracking-tight text-white">{sk ? "Vyberte si balíček. Ostatné doladíme spolu." : "Pick your package. We'll tailor the rest."}</p>
+          </div>
+          <div className="relative hidden min-h-[215px] items-center justify-center overflow-hidden bg-[#DDE2FB] p-5 md:flex">
+            <div className="relative h-[210px] w-full max-w-[240px] overflow-hidden rounded-2xl border-[7px] border-white/85 bg-white shadow-2xl">
+              <Image src="/images/mundus/DeRGioptTPN.webp" alt={sk ? "Fotografia z Mundus Instagramu" : "Photo from Mundus Instagram"} fill sizes="240px" className="object-contain"/>
+            </div>
           </div>
         </div>
         <PurchasePackages paymentsAvailable={paymentsAvailable} />

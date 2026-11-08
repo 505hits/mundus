@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { ArrowRight, Users, CalendarDays, MessageCircle, Sparkles } from "lucide-react";
+import { ArrowRight, Users, MessageCircle, Sparkles } from "lucide-react";
 import { currentLanguage } from "@/lib/i18n";
 import { localizedAlternates, localizedPath } from "@/lib/seo-locales";
 
@@ -13,7 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
  return { title: sk ? "Skupinové jazykové kurzy online | Mundus Languages" : "Private group language lessons online | Mundus Languages", description: sk ? "Súkromné online jazykové hodiny pre 2–5 priateľov alebo kolegov. Flexibilné termíny, spoločný cieľ a cena na mieru." : "Private online language lessons for 2–5 friends or colleagues with flexible scheduling, a shared goal and custom pricing.", alternates:localizedAlternates("/group-lessons",language), openGraph:{title:sk?"Skupinové jazykové kurzy online | Mundus Languages":"Private group language lessons online | Mundus Languages",description:sk?"Súkromné online jazykové hodiny pre 2–5 priateľov alebo kolegov. Flexibilné termíny, spoločný cieľ a cena na mieru.":"Private online language lessons for 2–5 friends or colleagues with flexible scheduling, a shared goal and custom pricing.",url:`https://munduslanguages.com${localizedPath("/group-lessons",language)}`,type:"website",images:[{url:"/logo-removebg-preview.png",width:1200,height:630}]}, twitter:{card:"summary_large_image",title:sk?"Skupinové jazykové kurzy online | Mundus Languages":"Private group language lessons online | Mundus Languages",description:sk?"Súkromné online jazykové hodiny pre 2–5 priateľov alebo kolegov. Flexibilné termíny, spoločný cieľ a cena na mieru.":"Private online language lessons for 2–5 friends or colleagues with flexible scheduling, a shared goal and custom pricing.",images:["/logo-removebg-preview.png"]} };
 }
 export default async function GroupLessonsPage(){
- const language=await currentLanguage(); const sk=language==="sk"; const prefix=`/${language}`;
+ const language=await currentLanguage(); const sk=language==="sk";
  const cases=sk?[
   ["S priateľmi", "Pripravujete sa na spoločnú cestu alebo sa chcete posunúť v jazyku spolu?"],
   ["S kolegami", "Precvičte si situácie z práce a komunikáciu, ktorú skutočne využijete."],

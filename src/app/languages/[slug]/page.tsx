@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
+import { flagForLanguage } from "@/lib/language-flags";
 import { notFound } from "next/navigation";
 import { ArrowRight, CheckCircle2, Clock3, MessageCircle, ShieldCheck, UserRoundCheck } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -80,7 +82,11 @@ export default async function LanguageLandingPage({params}:{params:Promise<{slug
       <Link href={`${prefix}/contact`} className="inline-flex min-h-14 items-center justify-center rounded-2xl border border-white/20 bg-white/[.06] px-6 py-4 font-semibold text-white transition hover:bg-white/[.1]">{sk?"Najprv sa opýtať":"Ask us first"}</Link>
      </div>
     </div>
-    <div className="rounded-[1.75rem] border border-white/10 bg-white/[.07] p-5 backdrop-blur sm:p-6">
+    <div className="relative overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/[.07] p-5 backdrop-blur sm:p-6">
+      <div className="mb-5 flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/10 p-3">
+        <div><p className="text-xs font-semibold uppercase tracking-[.15em] text-[#C7D2FE]">{sk?"Váš jazyk":"Your language"}</p><p className="mt-1 text-2xl font-semibold text-white">{copy.name}</p></div>
+        <Image unoptimized src={`https://flagcdn.com/w160/${flagForLanguage(config.value).code}.png`} alt={`${copy.name} flag`} width={100} height={70} className="h-16 w-24 rounded-xl border border-white/20 object-cover shadow-xl" />
+      </div>
       <p className="text-sm font-semibold text-[#C7D2FE]">{sk?"Ako hodiny fungujú":"Lesson format"}</p>
       <div className="mt-4 space-y-3">
        {copy.focus.map((item,index)=>{const icons=[UserRoundCheck,Clock3,MessageCircle,ShieldCheck];const Icon=icons[index]??CheckCircle2;return <div key={item} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[.05] p-3.5"><Icon size={18} className="shrink-0 text-[#C7D2FE]"/><span className="text-sm text-[#F1F2F8]">{item}</span></div>})}

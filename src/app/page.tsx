@@ -27,7 +27,7 @@ export default async function Home() {
     <main className="min-h-screen">
       <MundusStructuredData />
       <Navbar />
-      <Hero />
+      <Hero paymentsAvailable={paymentEnabled()}/>
       <LearningFormatsSection />
       <LanguageSelector compact />
       <PricingSection paymentsAvailable={paymentEnabled()} />

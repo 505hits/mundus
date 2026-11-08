@@ -116,6 +116,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
                 </button>
               </div>
             </form>
+            <p className="mt-4 text-sm text-gray-600">{sk ? "Môžete nám napísať aj priamo na " : "You can also email us directly at "}<a className="font-medium underline" href="mailto:mundus.languages@gmail.com">mundus.languages@gmail.com</a>.</p>
           </section>
 
           <p className="mt-6 flex items-center gap-3 text-gray-600"><Globe size={22} className="shrink-0 text-[#2F3AA2]" aria-hidden="true" />{sk ? "Výučba prebieha online. Ponúkame individuálne hodiny aj malé súkromné skupiny." : "All lessons take place online. We offer individual lessons and small private groups."}</p>

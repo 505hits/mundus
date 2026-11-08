@@ -95,6 +95,7 @@ export default async function CompaniesPage({searchParams}:Props) {
         <div className="hidden" aria-hidden="true"><label>Website<input name="website" tabIndex={-1} autoComplete="off"/></label></div>
         <button type="submit" className="flex min-h-14 items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-5 py-3.5 font-bold text-white transition hover:bg-[#252E82] sm:col-span-2">{sk?"Požiadať o ponuku":"Request my quote"}<ArrowRight size={18}/></button>
        </form>
+            <p className="mt-4 text-sm text-gray-600">{sk ? "Môžete nám napísať aj priamo na " : "You can also email us directly at "}<a className="font-medium underline" href="mailto:mundus.languages@gmail.com">mundus.languages@gmail.com</a>.</p>
       </div>
    </div></section><Footer/>
  </main>;

@@ -56,6 +56,7 @@ export default async function TeachersPage({ searchParams }: { searchParams: Pro
             <a href={`/${language}/privacy`} className="text-xs text-gray-600 underline">{sk ? "Ako spracúvame vaše údaje" : "How we handle your data"}</a>
             <button className="rounded-lg bg-[#2F3AA2] px-4 py-3 font-semibold text-white" type="submit">{sk ? "Odoslať prihlášku" : "Submit application"}</button>
           </form>
+            <p className="mt-4 text-sm text-gray-600">{sk ? "Môžete nám napísať aj priamo na " : "You can also email us directly at "}<a className="font-medium underline" href="mailto:mundus.languages@gmail.com">mundus.languages@gmail.com</a>.</p>
         </div>
       </section>
       <Footer />

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { ArrowRight, Check, CheckCircle2, CreditCard, LockKeyhole, ShieldCheck, Sparkles } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { firstPackageAmountCents, PACKAGE_PRICES, type PackageDuration } from "@/lib/package-catalog";
@@ -13,6 +13,8 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
   const { language } = useLanguage();
   const sk = language === "sk";
   const prefix = `/${language}`;
+  const pathname = usePathname();
+  const standalonePricing = pathname === "/pricing" || /^\/(sk|en)\/pricing\/?$/.test(pathname);
   const queryLanguage = useSearchParams().get("language") ?? "";
   const validQueryLanguage = MUNDUS_LANGUAGE_VALUES.includes(queryLanguage as (typeof MUNDUS_LANGUAGE_VALUES)[number]) ? queryLanguage : "";
   const [languageOverride, setLanguageOverride] = useState<string | null>(null);
@@ -35,7 +37,7 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
     languageRef.current?.focus({ preventScroll: true });
   }
 
-  return <div id="buy-packages" className="mx-auto max-w-6xl scroll-mt-24 pb-7 sm:scroll-mt-32">
+  return <div id="buy-packages" className={`mx-auto max-w-6xl scroll-mt-24 sm:scroll-mt-32 ${standalonePricing ? "pb-24 sm:pb-7" : "pb-7"}`}>
     <div className="relative overflow-hidden rounded-[1.6rem] border border-[#DCE0F3] bg-white p-4 shadow-[0_24px_70px_rgba(23,26,43,.08)] sm:rounded-[2rem] sm:p-7 lg:p-9">
       <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-[#DDE2FF]/70 blur-[70px]" />
       <div className="relative mb-7 flex flex-col gap-3 border-b border-[#E7E8F0] pb-6 sm:mb-9 sm:flex-row sm:items-center sm:justify-between">
@@ -105,6 +107,12 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
       </div>
     </div>
 
+    {standalonePricing && <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#DCE0F3] bg-white/95 px-4 py-2.5 shadow-[0_-8px_32px_rgba(23,26,43,.1)] backdrop-blur-xl lg:hidden" style={{paddingBottom:"max(.625rem, env(safe-area-inset-bottom))"}}>
+      <div className="mx-auto flex max-w-2xl items-center justify-between gap-3">
+        <div className="min-w-0"><p className="truncate text-xs font-semibold text-[#626A80]">{lessons} × {duration} min</p><p className="text-lg font-bold text-[#263399]">{money(firstPrice)}</p></div>
+        {selectedLanguage ? <Link href={checkout} className="flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-4 text-sm font-semibold text-white">{sk ? "Pokračovať" : "Continue"}<ArrowRight size={17}/></Link> : <button type="button" onClick={focusLanguage} className="flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-4 text-sm font-semibold text-white">{sk ? "Vybrať jazyk" : "Select language"}<ArrowRight size={17}/></button>}
+      </div>
+    </div>}
     <div className="mt-5 grid gap-3 md:grid-cols-2">
       <Link href={`${prefix}/group-lessons`} className="group rounded-[1.5rem] border border-[#DDE1EF] bg-white p-5 transition hover:border-[#9BA6E7]">
         <p className="text-xs font-bold uppercase tracking-wider text-[#2F3AA2]">{sk ? "S priateľmi" : "With friends"}</p><h4 className="mt-2 text-xl font-semibold">{sk ? "Súkromné skupiny 2–5" : "Private groups of 2–5"}</h4><p className="mt-2 text-sm text-gray-600">{sk ? "Výučba a cena pre vašu skupinu." : "Learning and pricing for your group."}</p><span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[#2F3AA2]">{sk ? "Zistiť viac" : "Learn more"}<ArrowRight size={16}/></span>

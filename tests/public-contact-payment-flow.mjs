@@ -15,7 +15,7 @@ assert.ok(contact.includes('name="website"'), "public request form must retain i
 assert.ok(action.includes(">= 3"), "request action must rate-limit repeated email submissions");
 assert.ok(action.includes('from("contact_requests")'));
 assert.ok(pricing.includes("Pokračovať k platbe"));
-assert.ok(pricing.includes("Vybrať jazyk a pokračovať") && pricing.includes("Choose language & continue"));
+assert.ok(pricing.includes("Vybrať jazyk") && pricing.includes("Select your language"));
 assert.ok(pricing.includes("`${prefix}/payment?selected="),"paid package CTA must carry purchase intent into the dedicated payment page");
 assert.ok(pricing.includes("focusLanguageSelect"),"missing-language CTA must focus the language selector in the pricing flow");
 assert.equal(pricing.includes("I have a question"),false,"package cards should have one primary conversion action");

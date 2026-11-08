@@ -49,12 +49,12 @@ export default async function CompaniesPage({searchParams}:Props) {
 
    <section className="bg-[#171A2B] px-4 pb-8 sm:px-6 sm:pb-16" aria-label={sk?"Vizualizácia firemného jazykového vzdelávania":"Corporate learning illustration"}>
      <div className="relative mx-auto h-[220px] max-w-7xl overflow-hidden rounded-[1.65rem] bg-[#DDE2F1] sm:h-[335px] sm:rounded-[2rem]">
-       <Image unoptimized src="https://images.unsplash.com/photo-1758270705518-b61b40527e76?auto=format&fit=crop&w=1500&q=84" alt={sk?"Ilustračná fotografia skupiny ľudí spolupracujúcich pri notebooku":"Illustrative photo of people collaborating around a laptop"} fill sizes="(max-width: 1200px) 95vw, 1200px" className="object-cover object-center" />
+       <Image unoptimized src="/images/mundus/DYSOVxCoMrJ.webp" alt={sk?"Fotografia zo sociálnych sietí Mundus":"Photo from Mundus social channels"} fill sizes="(max-width: 1200px) 95vw, 1200px" className="object-cover object-center" />
        <div className="absolute inset-0 bg-gradient-to-r from-[#171A2B]/75 via-[#171A2B]/30 to-transparent" />
        <div className="absolute inset-y-0 left-0 flex max-w-md flex-col justify-center p-5 text-white sm:p-10">
          <p className="text-xs font-semibold uppercase tracking-[.15em] text-[#DCE2FF]">{sk?"Lepšia komunikácia v tíme":"Better team communication"}</p>
          <p className="mt-3 text-2xl font-semibold leading-tight !text-white sm:text-4xl">{sk?"Sebavedomí ľudia. Silnejšie tímy.":"Confident people. Stronger teams."}</p>
-         <span className="mt-4 text-[11px] text-white/75">{sk?"Ilustračná fotografia":"Illustrative photo"}</span>
+         
        </div>
      </div>
    </section>

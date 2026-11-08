@@ -5,6 +5,7 @@ import LanguageSelector from "@/components/LanguageSelector";
 import LearningFormatsSection from "@/components/LearningFormatsSection";
 import TeacherProfiles from "@/components/TeacherProfiles";
 import StudentStories from "@/components/StudentStories";
+import SeoDiscoverySection from "@/components/SeoDiscoverySection";
 import { publicTeachers } from "@/lib/public-teachers";
 import PricingSection from "@/components/PricingSection";
 import FAQSection from "@/components/FAQSection";
@@ -30,6 +31,7 @@ export default async function Home() {
       <Hero paymentsAvailable={paymentEnabled()}/>
       <LearningFormatsSection />
       <LanguageSelector compact />
+      <SeoDiscoverySection />
       <PricingSection paymentsAvailable={paymentEnabled()} />
       <TeacherProfiles compact approved={approved}/>
       <StudentStories/>

@@ -51,6 +51,8 @@ fs.mkdirSync(shots, { recursive: true });
    // Cookie consent must gate Google Tag Manager, including on a fresh visit.
    const consentContext = await browser.newContext({viewport:{width:390,height:820}});
    const consentPage = await consentContext.newPage();
+   const ga4Hits=[];
+   consentPage.on("request",request=>{try{const url=new URL(request.url());if(url.hostname.endsWith("google-analytics.com")&&url.searchParams.get("tid")==="G-5GSC9FQWKY")ga4Hits.push({event:url.searchParams.get("en")||"unknown"});}catch{}});
    await consentPage.goto(root+"/en",{waitUntil:"domcontentloaded",timeout:30000});
    await consentPage.waitForTimeout(300);
    const beforeConsent = await consentPage.evaluate(() => !!document.querySelector('script[src*="gtm.js?id=GTM-NMT87VFV"]'));
@@ -64,6 +66,8 @@ fs.mkdirSync(shots, { recursive: true });
    } catch (error) {
      failures.push("GTM script was not attached after accepting cookies: "+error.message);
    }
+   await consentPage.waitForTimeout(3000);
+   console.log(JSON.stringify({ga4MeasurementId:"G-5GSC9FQWKY",ga4NetworkHits:ga4Hits.length,events:ga4Hits.slice(0,8)}));
    await consentContext.close();
  }finally{await browser.close();}
  console.log("VISUAL_QA_FAILURES",failures.length);

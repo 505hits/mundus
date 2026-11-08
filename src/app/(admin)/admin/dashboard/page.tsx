@@ -66,7 +66,7 @@ export default async function AdminDashboardPage() {
     { data: teachers, error: teachersError },
     { data: lessons, error: lessonsError },
     { data: packages, error: packagesError },
-    { data: requests, error: requestsError },
+    { count: pendingRequestCount, error: requestsError },
     { data: paidOrders, error: paidOrdersError },
     { data: onboardingRows, error: onboardingError },
     { data: teacherPreferences, error: teacherPreferencesError },
@@ -89,7 +89,7 @@ export default async function AdminDashboardPage() {
       .in("status", ["active", "completed"]),
     supabase
       .from("schedule_change_requests")
-      .select("id,status")
+      .select("id", { count: "exact", head: true })
       .eq("status", "pending"),
     supabase
       .from("payment_orders")
@@ -210,7 +210,7 @@ export default async function AdminDashboardPage() {
   const noUpcoming = (students ?? []).filter(
     (student) => !upcomingStudentIds.has(student.id)
   ).length;
-  const pendingRequests = requests?.length ?? 0;
+  const pendingRequests = pendingRequestCount ?? 0;
   const renewalRows = studentsError || packagesError ? null : renewalAttention(students ?? [], packages ?? []);
 
   const firstName =

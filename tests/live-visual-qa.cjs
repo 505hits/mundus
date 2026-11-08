@@ -39,6 +39,13 @@ fs.mkdirSync(shots, { recursive: true });
      if(info.scroll>width+8)failures.push(`${width} ${route}: document overflow ${info.scroll-width}px`);
      if(info.lang!==route.split("/")[1])failures.push(`${width} ${route}: unexpected lang ${info.lang}`);
      if(info.broken.length)failures.push(`${width} ${route}: missing image(s) ${info.broken.join(",")}`);
+     if(width===390 && route==="/sk/teachers"){
+       const portraits=await page.evaluate(async()=>Promise.all(["teacher-nesrine","teacher-veronika"].map(id=>new Promise(resolve=>{
+         const img=new Image();img.onload=()=>resolve({id,valid:img.naturalWidth>0&&img.naturalHeight>0});img.onerror=()=>resolve({id,valid:false});img.src="/images/mundus/"+id+".webp";
+       }))));
+       for(const item of portraits)if(!item.valid)failures.push("Invalid teacher portrait: "+item.id);
+       console.log(JSON.stringify({teacherPortraits:portraits}));
+     }
      if(errors.length)failures.push(`${width} ${route}: script error ${errors[0]}`);
      if((width===390||width===1440)&&["/sk","/sk/group-lessons","/sk/companies","/sk/pricing","/sk/teachers"].includes(route)){
        await page.screenshot({path:path.join(shots,`${route.replaceAll("/","_")}-${width}.png`),fullPage:true});

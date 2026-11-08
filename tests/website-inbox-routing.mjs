@@ -1,0 +1,18 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+const read=(path)=>readFileSync(new URL("../"+path, import.meta.url),"utf8");
+const worker=read("src/app/api/notifications/process/route.ts");
+const contact=read("src/app/contact/actions.ts");
+const companies=read("src/app/companies/actions.ts");
+const newsletter=read("src/app/newsletter/actions.ts");
+const migration=read("supabase/migrations/202611080001_newsletter_admin_leads.sql");
+assert.ok(contact.includes('from("contact_requests")'),"contact form submissions must be saved");
+assert.ok(companies.includes('from("company_quote_requests")'),"company inquiries must be saved");
+assert.ok(worker.includes('websiteLeadInbox = "mundus.languages@gmail.com"'),"inbox destination must be pinned");
+assert.ok(worker.includes('to:websiteLeadInbox,replyTo:requestRow.email,subject'),"website leads must reach Mundus with reply-to");
+assert.ok(worker.includes('to:websiteLeadInbox,replyTo:requestRow.email,subject:"Mundus: nový firemný dopyt"'),"company leads must reach Mundus");
+assert.ok(newsletter.includes('kind:"admin_notice"'),"newsletter signup must enqueue admin alert");
+assert.ok(worker.includes('job.kind==="admin_notice"')&&worker.includes('to:websiteLeadInbox'),"newsletter alert must target Mundus inbox");
+assert.ok(migration.includes("'admin_notice'"),"newsletter outbox must support separate admin alert jobs");
+assert.ok(worker.includes('MUNDUS_EMAIL_NOTIFICATIONS_ENABLED')&&worker.includes('MUNDUS_SMTP_PASSWORD'),"worker must not pretend email delivery is active without SMTP");
+console.log("PASS: all public lead email forms persist and queue notifications for the Mundus inbox; SMTP is required for delivery");

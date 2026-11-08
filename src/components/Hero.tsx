@@ -23,7 +23,7 @@ export default function Hero({paymentsAvailable=false}:{paymentsAvailable?:boole
       <ShieldCheck size={16} className="text-[#C7D2FE]"/>{sk?"Individuálne online hodiny · 13+ jazykov":"Private online lessons · 13+ languages"}
     </motion.span>
     <motion.h1 variants={fadeInUp} className="mt-5 max-w-3xl text-[clamp(2.25rem,10.2vw,5.1rem)] font-semibold leading-[1.04] sm:mt-7 sm:leading-[0.98] tracking-[-0.045em] !text-white">
-      {sk?"Konečne sa rozrozprávajte.":"Finally start speaking."} <span className="bg-gradient-to-r from-[#C7D2FE] to-white bg-clip-text text-transparent">{sk?"Po svojom, vo svojom čase.":"Your way, on your schedule."}</span>
+      {sk?"Online jazykové kurzy":"Online language courses"} <span className="bg-gradient-to-r from-[#C7D2FE] to-white bg-clip-text text-transparent">{sk?"vo vašom tempe.":"at your pace."}</span>
     </motion.h1>
     <motion.p variants={fadeInUp} className="mt-4 max-w-xl text-[15px] leading-[1.65] sm:mt-6 sm:text-lg sm:leading-7 text-[#D8DBE8] sm:text-lg">
       {sk

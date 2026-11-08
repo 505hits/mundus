@@ -3,7 +3,9 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import LanguageSelector from "@/components/LanguageSelector";
 import LearningFormatsSection from "@/components/LearningFormatsSection";
-import InstagramHomepageSpotlight from "@/components/InstagramHomepageSpotlight";
+import TeacherProfiles from "@/components/TeacherProfiles";
+import StudentStories from "@/components/StudentStories";
+import { publicTeachers } from "@/lib/public-teachers";
 import PricingSection from "@/components/PricingSection";
 import FAQSection from "@/components/FAQSection";
 import Footer from "@/components/Footer";
@@ -20,15 +22,17 @@ export async function generateMetadata():Promise<Metadata>{
 }
 
 export default async function Home() {
+  const approved=await publicTeachers();
   return (
     <main className="min-h-screen">
       <MundusStructuredData />
       <Navbar />
       <Hero />
       <LearningFormatsSection />
-      <LanguageSelector />
+      <LanguageSelector compact />
       <PricingSection paymentsAvailable={paymentEnabled()} />
-      <InstagramHomepageSpotlight />
+      <TeacherProfiles compact approved={approved}/>
+      <StudentStories/>
       <FAQSection />
       <Footer />
     </main>

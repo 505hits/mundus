@@ -8,9 +8,9 @@ import { useLanguage } from "@/context/LanguageContext";
 
 const fadeInUp={hidden:{opacity:0,y:22},visible:{opacity:1,y:0}};
 
-export default function Hero(){
+export default function Hero({paymentsAvailable=false}:{paymentsAvailable?:boolean}){
  const {language}=useLanguage();const sk=language==="sk";
- return <section className="relative overflow-hidden bg-[#171A2B] pb-12 pt-24 sm:pb-16 sm:pt-32 lg:pb-24 lg:pt-40">
+ return <section className="relative overflow-hidden bg-[#171A2B] pb-8 pt-20 sm:pb-16 sm:pt-32 lg:pb-24 lg:pt-40">
   <div className="pointer-events-none absolute inset-0">
     <div className="absolute left-[48%] top-[-34%] h-[860px] w-[860px] -translate-x-1/2 rounded-full bg-[#4652C2]/35 blur-[145px]"/>
     <div className="absolute right-[-12%] top-[18%] h-[480px] w-[480px] rounded-full bg-[#7382FF]/18 blur-[110px]"/>
@@ -27,8 +27,8 @@ export default function Hero(){
     </motion.h1>
     <motion.p variants={fadeInUp} className="mt-4 max-w-xl text-[15px] leading-[1.65] sm:mt-6 sm:text-lg sm:leading-7 text-[#D8DBE8] sm:text-lg">
       {sk
-        ?"Vyberiete balíček, zaplatíte bezpečne online a potom nám poviete svoje ciele. Lektora prispôsobíme vašim časovým možnostiam."
-        :"Choose a package, pay securely online, then tell us your goals. We match a teacher to your availability."}
+        ?(paymentsAvailable?"Vyberiete balíček, zaplatíte bezpečne online a potom nám poviete svoje ciele. Lektora prispôsobíme vašim časovým možnostiam.":"Vyberte si jazyk a balíček. Pomôžeme vám s ďalším postupom a nájdeme lektora podľa vašich cieľov.")
+         : (paymentsAvailable?"Choose a package, pay securely online, then tell us your goals. We match a teacher to your availability.":"Choose your language and package. We will help you with the next steps and match a teacher to your goals.")}
     </motion.p>
 
     <motion.div variants={fadeInUp} className="mt-6 flex flex-col gap-2.5 sm:mt-8 sm:flex-row sm:gap-3">

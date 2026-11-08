@@ -1,3 +1,4 @@
+import { PACKAGE_PRICES } from "@/lib/package-catalog";
 import { currentLanguage } from "@/lib/i18n";
 import { localizedPath } from "@/lib/seo-locales";
 
@@ -36,18 +37,13 @@ export default async function MundusStructuredData(){
     offers:{
       "@type":"OfferCatalog",
       name:sk?"Balíčky individuálnych hodín":"Individual lesson packages",
-      itemListElement:[
-       {"@type":"Offer",priceCurrency:"EUR",price:"24",name:"1 × 45 min"},
-       {"@type":"Offer",priceCurrency:"EUR",price:"115",name:"5 × 45 min"},
-       {"@type":"Offer",priceCurrency:"EUR",price:"220",name:"10 × 45 min"},
-       {"@type":"Offer",priceCurrency:"EUR",price:"415",name:"20 × 45 min"},
-       {"@type":"Offer",priceCurrency:"EUR",price:"595",name:"30 × 45 min"},
-       {"@type":"Offer",priceCurrency:"EUR",price:"28",name:"1 × 60 min"},
-       {"@type":"Offer",priceCurrency:"EUR",price:"135",name:"5 × 60 min"},
-       {"@type":"Offer",priceCurrency:"EUR",price:"260",name:"10 × 60 min"},
-       {"@type":"Offer",priceCurrency:"EUR",price:"490",name:"20 × 60 min"},
-       {"@type":"Offer",priceCurrency:"EUR",price:"705",name:"30 × 60 min"}
-      ]
+      itemListElement:PACKAGE_PRICES.map(item=>({
+       "@type":"Offer",
+       priceCurrency:"EUR",
+       price:(item.amountCents/100).toFixed(2),
+       name:`${item.lessons} × ${item.durationMinutes} min`,
+       url:`https://munduslanguages.com${localizedPath("/pricing",language)}`
+      })),
     }
    },
    {

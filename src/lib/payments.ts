@@ -1,6 +1,5 @@
 import "server-only";
 import Stripe from "stripe";
-import { randomBytes } from "node:crypto";
 import { accountOrigin } from "@/lib/account-config";
 
 export { PACKAGE_PRICES } from "@/lib/package-catalog";
@@ -23,10 +22,6 @@ export function stripeClient() {
     throw new Error("The configured Stripe key does not match the selected payment mode");
   }
   return new Stripe(key, { apiVersion: "2026-08-26.dahlia" });
-}
-
-export function stripeIntegrationIdentifier() {
-  return `mundus-portal-${Array.from(randomBytes(8), byte => String.fromCharCode(97 + byte % 26)).join("")}`;
 }
 
 export function euro(amountCents: number) {

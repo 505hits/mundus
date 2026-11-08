@@ -78,11 +78,11 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
                   {recommended && <span className="absolute -top-2 right-2 rounded-full bg-[#2F3AA2] px-2 py-1 text-[10px] font-bold text-white">{sk ? "Top výber" : "Top pick"}</span>}
                   <span className="flex items-start justify-between gap-1 text-lg font-bold text-[#171A2B]">{item.lessons} <span className="text-xs font-semibold">{sk ? (item.lessons===1?"hodina":"hodín") : (item.lessons===1?"lesson":"lessons")}</span>{active && <CheckCircle2 size={17} className="shrink-0 text-[#2F3AA2]"/>}</span>
                   <span className="text-xs text-gray-500">{money(Math.round(item.amountCents/item.lessons))} / {sk ? "hod." : "lesson"}</span>
-                  <span className="text-base font-bold text-[#2F3AA2]">{money(firstPackageAmountCents(item.amountCents))}</span>
+                  <span className="text-base font-bold text-[#2F3AA2]">{money(item.amountCents)}</span><span className="mt-1 text-[11px] font-semibold leading-4 text-[#44549C]">{sk ? "S prvou zľavou" : "If first-discount eligible"}: {money(firstPackageAmountCents(item.amountCents))}</span>
                 </button>;
               })}
             </div>
-            <p className="mt-3 text-xs leading-5 text-gray-500">{sk ? "Zobrazené ceny zahŕňajú 10 % zľavu na prvý oprávnený balíček. Po overení účtu sa uplatní iba raz na osobu." : "Displayed prices include the 10% first-package discount, subject to account eligibility. It can only be used once per person."}</p>
+            <p className="mt-3 text-xs leading-5 text-gray-500">{sk ? "Hlavná cena je bežná cena balíčka. Zľavu 10 % zobrazujeme len ako možnosť pre oprávnených nových študentov; systém overí nárok po prihlásení." : "The main price is the regular package price. The 10% saving is shown only as an option for eligible new students; eligibility is checked after sign-in."}</p>
           </section>
         </div>
 
@@ -92,8 +92,8 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
             <h4 className="mt-4 text-2xl font-semibold !text-white">{selectedLanguage ? languageName : (sk ? "Vyberte jazyk" : "Choose a language")}</h4>
             <p className="mt-1 text-sm text-[#CDD2EA]">{lessons} × {duration} min · {sk ? "Individuálne 1:1" : "Private 1:1"}</p>
             <div className="my-6 border-t border-white/15" />
-            <div className="flex items-end justify-between gap-3"><div><p className="text-xs text-[#B8BEDC]">{sk ? "Prvý oprávnený balíček" : "Eligible first package"}</p><p className="mt-1 text-[clamp(2rem,6vw,3.25rem)] font-semibold tracking-tight !text-white">{money(firstPrice)}</p></div><span className="rounded-full bg-[#BCEBD4] px-3 py-1 text-xs font-bold text-[#164B39]">−10 %</span></div>
-            <p className="mt-1 text-sm text-[#BEC4DB]"><span className="line-through">{money(selected.amountCents)}</span><span className="ml-2">{sk ? "úspora" : "save"} {money(selected.amountCents-firstPrice)}</span></p>
+            <div className="flex items-end justify-between gap-3"><div><p className="text-xs text-[#B8BEDC]">{sk ? "Bežná cena balíčka" : "Regular package price"}</p><p className="mt-1 text-[clamp(2rem,6vw,3.25rem)] font-semibold tracking-tight !text-white">{money(selected.amountCents)}</p></div><span className="rounded-full bg-[#BCEBD4] px-3 py-1 text-xs font-bold text-[#164B39]">{sk ? "Možná −10 %" : "Possible −10%"}</span></div>
+            <p className="mt-2 text-sm leading-6 text-[#E0E4FA]">{sk ? "Ak máte nárok na prvú zľavu:" : "If eligible for the first-package offer:"} <strong className="text-white">{money(firstPrice)}</strong> <span className="ml-1 text-[#BEE8D5]">({sk ? "úspora" : "save"} {money(selected.amountCents-firstPrice)})</span></p>
             <div className="mt-6 space-y-2 text-sm text-[#E3E7F7]">
               <p className="flex items-center gap-2"><Check size={17} className="text-[#A4E9D0]"/>{sk ? "Flexibilné termíny" : "Flexible scheduling"}</p>
               <p className="flex items-center gap-2"><Check size={17} className="text-[#A4E9D0]"/>{sk ? "Materiály a študentský portál" : "Materials and student portal"}</p>
@@ -109,7 +109,7 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
 
     {standalonePricing && <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#DCE0F3] bg-white/95 px-4 py-2.5 shadow-[0_-8px_32px_rgba(23,26,43,.1)] backdrop-blur-xl lg:hidden" style={{paddingBottom:"max(.625rem, env(safe-area-inset-bottom))"}}>
       <div className="mx-auto flex max-w-2xl items-center justify-between gap-3">
-        <div className="min-w-0"><p className="truncate text-xs font-semibold text-[#626A80]">{lessons} × {duration} min</p><p className="text-lg font-bold text-[#263399]">{money(firstPrice)}</p></div>
+        <div className="min-w-0"><p className="truncate text-xs font-semibold text-[#626A80]">{lessons} × {duration} min</p><p className="text-lg font-bold text-[#263399]">{money(selected.amountCents)}</p><p className="text-[10px] text-[#626A80]">{sk ? "Prvá zľava, ak oprávnený:" : "Eligible first price:"} {money(firstPrice)}</p></div>
         {selectedLanguage ? <Link href={checkout} className="flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-4 text-sm font-semibold text-white">{sk ? "Pokračovať" : "Continue"}<ArrowRight size={17}/></Link> : <button type="button" onClick={focusLanguage} className="flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-4 text-sm font-semibold text-white">{sk ? "Vybrať jazyk" : "Select language"}<ArrowRight size={17}/></button>}
       </div>
     </div>}

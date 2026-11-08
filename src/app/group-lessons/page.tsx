@@ -32,7 +32,7 @@ export default async function GroupLessonsPage(){
       <h1 className="mt-6 text-[clamp(2.4rem,8vw,4.65rem)] font-semibold leading-[1.07] tracking-[-.05em] !text-white">{sk?"Učte sa jazyk ":"Learn a language "} <span className="text-[#C7D2FE]">{sk?"spolu.":"together."}</span> {sk?"Je to zábavnejšie.":"It's more fun."}</h1>
       <p className="mt-5 max-w-xl text-base leading-7 text-[#DDE1F3] sm:text-lg">{sk?"Vytvorte si vlastnú skupinu priateľov, rodiny alebo kolegov. Spoločné ciele, flexibilné online hodiny a lektor len pre vás.":"Create your own group of friends, family or colleagues. Shared goals, flexible online lessons and a teacher dedicated to your group."}</p>
       <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-       <Link href={`${prefix}/contact?type=group`} className="inline-flex min-h-13 items-center justify-center gap-2 rounded-xl bg-[#DDE2FF] px-6 py-3 font-semibold text-[#25348F] transition hover:bg-white">{sk?"Požiadať o ponuku":"Request group pricing"}<ArrowRight size={18}/></Link>
+       <Link href={`/${language}/contact?type=group`} className="inline-flex min-h-13 items-center justify-center gap-2 rounded-xl bg-[#DDE2FF] px-6 py-3 font-semibold text-[#25348F] transition hover:bg-white">{sk?"Požiadať o ponuku":"Request group pricing"}<ArrowRight size={18}/></Link>
        <a href="#how-groups-work" className="inline-flex min-h-13 items-center justify-center rounded-xl border border-white/25 bg-white/5 px-5 py-3 font-semibold text-white hover:bg-white/10">{sk?"Ako to funguje":"How it works"}</a>
       </div>
       <div className="mt-7 flex flex-wrap gap-2 text-xs font-semibold text-white/90">{[sk?"2–5 ľudí":"2–5 people",sk?"Online odkiaľkoľvek":"Online from anywhere",sk?"Termín podľa vás":"Your schedule"].map(t=><span key={t} className="rounded-full border border-white/15 bg-white/10 px-3 py-2">{t}</span>)}</div>
@@ -64,7 +64,7 @@ export default async function GroupLessonsPage(){
   <section className="px-4 py-16 sm:px-6 sm:py-24"><div className="mx-auto max-w-6xl overflow-hidden rounded-[2rem] bg-[#171A2B] p-6 text-white sm:p-10">
    <div className="grid gap-8 lg:grid-cols-[1.2fr_.8fr] lg:items-center">
      <div><p className="text-xs font-bold uppercase tracking-[.16em] text-[#C7D2FE]">{sk?"Cena na mieru":"Custom quote"}</p><h2 className="mt-3 text-3xl font-semibold tracking-tight !text-white sm:text-4xl">{sk?"Vaša skupina. Jedna cenová ponuka.":"Your group. One tailored quote."}</h2><p className="mt-4 max-w-2xl leading-7 text-[#D8DBE8]">{sk?"Cena závisí od počtu ľudí, dĺžky a frekvencie hodín. Pošlite nám pár detailov a navrhneme vhodné riešenie bez záväzkov.":"Pricing depends on group size, lesson length and frequency. Send us a few details for a no-obligation proposal."}</p></div>
-     <Link href={`${prefix}/contact?type=group`} className="inline-flex min-h-14 items-center justify-center gap-2 rounded-xl bg-[#DDE2FF] px-5 font-bold text-[#25348F] hover:bg-white">{sk?"Získať ponuku pre skupinu":"Get a group quote"}<ArrowRight size={18}/></Link>
+     <Link href={`/${language}/contact?type=group`} className="inline-flex min-h-14 items-center justify-center gap-2 rounded-xl bg-[#DDE2FF] px-5 font-bold text-[#25348F] hover:bg-white">{sk?"Získať ponuku pre skupinu":"Get a group quote"}<ArrowRight size={18}/></Link>
    </div>
   </div></section><Footer/></main>;
 }

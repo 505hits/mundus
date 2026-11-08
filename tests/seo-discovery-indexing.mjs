@@ -4,6 +4,8 @@ const read=(path)=>readFileSync(new URL("../"+path,import.meta.url),"utf8");
 const home=read("src/app/page.tsx");
 const links=read("src/components/LanguageSelector.tsx");
 const discover=read("src/components/SeoDiscoverySection.tsx");
+const lessonExamples=read("src/data/language-learning-examples.ts");
+const courseLanding=read("src/app/languages/[slug]/page.tsx");
 const sitemap=read("src/app/sitemap.ts");
 const nextConfig=read("next.config.ts");
 const offer=read("src/components/MundusStructuredData.tsx");
@@ -13,6 +15,8 @@ assert.ok(home.includes("<SeoDiscoverySection />"),"Homepage should link to actu
 assert.ok(links.includes('href={`${prefix}${item.detail}`}')&&links.includes('view_language_course'),"Homepage language cards should link directly to crawlable language detail pages");
 for(const slug of ["anglictina-pre-zaciatocnikov","konverzacna-anglictina","business-english","anglictina-na-cestovanie","slovencina-pre-cudzincov-a1"])assert.ok(discover.includes(slug),`Missing discovery page ${slug}`);
 assert.ok(discover.includes('/languages/${x.slug}'),"Popular language pages should have direct links");
+for(const slug of ["english","german","spanish","italian","french","slovak-for-foreigners"])assert.ok(lessonExamples.includes(` ${slug}:`)||lessonExamples.includes(` "${slug}":`),`Missing useful course examples for ${slug}`);
+assert.ok(courseLanding.includes("languageLearningExample(config.slug)")&&courseLanding.includes("example.steps.map"),"Course pages should render helpful language-specific lessons");
 assert.ok(sitemap.includes("LANGUAGE_SEO_PAGES")&&sitemap.includes("INTENT_SEO_PAGES"),"Both language and intent page sets should be in sitemap");
 const locales=read("src/lib/seo-locales.ts");
 assert.ok(locales.includes('"x-default":`/sk${clean}`'),"x-default must point to a stable default language, not a cookie-dependent URL");

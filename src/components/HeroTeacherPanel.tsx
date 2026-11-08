@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ArrowRight, ExternalLink, GraduationCap, Heart, Instagram, MessageCircle, Sparkles } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
-import { setAnalyticsConsent, useAnalyticsConsent } from "@/components/AnalyticsManager";
+import { useAnalyticsConsent } from "@/components/AnalyticsManager";
 
 const postUrl = "https://www.instagram.com/p/DfPIUSjjVZf/";
 
@@ -25,7 +25,7 @@ export default function HeroTeacherPanel() {
             <div className="flex h-full min-h-[264px] flex-col justify-between bg-gradient-to-br from-[#CBC6F3] via-[#EAE6FA] to-[#F8E8D6] p-4 text-[#222550]">
               <Instagram size={23}/>
               <div><p className="max-w-[180px] text-2xl font-semibold leading-tight tracking-tight sm:text-3xl">{sk ? "Spoznajte našich lektorov." : "Meet your future teachers."}</p><p className="mt-2 text-xs leading-5">{sk ? "Skutočné predstavenia na Mundus Instagrame" : "Real introductions from the Mundus Instagram"}</p></div>
-              <button type="button" onClick={() => setAnalyticsConsent("granted")} className="rounded-xl bg-[#252E82] px-3 py-3 text-xs font-semibold text-white">{sk ? "Zobraziť Instagram" : "Show Instagram"}</button>
+              <a href={postUrl} target="_blank" rel="noopener noreferrer" className="rounded-xl bg-[#252E82] px-3 py-3 text-center text-xs font-semibold text-white">{sk ? "Spoznať lektora" : "Meet the teacher"}</a>
             </div>}
           <a href={postUrl} target="_blank" rel="noopener noreferrer" aria-label={sk ? "Otvoriť predstavenie na Instagrame" : "Open introduction on Instagram"} className="absolute right-2 top-2 rounded-full bg-white p-2 text-[#2F3AA2] shadow"><ExternalLink size={15}/></a>
         </div>

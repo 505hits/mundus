@@ -13,7 +13,7 @@ const css=read("src/app/globals.css");
 
 assert.ok(languages.includes("flagcdn.com") && languages.includes("flagForLanguage"),"language section must show the user-requested language flags");
 assert.equal(nav.includes("tel:+421904082794"),false,"primary navbar must stay focused on navigation and purchase");
-assert.ok(home.indexOf("<PricingSection") < home.indexOf("<InstagramHomepageSpotlight"),"pricing should appear before the curated community gallery");
+assert.ok(home.indexOf("<PricingSection") < home.indexOf("<TeacherProfiles"),"pricing should appear before teacher and community social proof");
 assert.ok(portalNav.includes('!["/feedback", "/level-test", "/progress-test"].includes(item.href)'),"mobile nav must stay focused on five core destinations");
 assert.ok(portalNav.includes("fixed left-0 right-0 top-0"),"mobile portal needs a consistent top bar");
 assert.ok(dashboard.includes("Quick navigation"),"dashboard must expose obvious task shortcuts");

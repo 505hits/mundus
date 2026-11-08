@@ -38,9 +38,13 @@ export default async function GroupLessonsPage(){
       <div className="mt-7 flex flex-wrap gap-2 text-xs font-semibold text-white/90">{[sk?"2–5 ľudí":"2–5 people",sk?"Online odkiaľkoľvek":"Online from anywhere",sk?"Termín podľa vás":"Your schedule"].map(t=><span key={t} className="rounded-full border border-white/15 bg-white/10 px-3 py-2">{t}</span>)}</div>
     </div>
     <div className="relative h-[340px] overflow-hidden rounded-[2rem] border border-white/15 bg-[#BFC8DF] shadow-[0_35px_70px_rgba(5,10,40,.3)] sm:h-[430px]">
-      <Image unoptimized src="/images/mundus/DW8aF4-DZDd.webp" alt={sk?"Fotografia Mundus":"Mundus photo"} fill sizes="(max-width: 1024px) 95vw, 50vw" className="object-cover"/>
-      <div className="absolute inset-0 bg-gradient-to-t from-[#171A2B]/65 via-transparent to-transparent"/>
-      <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between gap-3"><span className="rounded-full bg-white/90 px-4 py-2 text-xs font-bold text-[#2F3AA2]">{sk?"Vaša partia. Váš kurz.":"Your people. Your course."}</span></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-[#E8EAFF] via-[#D3DEF4] to-[#C7D5EA]"/>
+      <div className="relative mx-auto flex h-full max-w-md items-center justify-center p-5 sm:p-7">
+        <div className="relative h-full w-[min(76%,290px)] overflow-hidden rounded-[1.65rem] border-[8px] border-white bg-white shadow-[0_20px_50px_rgba(23,26,43,.2)]">
+          <Image src="/images/mundus/DW8aF4-DZDd.webp" alt={sk?"Fotografia zo skutočného príspevku Mundus":"Photo from a real Mundus post"} fill sizes="290px" className="object-contain"/>
+        </div>
+      </div>
+      <span className="absolute bottom-4 left-4 rounded-full bg-white/95 px-4 py-2 text-xs font-bold text-[#2F3AA2] shadow-sm">{sk?"Vaša partia. Váš kurz.":"Your people. Your course."}</span>
     </div>
    </div>
   </section>

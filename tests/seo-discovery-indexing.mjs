@@ -13,6 +13,9 @@ assert.ok(links.includes('href={`${prefix}${item.detail}`}')&&links.includes('vi
 for(const slug of ["anglictina-pre-zaciatocnikov","konverzacna-anglictina","business-english","anglictina-na-cestovanie","slovencina-pre-cudzincov-a1"])assert.ok(discover.includes(slug),`Missing discovery page ${slug}`);
 assert.ok(discover.includes('/languages/${x.slug}'),"Popular language pages should have direct links");
 assert.ok(sitemap.includes("LANGUAGE_SEO_PAGES")&&sitemap.includes("INTENT_SEO_PAGES"),"Both language and intent page sets should be in sitemap");
+const locales=read("src/lib/seo-locales.ts");
+assert.ok(locales.includes('"x-default":`/sk${clean}`'),"x-default must point to a stable default language, not a cookie-dependent URL");
+assert.ok(sitemap.includes('"x-default":`${base}/sk${path}`'),"Sitemap x-default should match the stable default language");
 assert.ok(!sitemap.includes("lastModified:now"),"A request time must not be misreported as the editorial last modification");
 assert.ok(!sitemap.includes("{url:base,lastModified"),"Do not list the noncanonical dynamic-locale root as an index target");
 assert.ok(offer.includes("PACKAGE_PRICES.map")&&catalog.includes("FORTY_FIVE_MINUTE_PRICES"),"Offer catalog must reflect the actual live package price source");

@@ -7,6 +7,7 @@ import { scheduleEmail } from "@/lib/schedule-email";
 import { portalEmail } from "@/lib/portal-email";
 export const runtime="nodejs";
 export const maxDuration=120;
+const websiteLeadInbox = "mundus.languages@gmail.com";
 export async function GET(request:NextRequest) {
  const secret=process.env.MUNDUS_NOTIFICATION_SECRET || process.env.CRON_SECRET;
  const received=request.headers.get("authorization")||"";
@@ -92,7 +93,7 @@ export async function GET(request:NextRequest) {
         "",
         "Mundus Languages",
       ].filter(Boolean).join("\n");
-      const result=await transport.sendMail({from:process.env.MUNDUS_EMAIL_FROM,to:job.recipient_email,subject,text:details,messageId:"<mundus-contact-"+job.id+"@"+new URL(origin).hostname+">"});
+      const result=await transport.sendMail({from:process.env.MUNDUS_EMAIL_FROM,to:websiteLeadInbox,replyTo:requestRow.email,subject,text:details,messageId:"<mundus-contact-"+job.id+"@"+new URL(origin).hostname+">"});
       if(!result.accepted.length) throw new Error("SMTP rejected");
       const {error:finishError}=await admin.from("contact_request_email_outbox").update({status:"sent",sent_at:new Date().toISOString(),lease_until:null}).eq("id",job.id).eq("lease_token",job.lease_token);
       if(finishError) throw finishError;
@@ -126,7 +127,7 @@ export async function GET(request:NextRequest) {
         "",
         "Mundus Languages",
       ].filter(Boolean).join("\n");
-      const result=await transport.sendMail({from:process.env.MUNDUS_EMAIL_FROM,to:job.recipient_email,subject:"Mundus: nový firemný dopyt",text:details,messageId:"<mundus-company-"+job.id+"@"+new URL(origin).hostname+">"});
+      const result=await transport.sendMail({from:process.env.MUNDUS_EMAIL_FROM,to:websiteLeadInbox,replyTo:requestRow.email,subject:"Mundus: nový firemný dopyt",text:details,messageId:"<mundus-company-"+job.id+"@"+new URL(origin).hostname+">"});
       if(!result.accepted.length) throw new Error("SMTP rejected");
       const {error:finishError}=await admin.from("company_quote_email_outbox").update({status:"sent",sent_at:new Date().toISOString(),lease_until:null}).eq("id",job.id).eq("lease_token",job.lease_token);
       if(finishError) throw finishError; sent++;

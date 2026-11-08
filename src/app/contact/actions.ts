@@ -7,7 +7,9 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function submitContactRequest(form: FormData) {
   const uiLanguage = String(form.get("ui_language") ?? "sk") === "en" ? "en" : "sk";
-  const base = `/${uiLanguage}/contact`;
+  const application = form.get("source") === "teacher_application";
+  const base = `/${uiLanguage}/${application ? "teachers" : "contact"}`;
+  const result = (query: string) => `${base}?${query}${application ? "#apply" : ""}`;
   const fullName = String(form.get("full_name") ?? "").trim().replace(/\s+/g, " ");
   const email = String(form.get("email") ?? "").trim().toLowerCase();
   const language = String(form.get("language") ?? "").trim().replace(/\s+/g, " ");
@@ -19,7 +21,7 @@ export async function submitContactRequest(form: FormData) {
   const rawGroupSize = String(form.get("group_size") ?? "").trim();
   const groupSize = rawGroupSize ? Number(rawGroupSize) : null;
 
-  if (honeypot) redirect(`${base}?sent=1`);
+  if (honeypot) redirect(result("sent=1"));
 
   if (
     fullName.length < 2 ||
@@ -28,12 +30,13 @@ export async function submitContactRequest(form: FormData) {
     email.length > 254 ||
     language.length < 2 ||
     language.length > 80 ||
-    message.length > 2000 ||
+    message.length > (application ? 1960 : 2000) ||
+    (application && (message.length < 10 || requestType !== "individual" || packageLessons !== null)) ||
     (packageLessons !== null && ![1, 5, 10, 20, 30].includes(packageLessons)) ||
     (groupSize !== null && (!Number.isInteger(groupSize) || groupSize < 2 || groupSize > 5)) ||
     (requestType === "group" && groupSize === null)
   ) {
-    redirect(`${base}?problem=invalid`);
+    redirect(result("problem=invalid"));
   }
 
   const admin = createSupabaseAdminClient();
@@ -44,8 +47,8 @@ export async function submitContactRequest(form: FormData) {
     .eq("email", email)
     .gte("created_at", cutoff);
 
-  if (countError) redirect(`${base}?problem=unavailable`);
-  if ((count ?? 0) >= 3) redirect(`${base}?problem=rate`);
+  if (countError) redirect(result("problem=unavailable"));
+  if ((count ?? 0) >= 3) redirect(result("problem=rate"));
 
   const { error } = await admin.from("contact_requests").insert({
     full_name: fullName,
@@ -54,9 +57,9 @@ export async function submitContactRequest(form: FormData) {
     package_lessons: packageLessons,
     request_type: requestType,
     group_size: requestType === "group" ? groupSize : null,
-    message,
+    message: application ? `[Teacher application / Lektor]\n${message}` : message,
   });
 
-  if (error) redirect(`${base}?problem=unavailable`);
-  redirect(`${base}?sent=1`);
+  if (error) redirect(result("problem=unavailable"));
+  redirect(result("sent=1"));
 }

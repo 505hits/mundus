@@ -22,7 +22,7 @@ assert.ok(pricing.includes("Choose a language. Choose a package. Pay online."));
 assert.ok(pricing.includes("<PurchaseJourney"));
 assert.ok(languages.includes("Start by choosing your language."));
 assert.ok(purchase.includes('name') || purchase.includes("selectedLanguage"));
-assert.ok(purchase.includes("Choose language & continue"));
+assert.ok(purchase.includes("Select your language"));
 assert.ok(purchase.includes("Continue to payment"));
 assert.ok(purchase.includes("`${prefix}/payment?selected="),"online payment CTA must preserve package intent through the dedicated payment page");
 assert.equal(purchase.includes("I have a question"),false);

@@ -6,8 +6,10 @@ import Footer from "@/components/Footer";
 import { currentLanguage } from "@/lib/i18n";
 import { localizedAlternates } from "@/lib/seo-locales";
 import { submitContactRequest } from "./actions";
+import { paymentEnabled } from "@/lib/payments";
+import { MUNDUS_LANGUAGE_VALUES } from "@/lib/language-offer";
 
-type PageProps = { searchParams: Promise<{ sent?: string; problem?: string; type?: string }> };
+type PageProps = { searchParams: Promise<{ sent?: string; problem?: string; type?: string; language?: string; lessons?: string; duration?: string }> };
 
 
 export async function generateMetadata():Promise<Metadata>{
@@ -17,7 +19,14 @@ export async function generateMetadata():Promise<Metadata>{
 export default async function ContactPage({ searchParams }: PageProps) {
   const language = await currentLanguage();
   const sk = language === "sk";
-  const { sent, problem, type } = await searchParams;
+  const { sent, problem, type, language: requestedLanguage, lessons: requestedLessons, duration: requestedDuration } = await searchParams;
+  const paymentsAvailable = paymentEnabled();
+  const preservedLanguage = requestedLanguage && MUNDUS_LANGUAGE_VALUES.includes(requestedLanguage as (typeof MUNDUS_LANGUAGE_VALUES)[number]) ? requestedLanguage : "";
+  const selectedLessons = [1,5,10,20,30].includes(Number(requestedLessons)) ? String(requestedLessons) : "";
+  const selectedDuration = ["45","60"].includes(String(requestedDuration)) ? String(requestedDuration) : "";
+  const selectedSummary = preservedLanguage && selectedLessons && selectedDuration
+    ? (sk ? `Vybraný balíček: ${preservedLanguage}, ${selectedLessons} × ${selectedDuration} min.` : `Selected package: ${preservedLanguage}, ${selectedLessons} × ${selectedDuration} min.`)
+    : "";
   const initialType = type === "group" ? "group" : "individual";
 
   return (
@@ -29,16 +38,16 @@ export default async function ContactPage({ searchParams }: PageProps) {
           <h1 className="mt-4 text-4xl font-bold sm:text-5xl">{sk ? "Ako chcete začať?" : "How would you like to start?"}</h1>
           <p className="mt-5 max-w-3xl text-lg leading-relaxed text-gray-600">
             {sk
-              ? "Ak chcete začať individuálne hodiny, najrýchlejšia cesta je vybrať si jazyk a balíček a zaplatiť online. Tento formulár použite iba vtedy, ak sa chcete najprv niečo opýtať."
-              : "For individual lessons, the fastest path is to choose a language and package and pay online. Use this form only if you want to ask something first."}
+              ? (paymentsAvailable ? "Individuálny kurz si môžete kúpiť online. Ak potrebujete poradiť s výberom, pošlite nám krátku žiadosť." : "Online platby momentálne pripravujeme. Vyberte si jazyk a balíček alebo nám rovno pošlite žiadosť a ozveme sa vám.")
+              : (paymentsAvailable ? "You can purchase individual lessons online. If you need advice, send us a short request." : "Online payments are being prepared. Choose your language and package, or send us a request and we'll get back to you.")}
           </p>
 
           <div className="mt-10">
             <div className="rounded-3xl border border-indigo-100 bg-white p-7 shadow-sm">
               <CreditCard className="text-[#2F3AA2]" size={32} aria-hidden="true" />
-              <h2 className="mt-5 text-2xl font-semibold">{sk ? "Zaplatiť online" : "Pay online"}</h2>
+              <h2 className="mt-5 text-2xl font-semibold">{paymentsAvailable ? (sk ? "Zaplatiť online" : "Pay online") : (sk ? "Vybrať si balíček" : "Choose a package")}</h2>
               <p className="mt-3 leading-relaxed text-gray-600">
-                {sk ? "Vyberte si balíček, vytvorte si alebo otvorte študentský účet a pokračujte k bezpečnej platbe." : "Choose a package, create or open your student account, and continue to secure online payment."}
+                {paymentsAvailable ? (sk ? "Vyberte si balíček, vytvorte si študentský účet a pokračujte k bezpečnej platbe." : "Choose a package, create a student account and continue to secure payment.") : (sk ? "Pozrite si balíčky a ceny. Ak chcete začať už teraz, nižšie nám pošlite žiadosť." : "Explore packages and prices. To get started now, send a request using the form below.")}
               </p>
               <Link href={`/${language}/pricing`} className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#2F3AA2] px-6 py-4 font-semibold text-white hover:bg-[#252E82]">
                 {sk ? "Vybrať balíček" : "Choose a package"}<ArrowRight size={20} aria-hidden="true" />
@@ -51,7 +60,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
             <div className="max-w-2xl">
               <p className="text-sm font-semibold uppercase tracking-[0.15em] text-[#2F3AA2]">{sk ? "Žiadosť cez web" : "Website request"}</p>
               <h2 className="mt-2 text-2xl font-semibold">{sk ? "Pošlite nám krátku žiadosť" : "Send us a short lesson request"}</h2>
-              <p className="mt-2 text-gray-600">{sk ? "Po odoslaní sa žiadosť uloží v Mundus administrácii a dostaneme o nej upozornenie." : "After submission, the request is saved in Mundus administration and we receive a notification."}</p>
+              <p className="mt-2 text-gray-600">{sk ? "Žiadosť bezpečne uložíme v administrácii Mundus, aby ju náš tím mohol vybaviť." : "Your request is securely saved in Mundus administration for our team to review."}</p>
             </div>
 
             {sent === "1" && <div role="status" className="mt-5 rounded-2xl border border-green-200 bg-green-50 p-4 text-sm text-green-800">{sk ? "Ďakujeme. Vašu žiadosť sme prijali a ozveme sa vám." : "Thank you. We received your request and will contact you."}</div>}
@@ -61,6 +70,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
                 : (sk ? "Žiadosť sa teraz nepodarilo odoslať. Skúste to prosím neskôr." : "The request could not be sent right now. Please try again later.")}
             </div>}
 
+            {selectedSummary && <p role="status" className="mt-6 rounded-xl border border-[#CDD5F3] bg-[#F2F4FF] p-4 text-sm font-semibold text-[#2F3AA2]">{selectedSummary}</p>}
             <form action={submitContactRequest} className="mt-7 grid gap-5 sm:grid-cols-2"><input type="hidden" name="ui_language" value={language}/>
               <label className="block sm:col-span-2">
                 <span className="text-sm font-medium text-gray-700">{sk ? "Typ výučby" : "Lesson format"}</span>
@@ -79,11 +89,11 @@ export default async function ContactPage({ searchParams }: PageProps) {
               </label>
               <label className="block">
                 <span className="text-sm font-medium text-gray-700">{sk ? "Jazyk" : "Language"}</span>
-                <input name="language" required maxLength={80} placeholder={sk ? "napr. angličtina" : "e.g. English"} className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10" />
+                <input name="language" required defaultValue={preservedLanguage} maxLength={80} placeholder={sk ? "napr. angličtina" : "e.g. English"} className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10" />
               </label>
               <label className="block">
                 <span className="text-sm font-medium text-gray-700">{sk ? "Počet hodín (voliteľné)" : "Number of lessons (optional)"}</span>
-                <select name="package_lessons" defaultValue="" className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 outline-none focus:border-[#2F3AA2]">
+                <select name="package_lessons" defaultValue={selectedLessons} className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 outline-none focus:border-[#2F3AA2]">
                   <option value="">{sk ? "Ešte neviem" : "Not sure yet"}</option>
                   {[1,5,10,20,30].map(n => <option key={n} value={n}>{n} {sk ? (n === 1 ? "hodina" : "hodín") : (n === 1 ? "lesson" : "lessons")}</option>)}
                 </select>
@@ -95,7 +105,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
               <div className="hidden sm:block" aria-hidden="true" />
               <label className="block sm:col-span-2">
                 <span className="text-sm font-medium text-gray-700">{sk ? "Čo potrebujete?" : "What do you need?"}</span>
-                <textarea name="message" maxLength={2000} rows={4} placeholder={sk ? "Napr. som začiatočník a chcem sa zlepšiť kvôli práci..." : "For example: I am a beginner and want to improve for work..."} className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10" />
+                <textarea name="message" defaultValue={selectedSummary} maxLength={2000} rows={4} placeholder={sk ? "Napr. som začiatočník a chcem sa zlepšiť kvôli práci..." : "For example: I am a beginner and want to improve for work..."} className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10" />
               </label>
               <div className="hidden" aria-hidden="true">
                 <label>Website<input name="website" tabIndex={-1} autoComplete="off" /></label>

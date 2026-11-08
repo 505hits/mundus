@@ -19,8 +19,8 @@ export default function AnalyticsConsentBanner(){
         <p className="font-semibold text-[#171A2B]">{sk?"Cookies":"Cookies"}</p>
         <p className="mt-1 text-xs leading-5 text-gray-600 sm:text-sm sm:leading-6">
           {sk
-            ?"Používame nevyhnutné cookies, aby stránka správne fungovala. Analytické cookies od Google Analytics a Microsoft Clarity použijeme iba s vaším súhlasom, aby sme mohli zlepšovať web a nákupný proces."
-            :"We use essential cookies to keep the site working properly. Analytics cookies from Google Analytics and Microsoft Clarity are used only with your consent so we can improve the website and purchase journey."}
+            ?"Používame nevyhnutné cookies, aby stránka správne fungovala. Analytické cookies od Google Tag Manager (Google Analytics) a Microsoft Clarity použijeme iba s vaším súhlasom, aby sme mohli zlepšovať web a nákupný proces."
+            :"We use essential cookies to keep the site working properly. Analytics cookies from Google Tag Manager (Google Analytics) and Microsoft Clarity are used only with your consent so we can improve the website and purchase journey."}
         </p>
 
         <div className="mt-3 grid grid-cols-2 gap-2 sm:mt-4 sm:flex sm:flex-row sm:flex-wrap">

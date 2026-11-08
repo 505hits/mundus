@@ -32,7 +32,7 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
   const checkout = `${prefix}/payment?selected=${lessons}&duration=${duration}&language=${encodeURIComponent(selectedLanguage)}`;
   const languageName = (sk ? MUNDUS_LANGUAGE_OPTIONS.find(item => item.value === selectedLanguage)?.label : selectedLanguage) || selectedLanguage;
 
-  function focusLanguage() {
+  function focusLanguageSelect() {
     setPrompt(true);
     languageRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
     languageRef.current?.focus({ preventScroll: true });
@@ -100,7 +100,7 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
               <p className="flex items-center gap-2"><Check size={17} className="text-[#A4E9D0]"/>{sk ? "Materiály a študentský portál" : "Materials and student portal"}</p>
               <p className="flex items-center gap-2"><Check size={17} className="text-[#A4E9D0]"/>{sk ? "Jednorazová platba" : "One-time payment"}</p>
             </div>
-            {selectedLanguage ? <Link href={checkout} onClick={() => trackEvent("start_checkout",{language:selectedLanguage,duration_minutes:duration,lessons})} className="mt-7 flex min-h-14 items-center justify-center gap-2 rounded-xl bg-[#DDE2FF] px-4 text-center font-bold text-[#202C82] transition hover:bg-white"><LockKeyhole size={18}/>{sk ? "Pokračovať k platbe" : "Continue to payment"}<ArrowRight size={17}/></Link> : <button type="button" onClick={focusLanguage} className="mt-7 flex min-h-14 w-full items-center justify-center gap-2 rounded-xl bg-[#DDE2FF] px-4 text-center font-bold text-[#202C82]">{sk ? "Vybrať jazyk" : "Select your language"}<ArrowRight size={17}/></button>}
+            {selectedLanguage ? <Link href={checkout} onClick={() => trackEvent("start_checkout",{language:selectedLanguage,duration_minutes:duration,lessons})} className="mt-7 flex min-h-14 items-center justify-center gap-2 rounded-xl bg-[#DDE2FF] px-4 text-center font-bold text-[#202C82] transition hover:bg-white"><LockKeyhole size={18}/>{sk ? "Pokračovať k platbe" : "Continue to payment"}<ArrowRight size={17}/></Link> : <button type="button" onClick={focusLanguageSelect} className="mt-7 flex min-h-14 w-full items-center justify-center gap-2 rounded-xl bg-[#DDE2FF] px-4 text-center font-bold text-[#202C82]">{sk ? "Vybrať jazyk" : "Select your language"}<ArrowRight size={17}/></button>}
             <p className="mt-3 text-center text-xs leading-5 text-[#BCC2D8]">{paymentsAvailable ? (sk ? "Bezpečná platba cez Stripe po prihlásení." : "Secure Stripe checkout after sign-in.") : (sk ? "Online platba sa pripravuje. Výber zostane zachovaný." : "Online payment is being prepared. Your selection is preserved.")}</p>
           </div>
           <p className="mt-4 flex items-start gap-2 px-2 text-xs leading-5 text-[#60667B]"><CreditCard size={17} className="shrink-0 text-[#2F3AA2]"/>{sk ? "Platba pred onboardingom. Po nákupe vyplníte svoje ciele a dostupnosť." : "Payment comes before onboarding. After purchase, add your goals and availability."}</p>
@@ -111,7 +111,7 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
     {standalonePricing && <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#DCE0F3] bg-white/95 px-4 py-2.5 shadow-[0_-8px_32px_rgba(23,26,43,.1)] backdrop-blur-xl lg:hidden" style={{paddingBottom:"max(.625rem, env(safe-area-inset-bottom))"}}>
       <div className="mx-auto flex max-w-2xl items-center justify-between gap-3">
         <div className="min-w-0"><p className="truncate text-xs font-semibold text-[#626A80]">{lessons} × {duration} min</p><p className="text-lg font-bold text-[#263399]">{money(selected.amountCents)}</p><p className="text-[10px] text-[#626A80]">{sk ? "Prvá zľava, ak oprávnený:" : "Eligible first price:"} {money(firstPrice)}</p></div>
-        {selectedLanguage ? <Link href={checkout} className="flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-4 text-sm font-semibold text-white">{sk ? "Pokračovať" : "Continue"}<ArrowRight size={17}/></Link> : <button type="button" onClick={focusLanguage} className="flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-4 text-sm font-semibold text-white">{sk ? "Vybrať jazyk" : "Select language"}<ArrowRight size={17}/></button>}
+        {selectedLanguage ? <Link href={checkout} className="flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-4 text-sm font-semibold text-white">{sk ? "Pokračovať" : "Continue"}<ArrowRight size={17}/></Link> : <button type="button" onClick={focusLanguageSelect} className="flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-4 text-sm font-semibold text-white">{sk ? "Vybrať jazyk" : "Select language"}<ArrowRight size={17}/></button>}
       </div>
     </div>}
     <div className="mt-5 grid gap-3 md:grid-cols-2">

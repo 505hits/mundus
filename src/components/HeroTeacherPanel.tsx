@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { ArrowRight, ExternalLink, GraduationCap, Play, Video, X } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -45,12 +46,12 @@ export default function HeroTeacherPanel() {
         <Link href={`/${language}/teachers`} className="inline-flex items-center gap-1.5 font-semibold text-[#DDE2FF] hover:text-white">{sk ? "Všetci lektori" : "All teachers"}<ArrowRight size={14}/></Link>
       </div>
     </div>
-    {showVideo && <div className="fixed inset-0 z-[150] flex items-center justify-center bg-[#0D1120]/85 p-3 sm:p-6" role="dialog" aria-modal="true" aria-label={sk ? "Predstavenie lektora Mundus" : "Mundus teacher introduction"} onClick={() => setShowVideo(false)}>
+    {showVideo && typeof document !== "undefined" && createPortal(<div className="fixed inset-0 z-[150] flex items-center justify-center bg-[#0D1120]/85 p-3 sm:p-6" role="dialog" aria-modal="true" aria-label={sk ? "Predstavenie lektora Mundus" : "Mundus teacher introduction"} onClick={() => setShowVideo(false)}>
       <div className="relative w-full max-w-[480px] rounded-[1.5rem] bg-white p-3 shadow-2xl sm:p-5" onClick={e => e.stopPropagation()}>
         <div className="mb-3 flex items-center justify-between gap-3 px-1"><p className="font-semibold text-[#171A2B]">{sk ? "Spoznajte lektora Mundus" : "Meet a Mundus teacher"}</p><button type="button" onClick={() => setShowVideo(false)} className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F1F3FA]" aria-label={sk ? "Zavrieť video" : "Close video"}><X size={20}/></button></div>
         <iframe title={sk ? "Instagram video Mundus" : "Mundus Instagram video"} src={`https://www.instagram.com/p/${teacherPost}/embed/`} loading="lazy" allow="encrypted-media; picture-in-picture; web-share" className="h-[min(66dvh,560px)] w-full rounded-xl border-0 bg-white" />
         <a href={teacherUrl} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex min-h-11 items-center gap-2 px-2 text-sm font-semibold text-[#2F3AA2]">{sk ? "Otvoriť na Instagrame" : "Open on Instagram"} <ExternalLink size={16}/></a>
       </div>
-    </div>}
+    </div>, document.body)}
   </div>;
 }

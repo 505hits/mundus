@@ -12,8 +12,10 @@ assert.ok(layout.includes("<AnalyticsManager") && layout.includes("<AnalyticsCon
 assert.ok(layout.includes("NEXT_PUBLIC_GA_MEASUREMENT_ID") === false,"public GA ID belongs in analytics manager, not metadata");
 assert.ok(layout.includes("GOOGLE_SITE_VERIFICATION") && layout.includes("BING_SITE_VERIFICATION"));
 assert.ok(manager.includes("GTM-NMT87VFV") && manager.includes("NEXT_PUBLIC_CLARITY_PROJECT_ID"),"Mundus Google Tag Manager container and optional Clarity must be configured");
-assert.ok(manager.includes('consent!=="granted"'),"analytics scripts must require consent");
-assert.ok(manager.includes("googletagmanager.com/gtm.js") && manager.includes("clarity.ms/tag"),"GTM and optional Clarity should be available after consent");\nassert.ok(!manager.includes("googletagmanager.com/gtag/js"),"do not double-load a parallel Google Analytics tag");\nassert.ok(manager.includes('window.dataLayer.push({ event: name, ...params })'),"custom conversion events must reach GTM dataLayer");
+assert.ok(manager.includes('consent !== "granted"'),"analytics scripts must require consent");
+assert.ok(manager.includes("googletagmanager.com/gtm.js") && manager.includes("clarity.ms/tag"),"GTM and optional Clarity should be available after consent");
+assert.ok(!manager.includes("googletagmanager.com/gtag/js"),"do not double-load a parallel Google Analytics tag");
+assert.ok(manager.includes('window.dataLayer.push({ event: name, ...params })'),"custom conversion events must reach GTM dataLayer");
 assert.ok(manager.includes("initialPageViewHandled") && manager.includes("page_location: window.location.href"),"GTM handles the initial load and route transitions get page-view events");
 assert.ok(banner.includes("Essential only") && banner.includes("Accept cookies"));
 assert.ok(settings.includes("Disable analytics"));

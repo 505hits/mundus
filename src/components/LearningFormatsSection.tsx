@@ -6,7 +6,9 @@ import { ArrowUpRight, Building2, UserRound, Users, Check } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function LearningFormatsSection() {
- const {language}=useLanguage(), sk=language==="sk", prefix=`/${language}`;
+ const {language}=useLanguage();
+ const sk=language==="sk";
+ const prefix=`/${language}`;
  const cards=[
   {icon:UserRound,number:"01",eyebrow:sk?"Pre vás":"Just for you",title:sk?"Individuálne 1:1":"One-to-one lessons",text:sk?"Sústredíme sa na vaše ciele, tempo aj čas.":"Your goals, your pace, your schedule.",href:`${prefix}/pricing`,cta:sk?"Vybrať balíček":"Find your package",img:"/images/mundus/DWQ3XM8DQ9W.webp",background:"bg-[#E9E8FF]",ink:"text-[#282B71]",details:sk?"45 alebo 60 min · Flexibilne":"45 or 60 min · Flexible"},
   {icon:Users,number:"02",eyebrow:sk?"Učte sa spolu":"Learn together",title:sk?"Súkromné skupiny":"Private groups",text:sk?"Hodiny pre 2–5 priateľov alebo kolegov.":"Lessons for 2–5 friends or colleagues.",href:`${prefix}/group-lessons`,cta:sk?"Skupinové hodiny":"Group lessons",img:"/images/mundus/DYSOVxCoMrJ.webp",background:"bg-[#E2EFE7]",ink:"text-[#1B5A49]",details:sk?"Vlastná skupina · Na mieru":"Your own group · Tailored"},

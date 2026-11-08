@@ -11,10 +11,11 @@ const highlightUrl="https://www.instagram.com/stories/highlights/181071674116443
 
 function PhotoCard({id,title}: {id:string;title:string}){
  const {language}=useLanguage(),sk=language==="sk";
- return <article className="group relative h-[300px] min-w-0 overflow-hidden rounded-[1.6rem] bg-[#E9EAF1] shadow-[0_12px_32px_rgba(23,26,43,.07)] sm:h-[370px]">
-  <Image src={`/images/mundus/${id}.webp`} alt={sk?`Fotografia zo skutočného príspevku Mundus: ${title}`:`Photo from an actual Mundus post: ${title}`} fill sizes="(max-width:640px) 90vw,(max-width:1024px) 44vw,33vw" className="object-cover transition duration-700 group-hover:scale-105"/>
-  <div className="absolute inset-0 bg-gradient-to-t from-[#101629]/80 via-transparent to-transparent"/>
-  <p className="absolute bottom-5 left-5 right-5 text-lg font-semibold !text-white">{title}</p>
+ return <article className="group min-w-0 overflow-hidden rounded-[1.6rem] border border-[#E5E7F0] bg-white shadow-[0_12px_32px_rgba(23,26,43,.07)]">
+  <div className="relative flex h-[310px] items-center justify-center overflow-hidden bg-gradient-to-br from-[#ECEEFA] to-[#E4E9F1] sm:h-[390px]">
+    <Image src={`/images/mundus/${id}.webp`} alt={sk?`Fotografia zo skutočného príspevku Mundus: ${title}`:`Photo from an actual Mundus post: ${title}`} fill sizes="(max-width:640px) 90vw,(max-width:1024px) 44vw,33vw" className="object-contain p-3 transition duration-700 group-hover:scale-[1.03]"/>
+  </div>
+  <p className="px-5 py-4 text-lg font-semibold text-[#171A2B]">{title}</p>
  </article>;
 }
 

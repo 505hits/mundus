@@ -198,7 +198,7 @@ export default async function DashboardPage({ searchParams }: { searchParams?: P
       : 0;
 
   return (
-    <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
+    <main className="dashboard-page min-h-screen bg-transparent text-[#171A2B]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
         {paymentSuccess && <section role="status" className="mb-6 rounded-3xl border border-emerald-200 bg-emerald-50 p-5">
           <p className="font-semibold text-emerald-900">{sk ? "Platba bola potvrdená" : "Payment confirmed"}</p>
@@ -216,8 +216,8 @@ export default async function DashboardPage({ searchParams }: { searchParams?: P
           <div><p className="font-semibold text-[#2F3AA2]">{sk ? "Je čas myslieť na ďalší balíček" : "Time to plan your next package"}</p><p className="mt-1 text-sm text-gray-600">{sk ? "Máte už len posledné hodiny. Ak chcete pokračovať bez prestávky, môžete si ďalší balíček pripraviť už teraz." : "You only have a few lessons left. If you want to continue without a break, you can prepare your next package now."}</p></div>
           {paymentsAvailable?<Link href="/packages" className="shrink-0 rounded-xl bg-[#2F3AA2] px-4 py-3 text-sm font-semibold text-white">{sk ? "Kúpiť ďalší balíček" : "Buy another package"}</Link>:<Link href="/contact" className="shrink-0 rounded-xl bg-[#2F3AA2] px-4 py-3 text-sm font-semibold text-white">{sk ? "Kontaktovať Mundus" : "Contact Mundus"}</Link>}
         </section>}
-        <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
+        <section className="dashboard-welcome relative overflow-hidden rounded-[1.6rem] p-6 sm:rounded-[2rem] sm:p-9">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#DDE4FF]">
             {sk ? "Moje učenie" : "My learning"}
           </p>
 

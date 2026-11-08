@@ -70,5 +70,13 @@ export default async function GroupLessonsPage(){
      <div><p className="text-xs font-bold uppercase tracking-[.16em] text-[#C7D2FE]">{sk?"Cena na mieru":"Custom quote"}</p><h2 className="mt-3 text-3xl font-semibold tracking-tight !text-white sm:text-4xl">{sk?"Vaša skupina. Jedna cenová ponuka.":"Your group. One tailored quote."}</h2><p className="mt-4 max-w-2xl leading-7 text-[#D8DBE8]">{sk?"Cena závisí od počtu ľudí, dĺžky a frekvencie hodín. Pošlite nám pár detailov a navrhneme vhodné riešenie bez záväzkov.":"Pricing depends on group size, lesson length and frequency. Send us a few details for a no-obligation proposal."}</p></div>
      <Link href={`/${language}/contact?type=group`} className="inline-flex min-h-14 items-center justify-center gap-2 rounded-xl bg-[#DDE2FF] px-5 font-bold text-[#25348F] hover:bg-white">{sk?"Získať ponuku pre skupinu":"Get a group quote"}<ArrowRight size={18}/></Link>
    </div>
-  </div></section><Footer/></main>;
+  </div></section>
+  <section className="bg-white px-5 pb-14">
+    <div className="mx-auto max-w-4xl rounded-2xl border border-[#DFE2EF] p-6 sm:p-8">
+      <h2 className="text-2xl font-semibold">{sk ? "Ako môže vyzerať kurz pre troch priateľov?" : "What could lessons for three friends look like?"}</h2>
+      <p className="mt-3 leading-7 text-gray-600">{sk ? "Traja priatelia sa chcú pred dovolenkou rozrozprávať po taliansky. Dohodnú si spoločný termín a s lektorom si nacvičia objednávanie v reštaurácii, ubytovanie a bežné otázky. V dopyte uveďte počet ľudí, približnú úroveň a časy, ktoré vám vyhovujú. Podľa toho pripravíme ponuku pre vašu skupinu." : "Three friends want to speak Italian before a holiday. They choose a time together and practise ordering in a restaurant, checking in, and asking everyday questions with their teacher. Tell us the group size, approximate level, and preferred times so we can prepare a quote for your group."}</p>
+      <Link href={`/${language}/contact?type=group&language=Italian`} className="mt-4 inline-flex font-semibold text-[#2F3AA2] underline">{sk ? "Opýtať sa na skupinovú taliančinu" : "Ask about group Italian lessons"}</Link>
+    </div>
+  </section>
+  <Footer/></main>;
 }

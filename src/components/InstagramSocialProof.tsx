@@ -1,8 +1,8 @@
 "use client";
 
 import { Instagram, ExternalLink } from "lucide-react";
+import { useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
-import { setAnalyticsConsent, useAnalyticsConsent } from "@/components/AnalyticsManager";
 
 const teacherPosts = [
   "DfPIUSjjVZf",
@@ -34,12 +34,12 @@ const testimonialPosts = [
 ] as const;
 
 function InstagramCard({ shortcode, title }: { shortcode: string; title: string }) {
-  const consent = useAnalyticsConsent();
+  const [showEmbed, setShowEmbed] = useState(false);
   const { language } = useLanguage();
   const sk = language === "sk";
   const postUrl = `https://www.instagram.com/p/${shortcode}/`;
 
-  if (consent !== "granted") {
+  if (!showEmbed) {
     return (
       <article className="flex min-h-[285px] flex-col sm:min-h-[420px] justify-between rounded-[1.75rem] border border-[#E5E7F0] bg-gradient-to-br from-white to-[#F5F6FF] p-4 shadow-[0_14px_36px_rgba(23,26,43,.06)] sm:p-6">
         <div>
@@ -49,13 +49,13 @@ function InstagramCard({ shortcode, title }: { shortcode: string; title: string 
           <p className="mt-6 text-xs font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">Instagram</p>
           <h3 className="mt-2 text-xl font-semibold text-[#171A2B]">{title}</h3>
           <p className="mt-3 text-sm leading-6 text-gray-600">
-            {sk ? "Obsah z Instagramu načítame až po prijatí cookies." : "Instagram content is loaded only after you accept cookies."}
+            {sk ? "Obsah z Instagramu načítame až po vašom kliknutí, pretože ide o obsah tretej strany." : "Instagram content is loaded only after you choose to view this third-party content."}
           </p>
         </div>
         <div className="mt-8 grid gap-3">
           <button
             type="button"
-            onClick={() => setAnalyticsConsent("granted")}
+            onClick={() => setShowEmbed(true)}
             className="rounded-xl bg-[#2F3AA2] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#252E82]"
           >
             {sk ? "Zobraziť obsah z Instagramu" : "Show Instagram content"}

@@ -22,7 +22,7 @@ assert.ok(migration.includes("p.role='company' and p.status='active'"));
 assert.ok(!dashboard.includes("lesson_reports"),"company dashboard must not access private teacher reports");
 assert.ok(!employees.includes("lesson_reports"),"company employee list must not access private teacher reports");
 assert.ok(!dashboard.includes("placement_results"),"company dashboard must not access assessment results");
-assert.ok(companies.includes("Request a quote") && companies.includes("Požiadať o cenovú ponuku"));
+assert.ok(companies.includes("Get a custom quote") && companies.includes("Získať cenovú ponuku"),"bilingual corporate quote CTA must remain visible");
 assert.ok(groups.includes("2–5") && groups.includes("/contact?type=group"));
 assert.ok(adminActions.includes('role:"company"') && adminActions.includes("company_employees"));
 assert.ok(auth.includes('"company"'));

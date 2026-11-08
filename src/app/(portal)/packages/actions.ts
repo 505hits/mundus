@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { requireRole } from "@/lib/auth";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { accountOrigin } from "@/lib/account-config";
-import { PACKAGE_PRICES, paymentEnabled, stripeClient, stripeIntegrationIdentifier } from "@/lib/payments";
+import { PACKAGE_PRICES, paymentEnabled, stripeClient } from "@/lib/payments";
 import { formUiLanguage } from "@/lib/i18n";
 import { MUNDUS_LANGUAGE_VALUES } from "@/lib/language-offer";
 
@@ -45,7 +45,6 @@ export async function startPackageCheckout(form: FormData) {
       customer_email: user.email,
       client_reference_id: order.id,
       metadata: { mundus_order_id: order.id, ...(learningLanguage ? { learning_language: learningLanguage } : {}) },
-      integration_identifier: stripeIntegrationIdentifier(),
       line_items: [{ price_data: {
         currency: "eur",
         unit_amount: order.amount_cents,

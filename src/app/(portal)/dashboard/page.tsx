@@ -236,7 +236,7 @@ export default async function DashboardPage({ searchParams }: { searchParams?: P
             { href: "/lessons", icon: CalendarDays, title: sk ? "Moje hodiny" : "My lessons", text: sk ? "Rozvrh a zmeny termínov" : "Schedule and changes" },
             { href: "/learning", icon: BookOpen, title: sk ? "Učenie" : "Learning", text: sk ? "Úlohy, materiály a poznámky" : "Homework, materials and notes" },
             { href: "/progress", icon: Target, title: sk ? "Pokrok" : "Progress", text: sk ? "Spätná väzba a ďalšie zameranie" : "Feedback and next focus" },
-            { href: "/packages", icon: WalletCards, title: sk ? "Balíčky" : "Packages", text: sk ? "Zostatok, ceny a platby" : "Balance, prices and payments" },
+            { href: paymentsAvailable ? "/packages" : "/contact", icon: WalletCards, title: paymentsAvailable ? (sk ? "Balíčky" : "Packages") : (sk ? "Pomoc s balíčkom" : "Package support"), text: paymentsAvailable ? (sk ? "Zostatok, ceny a platby" : "Balance, prices and payments") : (sk ? "Kontaktujte Mundus" : "Contact Mundus") },
           ].map((item) => {
             const Icon = item.icon;
             return (

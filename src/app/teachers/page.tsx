@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { InstagramTeachersSection } from "@/components/InstagramSocialProof";
+import TeacherProfiles from "@/components/TeacherProfiles";
+import { publicTeachers } from "@/lib/public-teachers";
 import { currentLanguage } from "@/lib/i18n";
 import { localizedAlternates } from "@/lib/seo-locales";
 
@@ -20,6 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function TeachersPage() {
   const language = await currentLanguage();
   const sk = language === "sk";
+  const approved = await publicTeachers();
   return (
     <main className="min-h-screen bg-white">
       <Navbar />
@@ -30,11 +32,11 @@ export default async function TeachersPage() {
             {sk ? "Spoznajte ľudí, s ktorými sa budete učiť." : "Meet the people you can learn with."}
           </h1>
           <p className="mt-5 max-w-3xl text-lg leading-8 text-[#D8DBE8]">
-            {sk ? "Reálni lektori Mundus predstavení cez naše aktuálne Instagram príspevky." : "Real Mundus teachers shown through our current Instagram posts."}
+            {sk ? "Spoznajte zverejnených lektorov Mundus s menami, jazykmi a fotografiami." : "Meet published Mundus teachers through names, languages and portrait photos."}
           </p>
         </div>
       </section>
-      <InstagramTeachersSection />
+      <TeacherProfiles approved={approved} />
       <Footer />
     </main>
   );

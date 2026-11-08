@@ -48,6 +48,23 @@ fs.mkdirSync(shots, { recursive: true });
    }
    await page.close();
   }
+   // Cookie consent must gate Google Tag Manager, including on a fresh visit.
+   const consentContext = await browser.newContext({viewport:{width:390,height:820}});
+   const consentPage = await consentContext.newPage();
+   await consentPage.goto(root+"/en",{waitUntil:"domcontentloaded",timeout:30000});
+   await consentPage.waitForTimeout(300);
+   const beforeConsent = await consentPage.evaluate(() => !!document.querySelector('script[src*="gtm.js?id=GTM-NMT87VFV"]'));
+   if (beforeConsent) failures.push("GTM loaded before visitors accepted analytics cookies");
+   await consentPage.getByRole("button",{name:"Accept cookies"}).click();
+   try {
+     await consentPage.waitForSelector('script[src*="gtm.js?id=GTM-NMT87VFV"]',{state:"attached",timeout:10000});
+     const events = await consentPage.evaluate(() => window.dataLayer?.filter((entry) => entry && typeof entry==="object" && "event" in entry).map((entry) => entry.event) || []);
+     if (!events.includes("gtm.js")) failures.push("GTM bootstrap event missing after consent");
+     console.log(JSON.stringify({tagManager:"GTM-NMT87VFV",beforeConsent,afterConsent:true,events}));
+   } catch (error) {
+     failures.push("GTM script was not attached after accepting cookies: "+error.message);
+   }
+   await consentContext.close();
  }finally{await browser.close();}
  console.log("VISUAL_QA_FAILURES",failures.length);
  failures.forEach(f=>console.error("FAIL",f));

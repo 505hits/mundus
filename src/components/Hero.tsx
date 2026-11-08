@@ -27,8 +27,8 @@ export default function Hero(){
     </motion.h1>
     <motion.p variants={fadeInUp} className="mt-4 max-w-xl text-[15px] leading-[1.65] sm:mt-6 sm:text-lg sm:leading-7 text-[#D8DBE8] sm:text-lg">
       {sk
-        ?"Vyberte si jazyk, dĺžku hodiny a balíček. Lektora prispôsobíme vašim cieľom a časovým možnostiam."
-        :"Choose your language, lesson length and package. We match your teacher to your goals and availability."}
+        ?"Vyberiete balíček, zaplatíte bezpečne online a potom nám poviete svoje ciele. Lektora prispôsobíme vašim časovým možnostiam."
+        :"Choose a package, pay securely online, then tell us your goals. We match a teacher to your availability."}
     </motion.p>
 
     <motion.div variants={fadeInUp} className="mt-6 flex flex-col gap-2.5 sm:mt-8 sm:flex-row sm:gap-3">

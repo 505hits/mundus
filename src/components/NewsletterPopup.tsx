@@ -6,7 +6,7 @@ import NewsletterSignup from "@/components/NewsletterSignup";
 import { useLanguage } from "@/context/LanguageContext";
 
 const STORAGE_KEY="mundus_newsletter_popup_hidden_until";
-const PUBLIC_PATHS=["/","/contact","/companies","/group-lessons"];
+const PUBLIC_PATHS=["/"];
 
 export default function NewsletterPopup(){
   const pathname=usePathname();const {language}=useLanguage();const sk=language==="sk";
@@ -20,24 +20,24 @@ export default function NewsletterPopup(){
   },[]);
 
   useEffect(()=>{
-    if(!allowed)return;
+    if(!allowed || window.matchMedia("(max-width: 767px)").matches) return;
     try{
       const hiddenUntil=Number(localStorage.getItem(STORAGE_KEY)||0);
       if(hiddenUntil>Date.now())return;
     }catch{}
     let shown=false;
     const show=()=>{if(shown)return;shown=true;setOpen(true);};
-    const timer=window.setTimeout(show,30000);
+    const timer=window.setTimeout(show,45000);
     const onScroll=()=>{
       const max=document.documentElement.scrollHeight-window.innerHeight;
-      if(max>0&&window.scrollY/max>=0.45) show();
+      if(max>0&&window.scrollY/max>=0.70) show();
     };
     window.addEventListener("scroll",onScroll,{passive:true});
     return()=>{window.clearTimeout(timer);window.removeEventListener("scroll",onScroll);};
   },[allowed,pathname]);
 
   if(!allowed||!open)return null;
-  return <div className="fixed inset-x-3 bottom-20 z-[70] mx-auto max-w-xl sm:bottom-6" role="dialog" aria-modal="false" aria-labelledby="newsletter-popup-title">
+  return <div className="fixed inset-x-3 bottom-20 z-[70] mx-auto hidden max-w-xl md:block md:bottom-6" role="dialog" aria-modal="false" aria-labelledby="newsletter-popup-title">
     <div className="relative overflow-hidden rounded-[1.75rem] border border-[#DDE2FB] bg-white p-6 shadow-[0_24px_80px_rgba(30,35,90,0.2)] sm:p-7">
       <button onClick={()=>hideForDays(14)} aria-label={sk?"Zavrieť":"Close"} className="absolute right-4 top-4 rounded-full p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-700"><X size={19}/></button>
       <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-[#EEF2FF] text-[#2F3AA2]"><Sparkles size={20}/></span>

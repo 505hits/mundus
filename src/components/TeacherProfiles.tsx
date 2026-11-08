@@ -20,6 +20,7 @@ const introduced: TeacherCard[]=[
 ];
 export default function TeacherProfiles({approved=[],compact=false}:{approved?:PublicTeacher[];compact?:boolean}){
  const {language}=useLanguage();const sk=language==="sk";
+ const formatLanguage=(value:string)=>sk?(MUNDUS_LANGUAGE_OPTIONS.find(item=>item.value===value)?.label??value):value;
  const teacherCards:TeacherCard[]=[...introduced,...approved.filter(t=>t.name && !introduced.some(a=>a.name.toLowerCase()===t.name.toLowerCase())).map(t=>({...t,photoUrl:t.photoUrl}))];
  const visible=compact?teacherCards.slice(0,2):teacherCards;
  return <section id="teachers" className={compact?"bg-white px-4 py-12 sm:px-6 sm:py-20":"bg-white px-4 py-12 sm:px-6 sm:py-16"}>

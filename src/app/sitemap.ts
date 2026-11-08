@@ -26,7 +26,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url:`${base}/${locale}${path}`,
       changeFrequency,
       priority,
-      alternates:{languages:{"sk-SK":`${base}/sk${path}`,"en-GB":`${base}/en${path}`,"x-default":`${base}${path||"/"}`}},
+      alternates:{languages:{"sk-SK":`${base}/sk${path}`,"en-GB":`${base}/en${path}`,"x-default":`${base}/sk${path}`}},
     }))),
   ];
 }

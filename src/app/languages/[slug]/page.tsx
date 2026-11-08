@@ -7,6 +7,7 @@ import { ArrowRight, CheckCircle2, Clock3, MessageCircle, ShieldCheck, UserRound
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { currentLanguage } from "@/lib/i18n";
+import { paymentEnabled } from "@/lib/payments";
 import { LANGUAGE_SEO_PAGES, languageSeoPage } from "@/data/language-seo-pages";
 import { localizedAlternates, localizedPath } from "@/lib/seo-locales";
 
@@ -31,7 +32,7 @@ export async function generateMetadata({params}:{params:Promise<{slug:string}>})
 
 export default async function LanguageLandingPage({params}:{params:Promise<{slug:string}>}){
  const {slug}=await params;const config=languageSeoPage(slug);if(!config)notFound();
- const language=await currentLanguage();const sk=language==="sk";const copy=sk?config.sk:config.en;const prefix=`/${language}`;
+ const language=await currentLanguage();const sk=language==="sk";const copy=sk?config.sk:config.en;const prefix=`/${language}`;const paymentsAvailable=paymentEnabled();
  const related=config.slug==="english"
   ? [
       ["anglictina-pre-zaciatocnikov",sk?"Angličtina pre začiatočníkov":"English for beginners"],
@@ -109,7 +110,7 @@ export default async function LanguageLandingPage({params}:{params:Promise<{slug
    <div className="mt-8 divide-y divide-[#E5E7F0] rounded-[1.75rem] border border-[#E5E7F0] bg-[#FAFAF9] px-5 sm:px-7">{copy.faq.map(([q,a])=><details key={q} className="group py-5"><summary className="cursor-pointer list-none pr-8 font-semibold text-[#171A2B]">{q}</summary><p className="mt-3 max-w-3xl text-sm leading-7 text-gray-600">{a}</p></details>)}</div>
   </div></section>
 
-  <section className="px-6 py-20"><div className="mx-auto max-w-6xl overflow-hidden rounded-[2rem] bg-[#171A2B] p-7 text-white sm:p-10 lg:flex lg:items-center lg:justify-between lg:gap-10"><div><p className="text-sm font-semibold uppercase tracking-[.16em] text-[#C7D2FE]">Mundus Languages</p><h2 className="mt-3 max-w-3xl text-3xl font-semibold tracking-[-.035em] !text-white sm:text-4xl">{sk?`Začnite s ${copy.name.toLowerCase()} tempom, ktoré vám vyhovuje.`:`Start ${copy.name} at a pace that fits your life.`}</h2><p className="mt-4 max-w-2xl leading-7 text-[#D8DBE8]">{sk?"Najprv platba. Potom doplníte úroveň, frekvenciu, dni, časy a cieľ. Mundus následne vyberie vhodného lektora.":"Payment comes first. Then add your level, frequency, days, times and goal. Mundus then matches you with a suitable teacher."}</p></div><Link href={`${prefix}/pricing?language=${encodeURIComponent(config.value)}`} className="mt-7 inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-white px-6 py-4 font-semibold text-[#2F3AA2] lg:mt-0">{sk?"Pozrieť ceny":"View pricing"}<ArrowRight size={18}/></Link></div></section>
+  <section className="px-6 py-20"><div className="mx-auto max-w-6xl overflow-hidden rounded-[2rem] bg-[#171A2B] p-7 text-white sm:p-10 lg:flex lg:items-center lg:justify-between lg:gap-10"><div><p className="text-sm font-semibold uppercase tracking-[.16em] text-[#C7D2FE]">Mundus Languages</p><h2 className="mt-3 max-w-3xl text-3xl font-semibold tracking-[-.035em] !text-white sm:text-4xl">{sk?`Začnite s ${copy.name.toLowerCase()} tempom, ktoré vám vyhovuje.`:`Start ${copy.name} at a pace that fits your life.`}</h2><p className="mt-4 max-w-2xl leading-7 text-[#D8DBE8]">{paymentsAvailable?(sk?"Najprv zaplatíte a potom doplníte úroveň, frekvenciu a preferované termíny. Mundus následne odporučí lektora.":"After payment, add your level, frequency and preferred times. Mundus then recommends a teacher."):(sk?"Vyberte si balíček a pošlite nám nezáväzný záujem. Ozveme sa vám ohľadom začiatku a lektora.":"Choose a package and send a no-obligation inquiry. We’ll help arrange your lessons and teacher.")}</p></div><Link href={`${prefix}/pricing?language=${encodeURIComponent(config.value)}`} className="mt-7 inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-white px-6 py-4 font-semibold text-[#2F3AA2] lg:mt-0">{sk?"Pozrieť ceny":"View pricing"}<ArrowRight size={18}/></Link></div></section>
   <Footer/>
  </main>;
 }

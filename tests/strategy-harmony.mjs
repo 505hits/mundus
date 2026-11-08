@@ -22,7 +22,7 @@ const contact=read("src/app/contact/page.tsx");
 const notificationWorker=read("src/app/api/notifications/process/route.ts");
 const instagramProof=read("src/components/InstagramSocialProof.tsx");
 
-for(const component of ["LearningFormatsSection","LanguageSelector","InstagramHomepageSpotlight","PricingSection","FAQSection"]) {
+for(const component of ["LearningFormatsSection","LanguageSelector","TeacherProfiles","StudentStories","PricingSection","FAQSection"]) {
   assert.ok(home.includes(component), `homepage must include ${component}`);
 }
 assert.equal(home.includes("PortalPreviewSection"), false, "homepage should not repeat a long portal explainer");
@@ -62,7 +62,7 @@ assert.ok(footer.includes('href: "/dashboard"'));
 
 assert.equal(hero.includes("images.unsplash.com/photo-1507003211169"), false, "hero must not use stock faces as student proof");
 assert.equal(hero.includes("Gemini_Generated_Image"), false, "hero must not use generated learner imagery");
-assert.ok(hero.includes("Vyberiete balíček, zaplatíte") || hero.includes("Choose a package, pay"), "hero must keep the pay-first journey clear without excess copy");
+assert.ok(hero.includes("paymentsAvailable") && hero.includes("Choose a package, pay"), "hero must describe the pay-first journey only when payments are enabled");
 assert.equal(translations.includes("200+ students"), false);
 assert.equal(translations.includes("200+ študentov"), false);
 assert.equal(translations.includes("4.9/5"), false);

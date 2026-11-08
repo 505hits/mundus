@@ -16,7 +16,7 @@ export default async function AdminLayout({
     <div className="portal-surface min-h-screen lg:flex">
       <AdminNav paymentsEnabled={paymentEnabled()} />
 
-      <div className="min-w-0 flex-1 pb-24 lg:pb-0">
+      <div className="min-w-0 flex-1 pb-24 pt-14 lg:pb-0 lg:pt-0">
         {children}
       </div>
     </div>

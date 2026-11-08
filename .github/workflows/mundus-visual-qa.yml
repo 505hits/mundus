@@ -1,0 +1,37 @@
+name: Mundus public-site visual QA
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'tests/live-visual-qa.cjs'
+      - '.github/workflows/mundus-visual-qa.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm install --no-save --no-audit --no-fund playwright@1.58.2
+      - run: npx playwright install --with-deps chromium
+      - name: Inspect published SK/EN public pages at phone, tablet and desktop widths
+        run: node tests/live-visual-qa.cjs
+        env:
+          BASE_URL: https://mundus-mundus1.vercel.app
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mundus-visual-screenshots
+          path: qa-screenshots/
+          retention-days: 7

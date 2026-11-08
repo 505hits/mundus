@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, GraduationCap, MessageCircle } from "lucide-react";
+import { ArrowUpRight, MessageCircle } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function HeroTeacherPanel() {

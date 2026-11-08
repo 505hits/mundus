@@ -78,7 +78,46 @@ export const guides: Record<string, Article> = {
         ]
       ]
     ]
-  }
+  },
+  "italian-cafe-phrases": {
+  "course": "italian",
+  "sk": [
+    "Taliančina na cestovanie: ako si objednať v kaviarni",
+    "Naučte sa jednoduché talianske frázy na objednanie kávy, spýtanie sa na cenu a zaplatenie kartou.",
+    [
+      [
+        "Objednajte si jednou vetou",
+        "Začnite pozdravom Buongiorno. Potom povedzte Vorrei un caffè, per favore (Dal/a by som si kávu, prosím). V Taliansku un caffè pri objednávaní zvyčajne znamená espresso. Ak chcete kapučíno, vymeňte un caffè za un cappuccino."
+      ],
+      [
+        "Zistite cenu a zaplaťte",
+        "Opýtajte sa Quanto costa? (Koľko to stojí?) alebo Posso pagare con la carta? (Môžem platiť kartou?). Ak nerozumiete odpovedi, skúste Può ripetere, per favore? (Môžete to zopakovať, prosím?)."
+      ],
+      [
+        "Precvičte si tri rôzne objednávky",
+        "Povedzte nahlas tri objednávky: espresso, kapučíno a vodu. Pri vode skúste Vorrei dell’acqua, per favore. Nakoniec pridajte otázku na cenu alebo platbu kartou. Zopakujte rozhovor bez poznámok a potom si vyskúšajte rolu obsluhy."
+      ]
+    ]
+  ],
+  "en": [
+    "Italian for travel: how to order in a café",
+    "Practise simple Italian phrases for ordering coffee, asking the price and paying by card.",
+    [
+      [
+        "Order in one sentence",
+        "Start with Buongiorno. Then say Vorrei un caffè, per favore (I’d like a coffee, please). When ordering in Italy, un caffè usually means an espresso. For a cappuccino, swap un caffè for un cappuccino."
+      ],
+      [
+        "Ask the price and pay",
+        "Use Quanto costa? (How much is it?) or Posso pagare con la carta? (Can I pay by card?). If you miss the answer, try Può ripetere, per favore? (Could you repeat that, please?)."
+      ],
+      [
+        "Practise three different orders",
+        "Order an espresso, a cappuccino and water out loud. For water, try Vorrei dell’acqua, per favore. Finish each order by asking the price or asking to pay by card. Repeat without your notes, then switch roles and play the barista."
+      ]
+    ]
+  ]
+}
 };
 
 export function findGuide(slug: string) {

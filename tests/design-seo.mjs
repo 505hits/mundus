@@ -19,7 +19,7 @@ assert.ok(structured.includes("#group-lessons") && structured.includes("#company
 assert.equal(home.includes("FeaturesBento"),false,"redundant feature block should stay off the homepage");
 assert.ok(home.indexOf("<LearningFormatsSection") < home.indexOf("<LanguageSelector"),"lesson formats should be front-loaded for scanning");
 assert.ok(hero.includes("tracking-[-0.045em]") && hero.includes("Finally start speaking.") && hero.includes("Konečne sa rozrozprávajte."),"hero should preserve the premium editorial hierarchy and new student-first promise");
-assert.ok(formats.includes("Three formats. One simple experience."));
+assert.ok(formats.includes("Languages for real life.") && formats.includes("Jazyky do skutočného života."),"learning formats must have bilingual editorial copy");
 for(const p of ["src/app/(portal)/layout.tsx","src/app/(teacher)/layout.tsx","src/app/(admin)/layout.tsx","src/app/(company)/layout.tsx"]){
  const content=read(p);assert.ok(content.includes("index: false")&&content.includes("follow: false"),p+" must stay noindex");
 }

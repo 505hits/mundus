@@ -9,18 +9,18 @@ export function proxy(request:NextRequest){
 
   const rest=parts.slice(1);
   const root=rest[0]??"";
-  if(!PUBLIC_ROOTS.has(root)) return NextResponse.next();
+  if (!PUBLIC_ROOTS.has(root) && root !== "community") return NextResponse.next();
 
-  const url=request.nextUrl.clone();
-  url.pathname="/"+rest.join("/");
-  if(url.pathname==="/") url.pathname="/";
+  request.cookies.set("mundus_language", locale);
+  const requestHeaders = { request: { headers: new Headers(request.headers) } };
+  const url = request.nextUrl.clone();
+  url.pathname = "/" + rest.join("/");
 
-  const headers=new Headers(request.headers);
-  const existing=request.headers.get("cookie")??"";
-  const cookie=`mundus_language=${locale}`;
-  headers.set("cookie",existing? `${existing}; ${cookie}` : cookie);
-
-  const response=NextResponse.rewrite(url,{request:{headers}});
+  // Community has real locale-specific routes. Keep its URL intact and
+  // forward the locale so the shared layout renders the matching html lang.
+  const response = root === "community"
+    ? NextResponse.next(requestHeaders)
+    : NextResponse.rewrite(url, requestHeaders);
   response.cookies.set("mundus_language",locale,{path:"/",maxAge:31536000,sameSite:"lax"});
   return response;
 }

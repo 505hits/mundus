@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Building2, CheckCircle2, Users, BarChart3, ShieldCheck } from "lucide-react";
+import { ArrowRight, Building2, CheckCircle2, Users, BarChart3, ShieldCheck, CalendarCheck2, GraduationCap, Globe2 } from "lucide-react";
+import CorporatePreview from "@/components/CorporatePreview";
 import { currentLanguage } from "@/lib/i18n";
 import { localizedAlternates, localizedPath } from "@/lib/seo-locales";
 import { submitCompanyQuote } from "./actions";
@@ -12,43 +13,73 @@ export async function generateMetadata(): Promise<Metadata> {
  const language=await currentLanguage(); const sk=language==="sk";
  return { title: sk ? "Firemné jazykové kurzy online | Mundus Languages" : "Corporate language training online | Mundus Languages", description: sk ? "Firemné jazykové vzdelávanie online: individuálne aj skupinové hodiny, cena na mieru a firemný portál pre prehľad výučby." : "Online corporate language training with individual and group lessons, custom pricing and a company portal for learning oversight.", alternates:localizedAlternates("/companies",language), openGraph:{title:sk?"Firemné jazykové kurzy online | Mundus Languages":"Corporate language training online | Mundus Languages",description:sk?"Firemné jazykové vzdelávanie online: individuálne aj skupinové hodiny, cena na mieru a firemný portál pre prehľad výučby.":"Online corporate language training with individual and group lessons, custom pricing and a company portal for learning oversight.",url:`https://munduslanguages.com${localizedPath("/companies",language)}`,type:"website",images:[{url:"/logo-removebg-preview.png",width:1200,height:630}]}, twitter:{card:"summary_large_image",title:sk?"Firemné jazykové kurzy online | Mundus Languages":"Corporate language training online | Mundus Languages",description:sk?"Firemné jazykové vzdelávanie online: individuálne aj skupinové hodiny, cena na mieru a firemný portál pre prehľad výučby.":"Online corporate language training with individual and group lessons, custom pricing and a company portal for learning oversight.",images:["/logo-removebg-preview.png"]} };
 }
-export default async function CompaniesPage({searchParams}:Props){
- const language=await currentLanguage();const sk=language==="sk";const {sent,problem}=await searchParams;
+export default async function CompaniesPage({searchParams}:Props) {
+ const language=await currentLanguage(); const sk=language==="sk"; const {sent,problem}=await searchParams;
  const benefits=sk?[
-  ["Výučba podľa pracovných potrieb","Individuálne alebo malé skupinové online hodiny podľa úrovne a cieľov zamestnancov."],
-  ["Firemný prehľad","Firma vidí iba základný prehľad priradených zamestnancov: jazyk, dokončené hodiny, zostatok a ďalší termín."],
-  ["Jednoduchá administratíva","Mundus rieši lektorov, rozvrhy a výučbu. Firemný správca nepotrebuje admin prístup."],
-  ["Súkromie zamestnancov","Firma nevidí domáce úlohy, testové odpovede, súkromné poznámky, hodnotenia ani interné údaje Mundus."]
+  ["Výučba, ktorá sa prispôsobí práci","Jazyky a témy podľa pracovných situácií vášho tímu."],
+  ["Menej práce pre HR","Lektorov, rozvrhy aj priebeh hodín koordinuje Mundus."],
+  ["Prehľad bez zásahu do súkromia","Firma vidí využitie hodín, nie osobné študijné materiály."],
  ]:[
-  ["Training built around work needs","Individual or small-group online lessons based on employees’ levels and goals."],
-  ["Company overview","The company sees only a limited overview of assigned employees: language, completed lessons, balance and next lesson."],
-  ["Simple administration","Mundus handles teachers, scheduling and delivery. Company managers do not need admin access."],
-  ["Employee privacy","Companies do not see homework, test answers, private notes, ratings or Mundus internal data."]
+  ["Learning that works at work","Languages and real scenarios tailored to your team."],
+  ["Less work for HR","Mundus coordinates teachers, scheduling and lessons."],
+  ["Clarity with privacy","Your company sees lesson usage, not private study content."],
  ];
- return <main className="min-h-screen bg-[#FAFAF9]"><Navbar/>
-  <section className="bg-gradient-to-br from-[#171A2B] via-[#22294E] to-[#2F3AA2] px-5 pb-16 pt-32 text-white sm:px-6 sm:pb-20"><div className="mx-auto max-w-6xl">
-   <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#C7D2FE]">{sk?"Pre firmy":"For companies"}</p>
-   <h1 className="mt-4 max-w-4xl text-[clamp(2.2rem,9vw,3.75rem)] font-semibold leading-[1.08] tracking-[-.04em] !text-white sm:text-6xl">{sk?"Jazykové vzdelávanie pre zamestnancov bez zbytočnej administratívy":"Language training for employees without unnecessary administration"}</h1>
-   <p className="mt-4 max-w-3xl text-base leading-7 text-[#E2E5FA] sm:mt-6 sm:text-lg sm:leading-8">{sk?"Individuálne aj malé skupinové online hodiny. Cenu pripravíme podľa počtu zamestnancov, jazykov, frekvencie a formátu výučby.":"Individual and small-group online lessons. We prepare a custom quote based on employee count, languages, frequency and lesson format."}</p>
-   <a href="#quote" className="mt-8 inline-flex min-h-12 items-center justify-center rounded-xl bg-white px-6 py-4 font-semibold text-[#2F3AA2] transition hover:bg-[#EEF2FF]">{sk?"Požiadať o cenovú ponuku":"Request a quote"}</a>
-  <div className="mt-6 grid gap-2 text-sm sm:mt-9 sm:grid-cols-3 sm:gap-3">
-    {(sk ? ["Individuálne aj skupinové hodiny", "Flexibilné časy pre tímy", "Prehľad cez firemný portál"] : ["Private and group lessons", "Flexible team schedules", "Company learning overview"]).map(item => <div key={item} className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/10 p-3 text-white backdrop-blur sm:rounded-2xl sm:p-4"><CheckCircle2 size={18} className="shrink-0 text-[#C7D2FE]"/>{item}</div>)}
-   </div>
-  </div></section>
-  <section className="px-4 py-10 sm:px-6 sm:py-12"><div className="mx-auto grid max-w-6xl gap-5 md:grid-cols-2">{benefits.map(([title,text],i)=>{const icons=[Users,BarChart3,Building2,ShieldCheck];const Icon=icons[i] ?? Building2;return <article key={title} className="rounded-3xl border border-black/5 bg-white p-6 shadow-sm"><Icon size={25} className="text-[#2F3AA2]"/><h2 className="mt-4 text-xl font-semibold">{title}</h2><p className="mt-2 leading-7 text-gray-600">{text}</p></article>})}</div></section>
-  <section className="px-5 py-12 sm:px-6"><div className="mx-auto max-w-6xl rounded-[2rem] bg-[#EEF2FF] p-5 sm:p-10"><h2 className="text-3xl font-semibold">{sk?"Jednoduchý prehľad pre vašu firmu":"A simpler overview for your company"}</h2><p className="mt-3 max-w-2xl text-sm leading-7 text-gray-600">{sk?"Každý zamestnanec má vlastný študentský priestor. Firemný správca má prístup len k potrebným údajom o priebehu výučby.":"Each employee keeps a private student space. The company manager only sees the essential lesson usage information."}</p><div className="mt-6 grid gap-3 sm:grid-cols-2">{(sk?["Priradení zamestnanci","Jazyk výučby","Počet dokončených hodín","Zostávajúce hodiny","Najbližší termín","Posledná absolvovaná hodina"]:["Assigned employees","Learning language","Completed lesson count","Lessons remaining","Next lesson","Last completed lesson"]).map(x=><p key={x} className="flex items-center gap-2 rounded-2xl bg-white p-4"><CheckCircle2 size={18} className="text-[#2F3AA2]"/>{x}</p>)}</div><p className="mt-5 text-sm text-gray-600">{sk?"Firemný portál je zámerne obmedzený. Detailné študijné údaje zostávajú medzi študentom, lektorom a Mundus." : "The company portal is intentionally limited. Detailed learning data remains between the student, teacher and Mundus."}</p></div></section>
-  <section id="quote" className="px-4 py-12 sm:px-6 sm:py-16"><div className="mx-auto max-w-4xl rounded-2xl border border-black/5 bg-white p-5 shadow-sm sm:rounded-[2rem] sm:p-10"><p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">{sk?"Cenová ponuka":"Quote request"}</p><h2 className="mt-2 text-2xl font-semibold leading-tight sm:text-3xl">{sk?"Povedzte nám, čo vaša firma potrebuje":"Tell us what your company needs"}</h2><p className="mt-3 text-gray-600">{sk?"Firemné ceny sú individuálne. Pošlite základné údaje a pripravíme vám ponuku.":"Company pricing is customized. Send the basics and we’ll prepare a quote."}</p>
-  {sent==="1"&&<p role="status" className="mt-5 rounded-2xl bg-green-50 p-4 text-green-800">{sk?"Ďakujeme. Dopyt sme prijali a ozveme sa vám.":"Thank you. We received your request and will contact you."}</p>}
-  {problem&&<p role="alert" className="mt-5 rounded-2xl bg-red-50 p-4 text-red-700">{problem==="rate"?(sk?"Dostali sme už viac dopytov z tohto e-mailu. Skúste to neskôr.":"We already received several requests from this email. Try again later."):problem==="invalid"?(sk?"Skontrolujte vyplnené údaje.":"Please check the information entered."):(sk?"Dopyt sa nepodarilo odoslať. Skúste to neskôr.":"The request could not be sent. Try again later.")}</p>}
-  <form action={submitCompanyQuote} className="mt-7 grid gap-4 sm:grid-cols-2"><input type="hidden" name="ui_language" value={language}/>
-   <label className="text-sm">{sk?"Názov firmy":"Company name"}<input name="company_name" required maxLength={160} className="mt-2 min-h-12 w-full rounded-xl border border-[#DDE2FB] bg-[#FAFBFF] p-3 outline-none transition focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10"/></label>
-   <label className="text-sm">{sk?"Kontaktná osoba":"Contact person"}<input name="contact_name" required maxLength={120} className="mt-2 min-h-12 w-full rounded-xl border border-[#DDE2FB] bg-[#FAFBFF] p-3 outline-none transition focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10"/></label>
-   <label className="text-sm">E-mail<input name="email" type="email" required maxLength={254} className="mt-2 min-h-12 w-full rounded-xl border border-[#DDE2FB] bg-[#FAFBFF] p-3 outline-none focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10"/></label>
-   <label className="text-sm">{sk?"Telefón (voliteľné)":"Phone (optional)"}<input name="phone" maxLength={80} className="mt-2 min-h-12 w-full rounded-xl border border-[#DDE2FB] bg-[#FAFBFF] p-3 outline-none focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10"/></label>
-   <label className="text-sm">{sk?"Počet zamestnancov na výučbu":"Employees to train"}<input name="employee_count" type="number" min={1} max={100000} className="mt-2 min-h-12 w-full rounded-xl border border-[#DDE2FB] bg-[#FAFBFF] p-3 outline-none focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10"/></label>
-   <label className="text-sm">{sk?"Jazyky":"Languages"}<input name="languages" maxLength={500} placeholder={sk?"napr. angličtina, nemčina":"e.g. English, German"} className="mt-2 min-h-12 w-full rounded-xl border border-[#DDE2FB] bg-[#FAFBFF] p-3 outline-none focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10"/></label>
-   <label className="text-sm sm:col-span-2">{sk?"Čo potrebujete?":"What do you need?"}<textarea name="message" rows={4} maxLength={3000} placeholder={sk?"Napr. 12 zamestnancov, 2× týždenne, kombinácia individuálnych a skupinových hodín...":"For example: 12 employees, twice weekly, mix of individual and group lessons..."} className="mt-2 min-h-12 w-full rounded-xl border border-[#DDE2FB] bg-[#FAFBFF] p-3 outline-none focus:border-[#2F3AA2] focus:ring-4 focus:ring-[#2F3AA2]/10"/></label>
-   <div className="hidden" aria-hidden="true"><label>Website<input name="website" tabIndex={-1} autoComplete="off"/></label></div>
-   <button className="min-h-12 rounded-xl bg-[#2F3AA2] px-6 py-4 font-semibold text-white transition hover:bg-[#252E82] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F3AA2] sm:col-span-2">{sk?"Požiadať o cenovú ponuku":"Request a quote"}</button>
-  </form></div></section><Footer/></main>;
+ return <main className="min-h-screen overflow-x-clip bg-[#F8F9FC]"><Navbar/>
+   <section className="relative overflow-hidden bg-[#171A2B] px-4 pb-16 pt-28 text-white sm:px-6 sm:pb-24 sm:pt-36">
+    <div aria-hidden="true" className="pointer-events-none absolute -right-32 -top-32 h-[540px] w-[540px] rounded-full bg-[#5967CE]/45 blur-[110px]"/>
+    <div className="relative mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[minmax(0,.95fr)_minmax(0,1.05fr)] lg:gap-12">
+     <div className="max-w-xl">
+       <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[.15em] text-[#E3E8FF]"><Building2 size={16}/>{sk?"Mundus pre firmy":"Mundus for business"}</span>
+       <h1 className="mt-6 text-[clamp(2.3rem,8vw,4.8rem)] font-semibold leading-[1.06] tracking-[-.055em] !text-white">{sk?"Silnejší tím začína":"A stronger team starts"} <span className="text-[#C3CDFF]">{sk?"lepšou komunikáciou.":"with better communication."}</span></h1>
+       <p className="mt-5 max-w-xl text-base leading-7 text-[#DDE1F3] sm:text-lg">{sk?"Praktické online jazykové hodiny pre zamestnancov — individuálne aj v malých skupinách. Jednoduchá organizácia, flexibilné termíny, cena na mieru.":"Practical online language lessons for your employees — one-to-one or in small groups. Flexible schedules, simple administration and custom pricing."}</p>
+       <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+         <a href="#quote" className="inline-flex min-h-13 items-center justify-center gap-2 rounded-xl bg-[#DDE2FF] px-6 py-3.5 font-bold text-[#202D84] transition hover:bg-white">{sk?"Získať cenovú ponuku":"Get a custom quote"}<ArrowRight size={18}/></a>
+         <a href="#benefits" className="inline-flex min-h-13 items-center justify-center rounded-xl border border-white/20 bg-white/5 px-6 py-3.5 font-semibold text-white transition hover:bg-white/10">{sk?"Ako to funguje":"How it works"}</a>
+       </div>
+       <div className="mt-8 flex flex-wrap gap-2 text-xs font-medium text-[#EBEFFF]">
+        <span className="rounded-full border border-white/15 bg-white/5 px-3 py-2">{sk?"1:1 aj skupiny":"1:1 & groups"}</span>
+        <span className="rounded-full border border-white/15 bg-white/5 px-3 py-2">{sk?"Online · flexibilne":"Online · flexible"}</span>
+        <span className="rounded-full border border-white/15 bg-white/5 px-3 py-2">{sk?"Firemný prehľad":"Company overview"}</span>
+       </div>
+     </div>
+     <CorporatePreview sk={sk}/>
+    </div>
+   </section>
+
+   <section id="benefits" className="px-4 py-16 sm:px-6 sm:py-24"><div className="mx-auto max-w-7xl">
+      <div className="max-w-3xl"><span className="text-xs font-bold uppercase tracking-[.16em] text-[#4652B6]">{sk?"Navrhnuté pre tímy":"Built for teams"}</span><h2 className="mt-3 text-[clamp(1.9rem,5vw,3.25rem)] font-semibold leading-tight tracking-[-.04em]">{sk?"Výsledky v komunikácii. Nie ďalšia administratíva." : "Better communication. Not more administration."}</h2></div>
+      <div className="mt-9 grid gap-4 md:grid-cols-3">{benefits.map(([title,description],i)=>{const Icon=[Globe2,CalendarCheck2,ShieldCheck][i];return <article key={title} className="rounded-[1.7rem] border border-[#E1E5F0] bg-white p-6 shadow-[0_12px_40px_rgba(23,26,43,.04)] sm:p-7"><span className={`inline-flex h-12 w-12 items-center justify-center rounded-2xl ${i===0?"bg-[#E7E9FF] text-[#3443A2]":i===1?"bg-[#F8E5D6] text-[#835230]":"bg-[#DDEFE6] text-[#285D48]"}`}><Icon size={23}/></span><h3 className="mt-6 text-xl font-semibold">{title}</h3><p className="mt-3 text-sm leading-7 text-[#646A7E]">{description}</p></article>})}</div>
+   </div></section>
+
+   <section className="px-4 pb-16 sm:px-6 sm:pb-24"><div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-[#E8ECFF] p-6 sm:p-10 lg:p-12">
+      <div className="grid gap-8 lg:grid-cols-2 lg:items-center">
+        <div><span className="text-xs font-bold uppercase tracking-[.17em] text-[#4652B6]">{sk?"Od prvého dňa prehľad":"Clarity from day one"}</span><h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">{sk?"Každý vie, čo má robiť." : "Everyone knows what comes next."}</h2><p className="mt-4 max-w-xl leading-7 text-gray-600">{sk?"Mundus organizuje výučbu. Študenti majú prístup k svojim materiálom. Firemný správca má len potrebný prehľad, nie súkromné údaje zamestnancov.":"Mundus organizes the learning. Students access their own materials. Managers get the high-level overview they need, without accessing employees' private study records."}</p></div>
+        <div className="grid gap-3">{(sk?["Spoločne nastavíme ciele a formát výučby","Priradíme vhodných lektorov a termíny","Priebeh hodín uvidíte vo firemnom prehľade"]:["We agree on goals and training format","We coordinate teachers and schedules","You track lesson activity in the company overview"]).map((line,i)=><div key={line} className="flex items-center gap-3 rounded-2xl bg-white p-4"><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#2F3AA2] font-semibold text-white">{i+1}</span><p className="text-sm font-semibold text-[#252A3E]">{line}</p></div>)}</div>
+      </div>
+   </div></section>
+
+   <section id="quote" className="scroll-mt-24 bg-[#F1F3FA] px-4 py-16 sm:px-6 sm:py-24"><div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[minmax(0,.75fr)_minmax(0,1.25fr)] lg:gap-14">
+      <div><span className="text-xs font-bold uppercase tracking-[.17em] text-[#4652B6]">{sk?"Nezáväzná ponuka":"No-obligation quote"}</span><h2 className="mt-3 text-[clamp(2rem,5vw,3.25rem)] font-semibold leading-tight tracking-[-.045em]">{sk?"Povedzte nám o svojom tíme." : "Tell us about your team."}</h2><p className="mt-4 max-w-md leading-7 text-gray-600">{sk?"Stačí pár údajov. Pripravíme možnosti individuálnej alebo skupinovej výučby na mieru vašej firme.":"Just a few details. We'll prepare individual or group learning options tailored to your business."}</p><p className="mt-6 flex items-center gap-2 text-sm font-semibold text-[#4652B6]"><CheckCircle2 size={18}/>{sk?"Bezplatná a nezáväzná konzultácia":"Free, no-obligation consultation"}</p></div>
+      <div className="rounded-[1.75rem] border border-[#DDE2EF] bg-white p-5 shadow-[0_16px_48px_rgba(23,26,43,.06)] sm:p-8">
+       {sent==="1"&&<p role="status" className="mb-5 rounded-2xl bg-green-50 p-4 text-sm text-green-800">{sk?"Ďakujeme. Dopyt sme prijali a ozveme sa vám.":"Thank you. We received your request and will contact you."}</p>}
+       {problem&&<p role="alert" className="mb-5 rounded-2xl bg-red-50 p-4 text-sm text-red-700">{problem==="rate"?(sk?"Dostali sme už viac dopytov z tohto e-mailu. Skúste to neskôr.":"We already received several requests from this email. Try again later."):problem==="invalid"?(sk?"Skontrolujte vyplnené údaje.":"Please check the information entered."):(sk?"Dopyt sa nepodarilo odoslať. Skúste to neskôr.":"The request could not be sent. Try again later.")}</p>}
+       <form action={submitCompanyQuote} className="grid gap-4 sm:grid-cols-2">
+        <input type="hidden" name="ui_language" value={language}/>
+        <label className="text-sm font-semibold text-[#31384E] sm:col-span-2">{sk?"Názov firmy":"Company name"}<input name="company_name" required maxLength={160} autoComplete="organization" className="mt-2 min-h-12 w-full rounded-xl border border-[#D3D9EC] bg-[#FAFBFF] p-3 text-base font-normal outline-none focus:border-[#4652B6] focus:ring-4 focus:ring-[#4652B6]/10"/></label>
+        <label className="text-sm font-semibold text-[#31384E]">{sk?"Vaše meno":"Your name"}<input name="contact_name" required maxLength={120} autoComplete="name" className="mt-2 min-h-12 w-full rounded-xl border border-[#D3D9EC] bg-[#FAFBFF] p-3 text-base font-normal outline-none focus:border-[#4652B6] focus:ring-4 focus:ring-[#4652B6]/10"/></label>
+        <label className="text-sm font-semibold text-[#31384E]">E-mail<input name="email" type="email" required maxLength={254} autoComplete="email" className="mt-2 min-h-12 w-full rounded-xl border border-[#D3D9EC] bg-[#FAFBFF] p-3 text-base font-normal outline-none focus:border-[#4652B6] focus:ring-4 focus:ring-[#4652B6]/10"/></label>
+        <details className="rounded-xl border border-[#E3E6EF] bg-[#F8F9FE] p-4 sm:col-span-2"><summary className="cursor-pointer text-sm font-semibold text-[#2F3AA2]">{sk?"+ Doplniť podrobnosti (voliteľné)" : "+ Add details (optional)"}</summary>
+         <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          <label className="text-sm">{sk?"Počet zamestnancov":"Employees to train"}<input name="employee_count" type="number" min={1} max={100000} className="mt-2 min-h-12 w-full rounded-xl border border-[#D3D9EC] bg-white p-3"/></label>
+          <label className="text-sm">{sk?"Jazyky":"Languages"}<input name="languages" maxLength={500} placeholder={sk?"napr. angličtina, nemčina":"e.g. English, German"} className="mt-2 min-h-12 w-full rounded-xl border border-[#D3D9EC] bg-white p-3"/></label>
+          <label className="text-sm sm:col-span-2">{sk?"Vaše potreby":"Your needs"}<textarea name="message" rows={3} maxLength={3000} className="mt-2 w-full rounded-xl border border-[#D3D9EC] bg-white p-3"/></label>
+          <label className="text-sm sm:col-span-2">{sk?"Telefón (voliteľné)":"Phone (optional)"}<input name="phone" maxLength={80} type="tel" className="mt-2 min-h-12 w-full rounded-xl border border-[#D3D9EC] bg-white p-3"/></label>
+         </div>
+        </details>
+        <div className="hidden" aria-hidden="true"><label>Website<input name="website" tabIndex={-1} autoComplete="off"/></label></div>
+        <button type="submit" className="flex min-h-14 items-center justify-center gap-2 rounded-xl bg-[#2F3AA2] px-5 py-3.5 font-bold text-white transition hover:bg-[#252E82] sm:col-span-2">{sk?"Požiadať o ponuku":"Request my quote"}<ArrowRight size={18}/></button>
+       </form>
+      </div>
+   </div></section><Footer/>
+ </main>;
 }

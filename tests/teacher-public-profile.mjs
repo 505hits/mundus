@@ -20,5 +20,11 @@ await assert.rejects(db.query("insert into teacher_public_profiles(teacher_id,he
 await db.query("insert into teacher_public_profiles(teacher_id,headline,bio,languages,photo_path,website_visible) values('00000000-0000-4000-8000-000000000001','English teacher','Conversation and practical English lessons.',array['English'],'00000000-0000-4000-8000-000000000001/profile.jpg',true)");
 const bucket=(await db.query("select public,file_size_limit from storage.buckets where id='teacher-public'")).rows[0];
 assert.equal(bucket.public,true);assert.equal(Number(bucket.file_size_limit),5242880);
+for(const file of ["teacher-nesrine.webp","teacher-veronika.webp"]){
+ const photo=readFileSync(new URL("../public/images/mundus/"+file,import.meta.url));
+ assert.ok(photo.length>3000,`Teacher photo ${file} must contain complete image data`);
+ assert.equal(photo.toString("ascii",0,4),"RIFF");
+ assert.equal(photo.toString("ascii",8,12),"WEBP");
+}
 await db.close();
 console.log("PASS: teacher public profile requires complete content and photo before publishing");

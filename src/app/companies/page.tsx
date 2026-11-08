@@ -56,7 +56,7 @@ export default async function CompaniesPage({searchParams}:Props) {
        </div>
        <div className="relative flex min-h-[250px] items-center justify-center bg-[#CFD8ED] p-5 sm:min-h-[340px]">
          <div className="relative h-[235px] w-full max-w-[260px] overflow-hidden rounded-[1.5rem] border-[7px] border-white bg-[#F3F5FA] shadow-2xl sm:h-[300px]">
-           <Image src="/images/mundus/DYSOVxCoMrJ.webp" alt={sk?"Moment z Mundus Instagramu":"Mundus Instagram moment"} fill sizes="260px" className="object-contain"/>
+           <Image unoptimized src="https://images.unsplash.com/photo-1704440452002-d14e303fec20?auto=format&fit=crop&w=900&q=84" alt={sk?"Ilustračná fotografia pracovného tímu pri stretnutí":"Editorial photograph of colleagues in a meeting"} fill sizes="260px" className="object-cover"/>
          </div>
        </div>
      </div>

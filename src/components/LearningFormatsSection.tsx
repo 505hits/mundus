@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, Building2, UserRound, Users, Check } from "lucide-react";
+import { ArrowUpRight, Building2, UserRound, Users } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function LearningFormatsSection() {
@@ -23,19 +23,21 @@ export default function LearningFormatsSection() {
     <p className="mt-3 max-w-2xl text-base leading-7 text-gray-600">{sk?"Sami, s priateľmi alebo cez firmu. Vyberte si formát, ktorý vám sedí.":"On your own, with friends, or through work. Find the format that fits."}</p>
    </div>
    <div className="mt-8 grid gap-4 lg:grid-cols-3">
-    {cards.map(card=>{const Icon=card.icon;return <article key={card.href} className={`group relative flex min-h-[355px] flex-col overflow-hidden rounded-[1.8rem] p-5 shadow-[0_12px_35px_rgba(23,26,43,.06)] transition hover:-translate-y-1 hover:shadow-xl sm:min-h-[400px] sm:p-7 ${card.background}`}>
-      <div className="relative z-10 flex items-start justify-between gap-3">
-       <span className={`inline-flex items-center gap-2 rounded-full border border-white/60 bg-white/75 px-3 py-2 text-xs font-bold ${card.ink}`}><Icon size={16}/>{card.eyebrow}</span>
-       <span className={`text-xs font-bold ${card.ink}`}>{card.number}</span>
+    {cards.map(card=>{const Icon=card.icon;return <article key={card.href} className={`group flex min-w-0 flex-col overflow-hidden rounded-[1.8rem] p-5 shadow-[0_12px_35px_rgba(23,26,43,.06)] transition hover:-translate-y-1 hover:shadow-xl sm:p-6 ${card.background}`}>
+      <div className="flex items-center justify-between gap-3">
+        <span className={`inline-flex items-center gap-2 rounded-full border border-white/60 bg-white/85 px-3 py-2 text-xs font-bold ${card.ink}`}><Icon size={16}/>{card.eyebrow}</span>
+        <span className={`text-xs font-bold ${card.ink}`}>{card.number}</span>
       </div>
-      <div className="absolute right-[-25px] top-[60px] h-[180px] w-[55%] overflow-hidden rounded-[85px] border-[8px] border-white/45 bg-white/30 shadow-xl sm:top-[75px] sm:h-[215px]">
-       <Image src={card.img} fill sizes="230px" alt={sk?"Moment z Mundus Instagramu":"Mundus community photo"} className="object-cover object-center transition duration-700 group-hover:scale-110"/>
+      <div className="relative mt-5 flex h-[205px] items-center justify-center overflow-hidden rounded-[1.35rem] border border-white/70 bg-white/45 p-3 sm:h-[225px]">
+        <div className="relative h-full w-full max-w-[270px] overflow-hidden rounded-[1.1rem] bg-white/60">
+          <Image src={card.img} fill sizes="270px" alt={sk?"Fotografia z Mundus Instagramu":"Mundus Instagram photo"} className="object-contain p-1 transition duration-500 group-hover:scale-[1.035]"/>
+        </div>
       </div>
-      <div className="relative z-10 mt-auto max-w-[90%]">
-       <p className={`mb-2 text-[11px] font-semibold uppercase tracking-wider ${card.ink}`}>{card.details}</p>
-       <h3 className="max-w-[260px] text-[clamp(1.5rem,2.6vw,2rem)] font-semibold leading-tight tracking-[-.04em] text-[#171A2B]">{card.title}</h3>
-       <p className="mt-2 max-w-[270px] text-sm leading-6 text-[#51596C]">{card.text}</p>
-       <Link href={card.href} className={`mt-5 inline-flex min-h-12 items-center gap-2 rounded-full bg-white px-4 py-3 text-sm font-bold shadow-sm transition group-hover:gap-3 ${card.ink}`}>{card.cta}<ArrowUpRight size={18}/></Link>
+      <div className="mt-5 flex flex-1 flex-col">
+        <p className={`mb-2 text-[11px] font-semibold uppercase tracking-wider ${card.ink}`}>{card.details}</p>
+        <h3 className="text-[clamp(1.55rem,2.4vw,2rem)] font-semibold leading-tight tracking-[-.04em] text-[#171A2B]">{card.title}</h3>
+        <p className="mt-2 text-sm leading-6 text-[#51596C]">{card.text}</p>
+        <Link href={card.href} className={`mt-5 inline-flex min-h-12 items-center justify-between gap-2 self-start rounded-full bg-white px-5 py-3 text-sm font-bold shadow-sm transition group-hover:gap-3 ${card.ink}`}>{card.cta}<ArrowUpRight size={18}/></Link>
       </div>
      </article>})}
    </div>

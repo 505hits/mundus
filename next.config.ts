@@ -17,6 +17,13 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      { source: "/prices", destination: "/sk/pricing", permanent: true },
+      { source: "/sk/prices", destination: "/sk/pricing", permanent: true },
+      { source: "/en/prices", destination: "/en/pricing", permanent: true },
+    ];
+  },
   async rewrites() {
     const localizedPublicRoots = [
       "languages",

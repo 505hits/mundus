@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 /**
  * Run with Node after installing Playwright Chromium:
  *   BASE_URL=https://mundus-mundus1.vercel.app node tests/live-visual-qa.cjs

@@ -10,9 +10,9 @@ export default function LearningFormatsSection() {
  const sk=language==="sk";
  const prefix=`/${language}`;
  const cards=[
-  {icon:UserRound,number:"01",eyebrow:sk?"Pre vás":"Just for you",title:sk?"Individuálne 1:1":"One-to-one lessons",text:sk?"Sústredíme sa na vaše ciele, tempo aj čas.":"Your goals, your pace, your schedule.",href:`${prefix}/pricing`,cta:sk?"Vybrať balíček":"Find your package",img:"/images/mundus/DWQ3XM8DQ9W.webp",background:"bg-[#E9E8FF]",ink:"text-[#282B71]",details:sk?"45 alebo 60 min · Flexibilne":"45 or 60 min · Flexible"},
-  {icon:Users,number:"02",eyebrow:sk?"Učte sa spolu":"Learn together",title:sk?"Súkromné skupiny":"Private groups",text:sk?"Hodiny pre 2–5 priateľov alebo kolegov.":"Lessons for 2–5 friends or colleagues.",href:`${prefix}/group-lessons`,cta:sk?"Skupinové hodiny":"Group lessons",img:"/images/mundus/DYSOVxCoMrJ.webp",background:"bg-[#E2EFE7]",ink:"text-[#1B5A49]",details:sk?"Vlastná skupina · Na mieru":"Your own group · Tailored"},
-  {icon:Building2,number:"03",eyebrow:sk?"Pre váš tím":"For your team",title:sk?"Pre firmy":"For companies",text:sk?"Praktická komunikácia, ktorú využijete v práci.":"Practical communication that works at work.",href:`${prefix}/companies`,cta:sk?"Firemná výučba":"Corporate training",img:"/images/mundus/DYSRMMnNZbh.webp",background:"bg-[#F5E7DF]",ink:"text-[#7F453C]",details:sk?"Flexibilne · Pre HR":"Flexible · Built for HR"}
+  {icon:UserRound,number:"01",eyebrow:sk?"Pre vás":"Just for you",title:sk?"Individuálne 1:1":"One-to-one lessons",text:sk?"Sústredíme sa na vaše ciele, tempo aj čas.":"Your goals, your pace, your schedule.",href:`${prefix}/pricing`,cta:sk?"Vybrať balíček":"Find your package",img:"https://images.unsplash.com/photo-1758874385197-07d99c183a6f?auto=format&fit=crop&w=900&q=84",background:"bg-[#E9E8FF]",ink:"text-[#282B71]",details:sk?"45 alebo 60 min · Flexibilne":"45 or 60 min · Flexible"},
+  {icon:Users,number:"02",eyebrow:sk?"Učte sa spolu":"Learn together",title:sk?"Súkromné skupiny":"Private groups",text:sk?"Hodiny pre 2–5 priateľov alebo kolegov.":"Lessons for 2–5 friends or colleagues.",href:`${prefix}/group-lessons`,cta:sk?"Skupinové hodiny":"Group lessons",img:"https://images.unsplash.com/photo-1758270705518-b61b40527e76?auto=format&fit=crop&w=900&q=84",background:"bg-[#E2EFE7]",ink:"text-[#1B5A49]",details:sk?"Vlastná skupina · Na mieru":"Your own group · Tailored"},
+  {icon:Building2,number:"03",eyebrow:sk?"Pre váš tím":"For your team",title:sk?"Pre firmy":"For companies",text:sk?"Praktická komunikácia, ktorú využijete v práci.":"Practical communication that works at work.",href:`${prefix}/companies`,cta:sk?"Firemná výučba":"Corporate training",img:"https://images.unsplash.com/photo-1758876020491-9560594ec362?auto=format&fit=crop&w=900&q=84",background:"bg-[#F5E7DF]",ink:"text-[#7F453C]",details:sk?"Flexibilne · Pre HR":"Flexible · Built for HR"}
  ];
  return <section id="learning-formats" className="relative overflow-hidden bg-[#F7F8FC] px-4 py-16 sm:px-6 sm:py-24">
   <div className="pointer-events-none absolute left-1/2 top-0 h-64 w-[45rem] -translate-x-1/2 rounded-full bg-[#DDE2FB]/55 blur-3xl"/>
@@ -28,9 +28,9 @@ export default function LearningFormatsSection() {
         <span className={`inline-flex items-center gap-2 rounded-full border border-white/60 bg-white/85 px-3 py-2 text-xs font-bold ${card.ink}`}><Icon size={16}/>{card.eyebrow}</span>
         <span className={`text-xs font-bold ${card.ink}`}>{card.number}</span>
       </div>
-      <div className="relative mt-5 flex h-[205px] items-center justify-center overflow-hidden rounded-[1.35rem] border border-white/70 bg-white/45 p-3 sm:h-[225px]">
+      <div className="relative mt-5 flex h-[190px] items-center justify-center overflow-hidden rounded-[1.35rem] border border-white/70 bg-white/45 p-0 sm:h-[225px]">
         <div className="relative h-full w-full max-w-[270px] overflow-hidden rounded-[1.1rem] bg-white/60">
-          <Image src={card.img} fill sizes="270px" alt={sk?"Fotografia z Mundus Instagramu":"Mundus Instagram photo"} className="object-contain p-1 transition duration-500 group-hover:scale-[1.035]"/>
+          <Image unoptimized src={card.img} fill sizes="(max-width:640px) 80vw,360px" alt={sk?"Fotografia online výučby":"Online learning photograph"} className="object-cover transition duration-500 group-hover:scale-[1.035]"/>
         </div>
       </div>
       <div className="mt-5 flex flex-1 flex-col">

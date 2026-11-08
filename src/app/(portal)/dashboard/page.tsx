@@ -173,7 +173,10 @@ export default async function DashboardPage({ searchParams }: { searchParams?: P
     (sum, pkg) => sum + (pkg.remaining_lessons ?? 0),
     0
   );
-  const activeDurations = [...new Set(activePackages.map(pkg => pkg.duration_minutes ?? 60))].sort();
+  const durationBalances = [45, 60].flatMap(duration => {
+    const matching = activePackages.filter(pkg => (pkg.duration_minutes ?? 60) === duration);
+    return matching.length ? [{ duration, remaining: matching.reduce((sum, pkg) => sum + (pkg.remaining_lessons ?? 0), 0) }] : [];
+  });
 
   const renewalDue = activePackages.some(pkg => {
     const low =
@@ -222,12 +225,15 @@ export default async function DashboardPage({ searchParams }: { searchParams?: P
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            {sk ? "Vitajte späť" : "Welcome back"}, {firstName} 👋
+            {sk ? "Vitajte späť" : "Welcome back"}, {firstName}
           </h1>
 
           <p className="mt-2 text-gray-500">
             {sk ? "Váš prehľad učenia v Mundus." : "Your learning overview in Mundus."}
           </p>
+          <div className="mt-5 flex flex-wrap gap-3">
+            {nextLessonLink ? <a href={nextLessonLink} target="_blank" rel="noopener noreferrer" className="dashboard-primary-action">{sk ? "Pripojiť sa na hodinu" : "Join lesson"}</a> : <Link href={renewalDue && paymentsAvailable ? "/packages" : "/lessons"} className="dashboard-primary-action">{renewalDue && paymentsAvailable ? (sk ? "Pokračovať s ďalším balíčkom" : "Renew your package") : (sk ? "Zobraziť rozvrh" : "View schedule")}</Link>}
+          </div>
         </section>
 
         {/* Quick navigation */}
@@ -364,7 +370,7 @@ export default async function DashboardPage({ searchParams }: { searchParams?: P
                   <p className="mt-1 text-sm text-gray-400">
                     {sk ? "Zostáva" : "Remaining:"} {formatLessonCount(remainingLessons, language)}
                   </p>
-                  <p className="mt-2 text-xs font-medium text-[#2F3AA2]">{activeDurations.join(" / ")} min</p>
+                  <p className="mt-2 text-xs font-medium text-[#2F3AA2]">{durationBalances.map(({ duration, remaining }) => <span key={duration} className="mr-2 inline-flex rounded-full bg-[#EEF2FF] px-2.5 py-1">{duration} min · {remaining} {sk ? "zostáva" : "left"}</span>)}</p>
                 </div>
 
                 <div

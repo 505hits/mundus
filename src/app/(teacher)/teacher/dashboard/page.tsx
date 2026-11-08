@@ -67,7 +67,7 @@ export default async function TeacherDashboardPage() {
   const adminDb = createSupabaseAdminClient();
   const studentDirectory = await teacherDirectory(supabase);
 
-  const [{ data: teacherProfile }, { data: publicProfile }, { data: matchingPreferences }] = await Promise.all([
+  const [{ data: teacherProfile, error: teacherProfileError }, { data: publicProfile, error: publicProfileError }, { data: matchingPreferences, error: matchingPreferencesError }] = await Promise.all([
     supabase.from("profiles").select("full_name, email").eq("id", user.id).single(),
     supabase.from("teacher_public_profiles").select("headline,bio,languages,photo_path,website_visible").eq("teacher_id", user.id).maybeSingle(),
     supabase.from("teacher_preferences").select("languages,levels,days,time_from,time_to,max_new_students,accepting_students").eq("teacher_id", user.id).maybeSingle(),
@@ -199,6 +199,7 @@ export default async function TeacherDashboardPage() {
     .order("requested_at", { ascending: true });
 
   const dashboardDataError = Boolean(
+    teacherProfileError || publicProfileError || matchingPreferencesError ||
     todayLessonCandidatesError ||
     upcomingLessonsError ||
     assignedLessonStudentsError ||
@@ -297,12 +298,16 @@ export default async function TeacherDashboardPage() {
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            {sk ? "Vitajte" : "Welcome"}, {firstName} 👋
+            {sk ? "Vitajte" : "Welcome"}, {firstName}
           </h1>
 
           <p className="mt-2 text-gray-500">
             {sk ? "Tu nájdete prehľad dnešných hodín, študentov a žiadostí o zmenu termínu." : "Here you can see today’s lessons, students and schedule-change requests."}
           </p>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <Link href="/teacher/schedule" className="dashboard-primary-action">{sk ? "Otvoriť rozvrh" : "Open schedule"}</Link>
+            <Link href="/teacher/reports" className="dashboard-secondary-action">{sk ? "Záznamy hodín" : "Lesson reports"}</Link>
+          </div>
         </section>
 
         {(dashboardDataError || performanceLoadError) && (
@@ -311,7 +316,7 @@ export default async function TeacherDashboardPage() {
           </div>
         )}
 
-        {!publicProfileComplete && (
+        {!publicProfileError && !publicProfileComplete && (
           <section className="mt-6 flex flex-col gap-4 rounded-3xl border border-[#2F3AA2]/20 bg-[#EEF2FF] p-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="font-semibold text-[#2F3AA2]">{sk ? "Dokončite svoj profil lektora" : "Complete your teacher profile"}</p>
@@ -321,7 +326,7 @@ export default async function TeacherDashboardPage() {
           </section>
         )}
 
-        {!matchingPreferencesComplete && (
+        {!matchingPreferencesError && !matchingPreferencesComplete && (
           <section className="mt-4 flex flex-col gap-4 rounded-3xl border border-amber-200 bg-amber-50 p-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="font-semibold text-amber-900">{sk ? "Nastavte dostupnosť pre priraďovanie študentov" : "Set availability for student matching"}</p>
@@ -372,7 +377,7 @@ export default async function TeacherDashboardPage() {
             </p>
 
             <p className="mt-1 text-sm text-gray-500">
-              {sk ? "priradených študentov" : "assigned students"}
+              {sk ? "študentov v histórii hodín" : "students in lesson history"}
             </p>
           </article>
 

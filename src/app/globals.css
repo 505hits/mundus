@@ -954,3 +954,17 @@ h3 {
   .dashboard-page :where(article.rounded-3xl,section.rounded-3xl) {border-radius:1.2rem;}
   .dashboard-page :where(h2) {font-size:clamp(1.2rem,5.2vw,1.6rem);}
 }
+
+/* Mundus dashboard actions */
+.dashboard-welcome {
+  background: radial-gradient(ellipse at 85% 12%, rgba(137,153,255,.4), transparent 50%), linear-gradient(125deg,#171B38,#303975 70%,#4654A0);
+}
+.dashboard-primary-action, .dashboard-secondary-action {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 44px; padding: .65rem 1rem; border-radius: .9rem;
+  font-size: .875rem; font-weight: 650;
+}
+.dashboard-primary-action { background: #E2E8FF; color: #212C72; }
+.dashboard-primary-action:hover { background: #fff; }
+.dashboard-secondary-action { border: 1px solid #BFC8F9; color: #fff; }
+.dashboard-secondary-action:hover { background: rgba(255,255,255,.12); }

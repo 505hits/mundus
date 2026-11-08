@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Users, CalendarDays, MessageCircle, Sparkles } from "lucide-react";
+import { ArrowRight, Users, CalendarDays, MessageCircle, Sparkles } from "lucide-react";
 import { currentLanguage } from "@/lib/i18n";
 import { localizedAlternates, localizedPath } from "@/lib/seo-locales";
 

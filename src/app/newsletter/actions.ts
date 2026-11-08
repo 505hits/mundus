@@ -58,5 +58,6 @@ export async function subscribeNewsletter(_previous: NewsletterState, form: Form
   },{onConflict:"subscriber_id,kind"});
 
 
-  return {success: language==="sk"?"Skontrolujte e-mail a potvrďte odber.":"Check your email and confirm your subscription.",subscribed:true};
+  const mailReady = process.env.MUNDUS_EMAIL_NOTIFICATIONS_ENABLED === "true" && Boolean(process.env.MUNDUS_SMTP_HOST && process.env.MUNDUS_SMTP_USER && process.env.MUNDUS_SMTP_PASSWORD && process.env.MUNDUS_EMAIL_FROM);
+  return {success: mailReady ? (language==="sk"?"Skontrolujte e-mail a potvrďte odber.":"Check your email and confirm your subscription.") : (language==="sk"?"E-mail sme bezpečne uložili. Potvrdzovací e-mail sa odošle po aktivovaní e-mailovej služby.":"We saved your email. The confirmation will be sent once email delivery is activated."),subscribed:true};
 }

@@ -1,14 +1,37 @@
 "use client";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, Building2, UserRound, Users } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function LearningFormatsSection(){
- const {language}=useLanguage();const sk=language==="sk";const prefix=`/${language}`;
- const cards=[
-  {icon:UserRound,eyebrow:sk?"Najobľúbenejšie":"Most popular",title:sk?"Individuálne 1:1":"Individual 1:1",text:sk?"Maximum pozornosti na váš cieľ. Vyberiete si 45 alebo 60 minút a balíček zaplatíte bezpečne online.":"Maximum focus on your goal. Choose 45 or 60 minutes and pay securely online.",href:`${prefix}/pricing`,cta:sk?"Vybrať jazyk a balíček":"Choose language & package",featured:true},
-  {icon:Users,eyebrow:sk?"2–5 osôb":"2–5 people",title:sk?"Súkromné skupiny":"Private groups",text:sk?"Pre priateľov alebo kolegov s podobnou úrovňou. Spoločný cieľ, flexibilný termín a cena na mieru.":"For friends or colleagues at a similar level. Shared goal, flexible scheduling and custom pricing.",href:`${prefix}/group-lessons`,cta:sk?"Skupinové hodiny":"Group lessons"},
-  {icon:Building2,eyebrow:"B2B",title:sk?"Pre firmy":"For companies",text:sk?"Individuálna aj skupinová výučba, cenová ponuka na mieru a firemný portál so základným prehľadom zamestnancov.":"Individual and group training, custom pricing and a company portal with essential employee oversight.",href:`${prefix}/companies`,cta:sk?"Firemná výučba":"Company training"},
- ];
- return <section id="learning-formats" className="relative overflow-hidden bg-[#F7F8FC] px-6 py-20 sm:py-24"><div className="absolute left-1/2 top-0 h-64 w-[46rem] -translate-x-1/2 rounded-full bg-[#DDE2FB]/55 blur-3xl"/><div className="relative mx-auto max-w-6xl"><div className="max-w-3xl"><p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">{sk?"Jednoducho si vyberiete":"Choose what fits"}</p><h2 className="mt-3 text-3xl font-semibold tracking-[-.035em] sm:text-5xl">{sk?"Tri formáty. Jedna jednoduchá skúsenosť.":"Three formats. One simple experience."}</h2><p className="mt-4 max-w-2xl text-base leading-7 text-gray-600">{sk?"Bez zložitého rozhodovania. Vyberte si, či sa chcete učiť sami, vo vlastnej skupine alebo cez firmu.":"No complicated choices. Learn one-to-one, with your own private group, or through your company."}</p></div><div className="mt-9 grid gap-5 lg:grid-cols-3">{cards.map(card=>{const Icon=card.icon;return <article key={card.href} className={`group relative flex min-h-[310px] flex-col overflow-hidden rounded-[1.75rem] border p-6 transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(47,58,162,.10)] ${card.featured?"border-[#BBC4FF] bg-[#171A2B] text-white":"border-black/5 bg-white"}`}><div className={`absolute -right-12 -top-12 h-36 w-36 rounded-full blur-2xl ${card.featured?"bg-[#5361D4]/40":"bg-[#DDE2FB]/80"}`}/><div className="relative"><div className="flex items-center justify-between"><span className={`flex h-12 w-12 items-center justify-center rounded-2xl ${card.featured?"bg-white/10 text-[#C7D2FE]":"bg-[#EEF2FF] text-[#2F3AA2]"}`}><Icon size={22}/></span><span className={`rounded-full px-3 py-1 text-xs font-semibold ${card.featured?"bg-white/10 text-[#E8EAF5]":"bg-[#F6F7FB] text-gray-500"}`}>{card.eyebrow}</span></div><h3 className={`mt-7 text-2xl font-semibold ${card.featured?"!text-white":""}`}>{card.title}</h3><p className={`mt-3 leading-7 ${card.featured?"text-[#D8DBE8]":"text-gray-600"}`}>{card.text}</p></div><Link href={card.href} className={`relative mt-auto inline-flex items-center gap-2 pt-7 font-semibold ${card.featured?"text-[#C7D2FE]":"text-[#2F3AA2]"}`}>{card.cta}<ArrowUpRight size={17} className="transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5"/></Link></article>})}</div></div></section>;
+  const {language}=useLanguage();const sk=language==="sk";const prefix=`/${language}`;
+  const cards=[
+    {icon:UserRound,eyebrow:sk?"Najobľúbenejšie":"Most popular",title:sk?"Individuálne 1:1":"Individual 1:1",text:sk?"45- alebo 60-minútové hodiny podľa vašich potrieb a času.":"45- or 60-minute lessons, tailored to your goals and schedule.",href:`${prefix}/pricing`,cta:sk?"Vybrať balíček":"Choose a package",img:"https://images.unsplash.com/photo-1758874385197-07d99c183a6f?auto=format&fit=crop&w=900&q=82"},
+    {icon:Users,eyebrow:sk?"2–5 osôb":"2–5 people",title:sk?"Súkromné skupiny":"Private groups",text:sk?"Priatelia alebo kolegovia, jeden spoločný cieľ a vlastné tempo.":"Friends or colleagues, a shared goal and your own pace.",href:`${prefix}/group-lessons`,cta:sk?"Skupinové hodiny":"Group lessons",img:"https://images.unsplash.com/photo-1758270705518-b61b40527e76?auto=format&fit=crop&w=900&q=82"},
+    {icon:Building2,eyebrow:"B2B",title:sk?"Pre firmy":"For companies",text:sk?"Jazykové vzdelávanie pre zamestnancov a prehľad pre HR.":"Language training for employees, with a practical overview for HR.",href:`${prefix}/companies`,cta:sk?"Firemná výučba":"Corporate training",img:"https://images.unsplash.com/photo-1758876020491-9560594ec362?auto=format&fit=crop&w=900&q=82"},
+  ];
+  return <section id="learning-formats" className="relative overflow-hidden bg-[#F7F8FC] px-4 py-16 sm:px-6 sm:py-24">
+    <div className="absolute left-1/2 top-0 h-64 w-[46rem] -translate-x-1/2 rounded-full bg-[#DDE2FB]/55 blur-3xl"/>
+    <div className="relative mx-auto max-w-6xl">
+      <div className="max-w-3xl"><p className="text-xs font-bold uppercase tracking-[.17em] text-[#2F3AA2]">{sk?"Vyberte si svoju cestu":"Find your way"}</p>
+        <h2 className="mt-3 text-[clamp(2rem,5.4vw,3.1rem)] font-semibold leading-tight tracking-[-.04em]">{sk?"Jazyky do skutočného života." : "Languages for real life."}</h2>
+        <p className="mt-3 max-w-2xl text-base leading-7 text-gray-600">{sk?"Sami, s priateľmi alebo cez firmu. Vyberte si formát, ktorý sedí vám.":"On your own, with friends, or through work. Choose what suits you."}</p>
+      </div>
+      <div className="mt-8 grid gap-5 lg:grid-cols-3">
+        {cards.map((card,i)=>{const Icon=card.icon;return <article key={card.href} className="group flex min-w-0 flex-col overflow-hidden rounded-[1.75rem] border border-[#E5E7F0] bg-white shadow-[0_12px_36px_rgba(23,26,43,.06)] transition hover:-translate-y-1 hover:shadow-xl">
+          <div className="relative h-48 overflow-hidden bg-[#DDE2FB] sm:h-56">
+            <Image unoptimized src={card.img} alt={sk?"Ilustračná fotografia online výučby a komunikácie":"Illustrative photo of online learning and communication"} fill sizes="(max-width: 1024px) 95vw, 33vw" className="object-cover transition duration-700 group-hover:scale-105"/>
+            <div className="absolute inset-0 bg-gradient-to-t from-[#151A32]/40 to-transparent"/>
+            <span className="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full bg-white/95 px-3 py-2 text-xs font-semibold text-[#27368E]"><Icon size={17}/>{card.eyebrow}</span>
+          </div>
+          <div className="flex flex-1 flex-col p-5 sm:p-6">
+            <h3 className="text-2xl font-semibold tracking-tight text-[#171A2B]">{card.title}</h3><p className="mt-3 text-sm leading-7 text-[#646B80]">{card.text}</p>
+            <Link href={card.href} className="mt-auto inline-flex min-h-12 items-center justify-between gap-2 border-t border-[#E9EAF1] pt-4 font-semibold text-[#2F3AA2] sm:mt-6">{card.cta}<ArrowUpRight size={18} className="transition group-hover:translate-x-1 group-hover:-translate-y-1"/></Link>
+          </div>
+        </article>})}
+      </div>
+      <p className="mt-4 text-right text-xs text-[#747B8D]">{sk?"Fotografie sú ilustračné.":"Photography is illustrative."}</p>
+    </div>
+  </section>;
 }

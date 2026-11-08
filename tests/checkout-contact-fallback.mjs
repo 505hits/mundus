@@ -1,0 +1,15 @@
+import assert from "node:assert/strict";
+import {readFileSync} from "node:fs";
+const read=(p)=>readFileSync(new URL("../"+p,import.meta.url),"utf8");
+const payment=read("src/app/payment/page.tsx");
+const contact=read("src/app/contact/page.tsx");
+const action=read("src/app/contact/actions.ts");
+assert.ok(payment.includes("const contactFallback") && payment.includes("encodeURIComponent(selectedLanguage)"),"Unavailable checkout must preserve selected language");
+assert.ok(payment.includes("&lessons=${pkg.lessons}&duration=${pkg.durationMinutes}"),"Unavailable checkout must preserve lesson count and duration");
+assert.ok(payment.includes("href={contactFallback}"),"Unavailable checkout must link to the prefilled inquiry");
+assert.ok(contact.includes("const paymentsAvailable = paymentEnabled()"),"Contact must use real payment availability");
+assert.ok(contact.includes("defaultValue={preservedLanguage}")&&contact.includes("defaultValue={selectedLessons}"),"Contact must prefill course preferences");
+assert.ok(contact.includes("defaultValue={selectedSummary}"),"Contact must retain lesson duration in the inquiry message");
+assert.ok(!contact.includes("we receive a notification."),"Contact must not promise email delivery while SMTP is inactive");
+assert.ok(action.includes('from("contact_requests").insert'),"Contact must persist requests in the database");
+console.log("PASS: unavailable checkout routes selected packages into an honest, prefilled contact request");

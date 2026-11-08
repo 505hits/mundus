@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import LanguageSelector from "@/components/LanguageSelector";
 import LearningFormatsSection from "@/components/LearningFormatsSection";
-import { InstagramTeachersSection, InstagramTestimonialsSection, InstagramCommunitySection } from "@/components/InstagramSocialProof";
+import InstagramHomepageSpotlight from "@/components/InstagramHomepageSpotlight";
 import PricingSection from "@/components/PricingSection";
 import FAQSection from "@/components/FAQSection";
 import Footer from "@/components/Footer";
@@ -27,10 +27,8 @@ export default async function Home() {
       <Hero />
       <LearningFormatsSection />
       <LanguageSelector />
-      <InstagramTeachersSection />
-      <InstagramCommunitySection />
+      <InstagramHomepageSpotlight />
       <PricingSection paymentsAvailable={paymentEnabled()} />
-      <InstagramTestimonialsSection />
       <FAQSection />
       <Footer />
     </main>

@@ -32,7 +32,7 @@ export default function LanguageSelector(){
  ];
 
  return <section id="languages" className="bg-gradient-to-b from-[#F6F7FB] to-white py-14 md:py-24">
-  <div className="container"><motion.div initial="hidden" whileInView="visible" viewport={{once:true,margin:"-80px"}} variants={stagger} className="mx-auto max-w-5xl">
+  <div className="container"><motion.div initial={false} animate="visible" variants={stagger} className="mx-auto max-w-5xl">
    <motion.div variants={fadeInUp} className="text-center">
     <span className="inline-flex items-center gap-2 rounded-full border border-[#DDE2F4] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[.14em] text-[#2F3AA2] shadow-sm"><Languages size={15}/>{t.languageSelector.badge}</span>
     <h2 className="mt-5 text-4xl font-semibold tracking-[-.035em] text-[#171A2B] md:text-5xl">{sk?"1. Vyberte jazyk":"1. Choose your language"}</h2>

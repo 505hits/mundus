@@ -19,7 +19,8 @@ for(const slug of slugs){
 assert.ok(page.includes("generateMetadata"));
 assert.ok(page.includes('"@type":"Service"'));
 assert.ok(page.includes('"@type":"BreadcrumbList"'));
-assert.ok(page.includes("Payment comes first") && page.includes("Najprv platba"));
+assert.ok(page.includes("paymentsAvailable=paymentEnabled()") && page.includes("After payment, add your level"),"Landing pages must describe pay-first onboarding only when checkout is active");
+assert.ok(page.includes("no-obligation inquiry"),"Landing pages must provide an honest offline-payments fallback");
 assert.ok(page.includes("/pricing?language="),"language landing pages must carry the selected language into standalone pricing");
 assert.ok(data.includes("business English") && data.includes("pracovnú angličtinu"),"English page should contain genuinely useful work-specific intent");
 assert.ok(data.includes("Slovenčina pre cudzincov"),"Slovak-for-foreigners page should be explicit");

@@ -6,10 +6,12 @@ import { usePathname } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
+import { useAnalyticsConsent } from "@/components/AnalyticsManager";
 
 export default function FloatingCTA() {
     const { t, language } = useLanguage();
     const pathname = usePathname();
+    const cookieChoice = useAnalyticsConsent();
     const [isVisible, setIsVisible] = useState(false);
 
     const isPortalRoute =
@@ -33,17 +35,18 @@ export default function FloatingCTA() {
 
     useEffect(() => {
         const handleScroll = () => {
-            // Show button after scrolling down 600px (past hero)
+            // Show purchase CTA after the hero; never compete with cookie consent.
             setIsVisible(window.scrollY > 450);
         };
 
-        window.addEventListener("scroll", handleScroll);
+        handleScroll();
+        window.addEventListener("scroll", handleScroll, { passive: true });
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
     const onCompanies = /^\/(sk|en)\/companies(\/|$)/.test(pathname) || pathname === "/companies";
 
-    if (isPortalRoute) {
+    if (isPortalRoute || cookieChoice === null) {
         return null;
     }
 

@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import { Instagram, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { MUNDUS_LANGUAGE_OPTIONS } from "@/lib/language-offer";
@@ -33,7 +34,7 @@ export default function TeacherSection({teachers}:{teachers:PublicTeacher[]}) {
         {visible.map(teacher=><motion.article key={teacher.id} initial="hidden" whileInView="visible" viewport={{once:true,margin:"-40px"}} variants={fade} className="overflow-hidden rounded-3xl border border-[#E5E7F0] bg-white shadow-[0_10px_30px_rgba(23,26,43,.045)]">
           <div className="aspect-[4/3] overflow-hidden bg-[#EEF2FF]">
             {teacher.photoUrl
-              ? /* eslint-disable-next-line @next/next/no-img-element */ <img src={teacher.photoUrl} alt={teacher.name} className="h-full w-full object-cover"/>
+              ? <div className="relative h-full w-full"><Image unoptimized src={teacher.photoUrl} alt={teacher.name} fill sizes="(max-width:640px) 100vw,33vw" className="object-cover"/></div>
               : <div className="flex h-full items-center justify-center text-6xl font-semibold text-[#2F3AA2]">{teacher.name.slice(0,1).toUpperCase()}</div>}
           </div>
           <div className="p-5">

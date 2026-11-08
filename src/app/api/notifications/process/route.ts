@@ -142,6 +142,22 @@ export async function GET(request:NextRequest) {
   for(const job of newsletterJobs||[]){
     try{
       const {data:subscriber,error:subscriberError}=await admin.from("newsletter_subscribers").select("email,language,status,confirm_token,unsubscribe_token").eq("id",job.subscriber_id).single();
+      if(job.kind==="admin_notice"){
+        if(subscriberError||!subscriber) throw new Error("Subscriber unavailable");
+        if(job.recipient_email!==websiteLeadInbox) throw new Error("Unexpected newsletter alert recipient");
+        const content={
+          subject:"Mundus: nový e-mail prihlásený na odber",
+          text:["Nový e-mail vo formulári odberu noviniek: "+subscriber.email,
+            "Stav: "+(subscriber.status==="active"?"potvrdený":subscriber.status==="pending"?"čaká na potvrdenie":"odhlásený"),
+            "Správa odoslaná automaticky z webu Mundus.","","Mundus Languages"].join("\n"),
+        };
+        const result=await transport.sendMail({from:process.env.MUNDUS_EMAIL_FROM,to:websiteLeadInbox,...content,messageId:"<mundus-subscriber-"+job.id+"@"+new URL(origin).hostname+">"});
+        if(!result.accepted.includes(websiteLeadInbox)) throw new Error("Mundus inbox rejected");
+        const {error:finishError}=await admin.from("newsletter_email_outbox").update({status:"sent",sent_at:new Date().toISOString(),lease_until:null}).eq("id",job.id).eq("lease_token",job.lease_token);
+        if(finishError) throw finishError;
+        sent++;
+        continue;
+      }
       if(subscriberError||!subscriber||subscriber.email!==job.recipient_email||subscriber.status!=="pending"){
         const {error:skipError}=await admin.from("newsletter_email_outbox").update({status:"skipped",lease_until:null}).eq("id",job.id).eq("lease_token",job.lease_token);
         if(skipError) throw skipError;

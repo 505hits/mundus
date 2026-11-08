@@ -3,7 +3,7 @@ import { requireRole } from "@/lib/auth";
 import { currentLanguage } from "@/lib/i18n";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { paymentEnabled } from "@/lib/payments";
-import { AlertTriangle, CheckCircle2, ClipboardCheck, ExternalLink, Mail, CreditCard, Users, Globe, ArrowRight } from "lucide-react";
+import { AlertTriangle, CheckCircle2, ClipboardCheck, ExternalLink, Mail, CreditCard, Users, ArrowRight } from "lucide-react";
 
 export const dynamic="force-dynamic";
 

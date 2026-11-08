@@ -15,7 +15,7 @@ export default function InstagramHomepageSpotlight() {
   const sk = language === "sk";
   return (
     <section id="teachers" className="bg-white px-4 py-14 sm:px-6 sm:py-20">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-6xl"><span id="instagram-community" className="block scroll-mt-24" aria-hidden="true" /><span id="testimonials" className="block scroll-mt-24" aria-hidden="true" />
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-2xl">
             <p className="text-xs font-bold uppercase tracking-[.16em] text-[#4652B6]">{sk ? "Skutoční ľudia. Skutočné hodiny." : "Real people. Real lessons."}</p>

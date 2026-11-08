@@ -4,7 +4,6 @@ import { INTENT_SEO_PAGES } from "@/data/intent-seo-pages";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base="https://munduslanguages.com";
-  const now=new Date();
   const core=[
     ["",1,"weekly"],
     ["/languages",0.95,"monthly"],
@@ -23,10 +22,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const publicPaths=[...core,...languagePaths,...intentPaths];
 
   return [
-    {url:base,lastModified:now,changeFrequency:"weekly",priority:0.8},
     ...publicPaths.flatMap(([path,priority,changeFrequency])=>(["sk","en"] as const).map(locale=>({
       url:`${base}/${locale}${path}`,
-      lastModified:now,
       changeFrequency,
       priority,
       alternates:{languages:{"sk-SK":`${base}/sk${path}`,"en-GB":`${base}/en${path}`,"x-default":`${base}${path||"/"}`}},

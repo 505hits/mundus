@@ -15,6 +15,7 @@ export default function Footer() {
       links: [
         { href: `${prefix}/#learning-formats`, label: sk ? "Ako to funguje" : "How it works" },
         { href: `${prefix}/teachers`, label: sk ? "Lektori" : "Teachers" },
+        { href: `${prefix}/community`, label: sk ? "Život v Mundus" : "Life at Mundus" },
         { href: `${prefix}/pricing`, label: sk ? "Cenník a platba" : "Pricing & payment" },
         { href: `${prefix}/group-lessons`, label: sk ? "Skupinové hodiny" : "Group lessons" },
         { href: `${prefix}/companies`, label: sk ? "Pre firmy" : "For companies" },

@@ -6,6 +6,8 @@ import { accountOrigin } from "@/lib/account-config";
 export { PACKAGE_PRICES } from "@/lib/package-catalog";
 
 export function paymentEnabled() {
+  // Explicit safety gate: a stored API key alone must not enable checkout.
+  if (process.env.MUNDUS_PAYMENTS_ENABLED !== "true") return false;
   try { accountOrigin(); } catch { return false; }
   const live = process.env.MUNDUS_PAYMENTS_LIVE_ENABLED === "true";
   return !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY &&

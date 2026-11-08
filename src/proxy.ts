@@ -49,7 +49,7 @@ export const config = {
   matcher: [
     "/login", "/signup", "/forgot-password", "/reset-password",
     "/auth/:path*", "/onboarding/:path*", "/set-password/:path*",
-    "/sk/:path*", "/en/:path*",
+    "/sk", "/en", "/sk/community", "/en/community", "/sk/:path*", "/en/:path*",
     "/pending-approval", "/dashboard/:path*", "/lessons/:path*",
     "/progress-test/:path*", "/level-test/:path*", "/learning/:path*", "/progress/:path*", "/packages/:path*",
     "/teacher/:path*", "/admin/:path*",

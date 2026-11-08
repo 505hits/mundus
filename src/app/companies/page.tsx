@@ -47,14 +47,17 @@ export default async function CompaniesPage({searchParams}:Props) {
     </div>
    </section>
 
-   <section className="bg-[#171A2B] px-4 pb-8 sm:px-6 sm:pb-16" aria-label={sk?"Vizualizácia firemného jazykového vzdelávania":"Corporate learning illustration"}>
-     <div className="relative mx-auto h-[220px] max-w-7xl overflow-hidden rounded-[1.65rem] bg-[#DDE2F1] sm:h-[335px] sm:rounded-[2rem]">
-       <Image unoptimized src="/images/mundus/DYSOVxCoMrJ.webp" alt={sk?"Fotografia zo sociálnych sietí Mundus":"Photo from Mundus social channels"} fill sizes="(max-width: 1200px) 95vw, 1200px" className="object-cover object-center" />
-       <div className="absolute inset-0 bg-gradient-to-r from-[#171A2B]/75 via-[#171A2B]/30 to-transparent" />
-       <div className="absolute inset-y-0 left-0 flex max-w-md flex-col justify-center p-5 text-white sm:p-10">
-         <p className="text-xs font-semibold uppercase tracking-[.15em] text-[#DCE2FF]">{sk?"Lepšia komunikácia v tíme":"Better team communication"}</p>
-         <p className="mt-3 text-2xl font-semibold leading-tight !text-white sm:text-4xl">{sk?"Sebavedomí ľudia. Silnejšie tímy.":"Confident people. Stronger teams."}</p>
-         
+   <section className="bg-[#171A2B] px-4 pb-10 sm:px-6 sm:pb-16" aria-label={sk?"Mundus komunita":"Mundus community"}>
+     <div className="mx-auto grid max-w-7xl overflow-hidden rounded-[2rem] bg-[#E5ECF2] md:grid-cols-[1fr_.85fr]">
+       <div className="flex flex-col justify-center p-7 sm:p-10 lg:p-14">
+         <p className="text-xs font-bold uppercase tracking-[.16em] text-[#4652A3]">{sk?"Lepšia komunikácia v tíme":"Better team communication"}</p>
+         <h2 className="mt-3 max-w-xl text-[clamp(1.9rem,5vw,3.15rem)] font-semibold leading-tight tracking-[-.04em] text-[#171A2B]">{sk?"Sebavedomí ľudia. Silnejšie tímy.":"Confident people. Stronger teams."}</h2>
+         <p className="mt-4 max-w-lg text-sm leading-7 text-[#60697B]">{sk?"Výučba je postavená na reálnych pracovných situáciách vášho tímu.":"Learning designed around your team's real workplace situations."}</p>
+       </div>
+       <div className="relative flex min-h-[250px] items-center justify-center bg-[#CFD8ED] p-5 sm:min-h-[340px]">
+         <div className="relative h-[235px] w-full max-w-[260px] overflow-hidden rounded-[1.5rem] border-[7px] border-white bg-[#F3F5FA] shadow-2xl sm:h-[300px]">
+           <Image src="/images/mundus/DYSOVxCoMrJ.webp" alt={sk?"Moment z Mundus Instagramu":"Mundus Instagram moment"} fill sizes="260px" className="object-contain"/>
+         </div>
        </div>
      </div>
    </section>

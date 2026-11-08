@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { ArrowRight, Building2, CheckCircle2, Users, BarChart3, ShieldCheck, CalendarCheck2, GraduationCap, Globe2 } from "lucide-react";
+import { ArrowRight, Building2, CheckCircle2, ShieldCheck, CalendarCheck2, Globe2 } from "lucide-react";
 import CorporatePreview from "@/components/CorporatePreview";
 import { currentLanguage } from "@/lib/i18n";
 import { localizedAlternates, localizedPath } from "@/lib/seo-locales";

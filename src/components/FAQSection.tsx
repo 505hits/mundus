@@ -1,10 +1,12 @@
 "use client";
 
 import { useLanguage } from "@/context/LanguageContext";
+import { useState } from "react";
 
 export default function FAQSection() {
   const { language } = useLanguage();
   const sk = language === "sk";
+  const [expanded,setExpanded]=useState(false);
 
   const items = sk ? [
     ["Sú hodiny individuálne?", "Áno. Balíčky na stránke sú určené pre individuálne online hodiny 1:1. Pri nákupe si vyberiete dĺžku 45 alebo 60 minút."],
@@ -38,7 +40,7 @@ export default function FAQSection() {
     ["What can I see in the student portal?", "Your schedule, remaining lessons, materials, homework, feedback, progress and the option to buy another package."],
   ];
 
-  return <section id="faq" className="bg-white py-24">
+  return <section id="faq" className="bg-white py-12 sm:py-20">
     <div className="container">
       <div className="mx-auto max-w-3xl text-center">
         <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">{sk ? "Časté otázky" : "FAQ"}</p>
@@ -46,12 +48,13 @@ export default function FAQSection() {
         <p className="mt-4 text-gray-600">{sk ? "Detailný onboarding vypĺňate až po úspešnej platbe." : "Detailed onboarding is completed only after successful payment."}</p>
       </div>
 
-      <div className="mx-auto mt-10 max-w-4xl divide-y divide-[#E5E7F0] rounded-3xl border border-[#E5E7F0] bg-[#FAFAF9] px-5 sm:px-7">
-        {items.map(([q,a]) => <details key={q} className="group py-5">
+      <div className="mx-auto mt-7 max-w-4xl divide-y divide-[#E5E7F0] rounded-3xl border border-[#E5E7F0] bg-[#FAFAF9] px-5 sm:px-7">
+        {(expanded?items:items.slice(0,5)).map(([q,a]) => <details key={q} className="group py-5">
           <summary className="cursor-pointer list-none pr-8 font-semibold text-[#171A2B]">{q}</summary>
           <p className="mt-3 max-w-3xl text-sm leading-7 text-gray-600">{a}</p>
         </details>)}
       </div>
+      {items.length>5&&<div className="mt-5 text-center"><button type="button" onClick={()=>setExpanded(!expanded)} className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#DDE2FB] bg-white px-5 py-2.5 text-sm font-semibold text-[#2F3AA2] hover:bg-[#F5F6FF]">{expanded?(sk?"Zobraziť menej otázok":"Show fewer questions"):(sk?`Zobraziť všetky otázky (${items.length})`:`See all questions (${items.length})`)}</button></div>}
     </div>
   </section>;
 }

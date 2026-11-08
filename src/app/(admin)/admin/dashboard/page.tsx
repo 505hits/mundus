@@ -237,6 +237,18 @@ export default async function AdminDashboardPage() {
 
         <div className="mt-5 flex flex-wrap gap-3"><Link href="/admin/matching" className="inline-block rounded-xl bg-[#2F3AA2] px-5 py-3 font-semibold text-white">{sk ? "Priradiť študenta k lektorovi" : "Match student with teacher"}</Link><Link href="/admin/calendar" className="inline-block rounded-xl border border-[#2F3AA2]/20 bg-white px-5 py-3 font-semibold text-[#2F3AA2]">{sk ? "Otvoriť kalendár" : "Open calendar"}</Link></div>
 
+        <section aria-labelledby="attention-title" className="mt-6 rounded-3xl border border-[#E1E6F3] bg-white p-5 shadow-sm sm:p-6">
+          <h2 id="attention-title" className="text-xl font-semibold">{sk ? "Vyžaduje pozornosť" : "Needs attention"}</h2>
+          <div className="mt-4 grid grid-cols-2 gap-2 lg:grid-cols-4">
+            {[
+              { href: "#inquiry-queue", label: sk ? "Nové dopyty" : "New inquiries", value: contactRequestsError ? "—" : (contactRequests?.length ?? 0) >= 20 ? "20+" : contactRequests?.length ?? 0 },
+              { href: "/admin/matching", label: sk ? "Na priradenie" : "Ready for matching", value: studentsError || lessonsError || paidOrdersError || onboardingError ? "—" : readyForMatching.length },
+              { href: "/admin/lessons", label: sk ? "Zmeny termínov" : "Schedule changes", value: requestsError ? "—" : pendingRequests },
+              { href: "#report-queue", label: sk ? "Chýbajúce záznamy" : "Missing reports", value: missingReports?.length ?? "—" },
+            ].map(item => <Link key={item.href} href={item.href} className="min-w-0 rounded-2xl bg-[#F3F5FF] p-3 hover:bg-[#E7EBFF]"><span className="block text-lg font-semibold text-[#212C72]">{item.value}</span><span className="text-xs font-medium text-[#364278]">{item.label}</span></Link>)}
+          </div>
+        </section>
+
         {!emailDeliveryReady && <section role="status" className="mt-6 rounded-[1.4rem] border border-[#F3D7A3] bg-[#FFF7E6] p-5 sm:p-6">
           <div className="flex flex-wrap items-start justify-between gap-4"><div className="max-w-3xl">
             <p className="text-xs font-bold uppercase tracking-[.15em] text-[#94631D]">{sk?"Upozornenia z webu":"Website notifications"}</p>
@@ -245,6 +257,9 @@ export default async function AdminDashboardPage() {
           </div><Link href="/admin/newsletter" className="inline-flex min-h-11 shrink-0 items-center rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-[#76501F] shadow-sm">{sk?"Kontrola odberateľov":"Review subscribers"}</Link></div>
         </section>}
 
+        <div id="inquiry-queue" className="scroll-mt-24">
+          {(contactRequestsError || !contactRequests?.length) && <p className="mt-4 text-sm text-gray-600">{contactRequestsError ? (sk ? "Dopyty sa nepodarilo načítať." : "Inquiries could not be loaded.") : (sk ? "V databáze nie sú nové dopyty. Doručenie e-mailu sa overuje samostatne." : "No new inquiries are recorded. Email delivery is verified separately.")}</p>}
+        </div>
         {(contactRequests?.length ?? 0) > 0 && <section className="mt-6 rounded-3xl border border-indigo-200 bg-indigo-50 p-5">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
@@ -409,7 +424,7 @@ export default async function AdminDashboardPage() {
         </section>
 
         <section className="mt-8 rounded-3xl border border-indigo-100 bg-white p-6 shadow-sm">
-          <h2 className="text-xl font-semibold text-[#2F3AA2]">{sk ? "Dokončené hodiny bez záznamu lektora" : "Completed lessons without teacher reports"}</h2>
+          <h2 id="report-queue" className="scroll-mt-24 text-xl font-semibold text-[#2F3AA2]">{sk ? "Dokončené hodiny bez záznamu lektora" : "Completed lessons without teacher reports"}</h2>
           <p className="mt-2 text-sm text-gray-600">{sk ? "Kontrola posledných 50 dokončených hodín. Záznam pomáha študentovi vidieť spätnú väzbu a ďalšie zameranie; jeho uloženie nemení zostatok balíčka." : "Review of the latest 50 completed lessons. Reports help students see feedback and their next focus; saving a report does not change the package balance."}</p>
           <p className="mt-2 text-sm text-gray-600">{sk ? "Kontrola posledných 50 dokončených hodín." : "Checks the 50 most recent completed lessons."}</p>
           {missingReports === null ? <p role="alert" className="mt-4 text-red-700">{sk ? "Záznamy hodín sa nepodarilo overiť. Obnovte stránku." : "Lesson reports could not be verified. Refresh the page."}</p> : !missingReports.length ? <p className="mt-4 text-gray-600">{sk ? "Skontrolované dokončené hodiny majú uložený záznam alebo zatiaľ nemáte dokončené hodiny." : "The reviewed completed lessons have reports, or there are no completed lessons yet."}</p> : <ul className="mt-4 divide-y divide-indigo-100">{missingReports.map(lesson=>{const student=Array.isArray(lesson.student)?lesson.student[0]:lesson.student;const teacher=Array.isArray(lesson.teacher)?lesson.teacher[0]:lesson.teacher;return <li key={lesson.id} className="flex flex-wrap items-center justify-between gap-3 py-4"><div><p className="font-semibold">{getName(student, sk ? "Študent" : "Student")} · {formatLanguage(lesson.language, language)}</p><p className="mt-1 text-sm text-gray-600">{new Intl.DateTimeFormat(localeFor(language),{dateStyle:"medium",timeStyle:"short",timeZone:"Europe/Bratislava"}).format(new Date(lesson.scheduled_at))} · {sk ? "Lektor" : "Teacher"}: {getName(teacher, sk ? "Nepriradený" : "Unassigned")}</p></div><span className="rounded-full bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-900">{sk ? "Doplniť záznam" : "Add report"}</span></li>;})}</ul>}

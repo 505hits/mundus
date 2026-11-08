@@ -428,6 +428,7 @@ export default async function TeacherDashboardPage() {
               {todayLessons.map((lesson) => {
                 const student = studentDirectory.get(lesson.student_id);
                 const lessonLink = safeLessonLink(lesson.meet_link);
+                const elapsed = Date.parse(lesson.scheduled_at) + (lesson.duration_minutes ?? 60) * 60_000 <= now.getTime();
 
                 return (
                   <article
@@ -476,7 +477,9 @@ export default async function TeacherDashboardPage() {
                         </div>
                       </div>
 
-                      {lessonLink ? (
+                      {elapsed ? (
+                        <Link href="/teacher/schedule" className={lesson.id === nextTodayLessonId ? "dashboard-primary-action" : "rounded-xl bg-[#EEF2FF] px-4 py-3 text-sm font-semibold text-[#212C72]"}>{sk ? "Zaznamenať dochádzku" : "Record attendance"}</Link>
+                      ) : lessonLink ? (
                         <a
                           href={lessonLink}
                           target="_blank"

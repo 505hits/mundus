@@ -231,6 +231,7 @@ export default async function DashboardPage({ searchParams }: { searchParams?: P
           <p className="mt-2 text-gray-500">
             {sk ? "Váš prehľad učenia v Mundus." : "Your learning overview in Mundus."}
           </p>
+          {hasPaidLearningAccess && !nextLesson && !lessonsError && !renewalDue && remainingLessons > 0 && <p className="mt-4 text-sm font-medium text-[#DDE4FF]">{sk ? "Čakáte na termín ďalšej hodiny." : "Your next lesson is waiting to be scheduled."}</p>}
           <div className="mt-5 flex flex-wrap gap-3">
             {nextLessonLink ? <a href={nextLessonLink} target="_blank" rel="noopener noreferrer" className="dashboard-primary-action">{sk ? "Pripojiť sa na hodinu" : "Join lesson"}</a> : <Link href={renewalDue && paymentsAvailable ? "/packages" : "/lessons"} className="dashboard-primary-action">{renewalDue && paymentsAvailable ? (sk ? "Pokračovať s ďalším balíčkom" : "Renew your package") : (sk ? "Zobraziť rozvrh" : "View schedule")}</Link>}
           </div>

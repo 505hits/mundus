@@ -54,6 +54,7 @@ function noUpcomingLabel(count: number, language: Language) {
 }
 
 export default async function AdminDashboardPage() {
+  const emailDeliveryReady = process.env.MUNDUS_EMAIL_NOTIFICATIONS_ENABLED === "true" && Boolean(process.env.MUNDUS_SMTP_HOST && process.env.MUNDUS_SMTP_USER && process.env.MUNDUS_SMTP_PASSWORD && process.env.MUNDUS_EMAIL_FROM && (process.env.MUNDUS_NOTIFICATION_SECRET || process.env.CRON_SECRET));
   const language = await currentLanguage();
   const sk = language === "sk";
   const { profile } = await requireRole("admin");
@@ -231,6 +232,14 @@ export default async function AdminDashboardPage() {
         </section>
 
         <div className="mt-5 flex flex-wrap gap-3"><Link href="/admin/matching" className="inline-block rounded-xl bg-[#2F3AA2] px-5 py-3 font-semibold text-white">{sk ? "Priradiť študenta k lektorovi" : "Match student with teacher"}</Link><Link href="/admin/calendar" className="inline-block rounded-xl border border-[#2F3AA2]/20 bg-white px-5 py-3 font-semibold text-[#2F3AA2]">{sk ? "Otvoriť kalendár" : "Open calendar"}</Link></div>
+
+        {!emailDeliveryReady && <section role="status" className="mt-6 rounded-[1.4rem] border border-[#F3D7A3] bg-[#FFF7E6] p-5 sm:p-6">
+          <div className="flex flex-wrap items-start justify-between gap-4"><div className="max-w-3xl">
+            <p className="text-xs font-bold uppercase tracking-[.15em] text-[#94631D]">{sk?"Upozornenia z webu":"Website notifications"}</p>
+            <h2 className="mt-2 text-xl font-semibold text-[#593C17]">{sk?"E-mailové doručovanie ešte nie je aktívne":"Email delivery is not active yet"}</h2>
+            <p className="mt-2 text-sm leading-6 text-[#775626]">{sk?"Kontaktné a firemné formuláre ukladajú dopyty do administrácie a čakajú v rade. Aby upozornenia skutočne prichádzali na mundus.languages@gmail.com, aktivujte SMTP a naplánované spracovanie notifikácií.":"Contact and corporate forms save inquiries in the dashboard and queue alerts. To receive them at mundus.languages@gmail.com, configure SMTP and the notification worker schedule."}</p>
+          </div><Link href="/admin/newsletter" className="inline-flex min-h-11 shrink-0 items-center rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-[#76501F] shadow-sm">{sk?"Kontrola odberateľov":"Review subscribers"}</Link></div>
+        </section>}
 
         {(contactRequests?.length ?? 0) > 0 && <section className="mt-6 rounded-3xl border border-indigo-200 bg-indigo-50 p-5">
           <div className="flex flex-wrap items-start justify-between gap-4">

@@ -43,6 +43,20 @@ export async function subscribeNewsletter(_previous: NewsletterState, form: Form
     subscriber_id:subscriberId,recipient_email:email,kind:"confirm"
   });
   if(queueError) return {error: language==="sk"?"E-mail sme uložili, ale potvrdenie sa nepodarilo pripraviť. Skúste to znova neskôr.":"Your email was saved, but confirmation could not be prepared. Please try again later."};
+  // Notify the Mundus inbox about every new consented email address.
+  // This remains pending in the outbox until SMTP delivery is configured.
+  await admin.from("newsletter_email_outbox").upsert({
+    subscriber_id:subscriberId,
+    recipient_email:"mundus.languages@gmail.com",
+    kind:"admin_notice",
+    status:"pending",
+    attempts:0,
+    available_at:new Date().toISOString(),
+    lease_token:null,
+    lease_until:null,
+    sent_at:null,
+  },{onConflict:"subscriber_id,kind"});
+
 
   return {success: language==="sk"?"Skontrolujte e-mail a potvrďte odber.":"Check your email and confirm your subscription.",subscribed:true};
 }

@@ -272,8 +272,8 @@ export default async function TeacherDashboardPage() {
   );
 
   return (
-    <main className="min-h-screen bg-[#FAFAF9] text-[#0a0a0f]">
-      <header className="border-b border-black/5 bg-white">
+    <main className="dashboard-page min-h-screen bg-transparent text-[#171A2B]">
+      <header className="hidden border-b border-[#E5E8F3] bg-white lg:block">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
           <BrandLogo compact />
 
@@ -291,8 +291,8 @@ export default async function TeacherDashboardPage() {
       </header>
 
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:py-10">
-        <section>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#2F3AA2]">
+        <section className="dashboard-welcome relative overflow-hidden rounded-[1.6rem] p-6 sm:rounded-[2rem] sm:p-9">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#DDE4FF]">
             {sk ? "Prehľad lektora" : "Teacher overview"}
           </p>
 

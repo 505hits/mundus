@@ -1,3 +1,4 @@
+import { guides } from "@/data/mundus-guides";
 import type { MetadataRoute } from "next";
 import { LANGUAGE_SEO_PAGES } from "@/data/language-seo-pages";
 import { INTENT_SEO_PAGES } from "@/data/intent-seo-pages";
@@ -19,7 +20,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ] as const;
   const languagePaths=LANGUAGE_SEO_PAGES.map((page,index)=>[`/languages/${page.slug}`,Math.max(0.82,0.9-index*0.01),"monthly"] as const);
   const intentPaths=INTENT_SEO_PAGES.map(page=>[`/learn/${page.slug}`,0.84,"monthly"] as const);
-  const publicPaths=[...core,...languagePaths,...intentPaths];
+  const guidePaths=Object.keys(guides).map(slug=>[`/blog/${slug}`,0.75,"monthly"] as const);
+  const publicPaths=[...core,...languagePaths,...intentPaths,...guidePaths];
 
   return [
     ...publicPaths.flatMap(([path,priority,changeFrequency])=>(["sk","en"] as const).map(locale=>({

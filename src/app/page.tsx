@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import MundusGuideLinks from "@/components/MundusGuideLinks";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import LanguageSelector from "@/components/LanguageSelector";
@@ -32,6 +33,7 @@ export default async function Home() {
       <LearningFormatsSection />
       <LanguageSelector compact />
       <SeoDiscoverySection />
+      <MundusGuideLinks />
       <PricingSection paymentsAvailable={paymentEnabled()} />
       <TeacherProfiles compact approved={approved}/>
       <StudentStories/>

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const PUBLIC_ROOTS=new Set(["","languages","pricing","prices","group-lessons","companies","contact","privacy","terms","cookies","learn","payment","teachers"]);
+const PUBLIC_ROOTS=new Set(["","languages","pricing","prices","group-lessons","companies","contact","privacy","terms","cookies","learn","payment","teachers","blog"]);
 
 export function proxy(request:NextRequest){
   const parts=request.nextUrl.pathname.split("/").filter(Boolean);

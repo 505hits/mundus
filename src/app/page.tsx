@@ -32,11 +32,11 @@ export default async function Home() {
       <Hero paymentsAvailable={paymentEnabled()}/>
       <LearningFormatsSection />
       <LanguageSelector compact />
-      <SeoDiscoverySection />
-      <MundusGuideLinks />
-      <PricingSection paymentsAvailable={paymentEnabled()} />
       <TeacherProfiles compact approved={approved}/>
       <StudentStories/>
+      <PricingSection paymentsAvailable={paymentEnabled()} />
+      <SeoDiscoverySection />
+      <MundusGuideLinks />
       <FAQSection />
       <Footer />
     </main>

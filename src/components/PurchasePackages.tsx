@@ -80,12 +80,13 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
                 return <button key={item.lessons} type="button" aria-pressed={active} onClick={() => { setLessons(item.lessons); trackEvent("select_package",{language:selectedLanguage||"not_selected",duration_minutes:duration,lessons:item.lessons,amount_eur:item.amountCents/100}); }} className={`relative flex min-h-[116px] flex-col justify-between rounded-2xl border p-3.5 text-left transition sm:p-4 ${active ? "border-[#2F3AA2] bg-[#F1F2FF] ring-2 ring-[#2F3AA2]/15" : "border-[#DFE2EF] bg-white hover:border-[#A5AEE5]"}`}>
                   {recommended && <span className="absolute -top-2 right-2 rounded-full bg-[#2F3AA2] px-2 py-1 text-[10px] font-bold text-white">{sk ? "Top výber" : "Top pick"}</span>}
                   <span className="flex items-start justify-between gap-1 text-lg font-bold text-[#171A2B]">{item.lessons} <span className="text-xs font-semibold">{sk ? (item.lessons===1?"hodina":"hodín") : (item.lessons===1?"lesson":"lessons")}</span>{active && <CheckCircle2 size={17} className="shrink-0 text-[#2F3AA2]"/>}</span>
+                  {item.lessons <= 10 && <span className="text-xs font-medium text-[#44549C]">{item.lessons === 1 ? (sk ? "Na vyskúšanie" : "Try a lesson") : item.lessons === 5 ? (sk ? "Na začiatok" : "Get started") : (sk ? "Na pravidelné učenie" : "Build a routine")}</span>}
                   <span className="text-xs text-gray-500">{money(Math.round(item.amountCents/item.lessons))} / {sk ? "hod." : "lesson"}</span>
                   <span className="text-base font-bold text-[#2F3AA2]">{money(item.amountCents)}</span><span className="mt-1 text-[11px] font-semibold leading-4 text-[#44549C]">{sk ? "S prvou zľavou" : "If first-discount eligible"}: {money(firstPackageAmountCents(item.amountCents))}</span>
                 </button>;
               })}
             </div>
-            <p className="mt-3 text-xs leading-5 text-gray-500">{sk ? "Hlavná cena je bežná cena balíčka. Zľavu 10 % zobrazujeme len ako možnosť pre oprávnených nových študentov; systém overí nárok po prihlásení." : "The main price is the regular package price. The 10% saving is shown only as an option for eligible new students; eligibility is checked after sign-in."}</p>
+            <p className="mt-3 text-xs leading-5 text-gray-500">{sk ? "Hlavná cena je bežná cena balíčka. Zľavu 10 % zobrazujeme len ako možnosť pre oprávnených nových študentov; nárok overíme po prihlásení. Zľava sa môže uplatniť aj na jednu hodinu." : "The main price is the regular package price. The 10% saving is shown only as an option for eligible new students; eligibility is checked after sign-in. The offer can also apply to one lesson."}</p>
           </section>
         </div>
 

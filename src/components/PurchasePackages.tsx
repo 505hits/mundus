@@ -7,6 +7,7 @@ import { ArrowRight, Check, CheckCircle2, CreditCard, LockKeyhole, ShieldCheck, 
 import { useLanguage } from "@/context/LanguageContext";
 import { firstPackageAmountCents, PACKAGE_PRICES, type PackageDuration } from "@/lib/package-catalog";
 import { MUNDUS_LANGUAGE_OPTIONS, MUNDUS_LANGUAGE_VALUES } from "@/lib/language-offer";
+import { flagForLanguage } from "@/lib/language-flags";
 import { trackEvent } from "@/components/AnalyticsManager";
 
 export default function PurchasePackages({ paymentsAvailable }: { paymentsAvailable: boolean }) {
@@ -56,7 +57,7 @@ export default function PurchasePackages({ paymentsAvailable }: { paymentsAvaila
             <div className="mb-3 flex items-center gap-3"><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#2F3AA2] text-sm font-bold text-white">01</span><h4 id="language-step" className="text-lg font-semibold">{sk ? "Ktorý jazyk sa chcete učiť?" : "Which language would you like to learn?"}</h4></div>
             <select ref={languageRef} value={selectedLanguage} onChange={e => { setLanguageOverride(e.target.value); setPrompt(false); if(e.target.value) trackEvent("select_language", { language: e.target.value, placement: "guided_pricing" }); }} aria-invalid={prompt && !selectedLanguage} className="min-h-14 w-full rounded-2xl border border-[#D1D7EC] bg-[#F8F9FF] px-4 text-base font-semibold text-[#171A2B] outline-none transition focus:border-[#4652B6] focus:ring-4 focus:ring-[#4652B6]/10">
               <option value="">{sk ? "Vyberte jazyk" : "Select a language"}</option>
-              {MUNDUS_LANGUAGE_OPTIONS.map(item => <option value={item.value} key={item.value}>{sk ? item.label : item.value}</option>)}
+              {MUNDUS_LANGUAGE_OPTIONS.map(item => <option value={item.value} key={item.value}>{flagForLanguage(item.value).emoji} {sk ? item.label : item.value}</option>)}
             </select>
             {prompt && !selectedLanguage && <p role="alert" className="mt-2 text-sm font-semibold text-[#2F3AA2]">{sk ? "Najprv vyberte jazyk a potom pokračujte." : "Choose a language before continuing."}</p>}
           </section>

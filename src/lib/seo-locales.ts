@@ -13,7 +13,7 @@ export function localizedAlternates(path:string,language:Language):Metadata["alt
     languages:{
       "sk-SK":`/sk${clean}`,
       "en-GB":`/en${clean}`,
-      "x-default":clean||"/",
+      "x-default":`/sk${clean}`,
     },
   };
 }
